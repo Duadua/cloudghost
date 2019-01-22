@@ -1,0 +1,53 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="src">
+      <UniqueIdentifier>{d5da0f33-8a0c-42b1-9fe7-84c95c0929c7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\include">
+      <UniqueIdentifier>{0bcbf3e5-bd26-4d10-aea6-e56b9af6f966}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\source">
+      <UniqueIdentifier>{ec95fc7d-4539-4ddf-8dff-8b512c1d5dd3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="generated">
+      <UniqueIdentifier>{71ED8ED8-ACB9-4CE9-BBE1-E00B30144E11}</UniqueIdentifier>
+      <Extensions>moc;h;cpp</Extensions>
+      <SourceControlFiles>False</SourceControlFiles>
+    </Filter>
+    <Filter Include="resources">
+      <UniqueIdentifier>{D9D6E242-F8AF-46E4-B9FD-80ECBC20BA3E}</UniqueIdentifier>
+      <Extensions>qrc;*</Extensions>
+      <ParseFiles>false</ParseFiles>
+    </Filter>
+    <Filter Include="resources\ui">
+      <UniqueIdentifier>{902b0568-9e65-43b2-9f64-127b490d5871}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="demo">
+      <UniqueIdentifier>{538ee016-676f-447d-89d4-5c2fe8cc265a}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <QtMoc Include="src\include\cpbr.h">
+      <Filter>src\include</Filter>
+    </QtMoc>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\source\cpbr.cpp">
+      <Filter>src\source</Filter>
+    </ClCompile>
+    <ClCompile Include="demo\main.cpp">
+      <Filter>demo</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <QtUic Include="resources\ui\cpbr.ui">
+      <Filter>resources\ui</Filter>
+    </QtUic>
+  </ItemGroup>
+  <ItemGroup>
+    <QtRcc Include="resources\cpbr.qrc">
+      <Filter>resources</Filter>
+    </QtRcc>
+  </ItemGroup>
+</Project>

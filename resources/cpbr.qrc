@@ -1,0 +1,4 @@
+<RCC>
+    <qresource prefix="/CPBR"/>
+    <qresource prefix="/shaders"/>
+</RCC>
