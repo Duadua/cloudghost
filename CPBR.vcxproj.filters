@@ -26,18 +26,25 @@
     <Filter Include="demo">
       <UniqueIdentifier>{538ee016-676f-447d-89d4-5c2fe8cc265a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="resources\shaders">
+      <UniqueIdentifier>{e74322c4-a3d3-4b24-8312-7af94e0b7671}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <QtMoc Include="src\include\cpbr.h">
-      <Filter>src\include</Filter>
-    </QtMoc>
-  </ItemGroup>
-  <ItemGroup>
+    <ClCompile Include="demo\main.cpp">
+      <Filter>demo</Filter>
+    </ClCompile>
+    <ClCompile Include="src\source\assetmanager.cpp">
+      <Filter>src\source</Filter>
+    </ClCompile>
+    <ClCompile Include="src\source\cglmanager.cpp">
+      <Filter>src\source</Filter>
+    </ClCompile>
     <ClCompile Include="src\source\cpbr.cpp">
       <Filter>src\source</Filter>
     </ClCompile>
-    <ClCompile Include="demo\main.cpp">
-      <Filter>demo</Filter>
+    <ClCompile Include="src\source\shader.cpp">
+      <Filter>src\source</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -49,5 +56,29 @@
     <QtRcc Include="resources\cpbr.qrc">
       <Filter>resources</Filter>
     </QtRcc>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="src\include\assetmanager.h">
+      <Filter>src\include</Filter>
+    </ClInclude>
+    <ClInclude Include="src\include\shader.h">
+      <Filter>src\include</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <QtMoc Include="src\include\cglmanager.h">
+      <Filter>src\include</Filter>
+    </QtMoc>
+    <QtMoc Include="src\include\cpbr.h">
+      <Filter>src\include</Filter>
+    </QtMoc>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="resources\shaders\single.vert">
+      <Filter>resources\shaders</Filter>
+    </None>
+    <None Include="resources\shaders\single.frag">
+      <Filter>resources\shaders</Filter>
+    </None>
   </ItemGroup>
 </Project>

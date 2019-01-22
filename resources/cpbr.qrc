@@ -1,4 +1,7 @@
 <RCC>
     <qresource prefix="/CPBR"/>
-    <qresource prefix="/shaders"/>
+    <qresource prefix="/asset">
+        <file>shaders/single.vert</file>
+        <file>shaders/single.frag</file>
+    </qresource>
 </RCC>

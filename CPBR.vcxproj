@@ -115,17 +115,27 @@
     </QtRcc>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <QtMoc Include="src\include\cpbr.h" />
-  </ItemGroup>
-  <ItemGroup>
     <ClCompile Include="demo\main.cpp" />
+    <ClCompile Include="src\source\assetmanager.cpp" />
+    <ClCompile Include="src\source\cglmanager.cpp" />
     <ClCompile Include="src\source\cpbr.cpp" />
+    <ClCompile Include="src\source\shader.cpp" />
   </ItemGroup>
   <ItemGroup>
     <QtUic Include="resources\ui\cpbr.ui" />
   </ItemGroup>
   <ItemGroup>
     <QtRcc Include="resources\cpbr.qrc" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="src\include\assetmanager.h" />
+    <ClInclude Include="src\include\shader.h" />
+    <QtMoc Include="src\include\cpbr.h" />
+    <QtMoc Include="src\include\cglmanager.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="resources\shaders\single.frag" />
+    <None Include="resources\shaders\single.vert" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Condition="Exists('$(QtMsBuild)\qt.targets')">
