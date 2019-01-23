@@ -118,7 +118,13 @@
     <ClCompile Include="demo\main.cpp" />
     <ClCompile Include="src\source\assetmanager.cpp" />
     <ClCompile Include="src\source\cglmanager.cpp" />
+    <ClCompile Include="src\source\component.cpp" />
     <ClCompile Include="src\source\cpbr.cpp" />
+    <ClCompile Include="src\source\gameobject.cpp" />
+    <ClCompile Include="src\source\mesh.cpp" />
+    <ClCompile Include="src\source\meshcomponent.cpp" />
+    <ClCompile Include="src\source\renderdata.cpp" />
+    <ClCompile Include="src\source\scenecomponent.cpp" />
     <ClCompile Include="src\source\shader.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -129,6 +135,12 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\include\assetmanager.h" />
+    <ClInclude Include="src\include\component.h" />
+    <ClInclude Include="src\include\gameobject.h" />
+    <ClInclude Include="src\include\mesh.h" />
+    <ClInclude Include="src\include\meshcomponent.h" />
+    <ClInclude Include="src\include\renderdata.h" />
+    <ClInclude Include="src\include\scenecomponent.h" />
     <ClInclude Include="src\include\shader.h" />
     <QtMoc Include="src\include\cpbr.h" />
     <QtMoc Include="src\include\cglmanager.h" />
