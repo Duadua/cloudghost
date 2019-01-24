@@ -4,9 +4,9 @@ RenderData::RenderData() : vao(0), vbo(0), ebo(0) {
 	core = QOpenGLContext::currentContext()->versionFunctions<QOpenGLFunctions_3_3_Core>();
 }
 RenderData::~RenderData() {
-	if (vao != 0) core->glDeleteVertexArrays(1, &vao);
-	if (vbo != 0) core->glDeleteBuffers(1, &vbo);
-	if (ebo != 0) core->glDeleteBuffers(1, &ebo);
+	//if (vao != 0) core->glDeleteVertexArrays(1, &vao);
+	//if (vbo != 0) core->glDeleteBuffers(1, &vbo);
+	//if (ebo != 0) core->glDeleteBuffers(1, &ebo);
 
 }
 

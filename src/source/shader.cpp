@@ -6,6 +6,11 @@ Shader::~Shader() {
 	//delete shader_program;
 }
 
+Shader& Shader::use() { 
+	shader_program->bind(); 
+	return *this;
+}
+
 void Shader::compile(const QString& v_path, const QString& f_path, const QString& g_path) {
 	shader_program = new QOpenGLShaderProgram();
 
@@ -25,12 +30,6 @@ void Shader::compile(const QString& v_path, const QString& f_path, const QString
 
 	link_shaders();
 }
-
-Shader& Shader::use() { 
-	shader_program->bind(); 
-	return *this;
-}
-
 void Shader::compile_shader(QOpenGLShader& shader, const QString& shader_path) {
 	bool res = shader.compileSourceFile(shader_path);
 	if (!res) {
@@ -47,3 +46,11 @@ void Shader::link_shaders() {
 	}
 }
 
+void Shader::set_int(const QString& name, const GLuint& value) {
+	GLuint location = shader_program->uniformLocation(name);
+	shader_program->setUniformValue(location, value);
+}
+void Shader::set_mat4(const QString& name, const QMatrix4x4& value) {
+	GLuint location = shader_program->uniformLocation(name);
+	shader_program->setUniformValue(location, value);
+}

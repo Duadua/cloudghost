@@ -17,4 +17,6 @@ protected:
 
 private:
 	QOpenGLFunctions_3_3_Core * core;
+
+	class GameObject* cube_object;
 };
