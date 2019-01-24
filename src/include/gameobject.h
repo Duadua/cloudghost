@@ -1,5 +1,7 @@
 #pragma once
 
+#include "shader.h"
+
 class SceneComponent;
 
 class GameObject {
@@ -10,7 +12,7 @@ public:
 	void set_root(SceneComponent* root);
 	SceneComponent* get_root();
 
-	void draw();
+	void draw(Shader& shader);
 
 protected:
 	SceneComponent * root_component;

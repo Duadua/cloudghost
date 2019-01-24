@@ -24,6 +24,17 @@ void CGLManager::initializeGL() {
 	// 生成 gameobject
 	auto mc = new MeshComponent(&AssetManager::get_mesh("cube"));
 	cube_object = new GameObject(mc);
+
+	// gameobject 的另一个显示组件
+	auto mcc = new MeshComponent(&AssetManager::get_mesh("cube"));
+	mcc->attach_to(mc);
+	mcc->location = QVector3D(1.2f,0.0f, 0.0f);
+	mcc->scale = QVector3D(0.5f, 0.5f, 0.5f);
+
+	auto mccc = new MeshComponent(&AssetManager::get_mesh("cube"));
+	mccc->attach_to(mcc);
+	mccc->location = QVector3D(0.0f, 2.0f, 0.0f);
+	mccc->scale = QVector3D(0.5f, 0.5f, 0.5f);
 	
 	// shader 静态参数赋值
 	QMatrix4x4 projection, view;
@@ -47,13 +58,11 @@ void CGLManager::paintGL() {
 
 	// shader 动态参数赋值
 	auto t_shader = AssetManager::get_shader("triangle").use();
-	QMatrix4x4 model;
-	model.rotate(45.0f, QVector3D(0.5f, 1.0f, 0.0f));
-	t_shader.set_mat4("model", model); 
+	cube_object->get_root()->rotation = QVector3D(45.0f, 0.0f, 0.0f);
 
 	// render
-	AssetManager::get_shader("triangle").use();
+	t_shader.use();
 	if (cube_object != nullptr) {
-		cube_object->draw();
+		cube_object->draw(t_shader);
 	}
 }

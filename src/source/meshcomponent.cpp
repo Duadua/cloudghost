@@ -13,10 +13,14 @@ void MeshComponent::set_mesh(Mesh* m) {
 	mesh = m;
 }
 
-void MeshComponent::draw() {
-	if (mesh != nullptr) mesh->draw();
+void MeshComponent::draw(Shader& shader) {
+	if (mesh != nullptr) {
+		shader.set_mat4("model", get_transform());
+		qDebug() << get_transform() << endl;
+		mesh->draw();
+	}
 	for (auto cc : child_components) {
-		cc->draw();
+		cc->draw(shader);
 	}
 
 }
