@@ -6,8 +6,11 @@ class Mesh;
 
 class MeshComponent : public SceneComponent {
 public:
-	MeshComponent();
-	~MeshComponent();
+	MeshComponent(Mesh* m = nullptr);
+	virtual ~MeshComponent();
+
+	virtual void draw();
+	void set_mesh(Mesh* m);
 
 private:
 	Mesh* mesh;

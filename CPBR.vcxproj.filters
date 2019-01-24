@@ -29,6 +29,12 @@
     <Filter Include="resources\shaders">
       <UniqueIdentifier>{e74322c4-a3d3-4b24-8312-7af94e0b7671}</UniqueIdentifier>
     </Filter>
+    <Filter Include="resources\models">
+      <UniqueIdentifier>{21833908-6439-47d4-a44e-9d409f4b5d79}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="resources\models\txt">
+      <UniqueIdentifier>{fea95977-4664-415e-9373-3ace895b5919}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="demo\main.cpp">
@@ -116,5 +122,10 @@
     <None Include="resources\shaders\single.frag">
       <Filter>resources\shaders</Filter>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="resources\models\txt\cube.txt">
+      <Filter>resources\models\txt</Filter>
+    </Text>
   </ItemGroup>
 </Project>

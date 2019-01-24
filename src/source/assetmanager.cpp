@@ -2,6 +2,7 @@
 #include <QDebug>
 
 QMap<QString, Shader> AssetManager::map_shaders;
+QMap<QString, Mesh> AssetManager::map_meshs;
 
 Shader& AssetManager::load_shader(const QString& key, const QString& v_path, const QString& f_path, const QString& g_path) {
 	map_shaders[key] = Shader();
@@ -25,4 +26,15 @@ bool AssetManager::clear_shaders() {
 	return true;
 }
 
-
+Mesh& AssetManager::load_mesh(const QString& key, const QString path) {
+	map_meshs[key] = Mesh();
+	map_meshs[key].load(path);
+	return map_meshs[key];
+}
+Mesh& AssetManager::get_mesh(const QString& key) {
+	if (!map_meshs.count(key)) {
+		qDebug() << "¡¾error¡¿¡¾asset¡¿¡¾mesh¡¿no mesh calls " << key << endl;
+		return map_meshs[key] = Mesh();
+	}
+	return map_meshs[key];
+}

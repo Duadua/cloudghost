@@ -17,6 +17,4 @@ protected:
 
 private:
 	QOpenGLFunctions_3_3_Core * core;
-
-	GLuint vao, vbo;
 };

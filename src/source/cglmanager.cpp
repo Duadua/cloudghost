@@ -1,5 +1,7 @@
 #include "cglmanager.h"
 #include "assetmanager.h"
+#include "meshcomponent.h"
+#include "gameobject.h"
 
 CGLManager::CGLManager(QWidget *parent) : QOpenGLWidget(parent) {
 }
@@ -15,32 +17,15 @@ void CGLManager::initializeGL() {
 	AssetManager::load_shader("triangle", ":/asset/shaders/single.vert", ":/asset/shaders/single.frag");
 
 	// 原料 -- 顶点数据
-	GLfloat vertices[] = {
-		0.5f, -0.5f, 0.0f,  1.0f, 0.0f, 0.0f,  // Bottom Right
-		-0.5f, -0.5f, 0.0f,  0.0f, 1.0f, 0.0f,  // Bottom Left
-		0.0f,  0.5f, 0.0f,  0.0f, 0.0f, 1.0f   // Top
-	};
-
-	// vbo
-	core->glGenBuffers(1, &vbo);
-	core->glBindBuffer(GL_ARRAY_BUFFER, vbo);
-	core->glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-	core->glBindBuffer(GL_ARRAY_BUFFER, 0);
-
-	// vao
-	core->glGenVertexArrays(1, &vao);
-	core->glBindVertexArray(vao);
-	core->glBindBuffer(GL_ARRAY_BUFFER, vbo);
-	
-	core->glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(GLfloat), (GLvoid*)0);
-	core->glEnableVertexAttribArray(0);
-	core->glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(GLfloat), (GLvoid*)(3*sizeof(GLfloat)));
-	core->glEnableVertexAttribArray(1);
-
-	core->glBindBuffer(GL_ARRAY_BUFFER, 0);
-	core->glBindVertexArray(0);
+	AssetManager::load_mesh("cube", ":/asset/models/txt/cube.txt");
 	// texture
 
+	// 生成 gameobject
+	auto mc = new MeshComponent();
+	mc->set_mesh(&AssetManager::get_mesh("cube"));
+	auto go = new GameObject();
+	go->set_root(mc);
+	
 	// shader 静态参数赋值
 
 	// gl 状态初始化
@@ -60,7 +45,4 @@ void CGLManager::paintGL() {
 
 	// render
 	AssetManager::get_shader("triangle").use();
-	core->glBindVertexArray(vao);
-	core->glDrawArrays(GL_TRIANGLES, 0, 3);
-	core->glBindVertexArray(0);
 }
