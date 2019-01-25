@@ -64,6 +64,7 @@ void CGLManager::paintGL() {
 	core->glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
 	core->glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+
 	// shader 动态参数赋值
 	//cube_object->get_root()->set_roataion(QVector3D(45.0f, 0.0f, 0.0f));
 	auto t_shader = AssetManager::get_shader("triangle").use();
