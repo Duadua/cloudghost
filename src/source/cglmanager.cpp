@@ -1,7 +1,9 @@
 #include "cglmanager.h"
+#include "gameobject.h"
+#include "cameraobject.h"
 #include "assetmanager.h"
 #include "meshcomponent.h"
-#include "gameobject.h"
+#include "cameracomponent.h"
 
 CGLManager::CGLManager(QWidget *parent) : QOpenGLWidget(parent) {
 	cube_object = nullptr;
@@ -28,17 +30,23 @@ void CGLManager::initializeGL() {
 	// gameobject 的另一个显示组件
 	auto mcc = new MeshComponent(&AssetManager::get_mesh("cube"));
 	mcc->attach_to(mc);
-	mcc->location = QVector3D(1.2f,0.0f, 0.0f);
-	mcc->scale = QVector3D(0.5f, 0.5f, 0.5f);
+	mcc->set_location(QVector3D(1.2f,0.0f, 0.0f));
+	mcc->set_scale(QVector3D(0.5f, 0.5f, 0.5f));
 
 	auto mccc = new MeshComponent(&AssetManager::get_mesh("cube"));
 	mccc->attach_to(mcc);
-	mccc->location = QVector3D(0.0f, 2.0f, 0.0f);
-	mccc->scale = QVector3D(0.5f, 0.5f, 0.5f);
+	mccc->set_location(QVector3D(0.0f, 2.0f, 0.0f));
+	mccc->set_scale(QVector3D(0.5f, 0.5f, 0.f));
 	
+	// 初始化 camera
+	auto camera = new CameraObject();
+	main_camera = camera->get_camera_component();
+	camera->get_root()->set_location(QVector3D(0.0f, 1.5f, -3.0f));
+	camera->get_root()->set_roataion(QVector3D(-20.0f, 0.0f, 0.0f));
+
 	// shader 静态参数赋值
 	QMatrix4x4 projection, view;
-	view.translate(QVector3D(0.0f, 0.0f, -3.0f));
+	view.translate(QVector3D(0.0f, 0.0f, 3.0f));
 	projection.perspective(45.0f, (GLfloat)width() / height(), 0.1f, 100.0f);
 	auto& t_shader = AssetManager::get_shader("triangle").use();
 	t_shader.set_mat4("view", view);
@@ -57,8 +65,9 @@ void CGLManager::paintGL() {
 	core->glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	// shader 动态参数赋值
+	//cube_object->get_root()->set_roataion(QVector3D(45.0f, 0.0f, 0.0f));
 	auto t_shader = AssetManager::get_shader("triangle").use();
-	cube_object->get_root()->rotation = QVector3D(45.0f, 0.0f, 0.0f);
+	t_shader.set_mat4("view", main_camera->get_view_mat());
 
 	// render
 	t_shader.use();

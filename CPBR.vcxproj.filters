@@ -70,6 +70,15 @@
     <ClCompile Include="src\source\renderdata.cpp">
       <Filter>src\source</Filter>
     </ClCompile>
+    <ClCompile Include="src\source\cameraobject.cpp">
+      <Filter>src\source</Filter>
+    </ClCompile>
+    <ClCompile Include="src\source\cameracomponent.cpp">
+      <Filter>src\source</Filter>
+    </ClCompile>
+    <ClCompile Include="src\source\cameradata.cpp">
+      <Filter>src\source</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <QtUic Include="resources\ui\cpbr.ui">
@@ -104,6 +113,15 @@
       <Filter>src\include</Filter>
     </ClInclude>
     <ClInclude Include="src\include\renderdata.h">
+      <Filter>src\include</Filter>
+    </ClInclude>
+    <ClInclude Include="src\include\cameraobject.h">
+      <Filter>src\include</Filter>
+    </ClInclude>
+    <ClInclude Include="src\include\cameracomponent.h">
+      <Filter>src\include</Filter>
+    </ClInclude>
+    <ClInclude Include="src\include\cameradata.h">
       <Filter>src\include</Filter>
     </ClInclude>
   </ItemGroup>

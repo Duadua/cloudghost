@@ -117,6 +117,9 @@
   <ItemGroup>
     <ClCompile Include="demo\main.cpp" />
     <ClCompile Include="src\source\assetmanager.cpp" />
+    <ClCompile Include="src\source\cameracomponent.cpp" />
+    <ClCompile Include="src\source\cameradata.cpp" />
+    <ClCompile Include="src\source\cameraobject.cpp" />
     <ClCompile Include="src\source\cglmanager.cpp" />
     <ClCompile Include="src\source\component.cpp" />
     <ClCompile Include="src\source\cpbr.cpp" />
@@ -135,6 +138,9 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\include\assetmanager.h" />
+    <ClInclude Include="src\include\cameracomponent.h" />
+    <ClInclude Include="src\include\cameradata.h" />
+    <ClInclude Include="src\include\cameraobject.h" />
     <ClInclude Include="src\include\component.h" />
     <ClInclude Include="src\include\gameobject.h" />
     <ClInclude Include="src\include\mesh.h" />
