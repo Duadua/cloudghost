@@ -1,9 +1,13 @@
 #include "cglmanager.h"
 #include "gameobject.h"
+#include "inputmanager.h"
 #include "cameraobject.h"
 #include "assetmanager.h"
 #include "meshcomponent.h"
 #include "cameracomponent.h"
+
+
+#include "demo/freecamera.h"
 
 CGLManager::CGLManager(QWidget *parent) : QOpenGLWidget(parent) {
 	cube_object = nullptr;
@@ -40,9 +44,11 @@ void CGLManager::initializeGL() {
 	
 	// 初始化 camera
 	auto camera = new CameraObject();
-	main_camera = camera->get_camera_component();
-	camera->get_root()->set_location(QVector3D(0.0f, 1.5f, -3.0f));
-	camera->get_root()->set_roataion(QVector3D(-20.0f, 0.0f, 0.0f));
+	auto free_camera = new FreeCamera();
+	free_camera->bind_input();
+	main_camera = free_camera->get_camera_component();
+	free_camera->get_root()->set_location(QVector3D(0.0f, 1.5f, -3.0f));
+	free_camera->get_root()->set_roataion(QVector3D(-20.0f, 0.0f, 0.0f));
 
 	// shader 静态参数赋值
 	QMatrix4x4 projection, view;
@@ -64,7 +70,6 @@ void CGLManager::paintGL() {
 	core->glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
 	core->glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-
 	// shader 动态参数赋值
 	//cube_object->get_root()->set_roataion(QVector3D(45.0f, 0.0f, 0.0f));
 	auto t_shader = AssetManager::get_shader("triangle").use();
@@ -75,4 +80,20 @@ void CGLManager::paintGL() {
 	if (cube_object != nullptr) {
 		cube_object->draw(t_shader);
 	}
+}
+
+void CGLManager::wheelEvent(QWheelEvent *event) {
+
+}
+void CGLManager::mouseMoveEvent(QMouseEvent *event) {
+
+}
+void CGLManager::mousePressEvent(QMouseEvent *event) {
+	InputManager::exec_mouse_press_event();
+}
+void CGLManager::mouseReleaseEvent(QMouseEvent *event) {
+
+}
+void CGLManager::mouseDoubleClickEvent(QMouseEvent *event) {
+
 }

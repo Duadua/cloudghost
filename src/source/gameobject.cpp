@@ -19,3 +19,7 @@ void GameObject::draw(Shader& shader) {
 	if (root_component == nullptr) return;
 	root_component->draw(shader);
 }
+
+void GameObject::bind_input() {
+
+}

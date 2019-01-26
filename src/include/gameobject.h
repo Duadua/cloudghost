@@ -14,6 +14,7 @@ public:
 
 	virtual void draw(Shader& shader);
 
+	virtual void bind_input();
 protected:
 	SceneComponent * root_component;
 };
