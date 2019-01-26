@@ -35,6 +35,17 @@ public:
 	static void ubnd_mouse_dclick_event(const QString& key);
 	static void exec_mouse_dclick_event(QMouseEvent* event);
 
+	static void clip_cursor(int top, int left, int w, int h);
+	static void unclip_cursor();
+
+	static QVector2D mouse_pre_position;
+	static QVector2D mouse_last_position;
+	static float mouse_sensitivity;
+
+	static bool mouse_left_pressed;
+	static bool mouse_right_pressed;
+	static bool mouse_moved;
+
 // key
 public:
 

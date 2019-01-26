@@ -1,5 +1,7 @@
+#include <QCursor>
 #include <QMouseEvent>
 #include <QWheelEvent>
+#include <QOpenGLShader>	// 为了使用 wind32 的 ClipCursor
 #include "inputmanager.h"
 
 QMap<QString, DELEGATE_ICLASS(MousePress)*> InputManager::mouse_press_handlers;
@@ -7,6 +9,14 @@ QMap<QString, DELEGATE_ICLASS(MouseRelease)*> InputManager::mouse_release_handle
 QMap<QString, DELEGATE_ICLASS(MouseMove)*> InputManager::mouse_move_handlers;
 QMap<QString, DELEGATE_ICLASS(MouseWheel)*> InputManager::mouse_wheel_handlers;
 QMap<QString, DELEGATE_ICLASS(MouseDoubleClick)*> InputManager::mouse_dclick_handlers;
+
+QVector2D InputManager::mouse_pre_position = QVector2D(0.0f, 0.0f);
+QVector2D InputManager::mouse_last_position = QVector2D(0.0f, 0.0f);
+float InputManager::mouse_sensitivity = 0.1f;
+
+bool InputManager::mouse_left_pressed = false;
+bool InputManager::mouse_right_pressed = false;
+bool InputManager::mouse_moved = false;
 
 void InputManager::bind_mouse_press_event(const QString& key, DELEGATE_ICLASS(MousePress)* mp) {
 	mouse_press_handlers[key] = mp;
@@ -68,5 +78,13 @@ void InputManager::exec_mouse_dclick_event(QMouseEvent* event) {
 	}
 }
 
-
+void InputManager::clip_cursor(int left, int top, int right, int bottom) {
+	RECT rect;
+	rect.left = left; rect.top = top; 
+	rect.right = right; rect.bottom = bottom;
+	ClipCursor(&rect);
+}
+void InputManager::unclip_cursor() {
+	ClipCursor(nullptr);
+}
 

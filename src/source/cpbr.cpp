@@ -4,7 +4,7 @@
 CPBR::CPBR(QWidget *parent) : QMainWindow(parent) {
 	ui.setupUi(this);
 
-	init_gl_view(50, 50, 400, 300);
+	init_gl_view(50, 50, 800, 600);
 }
 
 void CPBR::init_gl_view(int a, int b, int w, int h) {
