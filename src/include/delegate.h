@@ -2,6 +2,9 @@
 
 #define DELEGATE_ICLASS(class_name)	I##class_name##Handler
 
+#define	DELEGATE_BIND(class_name, type, name, obj, func)				\
+class_name<type>* name = new class_name<type>(obj, func)
+
 #define DELEGATE_DECLARE(class_name,return_type, params, args)			\
 class I##class_name##Handler {											\
 public:																	\

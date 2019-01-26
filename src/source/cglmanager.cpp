@@ -6,11 +6,11 @@
 #include "meshcomponent.h"
 #include "cameracomponent.h"
 
-
 #include "demo/freecamera.h"
 
 CGLManager::CGLManager(QWidget *parent) : QOpenGLWidget(parent) {
 	cube_object = nullptr;
+	//setMouseTracking(true);
 }
 
 CGLManager::~CGLManager() {
@@ -82,18 +82,19 @@ void CGLManager::paintGL() {
 	}
 }
 
-void CGLManager::wheelEvent(QWheelEvent *event) {
+void CGLManager::wheelEvent(QWheelEvent* event) {
+	InputManager::exec_mouse_wheel_event(event);
+}
+void CGLManager::mouseMoveEvent(QMouseEvent* event) {
+	InputManager::exec_mouse_move_event(event);
+}
+void CGLManager::mousePressEvent(QMouseEvent* event) {
+	InputManager::exec_mouse_press_event(event);
+}
+void CGLManager::mouseReleaseEvent(QMouseEvent* event) {
+	InputManager::exec_mouse_release_event(event);
 
 }
-void CGLManager::mouseMoveEvent(QMouseEvent *event) {
-
-}
-void CGLManager::mousePressEvent(QMouseEvent *event) {
-	InputManager::exec_mouse_press_event();
-}
-void CGLManager::mouseReleaseEvent(QMouseEvent *event) {
-
-}
-void CGLManager::mouseDoubleClickEvent(QMouseEvent *event) {
-
+void CGLManager::mouseDoubleClickEvent(QMouseEvent* event) {
+	InputManager::exec_mouse_dclick_event(event);
 }
