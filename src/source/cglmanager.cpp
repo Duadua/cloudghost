@@ -53,7 +53,7 @@ void CGLManager::initializeGL() {
 	free_camera->bind_input();
 	main_camera = free_camera->get_camera_component();
 	free_camera->get_root()->set_location(QVector3D(0.0f, 1.5f, -3.0f));
-	free_camera->get_root()->set_roataion(QVector3D(-20.0f, 30.0f, 0.0f));
+	free_camera->get_root()->set_roataion(QVector3D(-20.0f, 0.0f, 0.0f));
 
 	// shader 静态参数赋值
 	QMatrix4x4 projection, view;
@@ -72,7 +72,8 @@ void CGLManager::resizeGL(int w, int h) {
 }
 void CGLManager::paintGL() {
 	// gl 缓存初始化
-	core->glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
+	//core->glClearColor(0.5f, 0.5f, 0.5f, 1.0f);
+	core->glClearColor(205.0f/255.0f, 220.0f/255.0f, 232.0f/255.0f, 1.0f);
 	core->glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	// shader 动态参数赋值
@@ -96,7 +97,8 @@ void CGLManager::mouseMoveEvent(QMouseEvent* event) {
 	// event->x() 越界 -- 重置鼠标位置, 且不处理越界的所有事件
 	if (event->x() <= 0 || event->x() >= width()-2 || event->y() <= 0 || event->y() >= height()-2) {
 		QPoint pos = this->mapToGlobal(QPoint(InputManager::mouse_pre_position.x(), InputManager::mouse_pre_position.y()));
-		QCursor cursor(Qt::BlankCursor);
+		//QCursor cursor(Qt::BlankCursor);
+		QCursor cursor(Qt::CrossCursor);
 		cursor.setPos(pos);					
 		this->setCursor(cursor);
 		InputManager::mouse_last_position = InputManager::mouse_pre_position;
@@ -116,7 +118,7 @@ void CGLManager::mousePressEvent(QMouseEvent* event) {
 	// set cursor
 	InputManager::mouse_pre_position = QVector2D(event->x(), event->y());
 	InputManager::mouse_last_position = QVector2D(event->x(), event->y());
-	this->setCursor(Qt::BlankCursor);
+	//this->setCursor(Qt::BlankCursor);
 
 	// clip cursor
 	QRect rect = this->rect();
@@ -140,12 +142,14 @@ void CGLManager::mouseReleaseEvent(QMouseEvent* event) {
 
 	InputManager::exec_mouse_release_event(event);
 
-	// set cursor
-	QPoint pos = this->mapToGlobal(QPoint(InputManager::mouse_pre_position.x(), InputManager::mouse_pre_position.y()));
-	QCursor cursor(Qt::CrossCursor);
-	cursor.setPos(pos);					// 释放时回到原来按下时的位置
-	this->setCursor(cursor);
-	InputManager::unclip_cursor();
+	// reset cursor if no pressed
+	if (!InputManager::mouse_left_pressed && !InputManager::mouse_right_pressed) {
+		QPoint pos = this->mapToGlobal(QPoint(InputManager::mouse_pre_position.x(), InputManager::mouse_pre_position.y()));
+		QCursor cursor(Qt::CrossCursor);
+		cursor.setPos(pos);					// 释放时回到原来按下时的位置
+		this->setCursor(cursor);
+		InputManager::unclip_cursor();
+	}
 
 }
 void CGLManager::mouseDoubleClickEvent(QMouseEvent* event) {

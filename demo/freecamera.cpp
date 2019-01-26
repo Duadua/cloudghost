@@ -1,6 +1,7 @@
 #include "scenecomponent.h"
 #include "freecamera.h"
 #include "inputmanager.h"
+#include <QtMath>
 #include <QMouseEvent>
 #include <QWheelEvent>
 
@@ -40,7 +41,7 @@ void FreeCamera::mouse_move(QMouseEvent* event) {
 	float x_offset = event->x() - InputManager::mouse_last_position.x();
 	float y_offset = event->y() - InputManager::mouse_last_position.y();
 	x_offset *= InputManager::mouse_sensitivity;
-	y_offset *= InputManager::mouse_sensitivity;
+	y_offset *= -InputManager::mouse_sensitivity;
 
 	QVector3D new_location = get_root()->get_location();
 	QVector3D new_rotation = get_root()->get_rotation();
@@ -49,21 +50,24 @@ void FreeCamera::mouse_move(QMouseEvent* event) {
 		// x rotate(y_axis)
 		new_rotation += QVector3D(0.0f, x_offset, 0.0f);
 		// y move(z_axis) 
-		
+		float yaw = qDegreesToRadians(new_rotation.y());
+		new_location += y_offset*0.1f * QVector3D(qSin(yaw), 0.0f, qCos(yaw));
 	}
 	else if (!InputManager::mouse_left_pressed && InputManager::mouse_right_pressed) {
 		// x rotate(y_axis)
 		new_rotation += QVector3D(0.0f, x_offset, 0.0f);
 		// y rotate(x_axis)
-		new_rotation += QVector3D(-y_offset, 0.0f, 0.0f);
+		new_rotation += QVector3D(y_offset, 0.0f, 0.0f);
 	}
 	else if (InputManager::mouse_left_pressed && InputManager::mouse_right_pressed) {
 		// x move(x_axis)
-
+		float yaw = qDegreesToRadians(new_rotation.y());
+		float pitch = qDegreesToRadians(new_rotation.x());
+		new_location += x_offset*0.1f * QVector3D(qCos(yaw), 0.0f, -qSin(yaw));
 		// y move(y_axis)
+		new_location += y_offset * 0.1f * QVector3D(-qSin(yaw)*qSin(pitch), qCos(pitch), -qCos(yaw)*qSin(pitch));
 	}
 	
-	//qDebug() << new_rotation << endl;
 	get_root()->set_location(new_location);
 	get_root()->set_roataion(new_rotation);
 }

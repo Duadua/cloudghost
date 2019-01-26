@@ -1,6 +1,6 @@
 #include "cameradata.h"
-#include <QVector3D>
 #include <QtMath>
+#include <QVector3D>
 
 CameraData::CameraData() {}
 CameraData::~CameraData() {}
