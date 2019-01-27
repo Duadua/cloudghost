@@ -5,6 +5,7 @@
 #include "assetmanager.h"
 #include "meshcomponent.h"
 #include "cameracomponent.h"
+#include <QKeyEvent>
 #include <QMouseEvent>
 #include <QWheelEvent>
 
@@ -90,67 +91,11 @@ void CGLManager::paintGL() {
 	update(); // 否则 paintGL不会循环调用
 }
 
-void CGLManager::wheelEvent(QWheelEvent* event) {
-	InputManager::exec_mouse_wheel_event(event);
-}
-void CGLManager::mouseMoveEvent(QMouseEvent* event) {
-	// event->x() 越界 -- 重置鼠标位置, 且不处理越界的所有事件
-	if (event->x() <= 0 || event->x() >= width()-2 || event->y() <= 0 || event->y() >= height()-2) {
-		QPoint pos = this->mapToGlobal(QPoint(InputManager::mouse_pre_position.x(), InputManager::mouse_pre_position.y()));
-		QCursor cursor(Qt::BlankCursor);
-		cursor.setPos(pos);					
-		this->setCursor(cursor);
-		InputManager::mouse_last_position = InputManager::mouse_pre_position;
-		return;
-	}
+void CGLManager::wheelEvent(QWheelEvent* event) { InputManager::exec_mouse_wheel_event(event, this); }
+void CGLManager::mouseMoveEvent(QMouseEvent* event) { InputManager::exec_mouse_move_event(event, this); }
+void CGLManager::mousePressEvent(QMouseEvent* event) { InputManager::exec_mouse_press_event(event, this); }
+void CGLManager::mouseReleaseEvent(QMouseEvent* event) { InputManager::exec_mouse_release_event(event, this); }
+void CGLManager::mouseDoubleClickEvent(QMouseEvent* event) { InputManager::exec_mouse_dclick_event(event, this); }
 
-	InputManager::exec_mouse_move_event(event);
-
-	InputManager::mouse_last_position = QVector2D(event->x(), event->y());
-	
-}
-void CGLManager::mousePressEvent(QMouseEvent* event) {
-	// set mouse state flag
-	if (event->button() == Qt::LeftButton) { InputManager::mouse_left_pressed = true; }
-	else if (event->button() == Qt::RightButton) { InputManager::mouse_right_pressed = true; }
-
-	// set cursor
-	InputManager::mouse_pre_position = QVector2D(event->x(), event->y());
-	InputManager::mouse_last_position = QVector2D(event->x(), event->y());
-	this->setCursor(Qt::BlankCursor);
-
-	// clip cursor
-	QRect rect = this->rect();
-	QPoint t_a = this->mapToGlobal(QPoint(rect.left(), rect.top()));
-	QPoint t_b = this->mapToGlobal(QPoint(rect.right(), rect.bottom()));
-	InputManager::clip_cursor(t_a.x(), t_a.y(), t_b.x(), t_b.y());
-
-	InputManager::exec_mouse_press_event(event);
-
-}
-void CGLManager::mouseReleaseEvent(QMouseEvent* event) {
-	// set mouse state flag
-	if (event->button() == Qt::LeftButton) { InputManager::mouse_left_pressed = false; }
-	else if (event->button() == Qt::RightButton) { InputManager::mouse_right_pressed = false; }
-
-	// judge if has moved
-	QVector2D move_differ = QVector2D(event->x(), event->y()) - InputManager::mouse_pre_position;
-	float differ = move_differ.length();
-	if (differ <= 1e-3) { InputManager::mouse_moved = false; }
-	else { InputManager::mouse_moved = true; }
-
-	InputManager::exec_mouse_release_event(event);
-
-	// reset cursor if no pressed
-	if (!InputManager::mouse_left_pressed && !InputManager::mouse_right_pressed) {
-		QPoint pos = this->mapToGlobal(QPoint(InputManager::mouse_pre_position.x(), InputManager::mouse_pre_position.y()));
-		QCursor cursor(Qt::CrossCursor);
-		cursor.setPos(pos);					// 释放时回到原来按下时的位置
-		this->setCursor(cursor);
-		InputManager::unclip_cursor();
-	}
-
-}
-void CGLManager::mouseDoubleClickEvent(QMouseEvent* event) {
-	InputManager::exec_mouse_dclick_event(event);
-}
+void CGLManager::keyPressEvent(QKeyEvent* event) { InputManager::exec_key_press_event(event, this); }
+void CGLManager::keyReleaseEvent(QKeyEvent* event) { InputManager::exec_key_release_event(event, this); }

@@ -5,6 +5,7 @@
 
 class QMouseEvent;
 class QWheelEvent;
+class QKeyEvent;
 
 class CGLManager : public QOpenGLWidget {
 	Q_OBJECT
@@ -25,6 +26,8 @@ protected:
 	virtual void mouseReleaseEvent(QMouseEvent* event) override;
 	virtual void mouseDoubleClickEvent(QMouseEvent* event) override;
 protected:
+	virtual void keyPressEvent(QKeyEvent* event) override;
+	virtual void keyReleaseEvent(QKeyEvent* event) override;
 
 private:
 	QOpenGLFunctions_3_3_Core * core;

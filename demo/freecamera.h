@@ -12,11 +12,13 @@ public:
 
 	virtual void bind_input();
 
-private:
+protected:
 	void mouse_press(QMouseEvent* event);
 	void mouse_release(QMouseEvent* event);
 	void mouse_move(QMouseEvent* event);
 	void mouse_wheel(QWheelEvent* event);
 	void mouse_dclick(QMouseEvent* event);
+
+	void move_forward();
 
 };

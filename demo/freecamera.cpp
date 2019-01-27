@@ -14,6 +14,8 @@ void FreeCamera::bind_input() {
 	IM_BIND_MOUSE_MOVE(freecamera_mouse_move, FreeCamera, this, &FreeCamera::mouse_move);
 	IM_BIND_MOUSE_WHEEL(freecamera_mouse_wheel, FreeCamera, this, &FreeCamera::mouse_wheel);
 	IM_BIND_MOUSE_DCLICK(freecamera_mouse_dclick, FreeCamera, this, &FreeCamera::mouse_dclick);
+
+	//IM_BIND_KEY_PRESS(move_forward, FreeCamera, this, &FreeCamera::move_forward);
 }
 
 void FreeCamera::mouse_press(QMouseEvent* event) {
@@ -24,6 +26,8 @@ void FreeCamera::mouse_press(QMouseEvent* event) {
 	else if (event->button() == Qt::RightButton) {
 		qDebug() << "right" << endl;
 	}*/
+	// set mouse state flag
+	
 }
 void FreeCamera::mouse_release(QMouseEvent* event) {
 	/*qDebug() << event->x() << " " << event->y() << endl;
@@ -83,6 +87,6 @@ void FreeCamera::mouse_wheel(QWheelEvent* event) {
 void FreeCamera::mouse_dclick(QMouseEvent* event) {
 }
 
+void FreeCamera::move_forward() {
 
-
-
+}
