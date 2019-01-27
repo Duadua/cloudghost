@@ -1,7 +1,9 @@
-#include "scenecomponent.h"
 #include "freecamera.h"
 #include "inputmanager.h"
+#include "scenecomponent.h"
+#include "cameracomponent.h"
 #include <QtMath>
+#include <QKeyEvent>
 #include <QMouseEvent>
 #include <QWheelEvent>
 
@@ -15,7 +17,7 @@ void FreeCamera::bind_input() {
 	IM_BIND_MOUSE_WHEEL(freecamera_mouse_wheel, FreeCamera, this, &FreeCamera::mouse_wheel);
 	IM_BIND_MOUSE_DCLICK(freecamera_mouse_dclick, FreeCamera, this, &FreeCamera::mouse_dclick);
 
-	//IM_BIND_KEY_PRESS(move_forward, FreeCamera, this, &FreeCamera::move_forward);
+	IM_BIND_KEY_PRESS(move_forward, FreeCamera, this, &FreeCamera::key_press);
 }
 
 void FreeCamera::mouse_press(QMouseEvent* event) {
@@ -87,6 +89,16 @@ void FreeCamera::mouse_wheel(QWheelEvent* event) {
 void FreeCamera::mouse_dclick(QMouseEvent* event) {
 }
 
-void FreeCamera::move_forward() {
+void FreeCamera::key_press(QKeyEvent* event) {
+	QVector3D new_location = get_root()->get_location();
+	QVector3D new_rotation = get_root()->get_rotation();
+	if (event->key() == Qt::Key_W /*&& !event->isAutoRepeat()*/) {
+		float offset = get_camera_component()->get_camera_speed();
+		float yaw = qDegreesToRadians(new_rotation.y());
+		new_location += offset * QVector3D(qSin(yaw), 0.0f, qCos(yaw));
+		get_root()->set_location(new_location);
+	}
+}
+void FreeCamera::key_release(QKeyEvent* event) {
 
 }

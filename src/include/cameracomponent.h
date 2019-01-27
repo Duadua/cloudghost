@@ -15,10 +15,15 @@ public:
  
 	QMatrix4x4 get_view_mat();
 
+	void set_camera_speed(float s);
+	float get_camera_speed();
+
 private:
 	Mesh * camera_mesh;
 
 	CameraData* camera_data;
+
+	float camera_speed;
 };
 
 

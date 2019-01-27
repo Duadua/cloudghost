@@ -97,3 +97,9 @@ private:
 	DELEGATE_BIND(MouseDoubleClick, type, name, obj, func);	\
 	InputManager::bind_mouse_dclick_event(#name, name);
 
+#define IM_BIND_KEY_PRESS(name, type, obj, func)			\
+	DELEGATE_BIND(KeyPress, type, name, obj, func);			\
+	InputManager::bind_key_press_event(#name, name);
+
+
+

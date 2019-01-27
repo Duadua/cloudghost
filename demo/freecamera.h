@@ -2,6 +2,7 @@
 
 #include "cameraobject.h"
 
+class QKeyEvent;
 class QMouseEvent;
 class QWheelEvent;
 
@@ -19,6 +20,7 @@ protected:
 	void mouse_wheel(QWheelEvent* event);
 	void mouse_dclick(QMouseEvent* event);
 
-	void move_forward();
+	void key_press(QKeyEvent* event);
+	void key_release(QKeyEvent* event);
 
 };

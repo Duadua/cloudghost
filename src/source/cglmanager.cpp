@@ -17,6 +17,7 @@ CGLManager::CGLManager(QWidget *parent) : QOpenGLWidget(parent) {
 	// init mouse
 	//setMouseTracking(true);
 	this->setCursor(Qt::CrossCursor);
+	this->setFocusPolicy(Qt::StrongFocus);
 }
 
 CGLManager::~CGLManager() {
@@ -97,5 +98,11 @@ void CGLManager::mousePressEvent(QMouseEvent* event) { InputManager::exec_mouse_
 void CGLManager::mouseReleaseEvent(QMouseEvent* event) { InputManager::exec_mouse_release_event(event, this); }
 void CGLManager::mouseDoubleClickEvent(QMouseEvent* event) { InputManager::exec_mouse_dclick_event(event, this); }
 
-void CGLManager::keyPressEvent(QKeyEvent* event) { InputManager::exec_key_press_event(event, this); }
-void CGLManager::keyReleaseEvent(QKeyEvent* event) { InputManager::exec_key_release_event(event, this); }
+void CGLManager::keyPressEvent(QKeyEvent* event) { 
+	qDebug() << "press" << endl;
+	InputManager::exec_key_press_event(event, this); 
+}
+void CGLManager::keyReleaseEvent(QKeyEvent* event) { 
+	qDebug() << "release" << endl;
+	InputManager::exec_key_release_event(event, this); 
+}
