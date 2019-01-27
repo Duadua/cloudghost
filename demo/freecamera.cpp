@@ -17,26 +17,24 @@ void FreeCamera::bind_input() {
 }
 
 void FreeCamera::mouse_press(QMouseEvent* event) {
-	qDebug() << event->x() << " " << event->y() << endl;
+	/*qDebug() << event->x() << " " << event->y() << endl;
 	if (event->button() == Qt::LeftButton) {
 		qDebug() << "left" << endl;
 	}
 	else if (event->button() == Qt::RightButton) {
 		qDebug() << "right" << endl;
-	}
+	}*/
 }
-
 void FreeCamera::mouse_release(QMouseEvent* event) {
-	qDebug() << event->x() << " " << event->y() << endl;
+	/*qDebug() << event->x() << " " << event->y() << endl;
 	if (event->button() == Qt::LeftButton) {
 		qDebug() << "release_left" << endl;
 	}
 	else if (event->button() == Qt::RightButton) {
 		qDebug() << "release_right" << endl;
-	}
+	}*/
 
 }
-
 void FreeCamera::mouse_move(QMouseEvent* event) {
 	float x_offset = event->x() - InputManager::mouse_last_position.x();
 	float y_offset = event->y() - InputManager::mouse_last_position.y();
@@ -71,18 +69,18 @@ void FreeCamera::mouse_move(QMouseEvent* event) {
 	get_root()->set_location(new_location);
 	get_root()->set_roataion(new_rotation);
 }
-
 void FreeCamera::mouse_wheel(QWheelEvent* event) {
-	if (event->delta() > 0) {
-		qDebug() << "up wheel" << endl;
-	}
-	else {
-		qDebug() << "down wheel" << endl;
-	}
-}
+	float offset = event->delta() * InputManager::mouse_sensitivity;
+	QVector3D new_location = get_root()->get_location();
+	QVector3D new_rotation = get_root()->get_rotation();
 
+	// move z_axis
+	float yaw = qDegreesToRadians(new_rotation.y());
+	new_location += offset*0.1f * QVector3D(qSin(yaw), 0.0f, qCos(yaw));
+	get_root()->set_location(new_location);
+
+}
 void FreeCamera::mouse_dclick(QMouseEvent* event) {
-	qDebug() << "double clicked" << endl;
 }
 
 

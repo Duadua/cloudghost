@@ -97,8 +97,7 @@ void CGLManager::mouseMoveEvent(QMouseEvent* event) {
 	// event->x() 越界 -- 重置鼠标位置, 且不处理越界的所有事件
 	if (event->x() <= 0 || event->x() >= width()-2 || event->y() <= 0 || event->y() >= height()-2) {
 		QPoint pos = this->mapToGlobal(QPoint(InputManager::mouse_pre_position.x(), InputManager::mouse_pre_position.y()));
-		//QCursor cursor(Qt::BlankCursor);
-		QCursor cursor(Qt::CrossCursor);
+		QCursor cursor(Qt::BlankCursor);
 		cursor.setPos(pos);					
 		this->setCursor(cursor);
 		InputManager::mouse_last_position = InputManager::mouse_pre_position;
@@ -118,7 +117,7 @@ void CGLManager::mousePressEvent(QMouseEvent* event) {
 	// set cursor
 	InputManager::mouse_pre_position = QVector2D(event->x(), event->y());
 	InputManager::mouse_last_position = QVector2D(event->x(), event->y());
-	//this->setCursor(Qt::BlankCursor);
+	this->setCursor(Qt::BlankCursor);
 
 	// clip cursor
 	QRect rect = this->rect();
