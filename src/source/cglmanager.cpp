@@ -18,9 +18,12 @@ CGLManager::CGLManager(QWidget *parent) : QOpenGLWidget(parent) {
 	//setMouseTracking(true);
 	this->setCursor(Qt::CrossCursor);
 	this->setFocusPolicy(Qt::StrongFocus);
+
+	InputManager::init(this);
 }
 
 CGLManager::~CGLManager() {
+	InputManager::quit();
 }
 
 void CGLManager::initializeGL() {
@@ -49,6 +52,16 @@ void CGLManager::initializeGL() {
 	mccc->set_location(QVector3D(0.0f, 2.0f, 0.0f));
 	mccc->set_scale(QVector3D(0.5f, 0.5f, 0.f));
 	
+	// init action binders
+	InputState is;
+	is.mouse_pressed[Qt::RightButton] = true;
+	is.axis_mouse_x = true;
+	InputManager::map_axis("turn_rate", is);
+	InputState is2;
+	is2.mouse_pressed[Qt::LeftButton] = true;
+	is2.axis_mouse_x = true;
+	InputManager::map_axis("turn_rate", is2);
+
 	// 初始化 camera
 	auto camera = new CameraObject();
 	auto free_camera = new FreeCamera();
@@ -92,17 +105,19 @@ void CGLManager::paintGL() {
 	update(); // 否则 paintGL不会循环调用
 }
 
-void CGLManager::wheelEvent(QWheelEvent* event) { InputManager::exec_mouse_wheel_event(event, this); }
-void CGLManager::mouseMoveEvent(QMouseEvent* event) { InputManager::exec_mouse_move_event(event, this); }
-void CGLManager::mousePressEvent(QMouseEvent* event) { InputManager::exec_mouse_press_event(event, this); }
-void CGLManager::mouseReleaseEvent(QMouseEvent* event) { InputManager::exec_mouse_release_event(event, this); }
-void CGLManager::mouseDoubleClickEvent(QMouseEvent* event) { InputManager::exec_mouse_dclick_event(event, this); }
+void CGLManager::wheelEvent(QWheelEvent* event)				{ InputManager::exec_mouse_wheeeel_event(event, this); }
+void CGLManager::mouseMoveEvent(QMouseEvent* event)			{ InputManager::exec_mouse_moveeee_event(event, this); }
+void CGLManager::mousePressEvent(QMouseEvent* event)		{ InputManager::exec_mouse_pressed_event(event, this); }
+void CGLManager::mouseReleaseEvent(QMouseEvent* event)		{ InputManager::exec_mouse_release_event(event, this); }
+void CGLManager::mouseDoubleClickEvent(QMouseEvent* event)	{ InputManager::exec_mouse_dbclick_event(event, this); }
 
 void CGLManager::keyPressEvent(QKeyEvent* event) { 
-	qDebug() << "press" << endl;
-	InputManager::exec_key_press_event(event, this); 
+	if (event->isAutoRepeat()) qDebug() << "press ar" << endl;
+	else qDebug() << "press not ar" << endl;
+	InputManager::exec_key_pressed_event(event, this); 
 }
 void CGLManager::keyReleaseEvent(QKeyEvent* event) { 
-	qDebug() << "release" << endl;
+	if (event->isAutoRepeat()) qDebug() << "release ar" << endl;
+	else qDebug() << "release not ar" << endl;
 	InputManager::exec_key_release_event(event, this); 
 }

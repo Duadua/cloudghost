@@ -2,104 +2,136 @@
 
 #include "delegate.h"
 #include <QMap>
+#include <QMutex>
+#include <QThread>
 
+class QTimer;
 class CGLManager;
 class QKeyEvent;
 class QMosueEvent;
 
-DELEGATE1(MousePress, void, QMouseEvent*);
-DELEGATE1(MouseRelease, void, QMouseEvent*);
-DELEGATE1(MouseMove, void, QMouseEvent*);
-DELEGATE1(MouseWheel, void, QWheelEvent*);
-DELEGATE1(MouseDoubleClick, void, QMouseEvent*);
-
 DELEGATE1(KeyPress, void, QKeyEvent*);
 DELEGATE1(KeyRelease, void, QKeyEvent*);
 
+DELEGATE0(InputAction, void);
+DELEGATE1(InputAxis, void, float);
+
+struct InputData;
+struct InputState;
+class InputThread;
+
 class InputManager {
-// mouse
+
 public:
-
-	static void bind_mouse_press_event(const QString& key, DELEGATE_ICLASS(MousePress)* mp);
-	static void ubnd_mouse_press_event(const QString& key);
-	static void exec_mouse_press_event(QMouseEvent* event, CGLManager* gl);
-
-	static void bind_mouse_release_event(const QString& key, DELEGATE_ICLASS(MouseRelease)* mp);
-	static void ubnd_mouse_release_event(const QString& key);
+	// mouse
+	static void exec_mouse_pressed_event(QMouseEvent* event, CGLManager* gl);
 	static void exec_mouse_release_event(QMouseEvent* event, CGLManager* gl);
-
-	static void bind_mouse_move_event(const QString& key, DELEGATE_ICLASS(MouseMove)* mp);
-	static void ubnd_mouse_move_event(const QString& key);
-	static void exec_mouse_move_event(QMouseEvent* event, CGLManager* gl);
-
-	static void bind_mouse_wheel_event(const QString& key, DELEGATE_ICLASS(MouseWheel)* mp);
-	static void ubnd_mouse_wheel_event(const QString& key);
-	static void exec_mouse_wheel_event(QWheelEvent* event, CGLManager* gl);
-
-	static void bind_mouse_dclick_event(const QString& key, DELEGATE_ICLASS(MouseDoubleClick)* mp);
-	static void ubnd_mouse_dclick_event(const QString& key);
-	static void exec_mouse_dclick_event(QMouseEvent* event, CGLManager* gl);
-
-	static void clip_cursor(int top, int left, int w, int h);
-	static void unclip_cursor();
-
-	static QVector2D mouse_pre_position;
-	static QVector2D mouse_last_position;
-	static float mouse_sensitivity;
-
-	static bool mouse_left_pressed;
-	static bool mouse_right_pressed;
-	static bool mouse_moved;
-
-// key
-public:
-	static void bind_key_press_event(const QString& key, DELEGATE_ICLASS(KeyPress)* kp);
-	static void ubnd_key_press_event(const QString& key);
-	static void exec_key_press_event(QKeyEvent* event, CGLManager* gl);
-
-	static void bind_key_release_event(const QString& key, DELEGATE_ICLASS(KeyRelease)* kp);
-	static void ubnd_key_release_event(const QString& key);
+	static void exec_mouse_moveeee_event(QMouseEvent* event, CGLManager* gl);
+	static void exec_mouse_dbclick_event(QMouseEvent* event, CGLManager* gl);
+	static void exec_mouse_wheeeel_event(QWheelEvent* event, CGLManager* gl);
+	// key
+	static void exec_key_pressed_event(QKeyEvent* event, CGLManager* gl);
 	static void exec_key_release_event(QKeyEvent* event, CGLManager* gl);
 
-private:
-	InputManager(){}
+	// binders
+	static void map_action(const QString& key, InputState is);
+	static void bind_action(const QString& key, DELEGATE_ICLASS(InputAction)* ia);
+	static void exec_action();
 
+	static void map_axis(const QString& key, InputState is);
+	static void bind_axis(const QString& key, DELEGATE_ICLASS(InputAxis)* ia);
+	static void exec_axis();
+
+	static void init(CGLManager* gl);
+	static void quit();
+private:
 	// mouse
-	static QMap<QString, DELEGATE_ICLASS(MousePress)*> mouse_press_handlers;
-	static QMap<QString, DELEGATE_ICLASS(MouseRelease)*> mouse_release_handlers;
-	static QMap<QString, DELEGATE_ICLASS(MouseMove)*> mouse_move_handlers;
-	static QMap<QString, DELEGATE_ICLASS(MouseWheel)*> mouse_wheel_handlers;
-	static QMap<QString, DELEGATE_ICLASS(MouseDoubleClick)*> mouse_dclick_handlers;
+	static void clip_cursor(int top, int left, int w, int h);
+	static void unclip_cursor();
+	static QTimer* mouse_sgclick_checker;
+	static Qt::MouseButton cur_sgclick_button;
 
 	// key
-	static QMap<QString, DELEGATE_ICLASS(KeyPress)*> key_press_handlers;
-	static QMap<QString, DELEGATE_ICLASS(KeyRelease)*> key_release_handlers;
 
+	// binders
+	static QMap<QString, QVector<InputState> > action_maps;
+	static QMap<QString, DELEGATE_ICLASS(InputAction)*> input_actions;
+
+	static QMap<QString, QVector<InputState> > axis_maps;
+	static QMap<QString, DELEGATE_ICLASS(InputAxis)*> input_axis;
+
+	static InputData cur_input_data;
+	static InputState cur_input_state;
+	static InputThread* input_thread;
+
+	static CGLManager* gl;
+
+	InputManager(){}
+
+private slots:
+	static void mouse_sgclick();
 };
 
-#define IM_BIND_MOUSE_PRESS(name, type, obj, func)		\
-	DELEGATE_BIND(MousePress, type, name, obj, func);	\
-	InputManager::bind_mouse_press_event(#name, name);
+#define IM_BIND_ACTION(name, type, obj, func)					\
+	DELEGATE_BIND(InputAction, type, type##name##, obj, func);	\
+	InputManager::bind_action(#name, type##name##);
+
+#define IM_BIND_AXIS(name, type, obj, func)						\
+	DELEGATE_BIND(InputAxis, type, type##name##, obj, func);	\
+	InputManager::bind_axis(#name, type##name##);
+
+// ======================================================================
+
+struct InputState {
+
+	// mouse
+	QMap<Qt::MouseButton, bool> mouse_pressed;
+	QMap<Qt::MouseButton, bool> mouse_sgclick;
+	bool mouse_dbclick;
+	bool mouse_wheel;
+	bool mouse_rigid;							// 判断 press 和 release 之间有没有移动 - sgclick 用
+	// axis can be used
+	bool axis_mouse_x;
+
+	// key
+	QMap<Qt::Key, bool> key_single_click;
+	QMap<Qt::Key, bool> key_double_click;
+	QMap<Qt::Key, bool> key_longgg_click;
+
+	// modifier
+	Qt::KeyboardModifier modifier_single_click;
+	Qt::KeyboardModifier modifier_double_click;
+	Qt::KeyboardModifier modifier_longgg_click;
 	
-#define IM_BIND_MOUSE_RELEASE(name, type, obj, func)	\
-	DELEGATE_BIND(MouseRelease, type, name, obj, func);	\
-	InputManager::bind_mouse_release_event(#name, name);
-
-#define IM_BIND_MOUSE_MOVE(name, type, obj, func)		\
-	DELEGATE_BIND(MouseMove, type, name, obj, func);	\
-	InputManager::bind_mouse_move_event(#name, name);
-
-#define IM_BIND_MOUSE_WHEEL(name, type, obj, func)		\
-	DELEGATE_BIND(MouseWheel, type, name, obj, func);	\
-	InputManager::bind_mouse_wheel_event(#name, name);
-
-#define IM_BIND_MOUSE_DCLICK(name, type, obj, func)			\
-	DELEGATE_BIND(MouseDoubleClick, type, name, obj, func);	\
-	InputManager::bind_mouse_dclick_event(#name, name);
-
-#define IM_BIND_KEY_PRESS(name, type, obj, func)			\
-	DELEGATE_BIND(KeyPress, type, name, obj, func);			\
-	InputManager::bind_key_press_event(#name, name);
+	InputState();
+	void reset();
+	bool operator == (const InputState& is); 
 
 
+};
+struct InputData{
+	// mouse
+	bool mouse_left_pressed;
+	bool mouse_right_pressed;
 
+	QVector2D mouse_pressed_position;
+	QVector2D mouse_release_position;
+	QVector2D mouse_moved_last_position;
+	QVector2D mouse_moved_curr_position;
+
+	float wheel_delta;
+	float mouse_sensitivity;
+
+	// key
+
+	InputData();
+};
+
+// ======================================================================
+
+class InputThread : public QThread {
+public:
+	virtual void run();
+private:
+	QMutex mutex;
+};

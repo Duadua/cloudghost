@@ -1,3 +1,4 @@
+#include <QTimer>
 #include <QCursor>
 #include <QMouseEvent>
 #include <QWheelEvent>
@@ -5,124 +6,165 @@
 #include "cglmanager.h"
 #include "inputmanager.h"
 
+QMap<QString, QVector<InputState> > InputManager::action_maps;
+QMap<QString, DELEGATE_ICLASS(InputAction)*> InputManager::input_actions;
+
+QMap<QString, QVector<InputState> > InputManager::axis_maps;
+QMap<QString, DELEGATE_ICLASS(InputAxis)*> InputManager::input_axis;
+
+QTimer* InputManager::mouse_sgclick_checker;
+Qt::MouseButton InputManager::cur_sgclick_button;
+
+InputData InputManager::cur_input_data;
+InputState InputManager::cur_input_state;
+InputThread* InputManager::input_thread = nullptr;
+
+CGLManager* InputManager::gl;
+
 // mouse
-QMap<QString, DELEGATE_ICLASS(MousePress)*> InputManager::mouse_press_handlers;
-QMap<QString, DELEGATE_ICLASS(MouseRelease)*> InputManager::mouse_release_handlers;
-QMap<QString, DELEGATE_ICLASS(MouseMove)*> InputManager::mouse_move_handlers;
-QMap<QString, DELEGATE_ICLASS(MouseWheel)*> InputManager::mouse_wheel_handlers;
-QMap<QString, DELEGATE_ICLASS(MouseDoubleClick)*> InputManager::mouse_dclick_handlers;
+void InputManager::exec_mouse_pressed_event(QMouseEvent* event, CGLManager* gl) {
+	// update cur_input_data
+	if (event->button() == Qt::LeftButton) { cur_input_data.mouse_left_pressed= true; }
+	else if (event->button() == Qt::RightButton) { cur_input_data.mouse_right_pressed = true; }
+	cur_input_data.mouse_pressed_position = QVector2D(event->x(), event->y());
+	cur_input_data.mouse_moved_last_position = QVector2D(event->x(), event->y());
+	cur_input_data.mouse_moved_curr_position = QVector2D(event->x(), event->y());
 
-QVector2D InputManager::mouse_pre_position = QVector2D(0.0f, 0.0f);
-QVector2D InputManager::mouse_last_position = QVector2D(0.0f, 0.0f);
-float InputManager::mouse_sensitivity = 0.1f;
-
-bool InputManager::mouse_left_pressed = false;
-bool InputManager::mouse_right_pressed = false;
-bool InputManager::mouse_moved = false;
-
-void InputManager::bind_mouse_press_event(const QString& key, DELEGATE_ICLASS(MousePress)* mp) {
-	mouse_press_handlers[key] = mp;
-} 
-void InputManager::ubnd_mouse_press_event(const QString& key) {
-	mouse_press_handlers.remove(key);
-}
-void InputManager::exec_mouse_press_event(QMouseEvent* event, CGLManager* gl) {
-	if (event->button() == Qt::LeftButton) { mouse_left_pressed = true; }
-	else if (event->button() == Qt::RightButton) { mouse_right_pressed = true; }
+	// update cur_input_state
+	cur_input_state.mouse_pressed[event->button()] = true;
+	cur_input_state.mouse_rigid = false;
 
 	// set cursor
-	mouse_pre_position = QVector2D(event->x(), event->y());
-	mouse_last_position = QVector2D(event->x(), event->y());
 	gl->setCursor(Qt::BlankCursor);
-
 	// clip cursor
 	QRect rect = gl->rect();
 	QPoint t_a = gl->mapToGlobal(QPoint(rect.left(), rect.top()));
 	QPoint t_b = gl->mapToGlobal(QPoint(rect.right(), rect.bottom()));
 	clip_cursor(t_a.x(), t_a.y(), t_b.x(), t_b.y());
 
-	for (auto it = mouse_press_handlers.cbegin(); it != mouse_press_handlers.cend(); ++it) {
-		(*it)->invoke(event);
-	}
-}
-
-void InputManager::bind_mouse_release_event(const QString& key, DELEGATE_ICLASS(MouseRelease)* mp) {
-	mouse_release_handlers[key] = mp;
-}
-void InputManager::ubnd_mouse_release_event(const QString& key) {
-	mouse_release_handlers.remove(key);
 }
 void InputManager::exec_mouse_release_event(QMouseEvent* event, CGLManager* gl) {
-	// set mouse state flag
-	if (event->button() == Qt::LeftButton) { mouse_left_pressed = false; }
-	else if (event->button() == Qt::RightButton) { mouse_right_pressed = false; }
+	// update cur_input_data
+	if (event->button() == Qt::LeftButton) { cur_input_data.mouse_left_pressed = false; }
+	else if (event->button() == Qt::RightButton) { cur_input_data.mouse_right_pressed = false; }
+	cur_input_data.mouse_release_position = QVector2D(event->x(), event->y());
+	cur_input_data.mouse_moved_last_position = cur_input_data.mouse_moved_curr_position;
+	cur_input_data.mouse_moved_curr_position = QVector2D(event->x(), event->y());
 
-	// judge if has moved
-	QVector2D move_differ = QVector2D(event->x(), event->y()) - mouse_pre_position;
+	// update cur_input_state
+	cur_input_state.mouse_pressed.remove(event->button());
+	// judge rigid -- 按下与释放之间有没有移动
+	QVector2D move_differ = QVector2D(event->x(), event->y()) - cur_input_data.mouse_moved_last_position;
 	float differ = move_differ.length();
-	if (differ <= 1e-3) { mouse_moved = false; }
-	else { mouse_moved = true; }
-
-	for (auto it = mouse_release_handlers.cbegin(); it != mouse_release_handlers.cend(); ++it) {
-		(*it)->invoke(event);
-	}
-
+	if (differ <= 1e-3) { cur_input_state.mouse_rigid = true; }
+	else { cur_input_state.mouse_rigid = false; }
+	// single click
+	cur_sgclick_button = event->button();
+	if(cur_input_state.mouse_rigid) mouse_sgclick_checker->start(300);				// 判断鼠标单击事件
+	
+	// set_cursor
 	// reset cursor if no pressed
-	if (!mouse_left_pressed && !mouse_right_pressed) {
-		QPoint pos = gl->mapToGlobal(QPoint(mouse_pre_position.x(), mouse_pre_position.y()));
+	if (!cur_input_data.mouse_left_pressed && !cur_input_data.mouse_right_pressed) {
+		QPoint pos = gl->mapToGlobal(cur_input_data.mouse_pressed_position.toPoint());
 		QCursor cursor(Qt::CrossCursor);
 		cursor.setPos(pos);					// 释放时回到原来按下时的位置
 		gl->setCursor(cursor);
 		unclip_cursor();
 	}
-}
 
-void InputManager::bind_mouse_move_event(const QString& key, DELEGATE_ICLASS(MouseMove)* mp) {
-	mouse_move_handlers[key] = mp;
 }
-void InputManager::ubnd_mouse_move_event(const QString& key) {
-	mouse_move_handlers.remove(key);
-}
-void InputManager::exec_mouse_move_event(QMouseEvent* event, CGLManager* gl) {
-	// event->x() 越界 -- 重置鼠标位置, 且不处理越界的所有事件
+void InputManager::exec_mouse_moveeee_event(QMouseEvent* event, CGLManager* gl) {
+	// event->pos() 越界 -- 重置鼠标位置, 且不处理越界的所有事件
 	if (event->x() <= 0 || event->x() >= gl->width() - 2 || event->y() <= 0 || event->y() >= gl->height() - 2) {
-		QPoint pos = gl->mapToGlobal(QPoint(mouse_pre_position.x(), mouse_pre_position.y()));
+		// set cursor
+		QPoint pos = gl->mapToGlobal(cur_input_data.mouse_pressed_position.toPoint());
 		QCursor cursor(Qt::BlankCursor);
 		cursor.setPos(pos);
 		gl->setCursor(cursor);
-		mouse_last_position = mouse_pre_position;
+
+		// update cur_input_data
+		cur_input_data.mouse_moved_last_position = cur_input_data.mouse_pressed_position;
+		cur_input_data.mouse_moved_curr_position = cur_input_data.mouse_pressed_position;
+
 		return;
 	}
 
-	for (auto it = mouse_move_handlers.cbegin(); it != mouse_move_handlers.cend(); ++it) {
-		(*it)->invoke(event);
+	// update cur_input_data
+	cur_input_data.mouse_moved_last_position = cur_input_data.mouse_moved_curr_position;
+	cur_input_data.mouse_moved_curr_position = QVector2D(event->x(), event->y());
+
+}
+void InputManager::exec_mouse_wheeeel_event(QWheelEvent* event, CGLManager* gl) {
+	// update cur_input_data
+	cur_input_data.wheel_delta = event->delta();
+	// udpate cur_input_state
+	cur_input_state.mouse_wheel = true;
+}
+void InputManager::exec_mouse_dbclick_event(QMouseEvent* event, CGLManager* gl) {
+	// update cur_input_data
+
+	// update cur_input_state
+	if(mouse_sgclick_checker != nullptr) mouse_sgclick_checker->stop();			// 双击时屏蔽单击
+	//cur_input_state.mouse_dbclick[event->button()] = true;
+	cur_input_state.mouse_dbclick = true;
+}
+
+// key
+void InputManager::exec_key_pressed_event(QKeyEvent* event, CGLManager* gl) {
+
+}
+void InputManager::exec_key_release_event(QKeyEvent* event, CGLManager* gl) {
+
+}
+
+// binders
+void InputManager::map_action(const QString& key, InputState is) {
+	action_maps[key].append(is);
+}
+void InputManager::bind_action(const QString& key, DELEGATE_ICLASS(InputAction)* ia) {
+	input_actions[key] = ia;
+}
+void InputManager::exec_action() {
+	for (auto it = input_actions.cbegin(); it != input_actions.cend(); ++it) {	// 对每一个绑定的动作
+		if (!action_maps.count(it.key())) continue;								// map 里没有相应的键位绑定
+		for (auto itt = action_maps[it.key()].begin(); itt != action_maps[it.key()].end(); ++itt) {
+			if ((*itt) == cur_input_state) {
+				// 直接执行
+				(*it)->invoke();
+			} // 如果与当前的键位状态相同， 则执行
+		} // 遍历所有的键位绑定
 	}
 
-	mouse_last_position = QVector2D(event->x(), event->y());
+	// reset cur_input_state -- 那些执行完才需要清空的 flag 位
+	cur_input_state.mouse_wheel = false;
+	cur_input_state.reset();
 }
 
-void InputManager::bind_mouse_wheel_event(const QString& key, DELEGATE_ICLASS(MouseWheel)* mp) {
-	mouse_wheel_handlers[key] = mp;
+void InputManager::map_axis(const QString& key, InputState is) {
+	axis_maps[key].append(is);
 }
-void InputManager::ubnd_mouse_wheel_event(const QString& key) {
-	mouse_wheel_handlers.remove(key);
+void InputManager::bind_axis(const QString& key, DELEGATE_ICLASS(InputAxis)* ia) {
+	input_axis[key] = ia;
 }
-void InputManager::exec_mouse_wheel_event(QWheelEvent* event, CGLManager* gl) {
-	for (auto it = mouse_wheel_handlers.cbegin(); it != mouse_wheel_handlers.cend(); ++it) {
-		(*it)->invoke(event);
-	}
-}
+void InputManager::exec_axis() {
+	for (auto it = input_axis.cbegin(); it != input_axis.cend(); ++it) {	// 对每一个绑定的动作
+		if (!axis_maps.count(it.key())) continue;							// map 里没有相应的键位绑定
+		for (auto itt = axis_maps[it.key()].begin(); itt != axis_maps[it.key()].end(); ++itt) {
+			if ((*itt) == cur_input_state) {
+				// 判断所使用的 value 值
+				if ((*itt).axis_mouse_x) {
+					float offset = cur_input_data.mouse_moved_curr_position.x() - cur_input_data.mouse_moved_last_position.x();
+					(*it)->invoke(offset*cur_input_data.mouse_sensitivity);
 
-void InputManager::bind_mouse_dclick_event(const QString& key, DELEGATE_ICLASS(MouseDoubleClick)* mp) {
-	mouse_dclick_handlers[key] = mp;
-}
-void InputManager::ubnd_mouse_dclick_event(const QString& key) {
-	mouse_dclick_handlers.remove(key);
-}
-void InputManager::exec_mouse_dclick_event(QMouseEvent* event, CGLManager* gl) {
-	for (auto it = mouse_dclick_handlers.cbegin(); it != mouse_dclick_handlers.cend(); ++it) {
-		(*it)->invoke(event);
+				}
+			} // 如果与当前的键位状态相同， 则执行
+		} // 遍历所有的键位绑定
 	}
+
+	// reset cur_input_state -- 那些执行完才需要清空的 flag 位
+	cur_input_state.mouse_wheel = false;
+	cur_input_state.reset();
+	
 }
 
 void InputManager::clip_cursor(int left, int top, int right, int bottom) {
@@ -135,31 +177,91 @@ void InputManager::unclip_cursor() {
 	ClipCursor(nullptr);
 }
 
-// key
-QMap<QString, DELEGATE_ICLASS(KeyPress)*> InputManager::key_press_handlers;
-QMap<QString, DELEGATE_ICLASS(KeyRelease)*> InputManager::key_release_handlers;
+void InputManager::init(CGLManager* cgl) {
+	gl = cgl;
+	input_thread = new InputThread();
+	input_thread->start();
 
-void InputManager::bind_key_press_event(const QString& key, DELEGATE_ICLASS(KeyPress)* kp) {
-	key_press_handlers[key] = kp;
+	mouse_sgclick_checker = new QTimer(gl);
+	gl->connect(mouse_sgclick_checker, SIGNAL(timeout()), gl, SLOT(mouse_sgclick()));
 }
-void InputManager::ubnd_key_press_event(const QString& key) {
-	key_press_handlers.remove(key);
-}
-void InputManager::exec_key_press_event(QKeyEvent* event, CGLManager* gl) {
-	for (auto it = key_press_handlers.cbegin(); it != key_press_handlers.cend(); ++it) {
-		(*it)->invoke(event);
-	}
+void InputManager::quit() {
+	mouse_sgclick_checker->stop();
+	delete mouse_sgclick_checker;
+
+	input_thread->terminate();
+	delete input_thread;
 }
 
-void InputManager::bind_key_release_event(const QString& key, DELEGATE_ICLASS(KeyRelease)* kp) {
-	key_release_handlers[key] = kp;
+void InputManager::mouse_sgclick() {
+	cur_input_state.mouse_sgclick[cur_sgclick_button] = true;
 }
-void InputManager::ubnd_key_release_event(const QString& key) {
-	key_release_handlers.remove(key);
+
+// ======================================================================
+
+InputState::InputState() {
+	// mouse
+	mouse_pressed.clear(); 
+	mouse_sgclick.clear();
+	mouse_dbclick = false;
+	mouse_wheel = false;
+	mouse_rigid = false;
+
+	axis_mouse_x = false;
+
+	// key
+	key_single_click.clear();
+	key_double_click.clear();
+	key_longgg_click.clear();
+
+	modifier_single_click = Qt::NoModifier;
+	modifier_double_click = Qt::NoModifier;
+	modifier_longgg_click = Qt::NoModifier;
 }
-void InputManager::exec_key_release_event(QKeyEvent* event, CGLManager* gl) {
-	for (auto it = key_release_handlers.cbegin(); it != key_release_handlers.cend(); ++it) {
-		(*it)->invoke(event);
+
+void InputState::reset() {
+	mouse_sgclick.clear();
+	mouse_dbclick = false;
+	mouse_wheel = false;
+}
+
+bool InputState::operator == (const InputState& is) {
+	
+	if (mouse_pressed != is.mouse_pressed) return false;
+	if (mouse_sgclick != is.mouse_sgclick) return false;
+	if (mouse_dbclick != is.mouse_dbclick) return false;
+	if (mouse_wheel != is.mouse_wheel) return false;
+
+	if (key_single_click != is.key_single_click) return false;
+	if (key_double_click != is.key_double_click) return false;
+	if (key_longgg_click != is.key_longgg_click) return false;
+
+	if (modifier_single_click != is.modifier_single_click) return false;
+	if (modifier_double_click != is.modifier_double_click) return false;
+	if (modifier_longgg_click != is.modifier_longgg_click) return false;
+	
+	return true;
+}
+
+InputData::InputData() {
+	mouse_left_pressed = false;
+	mouse_right_pressed = false;
+
+	mouse_pressed_position = QVector2D(0.0f, 0.0f);
+	mouse_release_position = QVector2D(0.0f, 0.0f);
+	mouse_moved_last_position = QVector2D(0.0f, 0.0f);
+	mouse_moved_curr_position = QVector2D(0.0f, 0.0f);
+
+	wheel_delta = 0.0f;
+	mouse_sensitivity = 0.01f;
+}
+// ======================================================================
+
+void InputThread::run() {
+	while (true) {
+		QMutexLocker locker(&mutex);
+		InputManager::exec_action();
+		InputManager::exec_axis();
 	}
 }
 
