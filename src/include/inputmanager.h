@@ -29,6 +29,9 @@ public:
 	static void exec_mouse_moveeee_event(QMouseEvent* event, CGLManager* gl);
 	static void exec_mouse_dbclick_event(QMouseEvent* event, CGLManager* gl);
 	static void exec_mouse_wheeeel_event(QWheelEvent* event, CGLManager* gl);
+	static void exec_mouse_sgclick();
+
+
 	// key
 	static void exec_key_pressed_event(QKeyEvent* event, CGLManager* gl);
 	static void exec_key_release_event(QKeyEvent* event, CGLManager* gl);
@@ -42,8 +45,11 @@ public:
 	static void bind_axis(const QString& key, DELEGATE_ICLASS(InputAxis)* ia);
 	static void exec_axis();
 
+
 	static void init(CGLManager* gl);
 	static void quit();
+
+	static QMutex mutex;
 
 private:
 	// mouse
@@ -69,8 +75,7 @@ private:
 
 	InputManager(){}
 
-private slots:
-	static void mouse_sgclick();
+
 };
 
 #define IM_BIND_ACTION(name, type, obj, func)					\
@@ -90,7 +95,6 @@ struct InputState {
 	QMap<Qt::MouseButton, bool> mouse_pressed;
 	QMap<Qt::MouseButton, bool> mouse_sgclick;
 	bool mouse_dbclick;
-	bool mouse_wheel;
 	bool mouse_rigid;							// 判断 press 和 release 之间有没有移动 - sgclick 用
 	// axis can be used
 	enum InputAxis {
@@ -142,5 +146,5 @@ class InputThread : public QThread {
 public:
 	virtual void run();
 private:
-	QMutex mutex;
+
 };

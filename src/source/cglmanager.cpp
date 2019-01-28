@@ -5,6 +5,7 @@
 #include "assetmanager.h"
 #include "meshcomponent.h"
 #include "cameracomponent.h"
+#include <QMutex>
 #include <QKeyEvent>
 #include <QMouseEvent>
 #include <QWheelEvent>
@@ -98,11 +99,13 @@ void CGLManager::paintGL() {
 	update(); // 否则 paintGL不会循环调用
 }
 
-void CGLManager::wheelEvent(QWheelEvent* event)				{ InputManager::exec_mouse_wheeeel_event(event, this); }
-void CGLManager::mouseMoveEvent(QMouseEvent* event)			{ InputManager::exec_mouse_moveeee_event(event, this); }
-void CGLManager::mousePressEvent(QMouseEvent* event)		{ InputManager::exec_mouse_pressed_event(event, this); }
-void CGLManager::mouseReleaseEvent(QMouseEvent* event)		{ InputManager::exec_mouse_release_event(event, this); }
-void CGLManager::mouseDoubleClickEvent(QMouseEvent* event)	{ InputManager::exec_mouse_dbclick_event(event, this); }
+
+void CGLManager::wheelEvent(QWheelEvent* event) { QMutexLocker locker(&InputManager::mutex); InputManager::exec_mouse_wheeeel_event(event, this); }
+void CGLManager::mouseMoveEvent(QMouseEvent* event)			{ QMutexLocker locker(&InputManager::mutex); InputManager::exec_mouse_moveeee_event(event, this); }
+void CGLManager::mousePressEvent(QMouseEvent* event)		{ QMutexLocker locker(&InputManager::mutex);InputManager::exec_mouse_pressed_event(event, this); }
+void CGLManager::mouseReleaseEvent(QMouseEvent* event)		{ QMutexLocker locker(&InputManager::mutex);InputManager::exec_mouse_release_event(event, this); }
+void CGLManager::mouseDoubleClickEvent(QMouseEvent* event)	{ QMutexLocker locker(&InputManager::mutex);InputManager::exec_mouse_dbclick_event(event, this); }
+void CGLManager::mouse_sgclick()							{ QMutexLocker locker(&InputManager::mutex);InputManager::exec_mouse_sgclick(); }
 
 void CGLManager::keyPressEvent(QKeyEvent* event) { 
 	if (event->isAutoRepeat()) qDebug() << "press ar" << endl;

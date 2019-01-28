@@ -20,4 +20,8 @@ protected:
 	void move_forward(float offset);
 	void move_right(float offset);
 
+	void move_forward_plane(float offset);
+
+	void dc();
+
 };
