@@ -44,6 +44,7 @@ public:
 
 	static void init(CGLManager* gl);
 	static void quit();
+
 private:
 	// mouse
 	static void clip_cursor(int top, int left, int w, int h);
@@ -82,6 +83,7 @@ private slots:
 
 // ======================================================================
 
+
 struct InputState {
 
 	// mouse
@@ -91,7 +93,14 @@ struct InputState {
 	bool mouse_wheel;
 	bool mouse_rigid;							// 判断 press 和 release 之间有没有移动 - sgclick 用
 	// axis can be used
-	bool axis_mouse_x;
+	enum InputAxis {
+		NONE,
+		MOUSE_X,
+		MOUSE_Y,
+		WHEEL
+	};
+	InputAxis axis_type;
+	float axis_scale;
 
 	// key
 	QMap<Qt::Key, bool> key_single_click;
@@ -104,7 +113,7 @@ struct InputState {
 	Qt::KeyboardModifier modifier_longgg_click;
 	
 	InputState();
-	void reset();
+	void restore(const InputState& is);
 	bool operator == (const InputState& is); 
 
 

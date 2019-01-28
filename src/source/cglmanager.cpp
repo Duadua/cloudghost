@@ -53,14 +53,7 @@ void CGLManager::initializeGL() {
 	mccc->set_scale(QVector3D(0.5f, 0.5f, 0.f));
 	
 	// init action binders
-	InputState is;
-	is.mouse_pressed[Qt::RightButton] = true;
-	is.axis_mouse_x = true;
-	InputManager::map_axis("turn_rate", is);
-	InputState is2;
-	is2.mouse_pressed[Qt::LeftButton] = true;
-	is2.axis_mouse_x = true;
-	InputManager::map_axis("turn_rate", is2);
+	
 
 	// ≥ı ºªØ camera
 	auto camera = new CameraObject();

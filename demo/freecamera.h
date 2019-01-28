@@ -15,6 +15,9 @@ public:
 
 protected:
 
-	void turn_rate(float offset);
+	void turn(float offset);
+	void look_up(float offset);
+	void move_forward(float offset);
+	void move_right(float offset);
 
 };

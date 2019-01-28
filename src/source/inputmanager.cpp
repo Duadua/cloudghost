@@ -131,13 +131,10 @@ void InputManager::exec_action() {
 			if ((*itt) == cur_input_state) {
 				// 直接执行
 				(*it)->invoke();
+				cur_input_state.restore((*itt));
 			} // 如果与当前的键位状态相同， 则执行
 		} // 遍历所有的键位绑定
 	}
-
-	// reset cur_input_state -- 那些执行完才需要清空的 flag 位
-	cur_input_state.mouse_wheel = false;
-	cur_input_state.reset();
 }
 
 void InputManager::map_axis(const QString& key, InputState is) {
@@ -151,19 +148,29 @@ void InputManager::exec_axis() {
 		if (!axis_maps.count(it.key())) continue;							// map 里没有相应的键位绑定
 		for (auto itt = axis_maps[it.key()].begin(); itt != axis_maps[it.key()].end(); ++itt) {
 			if ((*itt) == cur_input_state) {
-				// 判断所使用的 value 值
-				if ((*itt).axis_mouse_x) {
-					float offset = cur_input_data.mouse_moved_curr_position.x() - cur_input_data.mouse_moved_last_position.x();
-					(*it)->invoke(offset*cur_input_data.mouse_sensitivity);
-
+				float offset = (*itt).axis_scale;
+				// 遍历所使用的 axis_type
+				switch ((*itt).axis_type) {
+				case InputState::InputAxis::MOUSE_X: 
+					offset *= cur_input_data.mouse_moved_curr_position.x() - cur_input_data.mouse_moved_last_position.x();
+					offset *= cur_input_data.mouse_sensitivity;
+					break;
+				case InputState::InputAxis::MOUSE_Y: 
+					offset *= cur_input_data.mouse_moved_curr_position.y() - cur_input_data.mouse_moved_last_position.y();
+					offset *= cur_input_data.mouse_sensitivity;
+					break;
+				case InputState::InputAxis::WHEEL: 
+					offset *= cur_input_data.wheel_delta;
+					offset *= cur_input_data.mouse_sensitivity;
+					break;
+				case InputState::InputAxis::NONE: break;
+				default:break;
 				}
+				(*it)->invoke(offset);
+				cur_input_state.restore((*itt));
 			} // 如果与当前的键位状态相同， 则执行
 		} // 遍历所有的键位绑定
 	}
-
-	// reset cur_input_state -- 那些执行完才需要清空的 flag 位
-	cur_input_state.mouse_wheel = false;
-	cur_input_state.reset();
 	
 }
 
@@ -207,7 +214,8 @@ InputState::InputState() {
 	mouse_wheel = false;
 	mouse_rigid = false;
 
-	axis_mouse_x = false;
+	axis_type = InputAxis::NONE;
+	axis_scale = 1.0f;
 
 	// key
 	key_single_click.clear();
@@ -217,12 +225,6 @@ InputState::InputState() {
 	modifier_single_click = Qt::NoModifier;
 	modifier_double_click = Qt::NoModifier;
 	modifier_longgg_click = Qt::NoModifier;
-}
-
-void InputState::reset() {
-	mouse_sgclick.clear();
-	mouse_dbclick = false;
-	mouse_wheel = false;
 }
 
 bool InputState::operator == (const InputState& is) {
@@ -242,6 +244,18 @@ bool InputState::operator == (const InputState& is) {
 	
 	return true;
 }
+
+void InputState::restore(const InputState& is) {
+	// 某些事件执行完后需要重置一下 flag
+	for (auto it = mouse_sgclick.begin(); it != mouse_sgclick.end(); ++it) {
+		if (it.value() && (is.mouse_sgclick.count(it.key()) && is.mouse_sgclick[it.key()])) {
+			it = mouse_sgclick.erase(it);
+		}
+		else ++it;
+	}
+	if (mouse_dbclick && is.mouse_dbclick) mouse_dbclick = false;
+	if (mouse_wheel  && is.mouse_wheel) mouse_wheel = false;
+} 
 
 InputData::InputData() {
 	mouse_left_pressed = false;
