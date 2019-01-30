@@ -35,7 +35,6 @@ private:
 	class GameObject* cube_object;
 	class CameraComponent* main_camera;
 
-	//class InputThread* input_thread;
 public slots:
 	void mouse_sgclick();
 };

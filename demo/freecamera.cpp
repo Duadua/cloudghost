@@ -13,42 +13,45 @@ FreeCamera::~FreeCamera() {}
 void FreeCamera::bind_input() {
 	InputState is;
 	is.mouse_pressed[Qt::RightButton] = true;
-	is.axis_type = InputState::InputAxis::MOUSE_X;
+	is.axis_types = InputAxisType::MOUSE_X;
 	InputManager::map_axis("turn", is);
 
 	is = InputState();
 	is.mouse_pressed[Qt::LeftButton] = true;
-	is.axis_type = InputState::InputAxis::MOUSE_X;
+	is.axis_types = InputAxisType::MOUSE_X;
 	InputManager::map_axis("turn", is);
 
 	is = InputState();
 	is.mouse_pressed[Qt::RightButton] = true;
-	is.axis_type = InputState::InputAxis::MOUSE_Y;
+	is.axis_types = InputAxisType::MOUSE_Y;
 	is.axis_scale = -1.0f;
 	InputManager::map_axis("look_up", is);
 
 	is = InputState();
 	is.mouse_pressed[Qt::LeftButton] = true;
-	is.axis_type = InputState::InputAxis::MOUSE_Y;
+	is.axis_types = InputAxisType::MOUSE_Y;
 	is.axis_scale = -0.1f;
 	InputManager::map_axis("move_forward_plane", is);
 
 	is = InputState();
-	is.axis_type = InputState::InputAxis::WHEEL;
-	is.axis_scale = 0.2f;
+	is.axis_types = InputAxisType::WHEEL;
+	is.axis_scale = 0.001f;
 	InputManager::map_axis("move_forward", is);
+
+	is = InputState();
+	is.mouse_dbclick[Qt::LeftButton] = true;
+	InputManager::map_action("dbclick", is);
 
 	IM_BIND_AXIS(turn, FreeCamera, this, &FreeCamera::turn);
 	IM_BIND_AXIS(look_up, FreeCamera, this, &FreeCamera::look_up);
 	IM_BIND_AXIS(move_forward, FreeCamera, this, &FreeCamera::move_forward);
 	IM_BIND_AXIS(move_forward_plane, FreeCamera, this, &FreeCamera::move_forward_plane);
+	IM_BIND_ACTION(dbclick, FreeCamera, this, &FreeCamera::dc);
 
 }
 
 void FreeCamera::turn(float offset) {
 	QVector3D new_rotation = get_root()->get_rotation();
-	//qDebug() << "location" << get_root()->get_location() << endl;
-	//qDebug() << "location" << get_root()->get_rotation() << endl;
 
 	new_rotation += QVector3D(0.0f, offset, 0.0f);
 	get_root()->set_roataion(new_rotation);
@@ -86,4 +89,8 @@ void FreeCamera::move_forward_plane(float offset) {
 	new_location += offset * QVector3D(qSin(yaw), 0.0f, qCos(yaw));
 
 	get_root()->set_location(new_location);
+}
+
+void FreeCamera::dc() {
+	qDebug() << "camera dc" << endl;
 }

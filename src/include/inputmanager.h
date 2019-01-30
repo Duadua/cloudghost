@@ -2,8 +2,7 @@
 
 #include "delegate.h"
 #include <QMap>
-#include <QMutex>
-#include <QThread>
+#include <QFlag>
 
 class QTimer;
 class CGLManager;
@@ -31,7 +30,6 @@ public:
 	static void exec_mouse_wheeeel_event(QWheelEvent* event, CGLManager* gl);
 	static void exec_mouse_sgclick();
 
-
 	// key
 	static void exec_key_pressed_event(QKeyEvent* event, CGLManager* gl);
 	static void exec_key_release_event(QKeyEvent* event, CGLManager* gl);
@@ -45,18 +43,15 @@ public:
 	static void bind_axis(const QString& key, DELEGATE_ICLASS(InputAxis)* ia);
 	static void exec_axis();
 
-
 	static void init(CGLManager* gl);
 	static void quit();
-
-	static QMutex mutex;
 
 private:
 	// mouse
 	static void clip_cursor(int top, int left, int w, int h);
 	static void unclip_cursor();
-	static QTimer* mouse_sgclick_checker;
-	static Qt::MouseButton cur_sgclick_button;
+	static QTimer* timer_mouse_sgclick;
+	static Qt::MouseButton mouse_sgclick_bt;
 
 	// key
 
@@ -69,12 +64,10 @@ private:
 
 	static InputData cur_input_data;
 	static InputState cur_input_state;
-	static InputThread* input_thread;
 
 	static CGLManager* gl;
 
 	InputManager(){}
-
 
 };
 
@@ -88,22 +81,26 @@ private:
 
 // ======================================================================
 
+enum InputAxisType {
+	NONE = 0x0001,
+	MOUSE_X = 0x0002,
+	MOUSE_Y = 0x0004,
+	WHEEL = 0x0008,
+	MOUSE = MOUSE_X | MOUSE_Y
+};
+Q_DECLARE_FLAGS(InputAxisTypes, InputAxisType)
+Q_DECLARE_OPERATORS_FOR_FLAGS(InputAxisTypes)
 
 struct InputState {
 
 	// mouse
 	QMap<Qt::MouseButton, bool> mouse_pressed;
+	QMap<Qt::MouseButton, bool> mouse_dbpress;
 	QMap<Qt::MouseButton, bool> mouse_sgclick;
-	bool mouse_dbclick;
-	bool mouse_rigid;							// 判断 press 和 release 之间有没有移动 - sgclick 用
+	QMap<Qt::MouseButton, bool> mouse_dbclick;
+
 	// axis can be used
-	enum InputAxis {
-		NONE,
-		MOUSE_X,
-		MOUSE_Y,
-		WHEEL
-	};
-	InputAxis axis_type;
+	InputAxisTypes axis_types;
 	float axis_scale;
 
 	// key
@@ -117,34 +114,32 @@ struct InputState {
 	Qt::KeyboardModifier modifier_longgg_click;
 	
 	InputState();
-	void restore(const InputState& is);
-	bool operator == (const InputState& is); 
-
+	bool operator == (const InputState& is) const; 
+	bool operator < (const InputState& is) const;
 
 };
+
 struct InputData{
 	// mouse
 	bool mouse_left_pressed;
 	bool mouse_right_pressed;
+	bool mouse_left_dbpressed;
+	bool mouse_right_dbpressed;
+	bool mouse_rigid;							// 判断 press 和 release 之间有没有移动 - sgclick 用
 
-	QVector2D mouse_pressed_position;
-	QVector2D mouse_release_position;
-	QVector2D mouse_moved_last_position;
-	QVector2D mouse_moved_curr_position;
+	QPoint mouse_pressed_pos;
+	QPoint mouse_last_pos;
+	float mouse_move_delta_x;
+	float mouse_move_delta_y;
 
-	float wheel_delta;
+	float mouse_wheel_delta;
 	float mouse_sensitivity;
 
+
+	int mouse_move_ignore_count;
 	// key
 
 	InputData();
 };
 
-// ======================================================================
 
-class InputThread : public QThread {
-public:
-	virtual void run();
-private:
-
-};
