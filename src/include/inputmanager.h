@@ -1,7 +1,7 @@
 #pragma once
 
 #include "delegate.h"
-#include <QMap>
+#include <QSet>
 #include <QFlag>
 
 class QTimer;
@@ -94,19 +94,19 @@ Q_DECLARE_OPERATORS_FOR_FLAGS(InputAxisTypes)
 struct InputState {
 
 	// mouse
-	QMap<Qt::MouseButton, bool> mouse_pressed;
-	QMap<Qt::MouseButton, bool> mouse_dbpress;
-	QMap<Qt::MouseButton, bool> mouse_sgclick;
-	QMap<Qt::MouseButton, bool> mouse_dbclick;
+	QSet<Qt::MouseButton> mouse_pressed;
+	QSet<Qt::MouseButton> mouse_dbpress;
+	QSet<Qt::MouseButton> mouse_sgclick;
+	QSet<Qt::MouseButton> mouse_dbclick;
 
 	// axis can be used
 	InputAxisTypes axis_types;
 	float axis_scale;
 
 	// key
-	QMap<Qt::Key, bool> key_single_click;
-	QMap<Qt::Key, bool> key_double_click;
-	QMap<Qt::Key, bool> key_longgg_click;
+	QSet<Qt::Key> key_single_click;
+	QSet<Qt::Key> key_double_click;
+	QSet<Qt::Key> key_longgg_click;
 
 	// modifier
 	Qt::KeyboardModifier modifier_single_click;

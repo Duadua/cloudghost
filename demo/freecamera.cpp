@@ -12,23 +12,23 @@ FreeCamera::~FreeCamera() {}
 
 void FreeCamera::bind_input() {
 	InputState is;
-	is.mouse_pressed[Qt::RightButton] = true;
+	is.mouse_pressed.insert(Qt::RightButton);
 	is.axis_types = InputAxisType::MOUSE_X;
 	InputManager::map_axis("turn", is);
 
 	is = InputState();
-	is.mouse_pressed[Qt::LeftButton] = true;
+	is.mouse_pressed.insert(Qt::LeftButton);
 	is.axis_types = InputAxisType::MOUSE_X;
 	InputManager::map_axis("turn", is);
 
 	is = InputState();
-	is.mouse_pressed[Qt::RightButton] = true;
+	is.mouse_pressed.insert(Qt::RightButton);
 	is.axis_types = InputAxisType::MOUSE_Y;
 	is.axis_scale = -1.0f;
 	InputManager::map_axis("look_up", is);
 
 	is = InputState();
-	is.mouse_pressed[Qt::LeftButton] = true;
+	is.mouse_pressed.insert(Qt::LeftButton);
 	is.axis_types = InputAxisType::MOUSE_Y;
 	is.axis_scale = -0.1f;
 	InputManager::map_axis("move_forward_plane", is);
@@ -39,7 +39,7 @@ void FreeCamera::bind_input() {
 	InputManager::map_axis("move_forward", is);
 
 	is = InputState();
-	is.mouse_dbclick[Qt::LeftButton] = true;
+	is.mouse_dbclick.insert(Qt::LeftButton);
 	InputManager::map_action("dbclick", is);
 
 	IM_BIND_AXIS(turn, FreeCamera, this, &FreeCamera::turn);

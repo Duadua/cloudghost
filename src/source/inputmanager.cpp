@@ -34,7 +34,7 @@ void InputManager::exec_mouse_pressed_event(QMouseEvent* event, CGLManager* gl) 
 	cur_input_data.mouse_rigid = false;
 
 	// update cur_input_state
-	cur_input_state.mouse_pressed[event->button()] = true;
+	cur_input_state.mouse_pressed.insert(event->button());
 
 	// set cursor
 	gl->setCursor(Qt::BlankCursor);
@@ -74,7 +74,7 @@ void InputManager::exec_mouse_release_event(QMouseEvent* event, CGLManager* gl) 
 				else if (event->button() == Qt::RightButton) { cur_input_data.mouse_right_dbpressed = false; }
 
 				if (!cur_input_data.mouse_left_dbpressed && !cur_input_data.mouse_right_dbpressed) {
-					cur_input_state.mouse_dbclick[event->button()] = true;
+					cur_input_state.mouse_dbclick.insert(event->button());
 				}
 			}
 		}
@@ -138,11 +138,9 @@ void InputManager::exec_mouse_dbclick_event(QMouseEvent* event, CGLManager* gl) 
 	if (event->button() == Qt::LeftButton) { cur_input_data.mouse_left_dbpressed = true; }
 	else if (event->button() == Qt::RightButton) { cur_input_data.mouse_right_dbpressed = true; }
 
-	cur_input_state.mouse_dbpress[event->button()] = true;
+	cur_input_state.mouse_dbpress.insert(event->button());
 }
-void InputManager::exec_mouse_sgclick() {
-	cur_input_state.mouse_sgclick[mouse_sgclick_bt] = true;
-}
+void InputManager::exec_mouse_sgclick() { cur_input_state.mouse_sgclick.insert(mouse_sgclick_bt); }
 
 // key
 void InputManager::exec_key_pressed_event(QKeyEvent* event, CGLManager* gl) {
@@ -173,14 +171,8 @@ void InputManager::exec_action() {
 	}
 
 	// 有些 flag 因为没有事件绑定而不会执行后清空 此处手动清空 -- 这个bug有点烦
-	for (auto it = cur_input_state.mouse_sgclick.begin(); it != cur_input_state.mouse_sgclick.end();) {
-		if ((*it) == true) { cur_input_state.mouse_sgclick.erase(it++); }
-		else ++it;
-	}
-	for (auto it = cur_input_state.mouse_dbclick.begin(); it != cur_input_state.mouse_dbclick.end();) {
-		if ((*it) == true) { cur_input_state.mouse_dbclick.erase(it++); }
-		else ++it;
-	}
+	cur_input_state.mouse_sgclick.clear();
+	cur_input_state.mouse_dbclick.clear();
 }
 
 void InputManager::map_axis(const QString& key, InputState is) {
