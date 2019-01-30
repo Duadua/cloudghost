@@ -19,6 +19,7 @@ protected:
 	void look_up(float offset);
 	void move_forward(float offset);
 	void move_right(float offset);
+	void move_up(float offset);
 
 	void move_forward_plane(float offset);
 

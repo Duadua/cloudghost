@@ -35,8 +35,22 @@ void FreeCamera::bind_input() {
 
 	is = InputState();
 	is.axis_types = InputAxisType::WHEEL;
-	is.axis_scale = 0.001f;
+	is.axis_scale = 0.01f;
 	InputManager::map_axis("move_forward", is);
+
+	is = InputState();
+	is.mouse_pressed.insert(Qt::LeftButton);
+	is.mouse_pressed.insert(Qt::RightButton);
+	is.axis_types = InputAxisType::MOUSE_X;
+	is.axis_scale = 0.1f;
+	InputManager::map_axis("move_right", is);
+
+	is = InputState();
+	is.mouse_pressed.insert(Qt::LeftButton);
+	is.mouse_pressed.insert(Qt::RightButton);
+	is.axis_types = InputAxisType::MOUSE_Y;
+	is.axis_scale = -0.1f;
+	InputManager::map_axis("move_up", is);
 
 	is = InputState();
 	is.mouse_dbclick.insert(Qt::LeftButton);
@@ -46,6 +60,8 @@ void FreeCamera::bind_input() {
 	IM_BIND_AXIS(look_up, FreeCamera, this, &FreeCamera::look_up);
 	IM_BIND_AXIS(move_forward, FreeCamera, this, &FreeCamera::move_forward);
 	IM_BIND_AXIS(move_forward_plane, FreeCamera, this, &FreeCamera::move_forward_plane);
+	IM_BIND_AXIS(move_right, FreeCamera, this, &FreeCamera::move_right);
+	IM_BIND_AXIS(move_up, FreeCamera, this, &FreeCamera::move_up);
 	IM_BIND_ACTION(dbclick, FreeCamera, this, &FreeCamera::dc);
 
 }
@@ -76,9 +92,28 @@ void FreeCamera::move_forward(float offset) {
 
 }
 void FreeCamera::move_right(float offset) {
+	QVector3D new_location = get_root()->get_location();
+	QVector3D new_rotation = get_root()->get_rotation();
+
+	// move x_axis
+	float yaw = qDegreesToRadians(new_rotation.y());
+	new_location += offset * QVector3D(qCos(yaw), 0.0f, -qSin(yaw));
+
+	get_root()->set_location(new_location);
 
 }
 
+void FreeCamera::move_up(float offset) {
+	QVector3D new_location = get_root()->get_location();
+	QVector3D new_rotation = get_root()->get_rotation();
+
+	// move y_axis
+	float pitch = qDegreesToRadians(new_rotation.x());
+	float yaw = qDegreesToRadians(new_rotation.y());
+	new_location += offset * QVector3D(-qSin(yaw)*qSin(pitch), qCos(pitch), -qCos(yaw)*qSin(pitch));
+
+	get_root()->set_location(new_location);
+}
 
 void FreeCamera::move_forward_plane(float offset) {
 	QVector3D new_location = get_root()->get_location();
