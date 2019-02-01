@@ -16,6 +16,7 @@ public:
 protected:
 
 	void turn(float offset);
+	void turn_over();							// 移动结束后显示鼠标
 	void look_up(float offset);
 	void move_forward(float offset);
 	void move_right(float offset);
@@ -24,5 +25,9 @@ protected:
 	void move_forward_plane(float offset);
 
 	void dc();
+	void wclick();
+
+	void test();
+	void testa(float offset);
 
 };

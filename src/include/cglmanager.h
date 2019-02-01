@@ -36,5 +36,7 @@ private:
 	class CameraComponent* main_camera;
 
 public slots:
+	void mouse_pressed_over();
 	void mouse_sgclick();
+	void key_sgclick();
 };
