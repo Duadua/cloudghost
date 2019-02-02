@@ -28,7 +28,9 @@ CGLManager* InputManager::gl;
 
 // mouse
 void InputManager::exec_mouse_pressed_event(QMouseEvent* event, CGLManager* gl) {
+
 	cur_input_state.mouse_pressing = event->buttons();
+	cur_input_state.modifiers = event->modifiers();
 
 	if (event->buttons() != (Qt::LeftButton | Qt::RightButton)) {
 		cur_input_state.mouse_pressed = event->button();
@@ -48,10 +50,13 @@ void InputManager::exec_mouse_release_event(QMouseEvent* event, CGLManager* gl) 
 
 	cur_input_state.mouse_released = event->button();
 	cur_input_state.mouse_pressing ^= event->button();
+	
+	cur_input_state.modifiers = event->modifiers();
 
 	exec_axis_mouse_move();
 }
 void InputManager::exec_mouse_moveeee_event(QMouseEvent* event, CGLManager* gl) {
+
 	if (cur_input_data.mouse_move_ignore_count > 0) {
 		--cur_input_data.mouse_move_ignore_count;
 		return;
@@ -84,14 +89,19 @@ void InputManager::exec_key_pressed_event(QKeyEvent* event, CGLManager* gl) {
 		timer_key_pressed_over->stop();
 		timer_key_pressed_over->start(300);
 
+		cur_input_state.modifiers = event->modifiers();
+		
 	} // 第一次按下
 	else { }
 }
 void InputManager::exec_key_release_event(QKeyEvent* event, CGLManager* gl) {
+
 	if (!event->isAutoRepeat()) {
 		cur_input_state.key_pressing.remove(event->key());
 	
 		cur_input_state.key_released.insert(event->key());
+
+		cur_input_state.modifiers = event->modifiers();
 	}
 	else { }
 }
@@ -297,9 +307,9 @@ InputState::InputState() {
 	key_released.clear();
 	key_pressing.clear();
 
-	modifier_single_click = Qt::NoModifier;
-	modifier_double_click = Qt::NoModifier;
-	modifier_longgg_click = Qt::NoModifier;
+	// modifier
+	modifiers = Qt::NoModifier;
+
 }
 
 bool InputState::contain(const InputState& is) {
@@ -312,6 +322,9 @@ bool InputState::contain(const InputState& is) {
 	if (!key_pressed.contains(is.key_pressed)) return false;
 	if (!key_released.contains(is.key_released)) return false;
 	if (!key_pressing.contains(is.key_pressing)) return false;
+	
+	// modifier
+	if (modifiers != is.modifiers) return false;
 
 	return true;
 }
@@ -326,10 +339,8 @@ bool InputState::operator == (const InputState& is) const {
 	if (key_released != is.key_released) return false;
 	if (key_pressing != is.key_pressing) return false;
 
-	if (modifier_single_click != is.modifier_single_click) return false;
-	if (modifier_double_click != is.modifier_double_click) return false;
-	if (modifier_longgg_click != is.modifier_longgg_click) return false;
-	
+	if (modifiers != is.modifiers) return false;
+
 	return true;
 }
 bool InputState::operator < (const InputState& is) const { return !((*this) == is); }

@@ -118,9 +118,7 @@ struct InputState {
 	QSet<int> key_pressing;
 
 	// modifier
-	Qt::KeyboardModifier modifier_single_click;
-	Qt::KeyboardModifier modifier_double_click;
-	Qt::KeyboardModifier modifier_longgg_click;
+	Qt::KeyboardModifiers modifiers;
 	
 	InputState();
 	bool contain(const InputState& is); 

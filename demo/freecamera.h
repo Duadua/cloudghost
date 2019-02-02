@@ -24,4 +24,5 @@ protected:
 	void move_right(float offset);
 	void move_up(float offset);
 
+	void test();
 };

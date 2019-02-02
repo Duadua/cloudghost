@@ -21,10 +21,18 @@ void FreeCamera::bind_input() {
 	is.mouse_released = Qt::RightButton;
 	InputManager::map_action("turn_over", is);
 	is = InputState();
+	is.modifiers = Qt::ControlModifier;
+	is.mouse_released = Qt::RightButton;
+	InputManager::map_action("turn_over", is);
+	is = InputState();
 	is.mouse_pressing = Qt::LeftButton;
 	is.axis_types = InputAxisType::MOUSE_X;
 	InputManager::map_axis("turn", is);
 	is = InputState();
+	is.mouse_released = Qt::LeftButton;
+	InputManager::map_action("turn_over", is);
+	is = InputState();
+	is.modifiers = Qt::ControlModifier;
 	is.mouse_released = Qt::LeftButton;
 	InputManager::map_action("turn_over", is);
 
@@ -135,6 +143,7 @@ void FreeCamera::bind_input() {
 	InputManager::map_axis("move_up", is);
 
 	is = InputState();
+	is.modifiers = Qt::ControlModifier;
 	is.key_pressed.insert(Qt::Key_Space);
 	InputManager::map_action("test", is);
 
@@ -146,6 +155,8 @@ void FreeCamera::bind_input() {
 	IM_BIND_AXIS(move_forward_plane, FreeCamera, this, &FreeCamera::move_forward_plane);
 	IM_BIND_AXIS(move_right, FreeCamera, this, &FreeCamera::move_right);
 	IM_BIND_AXIS(move_up, FreeCamera, this, &FreeCamera::move_up);
+
+	IM_BIND_ACTION(test, FreeCamera, this, &FreeCamera::test);
 
 }
 
@@ -227,3 +238,6 @@ void FreeCamera::move_up(float offset) {
 	get_root()->set_location(new_location);
 }
 
+void FreeCamera::test() {
+	qDebug() << "test from free camera" << endl;
+}
