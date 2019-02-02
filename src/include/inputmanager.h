@@ -23,14 +23,18 @@ class InputManager {
 
 public:
 	// mouse
-	static void mouse_pressed_over();
-	// mouse
 	static void exec_mouse_pressed_event(QMouseEvent* event, CGLManager* gl);
 	static void exec_mouse_release_event(QMouseEvent* event, CGLManager* gl);
 	static void exec_mouse_moveeee_event(QMouseEvent* event, CGLManager* gl);
-	static void exec_mouse_dbclick_event(QMouseEvent* event, CGLManager* gl);
 	static void exec_mouse_wheeeel_event(QWheelEvent* event, CGLManager* gl);
-	static void exec_mouse_sgclick();
+	static void mouse_pressed_over(); // 鼠标单击结束
+	
+	// cursor
+	static void cursor_clip();
+	static void cursor_unclip();
+	static void cursor_move(const QPoint& pos, int move_ignore_count = 1);
+	static void cursor_show(const Qt::CursorShape& shape);
+	static bool cursor_in_edge();
 
 	// key
 	static void exec_key_pressed_event(QKeyEvent* event, CGLManager* gl);
@@ -56,15 +60,8 @@ public:
 
 	static const InputData& get_input_data();							// 当前鼠标的按下次数 -- 实现双击用
 
-	static void cursor_clip();
-	static void cursor_unclip();
-	static void cursor_move(const QPoint& pos, int move_ignore_count = 1);
-	static void cursor_show(const Qt::CursorShape& shape);
-	static bool cursor_in_edge();
-
 private:
 	// mouse
-
 	static QTimer* timer_mouse_pressed_over;
 	//static QTimer* timer_mouse_sgclick;
 	//static Qt::MouseButton mouse_sgclick_bt;
@@ -118,9 +115,6 @@ struct InputState {
 	Qt::MouseButtons mouse_pressed;		// 按下事件
 	Qt::MouseButtons mouse_released;	// 弹起事件
 	Qt::MouseButtons mouse_pressing;	// 长按事件
-	//QSet<Qt::MouseButton> mouse_dbpress;
-	//QSet<Qt::MouseButton> mouse_sgclick;
-	//QSet<Qt::MouseButton> mouse_dbclick;
 
 	// axis can be used
 	InputAxisTypes axis_types;
@@ -144,26 +138,17 @@ struct InputState {
 
 struct InputData{
 	// mouse
-	int mouse_pressed_count;
-
 	QPoint mouse_pressed_pos;
 	QPoint mouse_last_pos;
 	QPoint mouse_cur_pos;
+
 	float mouse_move_delta_x;
 	float mouse_move_delta_y;
-
-	// mouse
-	bool mouse_left_pressed;
-	bool mouse_right_pressed;
-	bool mouse_left_dbpressed;
-	bool mouse_right_dbpressed;
-	bool mouse_rigid;							// 判断 press 和 release 之间有没有移动 - sgclick 用
-
-
 	float mouse_wheel_delta;
 	float mouse_sensitivity;
 
-	int mouse_move_ignore_count;
+	int mouse_pressed_count;			// 按下计数 -- 可用于实现双击等效果
+	int mouse_move_ignore_count;		// 屏蔽鼠标光标移动产生的 mousemove 事件
 
 	// key
 	int key_click_count;

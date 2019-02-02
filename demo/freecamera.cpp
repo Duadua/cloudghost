@@ -12,63 +12,12 @@ FreeCamera::~FreeCamera() {}
 
 void FreeCamera::bind_input() {
 	InputState is;
-	is.mouse_pressed = Qt::RightButton;
-	is.axis_types = InputAxisType::MOUSE_X;
-	InputManager::map_axis("turn", is);
-
-	is = InputState();
-	is.mouse_pressed = Qt::LeftButton;
-	is.axis_types = InputAxisType::MOUSE_X;
-	InputManager::map_axis("turn", is);
-
-	is = InputState();
-	is.mouse_pressed = Qt::RightButton;
-	is.axis_types = InputAxisType::MOUSE_Y;
-	is.axis_scale = -1.0f;
-	InputManager::map_axis("look_up", is);
-
-	is = InputState();
-	is.mouse_pressed = Qt::LeftButton;
-	is.axis_types = InputAxisType::MOUSE_Y;
-	is.axis_scale = -0.1f;
-	InputManager::map_axis("move_forward_plane", is);
-
-	is = InputState();
-	is.axis_types = InputAxisType::WHEEL;
-	is.axis_scale = 0.01f;
-	InputManager::map_axis("move_forward", is);
-
-	is = InputState();
-	is.mouse_pressed = Qt::LeftButton;
-	is.mouse_pressed = Qt::RightButton;
-	is.axis_types = InputAxisType::MOUSE_X;
-	is.axis_scale = 0.1f;
-	InputManager::map_axis("move_right", is);
-
-	is = InputState();
-	is.mouse_pressed = Qt::LeftButton;
-	is.mouse_pressed = Qt::RightButton;
-	is.axis_types = InputAxisType::MOUSE_Y;
-	is.axis_scale = -0.1f;
-	InputManager::map_axis("move_up", is);
-
-	//is = InputState();
-	//is.mouse_dbclick.insert(Qt::LeftButton);
-	//InputManager::map_action("dbclick", is);
-
-	//is = InputState();
-	//is.key_longgg_click.insert(Qt::Key_W);
-	//is.axis_types = InputAxisType::KEY_LONG_CLICK;
-	//InputManager::map_axis("move_forward", is);
-
-	is = InputState();
 	is.mouse_pressing = Qt::RightButton;
 	is.axis_types = InputAxisType::MOUSE_X;
 	InputManager::map_axis("turn", is);
 	is = InputState();
 	is.mouse_released = Qt::RightButton;
 	InputManager::map_action("turn_over", is);
-
 	is = InputState();
 	is.mouse_pressing = Qt::LeftButton;
 	is.axis_types = InputAxisType::MOUSE_X;
@@ -82,6 +31,29 @@ void FreeCamera::bind_input() {
 	is.axis_types = InputAxisType::MOUSE_Y;
 	is.axis_scale = -1.0f;
 	InputManager::map_axis("look_up", is);
+
+	is = InputState();
+	is.mouse_pressing = Qt::LeftButton;
+	is.axis_types = InputAxisType::MOUSE_Y;
+	is.axis_scale = -0.1f;
+	InputManager::map_axis("move_forward_plane", is);
+
+	is = InputState();
+	is.axis_types = InputAxisType::WHEEL;
+	is.axis_scale = 0.01f;
+	InputManager::map_axis("move_forward", is);
+
+	is = InputState();
+	is.mouse_pressing = (Qt::LeftButton | Qt::RightButton);
+	is.axis_types = InputAxisType::MOUSE_X;
+	is.axis_scale = 0.1f;
+	InputManager::map_axis("move_right", is);
+
+	is = InputState();
+	is.mouse_pressing = (Qt::LeftButton | Qt::RightButton);
+	is.axis_types = InputAxisType::MOUSE_Y;
+	is.axis_scale = -0.1f;
+	InputManager::map_axis("move_up", is);
 
 	is = InputState();
 	is.mouse_pressed = Qt::LeftButton | Qt::RightButton;
@@ -116,7 +88,7 @@ void FreeCamera::turn(float offset) {
 void FreeCamera::turn_over() {
 	InputManager::cursor_unclip();
 	InputManager::cursor_show(Qt::CrossCursor);
-	InputManager::cursor_move(InputManager::get_input_data().mouse_pressed_pos);
+	InputManager::cursor_move(InputManager::get_input_data().mouse_pressed_pos, 4);
 }
 void FreeCamera::look_up(float offset) {
 	QVector3D new_rotation = get_root()->get_rotation();
@@ -153,6 +125,10 @@ void FreeCamera::move_right(float offset) {
 
 	get_root()->set_location(new_location);
 
+	// set cursor pos
+	InputManager::cursor_clip();
+	InputManager::cursor_show(Qt::BlankCursor);
+	if (InputManager::cursor_in_edge()) InputManager::cursor_move(InputManager::get_input_data().mouse_pressed_pos);
 }
 
 void FreeCamera::move_up(float offset) {

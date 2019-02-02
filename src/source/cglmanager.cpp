@@ -102,14 +102,13 @@ void CGLManager::paintGL() {
 	update(); // 否则 paintGL不会循环调用
 }
 
-void CGLManager::mouse_pressed_over() { InputManager::mouse_pressed_over(); }
 
 void CGLManager::wheelEvent(QWheelEvent* event)				{ InputManager::exec_mouse_wheeeel_event(event, this); }
 void CGLManager::mouseMoveEvent(QMouseEvent* event)			{ InputManager::exec_mouse_moveeee_event(event, this); }
 void CGLManager::mousePressEvent(QMouseEvent* event)		{ InputManager::exec_mouse_pressed_event(event, this); }
 void CGLManager::mouseReleaseEvent(QMouseEvent* event)		{ InputManager::exec_mouse_release_event(event, this); }
 void CGLManager::mouseDoubleClickEvent(QMouseEvent* event)	{ InputManager::exec_mouse_pressed_event(event, this); }
-void CGLManager::mouse_sgclick()							{ InputManager::exec_mouse_sgclick(); }
+void CGLManager::mouse_pressed_over()						{ InputManager::mouse_pressed_over(); }
 
 void CGLManager::keyPressEvent(QKeyEvent* event)			{ InputManager::exec_key_pressed_event(event, this); }
 void CGLManager::keyReleaseEvent(QKeyEvent* event)			{ InputManager::exec_key_release_event(event, this); }
