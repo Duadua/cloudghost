@@ -10,7 +10,7 @@
 #include <QMouseEvent>
 #include <QWheelEvent>
 
-#include "demo/freecamera.h"
+#include "freecamera.h"
 
 CGLManager::CGLManager(QWidget *parent) : QOpenGLWidget(parent) {
 	cube_object = nullptr;

@@ -82,10 +82,10 @@
     <ClCompile Include="src\source\inputmanager.cpp">
       <Filter>src\source</Filter>
     </ClCompile>
-    <ClCompile Include="demo\freecamera.cpp">
-      <Filter>demo</Filter>
-    </ClCompile>
     <ClCompile Include="src\source\delegate.cpp">
+      <Filter>src\source</Filter>
+    </ClCompile>
+    <ClCompile Include="src\source\freecamera.cpp">
       <Filter>src\source</Filter>
     </ClCompile>
   </ItemGroup>
@@ -136,10 +136,10 @@
     <ClInclude Include="src\include\inputmanager.h">
       <Filter>src\include</Filter>
     </ClInclude>
-    <ClInclude Include="demo\freecamera.h">
-      <Filter>demo</Filter>
-    </ClInclude>
     <ClInclude Include="src\include\delegate.h">
+      <Filter>src\include</Filter>
+    </ClInclude>
+    <ClInclude Include="src\include\freecamera.h">
       <Filter>src\include</Filter>
     </ClInclude>
   </ItemGroup>
