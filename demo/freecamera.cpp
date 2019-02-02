@@ -141,11 +141,43 @@ void FreeCamera::bind_input() {
 	is.axis_types = InputAxisType::MOUSE_Y;
 	is.axis_scale = -0.1f;
 	InputManager::map_axis("move_up", is);
-
+	// key
 	is = InputState();
-	is.modifiers = Qt::ControlModifier;
-	is.key_pressed.insert(Qt::Key_Space);
-	InputManager::map_action("test", is);
+	is.mouse_pressing = Qt::LeftButton;
+	is.key_pressing.insert(Qt::Key_E);
+	is.axis_types = InputAxisType::KEY_PRESSING;
+	is.axis_scale = 0.1f;
+	InputManager::map_axis("move_up", is);
+	is = InputState();
+	is.mouse_pressing = Qt::RightButton;
+	is.key_pressing.insert(Qt::Key_E);
+	is.axis_types = InputAxisType::KEY_PRESSING;
+	is.axis_scale = 0.1f;
+	InputManager::map_axis("move_up", is);
+	is = InputState();
+	is.mouse_pressing = (Qt::LeftButton | Qt::RightButton);
+	is.key_pressing.insert(Qt::Key_E);
+	is.axis_types = InputAxisType::KEY_PRESSING;
+	is.axis_scale = 0.1f;
+	InputManager::map_axis("move_up", is);
+	is = InputState();
+	is.mouse_pressing = Qt::LeftButton;
+	is.key_pressing.insert(Qt::Key_Q);
+	is.axis_types = InputAxisType::KEY_PRESSING;
+	is.axis_scale = -0.1f;
+	InputManager::map_axis("move_up", is);
+	is = InputState();
+	is.mouse_pressing = Qt::RightButton;
+	is.key_pressing.insert(Qt::Key_Q);
+	is.axis_types = InputAxisType::KEY_PRESSING;
+	is.axis_scale = -0.1f;
+	InputManager::map_axis("move_up", is);
+	is = InputState();
+	is.mouse_pressing = (Qt::LeftButton | Qt::RightButton);
+	is.key_pressing.insert(Qt::Key_Q);
+	is.axis_types = InputAxisType::KEY_PRESSING;
+	is.axis_scale = -0.1f;
+	InputManager::map_axis("move_up", is);
 
 	IM_BIND_AXIS(turn, FreeCamera, this, &FreeCamera::turn);
 	IM_BIND_ACTION(turn_over, FreeCamera, this, &FreeCamera::turn_over);
@@ -155,8 +187,6 @@ void FreeCamera::bind_input() {
 	IM_BIND_AXIS(move_forward_plane, FreeCamera, this, &FreeCamera::move_forward_plane);
 	IM_BIND_AXIS(move_right, FreeCamera, this, &FreeCamera::move_right);
 	IM_BIND_AXIS(move_up, FreeCamera, this, &FreeCamera::move_up);
-
-	IM_BIND_ACTION(test, FreeCamera, this, &FreeCamera::test);
 
 }
 
@@ -236,8 +266,4 @@ void FreeCamera::move_up(float offset) {
 	new_location += offset * QVector3D(-qSin(yaw)*qSin(pitch), qCos(pitch), -qCos(yaw)*qSin(pitch));
 
 	get_root()->set_location(new_location);
-}
-
-void FreeCamera::test() {
-	qDebug() << "test from free camera" << endl;
 }
