@@ -82,6 +82,7 @@ void CGLManager::resizeGL(int w, int h) {
 void CGLManager::paintGL() {
 
 	InputManager::exec_action();
+	InputManager::exec_axis_key_pressing();
 
 	// gl »º´æ³õÊ¼»¯
 	//core->glClearColor(0.5f, 0.5f, 0.5f, 1.0f);
@@ -112,4 +113,4 @@ void CGLManager::mouse_pressed_over()						{ InputManager::mouse_pressed_over();
 
 void CGLManager::keyPressEvent(QKeyEvent* event)			{ InputManager::exec_key_pressed_event(event, this); }
 void CGLManager::keyReleaseEvent(QKeyEvent* event)			{ InputManager::exec_key_release_event(event, this); }
-void CGLManager::key_sgclick() { InputManager::exec_key_sgclick(); }
+void CGLManager::key_pressed_over()							{ InputManager::key_pressed_over(); }

@@ -11,8 +11,7 @@
 QTimer* InputManager::timer_mouse_pressed_over;
 
 // key
-QTimer* InputManager::timer_key_sgclick;
-int InputManager::key_sgclick_bt = 0;
+QTimer* InputManager::timer_key_pressed_over;
 
 // binders
 
@@ -29,15 +28,13 @@ CGLManager* InputManager::gl;
 
 // mouse
 void InputManager::exec_mouse_pressed_event(QMouseEvent* event, CGLManager* gl) {
-	// update cur_input_state
 	cur_input_state.mouse_pressing = event->buttons();
 
 	if (event->buttons() != (Qt::LeftButton | Qt::RightButton)) {
-		// cur_input_state
 		cur_input_state.mouse_pressed = event->button();
-		// cur_input_data
 		cur_input_data.mouse_pressed_pos = event->pos();
 		cur_input_data.mouse_pressed_count = (cur_input_data.mouse_pressed_count + 1) % 3;
+
 		timer_mouse_pressed_over->stop();
 		timer_mouse_pressed_over->start(300);
 
@@ -78,77 +75,41 @@ void InputManager::mouse_pressed_over() {
 
 // key
 void InputManager::exec_key_pressed_event(QKeyEvent* event, CGLManager* gl) {
-	qDebug() <<event->key() <<  "hehe" << endl;
-	qDebug() << QTime::currentTime() << endl;
-	//cur_input_state.key_longgg_click.insert(event->key());
-	//cur_input_data.key_longclick_speed = 1.0f;
+
+	if (!event->isAutoRepeat()) {
+		cur_input_state.key_pressing.insert(event->key());
+
+		cur_input_state.key_pressed.insert(event->key());
+		cur_input_data.key_pressed_count = (cur_input_data.key_pressed_count + 1) % 3;
+		timer_key_pressed_over->stop();
+		timer_key_pressed_over->start(300);
+
+	} // 第一次按下
+	else { }
 }
 void InputManager::exec_key_release_event(QKeyEvent* event, CGLManager* gl) {
-	/*qDebug() << event->key() << "heihei" << endl;
-	qDebug() << QTime::currentTime() << endl;
+	if (!event->isAutoRepeat()) {
+		cur_input_state.key_pressing.remove(event->key());
 	
-	if (!event->isAutoRepeat()) {						// 第一次 release 决定是否长按
-		if (!cur_input_state.key_longgg_click.contains(event->key())) { // 没有长按标记才执行单击双击操作
-			if (!timer_key_sgclick->isActive()) {
-				timer_key_sgclick->start(300);
-				key_sgclick_bt = event->key();
-			}
-			++cur_input_data.key_click_count;
-			if (cur_input_data.key_click_count == 2) {
-				timer_key_sgclick->stop();
-				cur_input_data.key_click_count = 0;
-				exec_key_dbclick(event);
-			}
-		} // 长按的最后一下release的 auto_repeat 也是 false -- 但是 longgg_click位已经置为 true
-
-		cur_input_data.key_longclick_speed = 0.0f;
-		cur_input_state.key_longgg_click.remove(event->key());
-
-	} // 没有长按 -- 执行单击双击操作
-	else {
-		if (!cur_input_state.key_longgg_click.contains(event->key())) {
-			cur_input_state.key_longgg_click.insert(event->key());
-			exec_key_longclick(event);
-		}
-	} // 长按
-	*/
+		cur_input_state.key_released.insert(event->key());
+	}
+	else { }
 }
-
-void InputManager::exec_key_sgclick() {
-	/*cur_input_data.key_click_count = 0;
-	timer_key_sgclick->stop();
-	cur_input_state.key_single_click.insert(key_sgclick_bt);
-	qDebug() << key_sgclick_bt << "sg clicked" << endl;
-	*/
-}
-
-void InputManager::exec_key_dbclick(QKeyEvent* event) {
-	/*qDebug() << event->key() << "db clicked" << endl;
-	cur_input_state.key_double_click.insert(event->key());
-	*/
-}
-void InputManager::exec_key_longclick(QKeyEvent* event) {
-	/*qDebug() << event->key() << "long clicked" << endl;
-	cur_input_data.key_longclick_speed = 1.0f;
-	*/
+void InputManager::key_pressed_over() {
+	timer_key_pressed_over->stop();
+	cur_input_data.key_pressed_count = 0;
 }
 
 // binders
-void InputManager::map_action(const QString& key, InputState is) {
-	action_maps[key].append(is);
-}
-void InputManager::bind_action(const QString& key, DELEGATE_ICLASS(InputAction)* ia) {
-	input_actions[key] = ia;
-}
+void InputManager::map_action(const QString& key, InputState is) { action_maps[key].append(is); }
+void InputManager::bind_action(const QString& key, DELEGATE_ICLASS(InputAction)* ia) { input_actions[key] = ia; }
 void InputManager::exec_action() {
-	bool flag = false;
 	for (auto it = input_actions.cbegin(); it != input_actions.cend(); ++it) {	// 对每一个绑定的动作
 		if (!action_maps.count(it.key())) continue;								// map 里没有相应的键位绑定
 		for (auto itt = action_maps[it.key()].begin(); itt != action_maps[it.key()].end(); ++itt) {
 			if (cur_input_state.contain((*itt))) {
 				// 直接执行
 				(*it)->invoke();
-				flag = true;
 			} // 如果与当前的键位状态相同， 则执行
 		} // 遍历所有的键位绑定
 	}
@@ -156,20 +117,13 @@ void InputManager::exec_action() {
 	// 有些 flag 因为没有事件绑定而不会执行后清空 此处手动清空 -- 这个bug有点烦
 	cur_input_state.mouse_pressed = Qt::NoButton;
 	cur_input_state.mouse_released = Qt::NoButton;
-	//cur_input_state.mouse_sgclick.clear();
-	//cur_input_state.mouse_dbclick.clear();
-	/*cur_input_state.key_single_click.clear();
-	cur_input_state.key_double_click.clear();
-	if (!cur_input_state.key_longgg_click.isEmpty()) exec_axis_key_longclick();
-	*/
+
+	cur_input_state.key_pressed.clear();
+	cur_input_state.key_released.clear();
 }
 
-void InputManager::map_axis(const QString& key, InputState is) {
-	axis_maps[key].append(is);
-}
-void InputManager::bind_axis(const QString& key, DELEGATE_ICLASS(InputAxis)* ia) {
-	input_axis[key] = ia;
-}
+void InputManager::map_axis(const QString& key, InputState is) { axis_maps[key].append(is); }
+void InputManager::bind_axis(const QString& key, DELEGATE_ICLASS(InputAxis)* ia) { input_axis[key] = ia; }
 void InputManager::exec_axis() {
 	for (auto it = input_axis.cbegin(); it != input_axis.cend(); ++it) {	// 对每一个绑定的动作
 		if (!axis_maps.count(it.key())) continue;							// map 里没有相应的键位绑定
@@ -177,6 +131,7 @@ void InputManager::exec_axis() {
 			if (cur_input_state.contain((*itt))) {
 				float offset = (*itt).axis_scale;
 				// 遍历所使用的 axis_types
+				bool flag = true;
 				switch ((*itt).axis_types) {
 				case InputAxisType::MOUSE_X: 
 					offset *= cur_input_data.mouse_move_delta_x;
@@ -193,13 +148,13 @@ void InputManager::exec_axis() {
 					offset *= cur_input_data.mouse_sensitivity;
 					cur_input_data.mouse_wheel_delta = 0.0f;
 					break;
-				case InputAxisType::KEY_LONG_CLICK:
-					offset *= cur_input_data.key_longclick_speed;
+				case InputAxisType::KEY_PRESSING:
+					//offset *= cur_input_data.key_longclick_speed;
 					break;
-				case InputAxisType::NONE: break;
-				default:break;
+				case InputAxisType::NONE: flag = false; break;
+				default: flag = false; break;
 				}
-				(*it)->invoke(offset);
+				if(flag) (*it)->invoke(offset);
 			} // 如果与当前的键位状态相同， 则执行
 		} // 遍历所有的键位绑定
 	}
@@ -212,21 +167,19 @@ void InputManager::exec_axis_mouse_move() {
 			if (cur_input_state.contain((*itt))) {
 				float offset = (*itt).axis_scale;
 				// 遍历所使用的 axis_types
-				bool flag = false;
+				bool flag = true;
 				switch ((*itt).axis_types) {
 				case InputAxisType::MOUSE_X: 
 					offset *= cur_input_data.mouse_move_delta_x;
 					offset *= cur_input_data.mouse_sensitivity;
 					cur_input_data.mouse_move_delta_x = 0.0f;
-					flag = true;
 					break;
 				case InputAxisType::MOUSE_Y: 
 					offset *= cur_input_data.mouse_move_delta_y;
 					offset *= cur_input_data.mouse_sensitivity;
 					cur_input_data.mouse_move_delta_y = 0.0f;
-					flag = true;
 					break;
-				default:break;
+				default: flag = false; break;
 				}
 				if(flag) (*it)->invoke(offset);
 			} // 如果与当前的键位状态相同， 则执行
@@ -240,53 +193,51 @@ void InputManager::exec_axis_mouse_wheel() {
 			if (cur_input_state.contain((*itt))) {
 				float offset = (*itt).axis_scale;
 				// 遍历所使用的 axis_types
-				bool flag = false;
+				bool flag = true;
 				switch ((*itt).axis_types) {
 				case InputAxisType::WHEEL: 
 					offset *= cur_input_data.mouse_wheel_delta;
 					offset *= cur_input_data.mouse_sensitivity;
 					cur_input_data.mouse_wheel_delta = 0.0f;
-					flag = true;
 					break;
-				default:break;
+				default: flag = false; break;
 				}
 				if(flag) (*it)->invoke(offset);
 			} // 如果与当前的键位状态相同， 则执行
 		} // 遍历所有的键位绑定
 	}
 }
-void InputManager::exec_axis_key_longclick() {
+void InputManager::exec_axis_key_pressing() {
 	for (auto it = input_axis.cbegin(); it != input_axis.cend(); ++it) {	// 对每一个绑定的动作
 		if (!axis_maps.count(it.key())) continue;							// map 里没有相应的键位绑定
 		for (auto itt = axis_maps[it.key()].begin(); itt != axis_maps[it.key()].end(); ++itt) {
-			if ((*itt) == cur_input_state) {
+			if (cur_input_state.contain((*itt))) {
 				float offset = (*itt).axis_scale;
 				// 遍历所使用的 axis_types
+				bool flag = true;
 				switch ((*itt).axis_types) {
-				case InputAxisType::KEY_LONG_CLICK: 
-					offset *= cur_input_data.key_longclick_speed;
+				case InputAxisType::KEY_PRESSING: 
+					offset *= cur_input_data.key_pressing_speed;
 					break;
-				default:break;
+				default: flag = false; break;
 				}
-				(*it)->invoke(offset);
+				if(flag) (*it)->invoke(offset);
 			} // 如果与当前的键位状态相同， 则执行
 		} // 遍历所有的键位绑定
 	}
-
 }
 
 void InputManager::cursor_clip() {
 	QRect tmp = gl->rect();
 	QPoint t_a = gl->mapToGlobal(QPoint(tmp.left(), tmp.top()));
 	QPoint t_b = gl->mapToGlobal(QPoint(tmp.right(), tmp.bottom()));
+
 	RECT rect;
 	rect.left = t_a.x(); rect.top = t_a.y();
 	rect.right = t_b.x(); rect.bottom = t_b.y();
 	ClipCursor(&rect);
 }
-void InputManager::cursor_unclip() {
-	ClipCursor(nullptr);
-}
+void InputManager::cursor_unclip() { ClipCursor(nullptr); }
 void InputManager::cursor_move(const QPoint& pos, int move_ignore_count) {
 	if (gl == nullptr) return;
 	QCursor::setPos(gl->mapToGlobal(pos));
@@ -313,17 +264,18 @@ void InputManager::init(CGLManager* cgl) {
 	timer_mouse_pressed_over = new QTimer(gl);
 	gl->connect(timer_mouse_pressed_over, SIGNAL(timeout()), gl, SLOT(mouse_pressed_over()));
 
-	//timer_mouse_sgclick = new QTimer(gl);
-	//gl->connect(timer_mouse_sgclick, SIGNAL(timeout()), gl, SLOT(mouse_sgclick()));
-
-	timer_key_sgclick = new QTimer(gl);
-	gl->connect(timer_key_sgclick, SIGNAL(timeout()), gl, SLOT(key_sgclick()));
+	timer_key_pressed_over = new QTimer(gl);
+	gl->connect(timer_key_pressed_over, SIGNAL(timeout()), gl, SLOT(key_pressed_over()));
 
 }
 
 void InputManager::quit() {
-	// timer_mouse_sgclick->stop();
-	// delete timer_mouse_sgclick;
+
+	timer_mouse_pressed_over->stop();
+	delete timer_mouse_pressed_over;
+
+	timer_key_pressed_over->stop();
+	delete timer_key_pressed_over;
 
 }
 
@@ -341,7 +293,9 @@ InputState::InputState() {
 	axis_scale = 1.0f;
 
 	// key
-	//key_longgg_click.clear();
+	key_pressed.clear();
+	key_released.clear();
+	key_pressing.clear();
 
 	modifier_single_click = Qt::NoModifier;
 	modifier_double_click = Qt::NoModifier;
@@ -355,6 +309,9 @@ bool InputState::contain(const InputState& is) {
 	if (mouse_pressing != is.mouse_pressing) return false;
 
 	// key
+	if (!key_pressed.contains(is.key_pressed)) return false;
+	if (!key_released.contains(is.key_released)) return false;
+	if (!key_pressing.contains(is.key_pressing)) return false;
 
 	return true;
 }
@@ -366,6 +323,7 @@ bool InputState::operator == (const InputState& is) const {
 
 	// key
 	if (key_pressed != is.key_pressed) return false;
+	if (key_released != is.key_released) return false;
 	if (key_pressing != is.key_pressing) return false;
 
 	if (modifier_single_click != is.modifier_single_click) return false;
@@ -392,7 +350,7 @@ InputData::InputData() {
 	mouse_move_ignore_count = 0;
 
 	// key
-	key_click_count = 0;
-	key_longclick_speed = 0.0f;
+	key_pressed_count = 0;
+	key_pressing_speed = 1.0;
 
 }

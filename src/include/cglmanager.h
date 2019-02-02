@@ -37,5 +37,5 @@ private:
 
 public slots:
 	void mouse_pressed_over();
-	void key_sgclick();
+	void key_pressed_over();
 };

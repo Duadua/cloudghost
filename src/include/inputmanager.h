@@ -9,9 +9,6 @@ class CGLManager;
 class QKeyEvent;
 class QMosueEvent;
 
-DELEGATE1(KeyPress, void, QKeyEvent*);
-DELEGATE1(KeyRelease, void, QKeyEvent*);
-
 DELEGATE0(InputAction, void);
 DELEGATE1(InputAxis, void, float);
 
@@ -39,9 +36,7 @@ public:
 	// key
 	static void exec_key_pressed_event(QKeyEvent* event, CGLManager* gl);
 	static void exec_key_release_event(QKeyEvent* event, CGLManager* gl);
-	static void exec_key_sgclick();
-	static void exec_key_dbclick(QKeyEvent* event);
-	static void exec_key_longclick(QKeyEvent* event);
+	static void key_pressed_over();
 
 	// binders
 	static void map_action(const QString& key, InputState is);
@@ -53,34 +48,31 @@ public:
 	static void exec_axis();
 	static void exec_axis_mouse_move();
 	static void exec_axis_mouse_wheel();
-	static void exec_axis_key_longclick();
+	static void exec_axis_key_pressing();
 
 	static void init(CGLManager* gl);
 	static void quit();
 
-	static const InputData& get_input_data();							// 当前鼠标的按下次数 -- 实现双击用
+	static const InputData& get_input_data();							
 
 private:
 	// mouse
-	static QTimer* timer_mouse_pressed_over;
-	//static QTimer* timer_mouse_sgclick;
-	//static Qt::MouseButton mouse_sgclick_bt;
+	static QTimer* timer_mouse_pressed_over;					// 清空鼠标单击 flag 用
 
 	// key
-	static QTimer* timer_key_sgclick;
-	static int key_sgclick_bt;
+	static QTimer* timer_key_pressed_over;						// 清空键盘单击 flag 用
 
 	// binders
 	static QMap<QString, QVector<InputState> > action_maps;
-	static QMap<QString, DELEGATE_ICLASS(InputAction)*> input_actions;
-
 	static QMap<QString, QVector<InputState> > axis_maps;
-	static QMap<QString, DELEGATE_ICLASS(InputAxis)*> input_axis;
 
-	static InputData cur_input_data;
-	static InputState cur_input_state;
+	static QMap<QString, DELEGATE_ICLASS(InputAction)*>	input_actions;
+	static QMap<QString, DELEGATE_ICLASS(InputAxis)*>	input_axis;
 
-	static CGLManager* gl;
+	static InputData	cur_input_data;
+	static InputState	cur_input_state;
+
+	static CGLManager*	gl;
 
 	InputManager(){}
 
@@ -103,7 +95,7 @@ enum InputAxisType {
 	WHEEL = 0x0008,
 	MOUSE = MOUSE_X | MOUSE_Y,
 
-	KEY_LONG_CLICK = 0x0016
+	KEY_PRESSING = 0x0016
 
 };
 Q_DECLARE_FLAGS(InputAxisTypes, InputAxisType)
@@ -122,6 +114,7 @@ struct InputState {
 
 	// key
 	QSet<int> key_pressed;
+	QSet<int> key_released;
 	QSet<int> key_pressing;
 
 	// modifier
@@ -151,8 +144,8 @@ struct InputData{
 	int mouse_move_ignore_count;		// 屏蔽鼠标光标移动产生的 mousemove 事件
 
 	// key
-	int key_click_count;
-	float key_longclick_speed;
+	int key_pressed_count;
+	float key_pressing_speed;
 
 	InputData();
 };
