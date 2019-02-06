@@ -1,5 +1,7 @@
 #include "scenecomponent.h"
 
+IMPLEMENT_CLASS(SceneComponent)
+
 SceneComponent::SceneComponent() : parent_component(nullptr), scale(QVector3D(1.0f, 1.0f, 1.0f)){}
 SceneComponent::~SceneComponent() {
 	for (auto cc : child_components) {

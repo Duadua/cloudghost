@@ -7,6 +7,7 @@
 #include <QMatrix4x4>
 
 class SceneComponent : public Component {
+	DECLARE_CLASS(SceneComponent)
 public:
 	SceneComponent();
 	virtual ~SceneComponent();

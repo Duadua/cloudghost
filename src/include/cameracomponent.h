@@ -6,7 +6,7 @@ class Mesh;
 class CameraData;
 
 class CameraComponent : public SceneComponent {
-
+	DECLARE_CLASS(CameraComponent)
 public:
 	CameraComponent();
 	~CameraComponent();

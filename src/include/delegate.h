@@ -5,6 +5,9 @@
 #define	DELEGATE_BIND(class_name, type, name, obj, func)				\
 class_name<type>* name = new class_name<type>(obj, func)
 
+#define DELEGATE_BIND_VOID(class_name, name, func)						\
+class_name<void>* name = new class_name<void>(func)
+
 #define DELEGATE_DECLARE(class_name,return_type, params, args)			\
 class I##class_name##Handler {											\
 public:																	\
@@ -21,7 +24,7 @@ private:																\
 	return_type (T::*func)(params);										\
 };																		\
 template<>																\
-class class_name<void> : public I##class_name##Handler{					\
+class class_name<void> : public I##class_name##Handler {				\
 public:																	\
 	class_name(return_type(*f)(params)) : func(f) {}					\
 	return_type invoke(params) { return (*func)(args); }				\

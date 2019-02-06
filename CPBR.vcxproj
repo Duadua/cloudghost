@@ -129,6 +129,7 @@
     <ClCompile Include="src\source\inputmanager.cpp" />
     <ClCompile Include="src\source\mesh.cpp" />
     <ClCompile Include="src\source\meshcomponent.cpp" />
+    <ClCompile Include="src\source\reflex.cpp" />
     <ClCompile Include="src\source\renderdata.cpp" />
     <ClCompile Include="src\source\scenecomponent.cpp" />
     <ClCompile Include="src\source\shader.cpp" />
@@ -151,6 +152,7 @@
     <ClInclude Include="src\include\inputmanager.h" />
     <ClInclude Include="src\include\mesh.h" />
     <ClInclude Include="src\include\meshcomponent.h" />
+    <ClInclude Include="src\include\reflex.h" />
     <ClInclude Include="src\include\renderdata.h" />
     <ClInclude Include="src\include\scenecomponent.h" />
     <ClInclude Include="src\include\shader.h" />

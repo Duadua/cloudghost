@@ -3,3 +3,6 @@
 Component::Component() {}
 
 Component::~Component() {}
+#include "component.h"
+
+IMPLEMENT_CLASS(Component);

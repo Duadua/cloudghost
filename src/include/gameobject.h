@@ -1,10 +1,13 @@
 #pragma once
 
 #include "shader.h"
+#include "reflex.h"
 
 class SceneComponent;
+CObject;
 
-class GameObject {
+class GameObject : public CObject {
+	DECLARE_CLASS(GameObject)
 public:
 	GameObject(SceneComponent* root = nullptr);
 	virtual ~GameObject();
@@ -18,3 +21,5 @@ public:
 protected:
 	SceneComponent * root_component;
 };
+
+

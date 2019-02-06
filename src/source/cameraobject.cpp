@@ -1,6 +1,8 @@
 #include "cameraobject.h"
 #include "cameracomponent.h"
 
+IMPLEMENT_CLASS(CameraObject)
+
 CameraObject::CameraObject() {
 	root_component = new SceneComponent();
 	camera_component = new CameraComponent();

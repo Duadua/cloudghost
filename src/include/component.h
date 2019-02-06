@@ -1,9 +1,14 @@
 #pragma once
 
-class Component {
+#include "reflex.h"
+
+class Component : public CObject {
+	DECLARE_CLASS(Component)
 public:
 	Component();
 	virtual ~Component();
-private:
 
+private:
+	
+	
 };

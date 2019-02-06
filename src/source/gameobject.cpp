@@ -1,6 +1,8 @@
 #include "gameobject.h"
 #include "scenecomponent.h"
 
+IMPLEMENT_CLASS(GameObject)
+
 GameObject::GameObject(SceneComponent* root) {
 	root_component = root;
 }

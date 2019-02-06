@@ -7,6 +7,8 @@
 #include <QMouseEvent>
 #include <QWheelEvent>
 
+IMPLEMENT_CLASS(FreeCamera)
+
 FreeCamera::FreeCamera() {}
 FreeCamera::~FreeCamera() {}
 

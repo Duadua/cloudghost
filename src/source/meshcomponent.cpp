@@ -1,6 +1,8 @@
 #include "mesh.h"
 #include "meshcomponent.h"
 
+IMPLEMENT_CLASS(MeshComponent)
+
 MeshComponent::MeshComponent(Mesh* m) {
 	mesh = m;
 }

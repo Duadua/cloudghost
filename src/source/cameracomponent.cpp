@@ -2,6 +2,8 @@
 #include "cameradata.h"
 #include "cameracomponent.h"
 
+IMPLEMENT_CLASS(CameraComponent)
+
 CameraComponent::CameraComponent() : camera_mesh(nullptr), camera_speed(0.05f){
 	camera_data = new CameraData();
 }

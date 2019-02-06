@@ -88,6 +88,9 @@
     <ClCompile Include="src\source\freecamera.cpp">
       <Filter>src\source</Filter>
     </ClCompile>
+    <ClCompile Include="src\source\reflex.cpp">
+      <Filter>src\source</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <QtUic Include="resources\ui\cpbr.ui">
@@ -140,6 +143,9 @@
       <Filter>src\include</Filter>
     </ClInclude>
     <ClInclude Include="src\include\freecamera.h">
+      <Filter>src\include</Filter>
+    </ClInclude>
+    <ClInclude Include="src\include\reflex.h">
       <Filter>src\include</Filter>
     </ClInclude>
   </ItemGroup>

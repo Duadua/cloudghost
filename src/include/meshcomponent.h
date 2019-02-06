@@ -5,6 +5,7 @@
 class Mesh;
 
 class MeshComponent : public SceneComponent {
+	DECLARE_CLASS(MeshComponent)
 public:
 	MeshComponent(Mesh* m = nullptr);
 	virtual ~MeshComponent();

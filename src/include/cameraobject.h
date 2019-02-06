@@ -5,6 +5,7 @@
 class CameraComponent;
 
 class CameraObject : public GameObject {
+	DECLARE_CLASS(CameraObject)
 public:
 	CameraObject();
 	~CameraObject();
