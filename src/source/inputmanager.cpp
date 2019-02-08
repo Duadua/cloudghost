@@ -18,8 +18,8 @@ QTimer* InputManager::timer_key_pressed_over;
 QMap<QString, QVector<InputState> > InputManager::axis_maps;
 QMap<QString, QVector<InputState> > InputManager::action_maps;
 
-QMap<QString, DELEGATE_ICLASS(InputAxis)*> InputManager::input_axis;
-QMap<QString, DELEGATE_ICLASS(InputAction)*> InputManager::input_actions;
+QMap<QString, DELEGATE_ICLASS(InputAxis)> InputManager::input_axis;
+QMap<QString, DELEGATE_ICLASS(InputAction)> InputManager::input_actions;
 
 InputData InputManager::cur_input_data;
 InputState InputManager::cur_input_state;
@@ -112,7 +112,7 @@ void InputManager::key_pressed_over() {
 
 // binders
 void InputManager::map_action(const QString& key, InputState is) { action_maps[key].append(is); }
-void InputManager::bind_action(const QString& key, DELEGATE_ICLASS(InputAction)* ia) { input_actions[key] = ia; }
+void InputManager::bind_action(const QString& key, DELEGATE_ICLASS(InputAction) ia) { input_actions[key] = ia; }
 void InputManager::exec_action() {
 	for (auto it = input_actions.cbegin(); it != input_actions.cend(); ++it) {	// 对每一个绑定的动作
 		if (!action_maps.count(it.key())) continue;								// map 里没有相应的键位绑定
@@ -133,7 +133,7 @@ void InputManager::exec_action() {
 }
 
 void InputManager::map_axis(const QString& key, InputState is) { axis_maps[key].append(is); }
-void InputManager::bind_axis(const QString& key, DELEGATE_ICLASS(InputAxis)* ia) { input_axis[key] = ia; }
+void InputManager::bind_axis(const QString& key, DELEGATE_ICLASS(InputAxis) ia) { input_axis[key] = ia; }
 void InputManager::exec_axis() {
 	for (auto it = input_axis.cbegin(); it != input_axis.cend(); ++it) {	// 对每一个绑定的动作
 		if (!axis_maps.count(it.key())) continue;							// map 里没有相应的键位绑定

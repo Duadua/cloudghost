@@ -2,9 +2,9 @@
 
 #include "shader.h"
 #include "reflex.h"
+#include <memory>
 
 class SceneComponent;
-CObject;
 
 class GameObject : public CObject {
 	DECLARE_CLASS(GameObject)
@@ -21,5 +21,4 @@ public:
 protected:
 	SceneComponent * root_component;
 };
-
-
+DECLARE_AUTO_PTR(GameObject)

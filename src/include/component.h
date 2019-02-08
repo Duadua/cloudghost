@@ -12,3 +12,4 @@ private:
 	
 	
 };
+DECLARE_AUTO_PTR(Component)

@@ -91,6 +91,12 @@
     <ClCompile Include="src\source\reflex.cpp">
       <Filter>src\source</Filter>
     </ClCompile>
+    <ClCompile Include="src\source\gamemanager.cpp">
+      <Filter>src\source</Filter>
+    </ClCompile>
+    <ClCompile Include="demo\mygamemanager.cpp">
+      <Filter>demo</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <QtUic Include="resources\ui\cpbr.ui">
@@ -147,6 +153,12 @@
     </ClInclude>
     <ClInclude Include="src\include\reflex.h">
       <Filter>src\include</Filter>
+    </ClInclude>
+    <ClInclude Include="src\include\gamemanager.h">
+      <Filter>src\include</Filter>
+    </ClInclude>
+    <ClInclude Include="demo\mygamemanager.h">
+      <Filter>demo</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

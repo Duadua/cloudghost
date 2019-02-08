@@ -1,5 +1,6 @@
 #pragma once
 
+#include <memory>
 #include <QOpenGLWidget>
 #include <QOpenGLFunctions_3_3_core>
 

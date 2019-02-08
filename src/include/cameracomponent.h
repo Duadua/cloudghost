@@ -25,5 +25,6 @@ private:
 
 	float camera_speed;
 };
+DECLARE_AUTO_PTR(CameraComponent)
 
 

@@ -116,6 +116,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="demo\main.cpp" />
+    <ClCompile Include="demo\mygamemanager.cpp" />
     <ClCompile Include="src\source\assetmanager.cpp" />
     <ClCompile Include="src\source\cameracomponent.cpp" />
     <ClCompile Include="src\source\cameradata.cpp" />
@@ -125,6 +126,7 @@
     <ClCompile Include="src\source\cpbr.cpp" />
     <ClCompile Include="src\source\delegate.cpp" />
     <ClCompile Include="src\source\freecamera.cpp" />
+    <ClCompile Include="src\source\gamemanager.cpp" />
     <ClCompile Include="src\source\gameobject.cpp" />
     <ClCompile Include="src\source\inputmanager.cpp" />
     <ClCompile Include="src\source\mesh.cpp" />
@@ -141,6 +143,7 @@
     <QtRcc Include="resources\cpbr.qrc" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="demo\mygamemanager.h" />
     <ClInclude Include="src\include\assetmanager.h" />
     <ClInclude Include="src\include\cameracomponent.h" />
     <ClInclude Include="src\include\cameradata.h" />
@@ -148,6 +151,7 @@
     <ClInclude Include="src\include\component.h" />
     <ClInclude Include="src\include\delegate.h" />
     <ClInclude Include="src\include\freecamera.h" />
+    <ClInclude Include="src\include\gamemanager.h" />
     <ClInclude Include="src\include\gameobject.h" />
     <ClInclude Include="src\include\inputmanager.h" />
     <ClInclude Include="src\include\mesh.h" />

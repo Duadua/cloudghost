@@ -16,3 +16,4 @@ public:
 private:
 	Mesh* mesh;
 };
+DECLARE_AUTO_PTR(MeshComponent)

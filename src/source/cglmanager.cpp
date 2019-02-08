@@ -1,5 +1,6 @@
 #include "cglmanager.h"
 #include "gameobject.h"
+#include "gamemanager.h"
 #include "inputmanager.h"
 #include "cameraobject.h"
 #include "assetmanager.h"
@@ -16,11 +17,12 @@ CGLManager::CGLManager(QWidget *parent) : QOpenGLWidget(parent) {
 	cube_object = nullptr;
 
 	// init mouse
-	//setMouseTracking(true);
 	this->setCursor(Qt::CrossCursor);
 	this->setFocusPolicy(Qt::StrongFocus);
 
 	InputManager::init(this);
+
+	GameManager::get_instance()->pre_init();
 }
 
 CGLManager::~CGLManager() {
@@ -54,7 +56,6 @@ void CGLManager::initializeGL() {
 	mccc->set_scale(QVector3D(0.5f, 0.5f, 0.f));
 	
 	// init action binders
-	
 
 	// ≥ı ºªØ camera
 	auto camera = new CameraObject();

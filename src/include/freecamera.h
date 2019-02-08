@@ -26,3 +26,4 @@ protected:
 	void move_up(float offset);
 
 };
+DECLARE_AUTO_PTR(FreeCamera)

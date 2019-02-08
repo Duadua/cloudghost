@@ -40,11 +40,11 @@ public:
 
 	// binders
 	static void map_action(const QString& key, InputState is);
-	static void bind_action(const QString& key, DELEGATE_ICLASS(InputAction)* ia);
+	static void bind_action(const QString& key, DELEGATE_ICLASS(InputAction) ia);
 	static void exec_action();
 
 	static void map_axis(const QString& key, InputState is);
-	static void bind_axis(const QString& key, DELEGATE_ICLASS(InputAxis)* ia);
+	static void bind_axis(const QString& key, DELEGATE_ICLASS(InputAxis) ia);
 	static void exec_axis();
 	static void exec_axis_mouse_move();
 	static void exec_axis_mouse_wheel();
@@ -66,8 +66,8 @@ private:
 	static QMap<QString, QVector<InputState> > action_maps;
 	static QMap<QString, QVector<InputState> > axis_maps;
 
-	static QMap<QString, DELEGATE_ICLASS(InputAction)*>	input_actions;
-	static QMap<QString, DELEGATE_ICLASS(InputAxis)*>	input_axis;
+	static QMap<QString, DELEGATE_ICLASS(InputAction)>	input_actions;
+	static QMap<QString, DELEGATE_ICLASS(InputAxis)>	input_axis;
 
 	static InputData	cur_input_data;
 	static InputState	cur_input_state;

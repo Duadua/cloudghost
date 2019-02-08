@@ -3,13 +3,13 @@
 
 // ===========================================================================
 
-ClassInfo::ClassInfo(const std::string& cn, DELEGATE_ICLASS(CObjectConstructor)* co) 
+ClassInfo::ClassInfo(const std::string& cn, DELEGATE_ICLASS(CObjectConstructor) co) 
 	: class_name(cn), constructor(co) {
 	ClassFactory::register_class(this);
 }
 
 const std::string ClassInfo::get_class_name() const { return class_name; }
-DELEGATE_ICLASS(CObjectConstructor)* ClassInfo::get_constructor() { return constructor; }
+DELEGATE_ICLASS(CObjectConstructor) ClassInfo::get_constructor() { return constructor; }
 
 // ===========================================================================
 
@@ -24,7 +24,7 @@ bool ClassFactory::register_class(ClassInfo* ci) {
 	return true;
 
 }
-CObject* ClassFactory::create_object(std::string name) {
+SPTR_CObject ClassFactory::create_object(std::string name) {
 	if (class_map->find(name) == class_map->end()) { return nullptr; }
 	if ((*class_map)[name]->get_constructor() == nullptr) { return nullptr; }
 	return (*class_map)[name]->get_constructor()->invoke();

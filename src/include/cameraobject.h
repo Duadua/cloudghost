@@ -15,3 +15,4 @@ public:
 private:
 	CameraComponent * camera_component;
 };
+DECLARE_AUTO_PTR(CameraObject)

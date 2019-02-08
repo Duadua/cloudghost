@@ -38,3 +38,4 @@ protected:
 	QVector3D rotation;
 	QVector3D scale;
 };
+DECLARE_AUTO_PTR(SceneComponent)
