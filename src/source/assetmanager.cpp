@@ -2,7 +2,7 @@
 #include <QDebug>
 
 QMap<QString, SPTR_Shader> AssetManager::map_shaders;
-QMap<QString, Mesh> AssetManager::map_meshs;
+QMap<QString, SPTR_Mesh> AssetManager::map_meshs;
 
 SPTR_Shader AssetManager::load_shader(const QString& key, const QString& v_path, const QString& f_path, const QString& g_path) {
 	map_shaders[key] = std::dynamic_pointer_cast<Shader>(ClassFactory::create_object("Shader")); // father to child class 
@@ -28,15 +28,15 @@ bool AssetManager::clear_shaders() {
 	return true;
 }
 
-Mesh& AssetManager::load_mesh(const QString& key, const QString path) {
-	map_meshs[key] = Mesh();
-	map_meshs[key].load(path);
+SPTR_Mesh AssetManager::load_mesh(const QString& key, const QString path) {
+	map_meshs[key] = std::dynamic_pointer_cast<Mesh>(ClassFactory::create_object("Mesh"));
+	map_meshs[key]->load(path);
 	return map_meshs[key];
 }
-Mesh& AssetManager::get_mesh(const QString& key) {
+SPTR_Mesh AssetManager::get_mesh(const QString& key) {
 	if (!map_meshs.count(key)) {
 		qDebug() << "¡¾error¡¿¡¾asset¡¿¡¾mesh¡¿no mesh calls " << key << endl;
-		return map_meshs[key] = Mesh();
+		return map_meshs[key] = nullptr;
 	}
 	return map_meshs[key];
 }

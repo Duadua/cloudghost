@@ -1,16 +1,11 @@
 #include "mesh.h"
-#include "renderdata.h"
 #include <QFile>
 #include <QDebug>
 
-Mesh::Mesh(){ }
+IMPLEMENT_CLASS(Mesh)
 
-Mesh::~Mesh() {
-	for (auto rd : render_datas) {
-		delete rd;
-	}
-
-}
+Mesh::Mesh() {}
+Mesh::~Mesh() {}
 
 void Mesh::load(const QString& path) {
 	// 获得文件路径后缀
@@ -55,7 +50,7 @@ void Mesh::load_mesh_with_txt(const QString& path) {
 	file.close();
 
 	// 用上面获得的数据初始化 render_data
-	RenderData* t_rd = new RenderData();
+	SPTR_RenderData t_rd = std::dynamic_pointer_cast<RenderData>(ClassFactory::create_object("RenderData"));
 	t_rd->init(t_v, t_i);
 	render_datas.append(t_rd);
 

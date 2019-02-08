@@ -1,5 +1,7 @@
 #include "renderdata.h"
 
+IMPLEMENT_CLASS(RenderData)
+
 RenderData::RenderData() : vao(0), vbo(0), ebo(0) {
 	core = QOpenGLContext::currentContext()->versionFunctions<QOpenGLFunctions_3_3_Core>();
 }

@@ -41,16 +41,16 @@ void CGLManager::initializeGL() {
 	// texture
 
 	// 生成 gameobject
-	auto mc = new MeshComponent(&AssetManager::get_mesh("cube"));
+	auto mc = new MeshComponent(AssetManager::get_mesh("cube").get());
 	cube_object = new GameObject(mc);
 
 	// gameobject 的另一个显示组件
-	auto mcc = new MeshComponent(&AssetManager::get_mesh("cube"));
+	auto mcc = new MeshComponent(AssetManager::get_mesh("cube").get());
 	mcc->attach_to(mc);
 	mcc->set_location(QVector3D(1.2f,0.0f, 0.0f));
 	mcc->set_scale(QVector3D(0.5f, 0.5f, 0.5f));
 
-	auto mccc = new MeshComponent(&AssetManager::get_mesh("cube"));
+	auto mccc = new MeshComponent(AssetManager::get_mesh("cube").get());
 	mccc->attach_to(mcc);
 	mccc->set_location(QVector3D(0.0f, 2.0f, 0.0f));
 	mccc->set_scale(QVector3D(0.5f, 0.5f, 0.f));

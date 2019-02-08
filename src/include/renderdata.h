@@ -1,5 +1,6 @@
 #pragma once
 
+#include "reflex.h"
 #include <QVector>
 #include <QVector2D>
 #include <QVector3D>
@@ -11,10 +12,11 @@ struct Vertex {
 	QVector2D tex_coord;
 };
 
-class RenderData {
+class RenderData : public CObject{
+	DECLARE_CLASS(RenderData)
 public:
 	RenderData();
-	~RenderData();
+	virtual ~RenderData();
 
 	void init(const QVector<Vertex>& v, const QVector<unsigned int>& i);
 	void draw();
@@ -29,5 +31,6 @@ private:
 
 	QOpenGLFunctions_3_3_Core * core;
 };
+DECLARE_AUTO_PTR(RenderData)
 
  

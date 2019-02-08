@@ -1,10 +1,11 @@
 #pragma once
 
+#include "reflex.h"
+#include "renderdata.h"
 #include <QVector>
 
-class RenderData;
-
-class Mesh {
+class Mesh : public CObject{
+	DECLARE_CLASS(Mesh)
 public:
 	Mesh();
 	~Mesh();
@@ -18,6 +19,7 @@ private:
 
 private:
 
-	QVector<RenderData*> render_datas;
+	QVector<SPTR_RenderData> render_datas;
 
 };
+DECLARE_AUTO_PTR(Mesh)
