@@ -10,7 +10,7 @@ class CPBR : public QMainWindow {
 
 public:
 	CPBR(QWidget *parent = Q_NULLPTR);
-
+	~CPBR();
 private:
 	void init_gl_view(int a, int b, int w, int h);
 	CGLManager* gl_view;

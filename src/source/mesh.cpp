@@ -50,7 +50,7 @@ void Mesh::load_mesh_with_txt(const QString& path) {
 	file.close();
 
 	// 用上面获得的数据初始化 render_data
-	SPTR_RenderData t_rd = std::dynamic_pointer_cast<RenderData>(ClassFactory::create_object("RenderData"));
+	auto t_rd = CREATE_CLASS(RenderData);
 	t_rd->init(t_v, t_i);
 	render_datas.append(t_rd);
 

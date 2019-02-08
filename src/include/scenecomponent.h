@@ -6,7 +6,8 @@
 #include <QVector3D>
 #include <QMatrix4x4>
 
-class SceneComponent : public Component {
+DECLARE_AUTO_PTR(SceneComponent)
+class SceneComponent : public Component, public std::enable_shared_from_this<SceneComponent> {
 	DECLARE_CLASS(SceneComponent)
 public:
 	SceneComponent();
@@ -14,7 +15,7 @@ public:
 
 	virtual void draw(SPTR_Shader shader);
 
-	void attach_to(SceneComponent* parent);
+	void attach_to(SPTR_SceneComponent parent);
 	
 	QMatrix4x4 get_transform();
 
@@ -27,10 +28,10 @@ public:
 	QVector3D get_scale();
 
 protected:
-	SceneComponent * parent_component;
-	QVector<SceneComponent*> child_components;
+	WPTR_SceneComponent parent_component;
+	QVector<SPTR_SceneComponent> child_components;
 
-	void add_child(SceneComponent* child);
+	void add_child(SPTR_SceneComponent child);
 
 protected:
 	// transform
@@ -38,4 +39,3 @@ protected:
 	QVector3D rotation;
 	QVector3D scale;
 };
-DECLARE_AUTO_PTR(SceneComponent)

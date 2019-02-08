@@ -6,6 +6,7 @@ CPBR::CPBR(QWidget *parent) : QMainWindow(parent) {
 
 	init_gl_view(50, 50, 800, 600);
 }
+CPBR::~CPBR() { delete gl_view; }
 
 void CPBR::init_gl_view(int a, int b, int w, int h) {
 	gl_view = new CGLManager(this);

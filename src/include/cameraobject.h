@@ -1,8 +1,7 @@
 #pragma once
 
 #include "gameobject.h"
-
-class CameraComponent;
+#include "cameracomponent.h"
 
 class CameraObject : public GameObject {
 	DECLARE_CLASS(CameraObject)
@@ -10,9 +9,9 @@ public:
 	CameraObject();
 	~CameraObject();
 
-	CameraComponent* get_camera_component();
+	SPTR_CameraComponent get_camera_component();
 
 private:
-	CameraComponent * camera_component;
+	SPTR_CameraComponent camera_component;
 };
 DECLARE_AUTO_PTR(CameraObject)

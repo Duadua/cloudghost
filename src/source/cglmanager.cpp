@@ -41,16 +41,20 @@ void CGLManager::initializeGL() {
 	// texture
 
 	// 生成 gameobject
-	auto mc = new MeshComponent(AssetManager::get_mesh("cube").get());
-	cube_object = new GameObject(mc);
+	auto mc = CREATE_CLASS(MeshComponent);
+	mc->set_mesh(AssetManager::get_mesh("cube"));
+	cube_object = CREATE_CLASS(GameObject);
+	cube_object->set_root(mc);
 
 	// gameobject 的另一个显示组件
-	auto mcc = new MeshComponent(AssetManager::get_mesh("cube").get());
+	auto mcc = CREATE_CLASS(MeshComponent);
+	mcc->set_mesh(AssetManager::get_mesh("cube"));
 	mcc->attach_to(mc);
 	mcc->set_location(QVector3D(1.2f,0.0f, 0.0f));
 	mcc->set_scale(QVector3D(0.5f, 0.5f, 0.5f));
 
-	auto mccc = new MeshComponent(AssetManager::get_mesh("cube").get());
+	auto mccc = CREATE_CLASS(MeshComponent);
+	mccc->set_mesh(AssetManager::get_mesh("cube"));
 	mccc->attach_to(mcc);
 	mccc->set_location(QVector3D(0.0f, 2.0f, 0.0f));
 	mccc->set_scale(QVector3D(0.5f, 0.5f, 0.f));
@@ -58,8 +62,7 @@ void CGLManager::initializeGL() {
 	// init action binders
 
 	// 初始化 camera
-	auto camera = new CameraObject();
-	auto free_camera = new FreeCamera();
+	free_camera = CREATE_CLASS(FreeCamera);
 	free_camera->bind_input();
 	main_camera = free_camera->get_camera_component();
 	free_camera->get_root()->set_location(QVector3D(0.0f, 1.5f, -3.0f));

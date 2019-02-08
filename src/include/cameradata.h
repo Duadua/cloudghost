@@ -1,8 +1,10 @@
 #pragma once
 
+#include "reflex.h"
 #include <QMatrix4x4>
 
-class CameraData {
+class CameraData : public CObject{
+	DECLARE_CLASS(CameraData)
 public:
 	CameraData();
 	~CameraData();
@@ -25,3 +27,5 @@ private:
 	QVector3D world_up;
 
 };
+DECLARE_AUTO_PTR(CameraData)
+

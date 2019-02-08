@@ -1,5 +1,8 @@
 #pragma once
 
+#include "freecamera.h"
+#include "gameobject.h"
+#include "cameracomponent.h"
 #include <memory>
 #include <QOpenGLWidget>
 #include <QOpenGLFunctions_3_3_core>
@@ -33,8 +36,10 @@ protected:
 private:
 	QOpenGLFunctions_3_3_Core * core;
 
-	class GameObject* cube_object;
-	class CameraComponent* main_camera;
+	SPTR_GameObject cube_object;
+	SPTR_CameraComponent main_camera;
+
+	SPTR_FreeCamera free_camera;
 
 public slots:
 	void mouse_pressed_over();

@@ -5,7 +5,7 @@ QMap<QString, SPTR_Shader> AssetManager::map_shaders;
 QMap<QString, SPTR_Mesh> AssetManager::map_meshs;
 
 SPTR_Shader AssetManager::load_shader(const QString& key, const QString& v_path, const QString& f_path, const QString& g_path) {
-	map_shaders[key] = std::dynamic_pointer_cast<Shader>(ClassFactory::create_object("Shader")); // father to child class 
+	map_shaders[key] = CREATE_CLASS(Shader);
 	map_shaders[key]->compile(v_path, f_path, g_path);
 	return map_shaders[key];
 }
@@ -29,7 +29,7 @@ bool AssetManager::clear_shaders() {
 }
 
 SPTR_Mesh AssetManager::load_mesh(const QString& key, const QString path) {
-	map_meshs[key] = std::dynamic_pointer_cast<Mesh>(ClassFactory::create_object("Mesh"));
+	map_meshs[key] = CREATE_CLASS(Mesh);
 	map_meshs[key]->load(path);
 	return map_meshs[key];
 }

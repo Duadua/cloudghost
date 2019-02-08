@@ -5,11 +5,9 @@
 IMPLEMENT_CLASS(CameraComponent)
 
 CameraComponent::CameraComponent() : camera_mesh(nullptr), camera_speed(0.05f){
-	camera_data = new CameraData();
+	camera_data = CREATE_CLASS(CameraData);
 }
-CameraComponent::~CameraComponent() {
-	delete camera_data;
-}
+CameraComponent::~CameraComponent() {}
 
 void CameraComponent::draw(SPTR_Shader shader) {
 

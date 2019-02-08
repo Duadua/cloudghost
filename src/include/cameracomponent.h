@@ -1,9 +1,8 @@
 #pragma once
 
+#include "mesh.h"
+#include "cameradata.h"
 #include "scenecomponent.h"
-
-class Mesh;
-class CameraData;
 
 class CameraComponent : public SceneComponent {
 	DECLARE_CLASS(CameraComponent)
@@ -19,9 +18,9 @@ public:
 	float get_camera_speed();
 
 private:
-	Mesh * camera_mesh;
+	SPTR_Mesh camera_mesh;
 
-	CameraData* camera_data;
+	SPTR_CameraData camera_data;
 
 	float camera_speed;
 };

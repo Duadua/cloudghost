@@ -2,6 +2,8 @@
 #include <QtMath>
 #include <QVector3D>
 
+IMPLEMENT_CLASS(CameraData)
+
 CameraData::CameraData() {}
 CameraData::~CameraData() {}
 

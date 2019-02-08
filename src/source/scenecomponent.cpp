@@ -2,24 +2,20 @@
 
 IMPLEMENT_CLASS(SceneComponent)
 
-SceneComponent::SceneComponent() : parent_component(nullptr), scale(QVector3D(1.0f, 1.0f, 1.0f)){}
-SceneComponent::~SceneComponent() {
-	for (auto cc : child_components) {
-		delete cc;
-	}
-}
+SceneComponent::SceneComponent() : scale(QVector3D(1.0f, 1.0f, 1.0f)) {}
+SceneComponent::~SceneComponent() {}
 
 void SceneComponent::draw(SPTR_Shader shader) {
 
 }
 
-void SceneComponent::attach_to(SceneComponent* parent) {
+void SceneComponent::attach_to(SPTR_SceneComponent parent) {
 	if (parent == nullptr) return;
-	parent->add_child(this);
+	parent->add_child(shared_from_this());
 	parent_component = parent;
 }
 
-void SceneComponent::add_child(SceneComponent* child) {
+void SceneComponent::add_child(SPTR_SceneComponent child) {
 	if (child != nullptr) child_components.append(child);
 }
 
@@ -33,9 +29,9 @@ QMatrix4x4 SceneComponent::get_transform() {
 	t_transform.scale(scale);
 
 	// 乘以 parent 的 transform
-	if (parent_component != nullptr) {
-		t_transform = parent_component->get_transform() * t_transform;
-	}
+	if (!parent_component.expired()) {
+		t_transform = parent_component.lock()->get_transform() * t_transform;
+	} // expired() 返回 false 时 lock() 会返回一个 shared_ptr 对象
 
 	return t_transform;
 }
@@ -46,22 +42,22 @@ void SceneComponent::set_scale(QVector3D s) { scale = s; }
 
 QVector3D SceneComponent::get_location() { 
 	QVector3D t_location = location;
-	if (parent_component != nullptr) {
-		t_location += parent_component->get_location();
+	if (!parent_component.expired()) {
+		t_location += parent_component.lock()->get_location();
 	}
 	return t_location; 
 }
 QVector3D SceneComponent::get_rotation() { 
 	QVector3D t_rotation = rotation;
-	if (parent_component != nullptr) {
-		t_rotation += parent_component->get_rotation();
+	if (!parent_component.expired()) {
+		t_rotation += parent_component.lock()->get_rotation();
 	}
 	return t_rotation; 
 }
 QVector3D SceneComponent::get_scale() { 
 	QVector3D t_scale = scale;
-	if (parent_component != nullptr) {
-		t_scale *= parent_component->get_scale();
+	if (!parent_component.expired()) {
+		t_scale *= parent_component.lock()->get_scale();
 	}
 	return t_scale; 
 }
