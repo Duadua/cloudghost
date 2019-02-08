@@ -15,7 +15,7 @@ public:
 	void set_root(SceneComponent* root);
 	SceneComponent* get_root();
 
-	virtual void draw(Shader& shader);
+	virtual void draw(SPTR_Shader shader);
 
 	virtual void bind_input();
 protected:

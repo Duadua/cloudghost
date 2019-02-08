@@ -9,7 +9,7 @@ SceneComponent::~SceneComponent() {
 	}
 }
 
-void SceneComponent::draw(Shader& shader) {
+void SceneComponent::draw(SPTR_Shader shader) {
 
 }
 

@@ -12,7 +12,7 @@ public:
 	SceneComponent();
 	virtual ~SceneComponent();
 
-	virtual void draw(Shader& shader);
+	virtual void draw(SPTR_Shader shader);
 
 	void attach_to(SceneComponent* parent);
 	

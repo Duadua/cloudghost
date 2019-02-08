@@ -2,13 +2,15 @@
 #include <QString>
 #include <QOpenGLShaderProgram>
 
+IMPLEMENT_CLASS(Shader)
+
 Shader::~Shader() { 
-	//delete shader_program;
+	delete shader_program;
 }
 
-Shader& Shader::use() { 
+SPTR_Shader Shader::use() { 
 	shader_program->bind(); 
-	return *this;
+	return shared_from_this();
 }
 
 void Shader::compile(const QString& v_path, const QString& f_path, const QString& g_path) {

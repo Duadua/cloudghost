@@ -11,7 +11,7 @@ CameraComponent::~CameraComponent() {
 	delete camera_data;
 }
 
-void CameraComponent::draw(Shader& shader) {
+void CameraComponent::draw(SPTR_Shader shader) {
 
 }
 

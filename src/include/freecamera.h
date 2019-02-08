@@ -12,7 +12,7 @@ public:
 	FreeCamera();
 	~FreeCamera();
 
-	virtual void bind_input();
+	virtual void bind_input() override;
 
 protected:
 

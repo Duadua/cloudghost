@@ -1,16 +1,19 @@
 #pragma once
 
 #include <QOpenGLShader>
+#include "reflex.h"
 
 class QString;
 class QOpenGLShaderProgram;
 
-class Shader {
+DECLARE_AUTO_PTR(Shader)
+class Shader : public CObject, public std::enable_shared_from_this<Shader> {
+	DECLARE_CLASS(Shader)
 public:
 	Shader() {}
-	~Shader();
+	virtual ~Shader();
 
-	Shader& use(); 
+	SPTR_Shader use(); 
 	void compile(const QString& v_path, const QString& f_path, const QString& g_path = nullptr);
 
 	void set_int(const QString& name, const GLuint& value);
@@ -23,4 +26,5 @@ private:
 private:
 	QOpenGLShaderProgram* shader_program;	// 管理 shader 数据
 };
+
 

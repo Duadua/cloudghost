@@ -11,7 +11,7 @@ public:
 	CameraComponent();
 	~CameraComponent();
 	
-	virtual void draw(Shader& shader) override;
+	virtual void draw(SPTR_Shader shader) override;
  
 	QMatrix4x4 get_view_mat();
 

@@ -69,9 +69,9 @@ void CGLManager::initializeGL() {
 	QMatrix4x4 projection, view;
 	view.translate(QVector3D(0.0f, 0.0f, 3.0f));
 	projection.perspective(45.0f, (GLfloat)width() / height(), 0.1f, 100.0f);
-	auto& t_shader = AssetManager::get_shader("triangle").use();
-	t_shader.set_mat4("view", view);
-	t_shader.set_mat4("projection", projection);
+	auto t_shader = AssetManager::get_shader("triangle")->use();
+	t_shader->set_mat4("view", view);
+	t_shader->set_mat4("projection", projection);
 
 	// gl 状态初始化
 	core->glEnable(GL_DEPTH_TEST);
@@ -92,11 +92,11 @@ void CGLManager::paintGL() {
 
 	// shader 动态参数赋值
 	//cube_object->get_root()->set_roataion(QVector3D(45.0f, 0.0f, 0.0f));
-	auto t_shader = AssetManager::get_shader("triangle").use();
-	t_shader.set_mat4("view", main_camera->get_view_mat());
+	auto t_shader = AssetManager::get_shader("triangle")->use();
+	t_shader->set_mat4("view", main_camera->get_view_mat());
 
 	// render
-	t_shader.use();
+	t_shader->use();
 	if (cube_object != nullptr) {
 		cube_object->draw(t_shader);
 	}

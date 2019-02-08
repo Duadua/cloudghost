@@ -10,7 +10,7 @@ public:
 	MeshComponent(Mesh* m = nullptr);
 	virtual ~MeshComponent();
 
-	virtual void draw(Shader& shader);
+	virtual void draw(SPTR_Shader shader) override;
 	void set_mesh(Mesh* m);
 
 private:

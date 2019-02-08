@@ -17,7 +17,7 @@ SceneComponent* GameObject::get_root() {
 	return root_component;
 }
 
-void GameObject::draw(Shader& shader) {
+void GameObject::draw(SPTR_Shader shader) {
 	if (root_component == nullptr) return;
 	root_component->draw(shader);
 }

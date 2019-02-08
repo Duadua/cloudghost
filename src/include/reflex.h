@@ -9,6 +9,7 @@ class ClassInfo;
 class ClassFactory;
 
 #define DECLARE_AUTO_PTR(name)											\
+class name;																\
 using SPTR_##name  = std::shared_ptr<##name##>;							\
 using WPTR_##name  = std::weak_ptr<##name##>;							\
 
@@ -21,7 +22,6 @@ using WPTR_##name  = std::weak_ptr<##name##>;							\
 
 // ===========================================================================
 
-class CObject;
 DECLARE_AUTO_PTR(CObject)
 class CObject {
 	DECLARE_CLASS(CObject)
@@ -43,7 +43,7 @@ ClassInfo* name::get_class_info() const { return &class_info_##name##; }
 #define IMPLEMENT_CLASS(name)											\
 IMPLEMENT_CINFO(name, name::create_object_##name##);					\
 SPTR_CObject name::create_object_##name##() {							\
-	return std::shared_ptr<name>(new name());							\
+	return SPTR_##name##(new name());									\
 }																		
 
 // ===========================================================================
