@@ -3,7 +3,7 @@
 #include <QtWidgets/QMainWindow>
 #include "ui_cpbr.h"
 
-class CGLManager;
+class CGLWidget;
 
 class CPBR : public QMainWindow {
 	Q_OBJECT
@@ -13,7 +13,7 @@ public:
 	~CPBR();
 private:
 	void init_gl_view(int a, int b, int w, int h);
-	CGLManager* gl_view;
+	CGLWidget* gl_view;
 
 private:
 	Ui::CPBRClass ui;

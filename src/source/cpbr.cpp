@@ -1,5 +1,5 @@
 #include "cpbr.h"
-#include "cglmanager.h"
+#include "cglwidget.h"
 
 CPBR::CPBR(QWidget *parent) : QMainWindow(parent) {
 	ui.setupUi(this);
@@ -9,6 +9,6 @@ CPBR::CPBR(QWidget *parent) : QMainWindow(parent) {
 CPBR::~CPBR() { delete gl_view; }
 
 void CPBR::init_gl_view(int a, int b, int w, int h) {
-	gl_view = new CGLManager(this);
+	gl_view = new CGLWidget(this);
 	gl_view->setGeometry(a, b, w, h);
 }

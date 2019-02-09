@@ -4,14 +4,14 @@
 #include <QMouseEvent>
 #include <QWheelEvent>
 #include <QOpenGLShader>	// 为了使用 wind32 的 ClipCursor
-#include "cglmanager.h"
+#include <QOpenGLWidget>
 #include "inputmanager.h"
 
 // mouse
-QTimer* InputManager::timer_mouse_pressed_over;
+QTimer InputManager::timer_mouse_pressed_over;
 
 // key
-QTimer* InputManager::timer_key_pressed_over;
+QTimer InputManager::timer_key_pressed_over;
 
 // binders
 
@@ -24,10 +24,10 @@ QMap<QString, DELEGATE_ICLASS(InputAction)> InputManager::input_actions;
 InputData InputManager::cur_input_data;
 InputState InputManager::cur_input_state;
 
-CGLManager* InputManager::gl;
+QOpenGLWidget* InputManager::gl;
 
 // mouse
-void InputManager::exec_mouse_pressed_event(QMouseEvent* event, CGLManager* gl) {
+void InputManager::exec_mouse_pressed_event(QMouseEvent* event, QOpenGLWidget* gl) {
 
 	cur_input_state.mouse_pressing = event->buttons();
 	cur_input_state.modifiers = event->modifiers();
@@ -37,8 +37,8 @@ void InputManager::exec_mouse_pressed_event(QMouseEvent* event, CGLManager* gl) 
 		cur_input_data.mouse_pressed_pos = event->pos();
 		cur_input_data.mouse_pressed_count = (cur_input_data.mouse_pressed_count + 1) % 3;
 
-		timer_mouse_pressed_over->stop();
-		timer_mouse_pressed_over->start(300);
+		timer_mouse_pressed_over.stop();
+		timer_mouse_pressed_over.start(300);
 
 		cur_input_data.mouse_last_pos = event->pos();
 		cur_input_data.mouse_cur_pos = event->pos();
@@ -46,7 +46,7 @@ void InputManager::exec_mouse_pressed_event(QMouseEvent* event, CGLManager* gl) 
 	
 	exec_axis_mouse_move();
 }
-void InputManager::exec_mouse_release_event(QMouseEvent* event, CGLManager* gl) {
+void InputManager::exec_mouse_release_event(QMouseEvent* event, QOpenGLWidget* gl) {
 
 	cur_input_state.mouse_released = event->button();
 	cur_input_state.mouse_pressing ^= event->button();
@@ -55,7 +55,7 @@ void InputManager::exec_mouse_release_event(QMouseEvent* event, CGLManager* gl) 
 
 	exec_axis_mouse_move();
 }
-void InputManager::exec_mouse_moveeee_event(QMouseEvent* event, CGLManager* gl) {
+void InputManager::exec_mouse_moveeee_event(QMouseEvent* event, QOpenGLWidget* gl) {
 
 	if (cur_input_data.mouse_move_ignore_count > 0) {
 		--cur_input_data.mouse_move_ignore_count;
@@ -69,32 +69,32 @@ void InputManager::exec_mouse_moveeee_event(QMouseEvent* event, CGLManager* gl) 
 	
 	exec_axis_mouse_move();
 }
-void InputManager::exec_mouse_wheeeel_event(QWheelEvent* event, CGLManager* gl) {
+void InputManager::exec_mouse_wheeeel_event(QWheelEvent* event, QOpenGLWidget* gl) {
 	cur_input_data.mouse_wheel_delta = event->delta();
 	exec_axis_mouse_wheel();
 }
 void InputManager::mouse_pressed_over() {
 	cur_input_data.mouse_pressed_count = 0;
-	timer_mouse_pressed_over->stop();
+	timer_mouse_pressed_over.stop();
 }
 
 // key
-void InputManager::exec_key_pressed_event(QKeyEvent* event, CGLManager* gl) {
+void InputManager::exec_key_pressed_event(QKeyEvent* event, QOpenGLWidget* gl) {
 
 	if (!event->isAutoRepeat()) {
 		cur_input_state.key_pressing.insert(event->key());
 
 		cur_input_state.key_pressed.insert(event->key());
 		cur_input_data.key_pressed_count = (cur_input_data.key_pressed_count + 1) % 3;
-		timer_key_pressed_over->stop();
-		timer_key_pressed_over->start(300);
+		timer_key_pressed_over.stop();
+		timer_key_pressed_over.start(300);
 
 		cur_input_state.modifiers = event->modifiers();
 		
 	} // 第一次按下
 	else { }
 }
-void InputManager::exec_key_release_event(QKeyEvent* event, CGLManager* gl) {
+void InputManager::exec_key_release_event(QKeyEvent* event, QOpenGLWidget* gl) {
 
 	if (!event->isAutoRepeat()) {
 		cur_input_state.key_pressing.remove(event->key());
@@ -106,7 +106,7 @@ void InputManager::exec_key_release_event(QKeyEvent* event, CGLManager* gl) {
 	else { }
 }
 void InputManager::key_pressed_over() {
-	timer_key_pressed_over->stop();
+	timer_key_pressed_over.stop();
 	cur_input_data.key_pressed_count = 0;
 }
 
@@ -268,25 +268,16 @@ bool InputManager::cursor_in_edge() {
 	return false;
 }
 
-void InputManager::init(CGLManager* cgl) {
+void InputManager::init(QOpenGLWidget* cgl) {
 	gl = cgl;
 
-	timer_mouse_pressed_over = new QTimer(gl);
-	gl->connect(timer_mouse_pressed_over, SIGNAL(timeout()), gl, SLOT(mouse_pressed_over()));
-
-	timer_key_pressed_over = new QTimer(gl);
-	gl->connect(timer_key_pressed_over, SIGNAL(timeout()), gl, SLOT(key_pressed_over()));
-
+	gl->connect(&timer_mouse_pressed_over, SIGNAL(timeout()), gl, SLOT(mouse_pressed_over()));
+	gl->connect(&timer_key_pressed_over, SIGNAL(timeout()), gl, SLOT(key_pressed_over()));
 }
 
-void InputManager::quit() {
-
-	timer_mouse_pressed_over->stop();
-	delete timer_mouse_pressed_over;
-
-	timer_key_pressed_over->stop();
-	delete timer_key_pressed_over;
-
+void InputManager::exit() {
+	timer_mouse_pressed_over.stop();
+	timer_key_pressed_over.stop();
 }
 
 const InputData& InputManager::get_input_data() { return cur_input_data; }

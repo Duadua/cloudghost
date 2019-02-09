@@ -14,9 +14,11 @@ public:
 	void set_root(SPTR_SceneComponent root);
 	SPTR_SceneComponent get_root();
 
+	virtual void bind_input();
+	virtual void begin_play();
+	virtual void tick();
 	virtual void draw(SPTR_Shader shader);
 
-	virtual void bind_input();
 protected:
 	SPTR_SceneComponent root_component;
 };

@@ -1,11 +1,14 @@
 #pragma once
 
+#include "reflex.h"
 #include "delegate.h"
 #include <QSet>
 #include <QFlag>
 
 class QTimer;
-class CGLManager;
+DECLARE_AUTO_PTR(QTimer)
+
+class QOpenGLWidget;
 class QKeyEvent;
 class QMosueEvent;
 
@@ -20,10 +23,10 @@ class InputManager {
 
 public:
 	// mouse
-	static void exec_mouse_pressed_event(QMouseEvent* event, CGLManager* gl);
-	static void exec_mouse_release_event(QMouseEvent* event, CGLManager* gl);
-	static void exec_mouse_moveeee_event(QMouseEvent* event, CGLManager* gl);
-	static void exec_mouse_wheeeel_event(QWheelEvent* event, CGLManager* gl);
+	static void exec_mouse_pressed_event(QMouseEvent* event, QOpenGLWidget* gl);
+	static void exec_mouse_release_event(QMouseEvent* event, QOpenGLWidget* gl);
+	static void exec_mouse_moveeee_event(QMouseEvent* event, QOpenGLWidget* gl);
+	static void exec_mouse_wheeeel_event(QWheelEvent* event, QOpenGLWidget* gl);
 	static void mouse_pressed_over(); // 鼠标单击结束
 	
 	// cursor
@@ -34,8 +37,8 @@ public:
 	static bool cursor_in_edge();
 
 	// key
-	static void exec_key_pressed_event(QKeyEvent* event, CGLManager* gl);
-	static void exec_key_release_event(QKeyEvent* event, CGLManager* gl);
+	static void exec_key_pressed_event(QKeyEvent* event, QOpenGLWidget* gl);
+	static void exec_key_release_event(QKeyEvent* event, QOpenGLWidget* gl);
 	static void key_pressed_over();
 
 	// binders
@@ -50,17 +53,17 @@ public:
 	static void exec_axis_mouse_wheel();
 	static void exec_axis_key_pressing();
 
-	static void init(CGLManager* gl);
-	static void quit();
+	static void init(QOpenGLWidget* gl);
+	static void exit();
 
 	static const InputData& get_input_data();							
 
 private:
 	// mouse
-	static QTimer* timer_mouse_pressed_over;					// 清空鼠标单击 flag 用
+	static QTimer timer_mouse_pressed_over;					// 清空鼠标单击 flag 用
 
 	// key
-	static QTimer* timer_key_pressed_over;						// 清空键盘单击 flag 用
+	static QTimer timer_key_pressed_over;						// 清空键盘单击 flag 用
 
 	// binders
 	static QMap<QString, QVector<InputState> > action_maps;
@@ -72,7 +75,7 @@ private:
 	static InputData	cur_input_data;
 	static InputState	cur_input_state;
 
-	static CGLManager*	gl;
+	static QOpenGLWidget*	gl;
 
 	InputManager(){}
 

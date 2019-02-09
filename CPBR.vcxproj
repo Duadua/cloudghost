@@ -121,7 +121,7 @@
     <ClCompile Include="src\source\cameracomponent.cpp" />
     <ClCompile Include="src\source\cameradata.cpp" />
     <ClCompile Include="src\source\cameraobject.cpp" />
-    <ClCompile Include="src\source\cglmanager.cpp" />
+    <ClCompile Include="src\source\cglwidget.cpp" />
     <ClCompile Include="src\source\component.cpp" />
     <ClCompile Include="src\source\cpbr.cpp" />
     <ClCompile Include="src\source\delegate.cpp" />
@@ -161,7 +161,7 @@
     <ClInclude Include="src\include\scenecomponent.h" />
     <ClInclude Include="src\include\shader.h" />
     <QtMoc Include="src\include\cpbr.h" />
-    <QtMoc Include="src\include\cglmanager.h" />
+    <QtMoc Include="src\include\cglwidget.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="resources\shaders\single.frag" />

@@ -9,11 +9,11 @@ GameObject::~GameObject() {}
 void GameObject::set_root(SPTR_SceneComponent root) { root_component = root; }
 SPTR_SceneComponent GameObject::get_root() { return root_component; }
 
+void GameObject::bind_input() {}
+void GameObject::begin_play() {}
+void GameObject::tick() {}
 void GameObject::draw(SPTR_Shader shader) {
 	if (root_component == nullptr) return;
 	root_component->draw(shader);
 }
 
-void GameObject::bind_input() {
-
-}

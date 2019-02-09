@@ -43,9 +43,6 @@
     <ClCompile Include="src\source\assetmanager.cpp">
       <Filter>src\source</Filter>
     </ClCompile>
-    <ClCompile Include="src\source\cglmanager.cpp">
-      <Filter>src\source</Filter>
-    </ClCompile>
     <ClCompile Include="src\source\cpbr.cpp">
       <Filter>src\source</Filter>
     </ClCompile>
@@ -96,6 +93,9 @@
     </ClCompile>
     <ClCompile Include="demo\mygamemanager.cpp">
       <Filter>demo</Filter>
+    </ClCompile>
+    <ClCompile Include="src\source\cglwidget.cpp">
+      <Filter>src\source</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -162,10 +162,10 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <QtMoc Include="src\include\cglmanager.h">
+    <QtMoc Include="src\include\cpbr.h">
       <Filter>src\include</Filter>
     </QtMoc>
-    <QtMoc Include="src\include\cpbr.h">
+    <QtMoc Include="src\include\cglwidget.h">
       <Filter>src\include</Filter>
     </QtMoc>
   </ItemGroup>

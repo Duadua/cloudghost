@@ -1,22 +1,14 @@
 #pragma once
 
-#include "freecamera.h"
-#include "gameobject.h"
-#include "cameracomponent.h"
 #include <memory>
 #include <QOpenGLWidget>
-#include <QOpenGLFunctions_3_3_core>
 
-class QMouseEvent;
-class QWheelEvent;
-class QKeyEvent;
-
-class CGLManager : public QOpenGLWidget {
+class CGLWidget : public QOpenGLWidget {
 	Q_OBJECT
 
 public:
-	CGLManager(QWidget *parent = Q_NULLPTR);
-	~CGLManager();
+	CGLWidget(QWidget *parent = Q_NULLPTR);
+	~CGLWidget();
 
 protected:
 	virtual void initializeGL() override;
@@ -32,14 +24,6 @@ protected:
 
 	virtual void keyPressEvent(QKeyEvent *event) override;
 	virtual void keyReleaseEvent(QKeyEvent* event) override;
-
-private:
-	QOpenGLFunctions_3_3_Core * core;
-
-	SPTR_GameObject cube_object;
-	SPTR_CameraComponent main_camera;
-
-	SPTR_FreeCamera free_camera;
 
 public slots:
 	void mouse_pressed_over();

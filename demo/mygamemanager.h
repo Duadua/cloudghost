@@ -2,15 +2,13 @@
 
 #include "gamemanager.h"
 
-
-class MyGameManager : public GameManager {
+class MyGameManager : private GameManager {
 public:
 
-	virtual void pre_init();
-	virtual void post_init();
-
-	virtual void pre_draw();
-	virtual void post_draw();
+	virtual void load_asset() override;
+	virtual void begin_play(QOpenGLWidget* gl) override;
+	virtual void tick() override;
+	virtual void map_input() override;
 
 private:
 
