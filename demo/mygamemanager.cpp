@@ -30,14 +30,14 @@ void MyGameManager::begin_play(QOpenGLWidget* gl) {
 	auto mcc = CREATE_CLASS(MeshComponent);
 	mcc->set_mesh(AssetManager::get_mesh("cube"));
 	mcc->attach_to(mc);
-	mcc->set_location(QVector3D(1.2f, 0.0f, 0.0f));
+	mcc->set_location(QVector3D(2.0f, 0.0f, 0.0f));
 	mcc->set_scale(QVector3D(0.5f, 0.5f, 0.5f));
 
 	auto mccc = CREATE_CLASS(MeshComponent);
 	mccc->set_mesh(AssetManager::get_mesh("cube"));
 	mccc->attach_to(mcc);
 	mccc->set_location(QVector3D(0.0f, 2.0f, 0.0f));
-	mccc->set_scale(QVector3D(0.5f, 0.5f, 0.f));
+	mccc->set_scale(QVector3D(0.5f, 0.5f, 0.5f));
 
 	// shader ¾²Ì¬²ÎÊý¸³Öµ
 	QMatrix4x4 projection, view;
