@@ -5,7 +5,7 @@
 std::vector<MVertex> MeshTxtGen::vertices;
 std::vector<uint> MeshTxtGen::indices;
 
-bool MeshTxtGen::gen_mesh_txt(const std::string& path, MeshTxtGenType type) {
+bool MeshTxtGen::gen_mesh_txt(const std::string& path, MeshTxtGenType type, uint depth) {
 	std::ofstream out;
 	out.open("resources/models/txt/" + path, std::ios::trunc | std::ios::out);
 	if (!out.is_open()) { return false; }
@@ -20,7 +20,7 @@ bool MeshTxtGen::gen_mesh_txt(const std::string& path, MeshTxtGenType type) {
 	case TRIANGLE_RIGHT:	gen_triangle_right(); break;
 	case TRIANGLE_REGULAR:	gen_triangle_regular(); break;
 	case RECTANGLE:			gen_rect(); break;
-	case CIRCLE:			gen_circle(); break;
+	case CIRCLE:			gen_circle(depth); break;
 	default:				break;
 	}
 
@@ -83,8 +83,15 @@ void MeshTxtGen::gen_rect() {
 	add_one_face(0, 1, 2);
 	add_one_face(0, 2, 3);
 }
-void MeshTxtGen::gen_circle() {
-
+void MeshTxtGen::gen_circle(uint depth) {
+	MVertex o(CVector3D(0.0f, 0.0f, 0.0f));
+	add_one_vertex(o);
+	float rad = 2.0f*CMath::pi / depth;
+	for (uint i = 0; i < depth; ++i) {
+		MVertex t(CVector3D(std::cos(i*rad), std::sin(i*rad), 0.0f));
+		add_one_vertex(t);
+	}
+	for (uint i = 1; i <= depth; ++i) { add_one_face(0, i, i%depth + 1); }
 }
 
 void MeshTxtGen::write_to_file(std::ofstream& out) {

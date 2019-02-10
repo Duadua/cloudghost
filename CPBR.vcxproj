@@ -176,6 +176,7 @@
     <None Include="resources\shaders\single.vert" />
   </ItemGroup>
   <ItemGroup>
+    <Text Include="resources\models\txt\circle.txt" />
     <Text Include="resources\models\txt\cube.txt" />
     <Text Include="resources\models\txt\rect.txt" />
     <Text Include="resources\models\txt\triangle_regular.txt" />
