@@ -30,7 +30,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <OutDir>$(SolutionDir)$(Platform)\$(Configuration)\</OutDir>
-    <IncludePath>D:\cpbr\CPBR\src\include;$(IncludePath)</IncludePath>
+    <IncludePath>D:\cpbr\CPBR\src\include;D:\cpbr\CPBR\math\include;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <OutDir>$(SolutionDir)$(Platform)\$(Configuration)\</OutDir>
@@ -117,6 +117,9 @@
   <ItemGroup>
     <ClCompile Include="demo\main.cpp" />
     <ClCompile Include="demo\mygamemanager.cpp" />
+    <ClCompile Include="math\source\cmath.cpp" />
+    <ClCompile Include="math\source\cvector2d.cpp" />
+    <ClCompile Include="math\source\cvector3d.cpp" />
     <ClCompile Include="src\source\assetmanager.cpp" />
     <ClCompile Include="src\source\cameracomponent.cpp" />
     <ClCompile Include="src\source\cameradata.cpp" />
@@ -135,6 +138,7 @@
     <ClCompile Include="src\source\renderdata.cpp" />
     <ClCompile Include="src\source\scenecomponent.cpp" />
     <ClCompile Include="src\source\shader.cpp" />
+    <ClCompile Include="tools\meshtxtgen.cpp" />
   </ItemGroup>
   <ItemGroup>
     <QtUic Include="resources\ui\cpbr.ui" />
@@ -144,6 +148,9 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="demo\mygamemanager.h" />
+    <ClInclude Include="math\include\cmath.h" />
+    <ClInclude Include="math\include\cvector2d.h" />
+    <ClInclude Include="math\include\cvector3d.h" />
     <ClInclude Include="src\include\assetmanager.h" />
     <ClInclude Include="src\include\cameracomponent.h" />
     <ClInclude Include="src\include\cameradata.h" />
@@ -160,6 +167,7 @@
     <ClInclude Include="src\include\renderdata.h" />
     <ClInclude Include="src\include\scenecomponent.h" />
     <ClInclude Include="src\include\shader.h" />
+    <ClInclude Include="tools\meshtxtgen.h" />
     <QtMoc Include="src\include\cpbr.h" />
     <QtMoc Include="src\include\cglwidget.h" />
   </ItemGroup>
@@ -169,6 +177,7 @@
   </ItemGroup>
   <ItemGroup>
     <Text Include="resources\models\txt\cube.txt" />
+    <Text Include="resources\models\txt\triangle.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Condition="Exists('$(QtMsBuild)\qt.targets')">

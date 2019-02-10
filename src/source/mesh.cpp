@@ -43,8 +43,8 @@ void Mesh::load_mesh_with_txt(const QString& path) {
 			if (list.length() > 8) v.tex_coord = QVector2D(list[7].toFloat(), list[8].toFloat());
 			t_v.append(v);
 		}
-		else if (list[0].compare("i") == 0) {
-			for (int i = 1; i < list.length(); ++i) t_i.append(list[i].toInt());
+		else if (list[0].compare("f") == 0) {
+			for (int i = 1; i < list.length(); ++i) t_i.append(list[i].toUInt());
 		}
 	}
 	file.close();

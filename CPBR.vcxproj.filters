@@ -35,6 +35,18 @@
     <Filter Include="resources\models\txt">
       <UniqueIdentifier>{fea95977-4664-415e-9373-3ace895b5919}</UniqueIdentifier>
     </Filter>
+    <Filter Include="tools">
+      <UniqueIdentifier>{855b95af-044c-4cd4-80b9-a783cf4bb919}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="math">
+      <UniqueIdentifier>{33411b9f-29f5-4d87-b08a-0d1b6f7f9540}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="math\include">
+      <UniqueIdentifier>{81afbf39-2866-4ced-8fbf-12cc348c44b6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="math\source">
+      <UniqueIdentifier>{9de2265f-1a76-4ec1-a441-6663d38f0ac8}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="demo\main.cpp">
@@ -96,6 +108,18 @@
     </ClCompile>
     <ClCompile Include="src\source\cglwidget.cpp">
       <Filter>src\source</Filter>
+    </ClCompile>
+    <ClCompile Include="tools\meshtxtgen.cpp">
+      <Filter>tools</Filter>
+    </ClCompile>
+    <ClCompile Include="math\source\cvector2d.cpp">
+      <Filter>math\source</Filter>
+    </ClCompile>
+    <ClCompile Include="math\source\cmath.cpp">
+      <Filter>math\source</Filter>
+    </ClCompile>
+    <ClCompile Include="math\source\cvector3d.cpp">
+      <Filter>math\source</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -160,6 +184,18 @@
     <ClInclude Include="demo\mygamemanager.h">
       <Filter>demo</Filter>
     </ClInclude>
+    <ClInclude Include="tools\meshtxtgen.h">
+      <Filter>tools</Filter>
+    </ClInclude>
+    <ClInclude Include="math\include\cvector2d.h">
+      <Filter>math\include</Filter>
+    </ClInclude>
+    <ClInclude Include="math\include\cmath.h">
+      <Filter>math\include</Filter>
+    </ClInclude>
+    <ClInclude Include="math\include\cvector3d.h">
+      <Filter>math\include</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="src\include\cpbr.h">
@@ -179,6 +215,9 @@
   </ItemGroup>
   <ItemGroup>
     <Text Include="resources\models\txt\cube.txt">
+      <Filter>resources\models\txt</Filter>
+    </Text>
+    <Text Include="resources\models\txt\triangle.txt">
       <Filter>resources\models\txt</Filter>
     </Text>
   </ItemGroup>

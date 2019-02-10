@@ -25,6 +25,8 @@ public:
 DECLARE_AUTO_PTR(A)
 */
 
+#include "tools/meshtxtgen.h"
+
 int main(int argc, char *argv[]) {
 	QApplication a(argc, argv);
 	
@@ -53,6 +55,12 @@ int main(int argc, char *argv[]) {
 	sp_a->run();
 	sp_t->run();
 	*/
+
+
+	// gen mesh txt
+	if(!MeshTxtGen::gen_mesh_txt("triangle.txt", MeshTxtGenType::TRIANGLE)) {
+		qDebug() << "cannot gen txt" << endl;
+	}
 
 	MyGameManager gm;
 	CPBR w;

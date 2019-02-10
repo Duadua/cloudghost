@@ -11,6 +11,7 @@ void MyGameManager::load_asset() {
 
 	// 原料 -- 顶点数据
 	AssetManager::load_mesh("cube", ":/asset/models/txt/cube.txt");
+	AssetManager::load_mesh("triangle", ":/asset/models/txt/triangle.txt");
 
 	// texture
 
@@ -23,7 +24,7 @@ void MyGameManager::begin_play(QOpenGLWidget* gl) {
 
 	// gameobject 的 root
 	auto mc = CREATE_CLASS(MeshComponent);
-	mc->set_mesh(AssetManager::get_mesh("cube"));
+	mc->set_mesh(AssetManager::get_mesh("triangle"));
 	cube_object->set_root(mc);
 
 	// gameobject 的另一个显示组件
