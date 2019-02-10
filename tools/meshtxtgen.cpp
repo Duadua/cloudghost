@@ -17,10 +17,11 @@ bool MeshTxtGen::gen_mesh_txt(const std::string& path, MeshTxtGenType type, uint
 	indices.clear();
 
 	switch (type) {
+	case CIRCLE:			gen_circle(depth); break;
+	case RECTANGLE:			gen_rect(); break;
 	case TRIANGLE_RIGHT:	gen_triangle_right(); break;
 	case TRIANGLE_REGULAR:	gen_triangle_regular(); break;
-	case RECTANGLE:			gen_rect(); break;
-	case CIRCLE:			gen_circle(depth); break;
+	case CUBE:				gen_cube(); break;
 	default:				break;
 	}
 
@@ -63,7 +64,6 @@ void MeshTxtGen::gen_triangle_regular() {
 
 	add_one_face(0, 1, 2);
 }
-
 void MeshTxtGen::gen_rect() {
 	MVertex a(CVector3D(-0.5f, -0.5f, 0.0f));
 	MVertex b(CVector3D(0.5f, -0.5f, 0.0f));
@@ -88,11 +88,115 @@ void MeshTxtGen::gen_circle(uint depth) {
 	add_one_vertex(o);
 	float rad = 2.0f*CMath::pi / depth;
 	for (uint i = 0; i < depth; ++i) {
-		MVertex t(CVector3D(std::cos(i*rad), std::sin(i*rad), 0.0f));
-		t.tex_coord = t.position.xy();
+		MVertex t(CVector3D(0.5f*std::cos(i*rad), 0.5f*std::sin(i*rad), 0.0f));
+		t.tex_coord = t.position.xy() + CVector2D(0.5f);
 		add_one_vertex(t);
 	}
 	for (uint i = 1; i <= depth; ++i) { add_one_face(0, i, i%depth + 1); }
+}
+
+void MeshTxtGen::gen_cube() {
+	// front
+	{
+		MVertex a(CVector3D(-0.5f, -0.5f, -0.5f));
+		MVertex b(CVector3D(0.5f, -0.5f, -0.5f));
+		MVertex c(CVector3D(0.5f, 0.5f, -0.5f));
+		MVertex d(CVector3D(-0.5f, 0.5f, -0.5f));
+
+		a.tex_coord = a.position.xy() + CVector2D(0.5f);
+		b.tex_coord = b.position.xy() + CVector2D(0.5f);
+		c.tex_coord = c.position.xy() + CVector2D(0.5f);
+		d.tex_coord = d.position.xy() + CVector2D(0.5f);
+
+		add_one_vertex(a);	// 0
+		add_one_vertex(b);	// 1
+		add_one_vertex(c);	// 2
+		add_one_vertex(d);	// 3
+
+		add_one_face(0, 1, 2);
+		add_one_face(0, 2, 3);
+	}
+
+	// back
+	{
+		MVertex a(CVector3D(0.5f, -0.5f, 0.5f), CVector3D(), CVector2D(0.0f, 0.0f));
+		MVertex b(CVector3D(-0.5f, -0.5f, 0.5f), CVector3D(), CVector2D(1.0f, 0.0f));
+		MVertex c(CVector3D(-0.5f, 0.5f, 0.5f), CVector3D(), CVector2D(1.0f, 1.0f));
+		MVertex d(CVector3D(0.5f, 0.5f, 0.5f), CVector3D(), CVector2D(0.0f, 1.0f));
+
+		add_one_vertex(a);	// 4
+		add_one_vertex(b);	// 5
+		add_one_vertex(c);	// 6
+		add_one_vertex(d);	// 7
+
+		add_one_face(4, 5, 6);
+		add_one_face(4, 6, 7);
+	}
+
+	// right
+	{
+		MVertex a(CVector3D(0.5f, -0.5f, -0.5f), CVector3D(), CVector2D(0.0f, 0.0f));
+		MVertex b(CVector3D(0.5f, -0.5f, 0.5f), CVector3D(), CVector2D(1.0f, 0.0f));
+		MVertex c(CVector3D(0.5f, 0.5f, 0.5f), CVector3D(), CVector2D(1.0f, 1.0f));
+		MVertex d(CVector3D(0.5f, 0.5f, -0.5f), CVector3D(), CVector2D(0.0f, 1.0f));
+
+		add_one_vertex(a);	// 8
+		add_one_vertex(b);	// 9
+		add_one_vertex(c);	// 10
+		add_one_vertex(d);	// 11
+
+		add_one_face(8, 9, 10);
+		add_one_face(8, 10, 11);
+	}
+	
+	// left
+	{
+		MVertex a(CVector3D(-0.5f, -0.5f, 0.5f), CVector3D(), CVector2D(0.0f, 0.0f));
+		MVertex b(CVector3D(-0.5f, -0.5f, -0.5f), CVector3D(), CVector2D(1.0f, 0.0f));
+		MVertex c(CVector3D(-0.5f, 0.5f, -0.5f), CVector3D(), CVector2D(1.0f, 1.0f));
+		MVertex d(CVector3D(-0.5f, 0.5f, 0.5f), CVector3D(), CVector2D(0.0f, 1.0f));
+
+		add_one_vertex(a);	// 12
+		add_one_vertex(b);	// 13
+		add_one_vertex(c);	// 14
+		add_one_vertex(d);	// 15
+
+		add_one_face(12, 13, 14);
+		add_one_face(12, 14, 15);
+	}
+
+	// top
+	{
+		MVertex a(CVector3D(-0.5f, 0.5f, -0.5f), CVector3D(), CVector2D(0.0f, 0.0f));
+		MVertex b(CVector3D(0.5f, 0.5f, -0.5f), CVector3D(), CVector2D(1.0f, 0.0f));
+		MVertex c(CVector3D(0.5f, 0.5f, 0.5f), CVector3D(), CVector2D(1.0f, 1.0f));
+		MVertex d(CVector3D(-0.5f, 0.5f, 0.5f), CVector3D(), CVector2D(0.0f, 1.0f));
+
+		add_one_vertex(a);	// 16
+		add_one_vertex(b);	// 17
+		add_one_vertex(c);	// 18
+		add_one_vertex(d);	// 19
+
+		add_one_face(16, 17, 18);
+		add_one_face(16, 18, 19);
+	}
+
+	// bottom
+	{
+		MVertex a(CVector3D(-0.5f, -0.5f, 0.5f), CVector3D(), CVector2D(0.0f, 0.0f));
+		MVertex b(CVector3D(0.5f, -0.5f, 0.5f), CVector3D(), CVector2D(1.0f, 0.0f));
+		MVertex c(CVector3D(0.5f, -0.5f, -0.5f), CVector3D(), CVector2D(1.0f, 1.0f));
+		MVertex d(CVector3D(-0.5f, -0.5f, -0.5f), CVector3D(), CVector2D(0.0f, 1.0f));
+
+		add_one_vertex(a);	// 20
+		add_one_vertex(b);	// 21
+		add_one_vertex(c);	// 22
+		add_one_vertex(d);	// 23
+
+		add_one_face(20, 21, 22);
+		add_one_face(20, 22, 23);
+	}
+	
 }
 
 void MeshTxtGen::write_to_file(std::ofstream& out) {

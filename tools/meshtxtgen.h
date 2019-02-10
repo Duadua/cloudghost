@@ -5,10 +5,15 @@
 #include <vector>
 
 enum MeshTxtGenType {
+	CIRCLE,						// 圆
+	RECTANGLE,					// 矩形
 	TRIANGLE_RIGHT,				// 直角
 	TRIANGLE_REGULAR,			// 等边
-	RECTANGLE,
-	CIRCLE
+
+	CUBE,						// 立方体
+	CONE,						// 锥体
+	SPHERE,						// 球体
+	CYLINDER					// 柱体
 };
 
 struct MVertex {
@@ -27,10 +32,14 @@ public:
 private:
 	MeshTxtGen() {}
 
+	// 2d
 	static void gen_triangle_right();
 	static void gen_triangle_regular();
 	static void gen_rect();
 	static void gen_circle(uint depth = 5);
+
+	// 3d
+	static void gen_cube();
 
 private:
 	static void write_to_file(std::ofstream& out);
