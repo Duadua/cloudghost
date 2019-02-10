@@ -89,6 +89,7 @@ void MeshTxtGen::gen_circle(uint depth) {
 	float rad = 2.0f*CMath::pi / depth;
 	for (uint i = 0; i < depth; ++i) {
 		MVertex t(CVector3D(std::cos(i*rad), std::sin(i*rad), 0.0f));
+		t.tex_coord = t.position.xy();
 		add_one_vertex(t);
 	}
 	for (uint i = 1; i <= depth; ++i) { add_one_face(0, i, i%depth + 1); }
