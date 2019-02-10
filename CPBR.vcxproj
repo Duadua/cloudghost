@@ -177,7 +177,8 @@
   </ItemGroup>
   <ItemGroup>
     <Text Include="resources\models\txt\cube.txt" />
-    <Text Include="resources\models\txt\triangle.txt" />
+    <Text Include="resources\models\txt\triangle_regular.txt" />
+    <Text Include="resources\models\txt\triangle_right.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Condition="Exists('$(QtMsBuild)\qt.targets')">

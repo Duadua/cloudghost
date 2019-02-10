@@ -217,7 +217,10 @@
     <Text Include="resources\models\txt\cube.txt">
       <Filter>resources\models\txt</Filter>
     </Text>
-    <Text Include="resources\models\txt\triangle.txt">
+    <Text Include="resources\models\txt\triangle_regular.txt">
+      <Filter>resources\models\txt</Filter>
+    </Text>
+    <Text Include="resources\models\txt\triangle_right.txt">
       <Filter>resources\models\txt</Filter>
     </Text>
   </ItemGroup>

@@ -5,7 +5,8 @@
 #include <vector>
 
 enum MeshTxtGenType {
-	TRIANGLE,
+	TRIANGLE_RIGHT,				// 直角
+	TRIANGLE_REGULAR,			// 等边
 	RECTANGLE,
 	CIRCLE
 };
@@ -17,22 +18,6 @@ struct MVertex {
 	MVertex(CVector3D pos = CVector3D(), CVector3D norm = CVector3D(), CVector2D coord = CVector2D()) 
 	: position(pos), normal(norm), tex_coord(coord) {}
 };
-struct MTriangle {
-	MVertex a, b, c;
-	CVector3D normal;
-	MTriangle(MVertex i, MVertex j, MVertex k) : a(i), b(j), c(k) {
-		sort(); 
-		gen_normal();
-	}
-
-	void sort() {
-		CVector3D ab(b.position - a.position);
-		CVector3D ac(c.position - a.position);
-		float t = ab.xy().cross(ac.xy());
-		if (t < 1e-3) { MVertex d = b; b = c; c = d; }
-	} // 逆时针排序 
-	void gen_normal() { normal = (b.position-a.position).cross(c.position - a.position); } // 生成法线
-};
 
 class MeshTxtGen {
 public:
@@ -42,7 +27,8 @@ public:
 private:
 	MeshTxtGen() {}
 
-	static void gen_triangle();
+	static void gen_triangle_right();
+	static void gen_triangle_regular();
 	static void gen_rect();
 	static void gen_circle();
 

@@ -17,10 +17,11 @@ bool MeshTxtGen::gen_mesh_txt(const std::string& path, MeshTxtGenType type) {
 	indices.clear();
 
 	switch (type) {
-	case TRIANGLE:	gen_triangle(); break;
-	case RECTANGLE:	gen_rect(); break;
-	case CIRCLE:	gen_circle(); break;
-	default:		break;
+	case TRIANGLE_RIGHT:	gen_triangle_right(); break;
+	case TRIANGLE_REGULAR:	gen_triangle_regular(); break;
+	case RECTANGLE:			gen_rect(); break;
+	case CIRCLE:			gen_circle(); break;
+	default:				break;
 	}
 
 	cac_normal();
@@ -30,13 +31,29 @@ bool MeshTxtGen::gen_mesh_txt(const std::string& path, MeshTxtGenType type) {
 	return true;
 }
 
-void MeshTxtGen::gen_triangle() {
+void MeshTxtGen::gen_triangle_right() {
 	MVertex a(CVector3D(-0.5f, -0.5f, 0.0f));
 	MVertex b(CVector3D( 0.5f, -0.5f, 0.0f));
 	MVertex c(CVector3D(-0.5f,  0.5f, 0.0f));
-	a.tex_coord = a.position.xy();
-	b.tex_coord = b.position.xy();
-	c.tex_coord = c.position.xy();
+	a.tex_coord = a.position.xy() + CVector2D(0.5f);
+	b.tex_coord = b.position.xy() + CVector2D(0.5f);
+	c.tex_coord = c.position.xy() + CVector2D(0.5f);
+
+	add_one_vertex(a);
+	add_one_vertex(b);
+	add_one_vertex(c);
+
+	add_one_face(0, 1, 2);
+
+}
+void MeshTxtGen::gen_triangle_regular() {
+	float h = std::sin(CMath::deg_to_rad(60.0f));
+	MVertex a(CVector3D(-0.5f, -0.5f, 0.0f));
+	MVertex b(CVector3D(0.5f, -0.5f, 0.0f));
+	MVertex c(CVector3D(0.0f, -0.5f + h, 0.0f));
+	a.tex_coord = a.position.xy() + CVector2D(0.5f);
+	b.tex_coord = b.position.xy() + CVector2D(0.5f);
+	c.tex_coord = c.position.xy() + CVector2D(0.5f);
 
 	add_one_vertex(a);
 	add_one_vertex(b);
@@ -44,8 +61,11 @@ void MeshTxtGen::gen_triangle() {
 
 	add_one_face(0, 1, 2);
 }
-void MeshTxtGen::gen_rect() {
 
+void MeshTxtGen::gen_rect() {
+	MVertex a(CVector3D(-0.5f, -0.5f, 0.0f));
+	MVertex b(CVector3D(0.5f, -0.5f, 0.0f));
+	MVertex c(CVector3D(-0.5f, 0.5f, 0.0f));
 }
 void MeshTxtGen::gen_circle() {
 
