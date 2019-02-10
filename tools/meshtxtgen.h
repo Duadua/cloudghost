@@ -27,7 +27,7 @@ struct MVertex {
 class MeshTxtGen {
 public:
 	~MeshTxtGen() {}
-	static bool gen_mesh_txt(const std::string& path, MeshTxtGenType type, uint depth = 5);
+	static bool gen_mesh_txt(const std::string& path, MeshTxtGenType type, uint depth = 32);
 
 private:
 	MeshTxtGen() {}
@@ -36,10 +36,13 @@ private:
 	static void gen_triangle_right();
 	static void gen_triangle_regular();
 	static void gen_rect();
-	static void gen_circle(uint depth = 5);
+	static void gen_circle(uint depth = 32);
 
 	// 3d
 	static void gen_cube();
+	static void gen_cone(uint depth = 32);
+	static void gen_sphere(uint depth = 5);
+	static void gen_cylinder(uint depth = 32);
 
 private:
 	static void write_to_file(std::ofstream& out);

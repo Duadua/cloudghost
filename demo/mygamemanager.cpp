@@ -10,11 +10,13 @@ void MyGameManager::load_asset() {
 	AssetManager::load_shader("triangle", ":/asset/shaders/single.vert", ":/asset/shaders/single.frag");
 
 	// 原料 -- 顶点数据
-	AssetManager::load_mesh("cube", ":/asset/models/txt/cube.txt");
 	AssetManager::load_mesh("triangle_right", ":/asset/models/txt/triangle_right.txt");
 	AssetManager::load_mesh("triangle_regular", ":/asset/models/txt/triangle_regular.txt");
 	AssetManager::load_mesh("rect", ":/asset/models/txt/rect.txt");
 	AssetManager::load_mesh("circle", ":/asset/models/txt/circle.txt");
+
+	AssetManager::load_mesh("cube", ":/asset/models/txt/cube.txt");
+	AssetManager::load_mesh("cone", ":/asset/models/txt/cone.txt");
 
 	// texture
 
@@ -27,18 +29,18 @@ void MyGameManager::begin_play(QOpenGLWidget* gl) {
 
 	// gameobject 的 root
 	auto mc = CREATE_CLASS(MeshComponent);
-	mc->set_mesh(AssetManager::get_mesh("circle"));
+	mc->set_mesh(AssetManager::get_mesh("cube"));
 	cube_object->set_root(mc);
 
 	// gameobject 的另一个显示组件
 	auto mcc = CREATE_CLASS(MeshComponent);
-	mcc->set_mesh(AssetManager::get_mesh("cube"));
+	mcc->set_mesh(AssetManager::get_mesh("circle"));
 	mcc->attach_to(mc);
 	mcc->set_location(QVector3D(2.0f, 0.0f, 0.0f));
 	mcc->set_scale(QVector3D(0.5f, 0.5f, 0.5f));
 
 	auto mccc = CREATE_CLASS(MeshComponent);
-	mccc->set_mesh(AssetManager::get_mesh("cube"));
+	mccc->set_mesh(AssetManager::get_mesh("cone"));
 	mccc->attach_to(mcc);
 	mccc->set_location(QVector3D(0.0f, 2.0f, 0.0f));
 	mccc->set_scale(QVector3D(0.5f, 0.5f, 0.5f));

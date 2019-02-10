@@ -229,5 +229,8 @@
     <Text Include="resources\models\txt\circle.txt">
       <Filter>resources\models\txt</Filter>
     </Text>
+    <Text Include="resources\models\txt\cone.txt">
+      <Filter>resources\models\txt</Filter>
+    </Text>
   </ItemGroup>
 </Project>

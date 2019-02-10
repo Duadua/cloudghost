@@ -22,6 +22,9 @@ bool MeshTxtGen::gen_mesh_txt(const std::string& path, MeshTxtGenType type, uint
 	case TRIANGLE_RIGHT:	gen_triangle_right(); break;
 	case TRIANGLE_REGULAR:	gen_triangle_regular(); break;
 	case CUBE:				gen_cube(); break;
+	case CONE:				gen_cone(depth); break;
+	case SPHERE:			gen_sphere(depth); break;
+	case CYLINDER:			gen_cylinder(depth); break;
 	default:				break;
 	}
 
@@ -84,7 +87,7 @@ void MeshTxtGen::gen_rect() {
 	add_one_face(0, 2, 3);
 }
 void MeshTxtGen::gen_circle(uint depth) {
-	MVertex o(CVector3D(0.0f, 0.0f, 0.0f));
+	MVertex o(CVector3D(0.0f, 0.0f, 0.0f), CVector3D(), CVector2D(0.5f));
 	add_one_vertex(o);
 	float rad = 2.0f*CMath::pi / depth;
 	for (uint i = 0; i < depth; ++i) {
@@ -198,6 +201,40 @@ void MeshTxtGen::gen_cube() {
 	}
 	
 }
+void MeshTxtGen::gen_cone(uint depth) {
+	// bottom
+	{
+		MVertex o(CVector3D(0.0f, 0.0f, 0.0f), CVector3D(), CVector2D(0.5f));
+		add_one_vertex(o);
+		float rad = 2.0f*CMath::pi / depth;
+		for (uint i = 0; i < depth; ++i) {
+			MVertex t(CVector3D(0.5f*std::cos(i*rad), 0.0f, 0.5f*std::sin(i*rad)));
+			t.tex_coord = t.position.xz() + CVector2D(0.5f);
+			add_one_vertex(t);
+		}
+		for (uint i = 1; i <= depth; ++i) { add_one_face(0, i%depth + 1, i); }
+	}
+
+	// side
+	{
+		MVertex o(CVector3D(0.0f, 1.0f, 0.0f), CVector3D(), CVector2D(0.5f));
+		add_one_vertex(o);
+		float rad = 2.0f*CMath::pi / depth;
+		for (uint i = 0; i < depth; ++i) {
+			MVertex t(CVector3D(0.5f*std::cos(i*rad), 0.0f, 0.5f*std::sin(i*rad)));
+			t.tex_coord = t.position.xz() + CVector2D(0.5f);
+			add_one_vertex(t);
+		}
+		for (uint i = 1; i <= depth; ++i) { add_one_face(depth + 1, i + depth + 1, i%depth + 1 + depth + 1); }
+	}
+}
+void MeshTxtGen::gen_sphere(uint depth) {
+	if (depth > 5) depth = 5;
+
+}
+void MeshTxtGen::gen_cylinder(uint depth) {
+
+}
 
 void MeshTxtGen::write_to_file(std::ofstream& out) {
 	for (auto i : vertices) { write_one_vertex(out, i); }
@@ -229,10 +266,9 @@ void MeshTxtGen::write_one_face(std::ofstream& out, uint a, uint b, uint c) {
 
 void MeshTxtGen::add_one_vertex(const MVertex& x) { vertices.push_back(x); }
 void MeshTxtGen::add_one_face(uint a, uint b, uint c) {
-	CVector3D ab(vertices[b].position - vertices[a].position);
-	CVector3D ac(vertices[c].position - vertices[a].position);
-	float t = ab.xy().cross(ac.xy());
-	if (t < 1e-3) { std::swap(b, c); }		// 保证逆时针
+	// 利用混合积保持三角面片的一致性顺序 -- 逆时针
+	float det = vertices[a].position.mix(vertices[b].position, vertices[c].position);
+	if (det > 1e-3) { std::swap(b, c); }		
 
 	indices.push_back(a); indices.push_back(b); indices.push_back(c);
 }

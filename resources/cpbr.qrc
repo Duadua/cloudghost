@@ -8,5 +8,6 @@
         <file>models/txt/triangle_regular.txt</file>
         <file>models/txt/rect.txt</file>
         <file>models/txt/circle.txt</file>
+        <file>models/txt/cone.txt</file>
     </qresource>
 </RCC>

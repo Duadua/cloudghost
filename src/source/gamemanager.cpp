@@ -26,6 +26,7 @@ void GameManager::init(QOpenGLWidget* gl) {
 	// gl ×´Ì¬³õÊ¼»¯
 	core->glEnable(GL_DEPTH_TEST);
 	//core->glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);	
+	core->glEnable(GL_CULL_FACE);
 }
 void GameManager::draw(QOpenGLWidget* gl) {
 
