@@ -6,5 +6,6 @@
         <file>models/txt/cube.txt</file>
         <file>models/txt/triangle_right.txt</file>
         <file>models/txt/triangle_regular.txt</file>
+        <file>models/txt/rect.txt</file>
     </qresource>
 </RCC>

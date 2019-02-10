@@ -35,6 +35,7 @@ void MeshTxtGen::gen_triangle_right() {
 	MVertex a(CVector3D(-0.5f, -0.5f, 0.0f));
 	MVertex b(CVector3D( 0.5f, -0.5f, 0.0f));
 	MVertex c(CVector3D(-0.5f,  0.5f, 0.0f));
+
 	a.tex_coord = a.position.xy() + CVector2D(0.5f);
 	b.tex_coord = b.position.xy() + CVector2D(0.5f);
 	c.tex_coord = c.position.xy() + CVector2D(0.5f);
@@ -51,6 +52,7 @@ void MeshTxtGen::gen_triangle_regular() {
 	MVertex a(CVector3D(-0.5f, -0.5f, 0.0f));
 	MVertex b(CVector3D(0.5f, -0.5f, 0.0f));
 	MVertex c(CVector3D(0.0f, -0.5f + h, 0.0f));
+
 	a.tex_coord = a.position.xy() + CVector2D(0.5f);
 	b.tex_coord = b.position.xy() + CVector2D(0.5f);
 	c.tex_coord = c.position.xy() + CVector2D(0.5f);
@@ -65,7 +67,21 @@ void MeshTxtGen::gen_triangle_regular() {
 void MeshTxtGen::gen_rect() {
 	MVertex a(CVector3D(-0.5f, -0.5f, 0.0f));
 	MVertex b(CVector3D(0.5f, -0.5f, 0.0f));
-	MVertex c(CVector3D(-0.5f, 0.5f, 0.0f));
+	MVertex c(CVector3D(0.5f, 0.5f, 0.0f));
+	MVertex d(CVector3D(-0.5f, 0.5f, 0.0f));
+
+	a.tex_coord = a.position.xy() + CVector2D(0.5f);
+	b.tex_coord = b.position.xy() + CVector2D(0.5f);
+	c.tex_coord = c.position.xy() + CVector2D(0.5f);
+	d.tex_coord = d.position.xy() + CVector2D(0.5f);
+
+	add_one_vertex(a);
+	add_one_vertex(b);
+	add_one_vertex(c);
+	add_one_vertex(d);
+
+	add_one_face(0, 1, 2);
+	add_one_face(0, 2, 3);
 }
 void MeshTxtGen::gen_circle() {
 

@@ -57,7 +57,7 @@ int main(int argc, char *argv[]) {
 	*/
 
 	// gen mesh txt
-	if(!MeshTxtGen::gen_mesh_txt("triangle_regular.txt", MeshTxtGenType::TRIANGLE_REGULAR)) {
+	if(!MeshTxtGen::gen_mesh_txt("rect.txt", MeshTxtGenType::RECTANGLE)) {
 		qDebug() << "cannot gen txt" << endl;
 	}
 
