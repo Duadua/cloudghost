@@ -29,9 +29,9 @@ public:
 
 	float dot(const CVector3D& b) const;
 	CVector3D cross(const CVector3D& b) const;
-	float mix(const CVector3D& b, const CVector3D& c);	// 混合积 -- 有向六面体休积
+	float mix(const CVector3D& b, const CVector3D& c) const;	// 混合积 -- 有向六面体休积
 
-	void normalize();
+	CVector3D normalize();
 
 	float length() const;
 

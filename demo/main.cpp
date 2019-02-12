@@ -57,7 +57,7 @@ int main(int argc, char *argv[]) {
 	*/
 
 	// gen mesh txt
-	if (!MeshTxtGen::gen_mesh_txt("cylinder.txt", MeshTxtGenType::CYLINDER, 32)) {
+	if (!MeshTxtGen::gen_mesh_txt("sphere.txt", MeshTxtGenType::SPHERE, 4)) {
 		qDebug() << "cannot gen txt" << endl;
 	}
 

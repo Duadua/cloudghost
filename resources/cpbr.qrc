@@ -10,5 +10,6 @@
         <file>models/txt/circle.txt</file>
         <file>models/txt/cone.txt</file>
         <file>models/txt/cylinder.txt</file>
+        <file>models/txt/sphere.txt</file>
     </qresource>
 </RCC>

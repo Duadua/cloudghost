@@ -1,6 +1,7 @@
 #include "meshtxtgen.h"
 #include <iostream>
 #include <fstream>
+#include <QDebug>
 
 std::vector<MVertex> MeshTxtGen::vertices;
 std::vector<uint> MeshTxtGen::indices;
@@ -229,7 +230,62 @@ void MeshTxtGen::gen_cone(uint depth) {
 	}
 }
 void MeshTxtGen::gen_sphere(uint depth) {
-	if (depth > 5) depth = 5;
+	depth = CMath::clamp<uint>(depth, 1, 5);
+
+	// first depth
+	{
+		--depth;
+		MVertex a(CVector3D(1.0f, 0.0f, 0.0f));
+		MVertex b(CVector3D(0.0f, 0.0f, 1.0f));
+		MVertex c(CVector3D(0.0f, 1.0f, 0.0f));
+
+		a.tex_coord = CVector2D(0.0f, 0.5f);
+		b.tex_coord = CVector2D(0.0f, 1.0f);
+		c.tex_coord = CVector2D(0.25f, 0.5f);
+
+		add_one_vertex(a);
+		add_one_vertex(b);
+		add_one_vertex(c);
+		
+		add_one_face(0, 1, 2);
+			
+	}
+
+	// loop depth
+	std::vector<MVertex> t_vetices;
+	std::vector<uint> t_indices;
+	while (depth--) {
+		t_vetices.clear();
+		t_indices.clear();
+
+		for (uint i = 0; i < indices.size(); i += 3) {
+			auto a = vertices[indices[i + 0]];
+			auto b = vertices[indices[i + 1]];
+			auto c = vertices[indices[i + 2]];
+
+			MVertex d = MVertex((a.position + b.position).normalize());
+			MVertex e = MVertex((b.position + c.position).normalize());
+			MVertex f = MVertex((c.position + a.position).normalize());
+
+			add_one_vertex(t_vetices, a);
+			add_one_vertex(t_vetices, b);
+			add_one_vertex(t_vetices, c);
+
+			add_one_vertex(t_vetices, d);
+			add_one_vertex(t_vetices, e);
+			add_one_vertex(t_vetices, f);
+			
+			add_one_face(t_vetices, t_indices, i*2 + 0, i*2 + 3, i*2 + 5);
+			add_one_face(t_vetices, t_indices, i*2 + 3, i*2 + 1, i*2 + 4);
+			add_one_face(t_vetices, t_indices, i*2 + 5, i*2 + 4, i*2 + 2);
+			add_one_face(t_vetices, t_indices, i*2 + 4, i*2 + 5, i*2 + 3);
+
+		}
+
+		vertices.clear(); indices.clear();
+		vertices.assign(t_vetices.begin(), t_vetices.end());
+		indices.assign(t_indices.begin(), t_indices.end());
+	}
 
 }
 void MeshTxtGen::gen_cylinder(uint depth) {
@@ -246,7 +302,7 @@ void MeshTxtGen::gen_cylinder(uint depth) {
 		for (uint i = 1; i <= depth; ++i) { add_one_face(0, i, i%depth + 1); }
 	}
 	
-	uint cnt = 1 + depth;
+	uint cnt = depth + 1;
 	// bottom
 	{
 		MVertex o(CVector3D(0.0f, 0.0f, 0.0f), CVector3D(), CVector2D(0.5f));
@@ -309,12 +365,20 @@ void MeshTxtGen::write_one_face(std::ofstream& out, uint a, uint b, uint c) {
 }
 
 void MeshTxtGen::add_one_vertex(const MVertex& x) { vertices.push_back(x); }
+void MeshTxtGen::add_one_vertex(std::vector<MVertex>& v, const MVertex& x) { v.push_back(x); }
 void MeshTxtGen::add_one_face(uint a, uint b, uint c) {
 	// 利用混合积保持三角面片的一致性顺序 -- 逆时针
 	float det = vertices[a].position.mix(vertices[b].position, vertices[c].position);
-	if (det > 1e-3) { std::swap(b, c); }		
+	//if (det > 1e-3) { std::swap(b, c); }		
 
 	indices.push_back(a); indices.push_back(b); indices.push_back(c);
+}
+void MeshTxtGen::add_one_face(const std::vector<MVertex>& v, std::vector<uint>& idx, uint a, uint b, uint c) {
+	// 利用混合积保持三角面片的一致性顺序 -- 逆时针
+	float det = v[a].position.mix(v[b].position, v[c].position);
+	//if (det > 1e-3) { std::swap(b, c); }		
+
+	idx.push_back(a); idx.push_back(b); idx.push_back(c);
 }
 
 void MeshTxtGen::cac_normal() {

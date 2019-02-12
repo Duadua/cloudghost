@@ -24,7 +24,7 @@ public:
 	float dot(const CVector2D& b) const;
 	float cross(const CVector2D& b) const;
 
-	void normalize();
+	CVector2D normalize();
 
 	float length() const;
 

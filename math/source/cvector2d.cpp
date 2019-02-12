@@ -16,6 +16,6 @@ CVector2D CVector2D::operator +=(const CVector2D& b) { _x += b.x(); _y += b.y();
 float CVector2D::dot(const CVector2D& b) const { return _x * b.x() + _y * b.y(); }
 float CVector2D::cross(const CVector2D& b) const { return _x * b.y() - b.x()*_y; }
 
-void CVector2D::normalize() { _x /= length(); _y /= length(); }
+CVector2D CVector2D::normalize() { float len = length(); _x /= len; _y /= len; return (*this); }
 
 float CVector2D::length() const { return std::sqrt(_x*_x + _y*_y); }

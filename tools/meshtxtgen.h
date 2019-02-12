@@ -51,7 +51,9 @@ private:
 	static void write_one_face(std::ofstream& out, uint a, uint b, uint c);
 
 	static void add_one_vertex(const MVertex& x);
+	static void add_one_vertex(std::vector<MVertex>& v, const MVertex& x);
 	static void add_one_face(uint a, uint b, uint c);
+	static void add_one_face(const std::vector<MVertex>& v, std::vector<uint>& idx, uint a, uint b, uint c);
 
 	static void cac_normal();
 
