@@ -121,6 +121,9 @@
     <ClCompile Include="tools\meshloader.cpp">
       <Filter>tools</Filter>
     </ClCompile>
+    <ClCompile Include="src\source\material.cpp">
+      <Filter>src\source</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <QtUic Include="resources\ui\cpbr.ui">
@@ -194,6 +197,12 @@
       <Filter>math\include</Filter>
     </ClInclude>
     <ClInclude Include="tools\meshloader.h">
+      <Filter>tools</Filter>
+    </ClInclude>
+    <ClInclude Include="src\include\material.h">
+      <Filter>src\include</Filter>
+    </ClInclude>
+    <ClInclude Include="tools\textureloader.h">
       <Filter>tools</Filter>
     </ClInclude>
   </ItemGroup>
