@@ -17,6 +17,7 @@ void MyGameManager::load_asset() {
 
 	AssetManager::load_mesh("cube", ":/asset/models/txt/cube.txt");
 	AssetManager::load_mesh("cone", ":/asset/models/txt/cone.txt");
+	AssetManager::load_mesh("cylinder", ":/asset/models/txt/cylinder.txt");
 
 	// texture
 
@@ -34,7 +35,7 @@ void MyGameManager::begin_play(QOpenGLWidget* gl) {
 
 	// gameobject 的另一个显示组件
 	auto mcc = CREATE_CLASS(MeshComponent);
-	mcc->set_mesh(AssetManager::get_mesh("circle"));
+	mcc->set_mesh(AssetManager::get_mesh("cylinder"));
 	mcc->attach_to(mc);
 	mcc->set_location(QVector3D(2.0f, 0.0f, 0.0f));
 	mcc->set_scale(QVector3D(0.5f, 0.5f, 0.5f));

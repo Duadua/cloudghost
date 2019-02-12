@@ -179,6 +179,7 @@
     <Text Include="resources\models\txt\circle.txt" />
     <Text Include="resources\models\txt\cone.txt" />
     <Text Include="resources\models\txt\cube.txt" />
+    <Text Include="resources\models\txt\cylinder.txt" />
     <Text Include="resources\models\txt\rect.txt" />
     <Text Include="resources\models\txt\triangle_regular.txt" />
     <Text Include="resources\models\txt\triangle_right.txt" />
