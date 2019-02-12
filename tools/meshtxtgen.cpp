@@ -260,7 +260,7 @@ void MeshTxtGen::gen_sphere(uint depth) {
 
 			a.tex_coord = CVector2D(0.25f, 0.5f);
 			b.tex_coord = CVector2D(0.50f, 0.5f);
-			c.tex_coord = CVector2D(0.0f, 1.0f);
+			c.tex_coord = CVector2D(0.25f, 1.0f);
 
 			add_one_vertex(a);
 			add_one_vertex(b);
@@ -275,104 +275,102 @@ void MeshTxtGen::gen_sphere(uint depth) {
 			MVertex b(CVector3D(0.0f, 0.0f, -1.0f));
 			MVertex c(CVector3D(0.0f, 1.0f, 0.0f));
 
-			a.tex_coord = CVector2D(0.50f, 0.5f);
-			b.tex_coord = CVector2D(0.75f, 0.5f);
-			c.tex_coord = CVector2D(0.0f, 1.0f);
+a.tex_coord = CVector2D(0.50f, 0.5f);
+b.tex_coord = CVector2D(0.75f, 0.5f);
+c.tex_coord = CVector2D(0.50f, 1.0f);
 
-			add_one_vertex(a);
-			add_one_vertex(b);
-			add_one_vertex(c);
+add_one_vertex(a);
+add_one_vertex(b);
+add_one_vertex(c);
 
-			add_one_face(6, 7, 8);
+add_one_face(6, 7, 8);
 		}
 
 		// x y -z
 		{
-			MVertex a(CVector3D(0.0f, 0.0f,-1.0f));
-			MVertex b(CVector3D(1.0f, 0.0f, 0.0f));
-			MVertex c(CVector3D(0.0f, 1.0f, 0.0f));
+		MVertex a(CVector3D(0.0f, 0.0f, -1.0f));
+		MVertex b(CVector3D(1.0f, 0.0f, 0.0f));
+		MVertex c(CVector3D(0.0f, 1.0f, 0.0f));
 
-			a.tex_coord = CVector2D(0.75f, 0.5f);
-			b.tex_coord = CVector2D(1.00f, 0.5f);
-			c.tex_coord = CVector2D(0.0f, 1.0f);
+		a.tex_coord = CVector2D(0.75f, 0.5f);
+		b.tex_coord = CVector2D(1.00f, 0.5f);
+		c.tex_coord = CVector2D(1.00f, 1.0f);
 
-			add_one_vertex(a);
-			add_one_vertex(b);
-			add_one_vertex(c);
+		add_one_vertex(a);
+		add_one_vertex(b);
+		add_one_vertex(c);
 
-			add_one_face(9, 10, 11);
+		add_one_face(9, 10, 11);
 		}
 
-		/*
 		// x -y z
 		{
 			MVertex a(CVector3D(1.0f, 0.0f, 0.0f));
-			MVertex b(CVector3D(0.0f, 0.0f, 1.0f));
-			MVertex c(CVector3D(0.0f, 1.0f, 0.0f));
+			MVertex b(CVector3D(0.0f, -1.0f, 0.0f));
+			MVertex c(CVector3D(0.0f, 0.0f, 1.0f));
 
 			a.tex_coord = CVector2D(0.0f, 0.5f);
-			b.tex_coord = CVector2D(0.0f, 1.0f);
+			b.tex_coord = CVector2D(0.0f, -1.0f);
 			c.tex_coord = CVector2D(0.25f, 0.5f);
 
 			add_one_vertex(a);
 			add_one_vertex(b);
 			add_one_vertex(c);
 
-			add_one_face(0, 1, 2);
+			add_one_face(12, 13, 14);
 		}
 
 		// -x -y z
 		{
-			MVertex a(CVector3D(1.0f, 0.0f, 0.0f));
-			MVertex b(CVector3D(0.0f, 0.0f, 1.0f));
-			MVertex c(CVector3D(0.0f, 1.0f, 0.0f));
+			MVertex a(CVector3D(0.0f, 0.0f, 1.0f));
+			MVertex b(CVector3D(0.0f, -1.0f, 0.0f));
+			MVertex c(CVector3D(-1.0f, 0.0f, 0.0f));
 
-			a.tex_coord = CVector2D(0.0f, 0.5f);
-			b.tex_coord = CVector2D(0.0f, 1.0f);
-			c.tex_coord = CVector2D(0.25f, 0.5f);
+			a.tex_coord = CVector2D(0.25f, 0.5f);
+			b.tex_coord = CVector2D(0.25f, -1.0f);
+			c.tex_coord = CVector2D(0.50f, 0.5f);
 
 			add_one_vertex(a);
 			add_one_vertex(b);
 			add_one_vertex(c);
 
-			add_one_face(0, 1, 2);
+			add_one_face(15, 16, 17);
 		}
-
 
 		// -x -y -z
 		{
-			MVertex a(CVector3D(1.0f, 0.0f, 0.0f));
-			MVertex b(CVector3D(0.0f, 0.0f, 1.0f));
-			MVertex c(CVector3D(0.0f, 1.0f, 0.0f));
+			MVertex a(CVector3D(-1.0f, 0.0f, 0.0f));
+			MVertex b(CVector3D(0.0f, -1.0f, 0.0f));
+			MVertex c(CVector3D(0.0f, 0.0f, -1.0f));
 
-			a.tex_coord = CVector2D(0.0f, 0.5f);
-			b.tex_coord = CVector2D(0.0f, 1.0f);
-			c.tex_coord = CVector2D(0.25f, 0.5f);
+			a.tex_coord = CVector2D(0.50f, 0.5f);
+			b.tex_coord = CVector2D(0.75f, -1.0f);
+			c.tex_coord = CVector2D(0.75f, 0.5f);
 
 			add_one_vertex(a);
 			add_one_vertex(b);
 			add_one_vertex(c);
 
-			add_one_face(0, 1, 2);
+			add_one_face(18, 19, 20);
 		}
 
 		// x -y -z
 		{
-			MVertex a(CVector3D(1.0f, 0.0f, 0.0f));
-			MVertex b(CVector3D(0.0f, 0.0f, 1.0f));
-			MVertex c(CVector3D(0.0f, 1.0f, 0.0f));
+			MVertex a(CVector3D(0.0f, 0.0f, -1.0f));
+			MVertex b(CVector3D(0.0f, -1.0f, 0.0f));
+			MVertex c(CVector3D(1.0f, 0.0f, 0.0f));
 
-			a.tex_coord = CVector2D(0.0f, 0.5f);
-			b.tex_coord = CVector2D(0.0f, 1.0f);
-			c.tex_coord = CVector2D(0.25f, 0.5f);
+			a.tex_coord = CVector2D(0.75f, 0.5f);
+			b.tex_coord = CVector2D(1.00f, -1.0f);
+			c.tex_coord = CVector2D(1.00f, 0.5f);
 
 			add_one_vertex(a);
 			add_one_vertex(b);
 			add_one_vertex(c);
 
-			add_one_face(0, 1, 2);
+			add_one_face(21, 22, 23);
 		}
-		*/
+
 	}
 
 	// loop depth
