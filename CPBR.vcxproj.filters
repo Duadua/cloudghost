@@ -109,9 +109,6 @@
     <ClCompile Include="src\source\cglwidget.cpp">
       <Filter>src\source</Filter>
     </ClCompile>
-    <ClCompile Include="tools\meshtxtgen.cpp">
-      <Filter>tools</Filter>
-    </ClCompile>
     <ClCompile Include="math\source\cvector2d.cpp">
       <Filter>math\source</Filter>
     </ClCompile>
@@ -120,6 +117,9 @@
     </ClCompile>
     <ClCompile Include="math\source\cvector3d.cpp">
       <Filter>math\source</Filter>
+    </ClCompile>
+    <ClCompile Include="tools\meshloader.cpp">
+      <Filter>tools</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -184,9 +184,6 @@
     <ClInclude Include="demo\mygamemanager.h">
       <Filter>demo</Filter>
     </ClInclude>
-    <ClInclude Include="tools\meshtxtgen.h">
-      <Filter>tools</Filter>
-    </ClInclude>
     <ClInclude Include="math\include\cvector2d.h">
       <Filter>math\include</Filter>
     </ClInclude>
@@ -195,6 +192,9 @@
     </ClInclude>
     <ClInclude Include="math\include\cvector3d.h">
       <Filter>math\include</Filter>
+    </ClInclude>
+    <ClInclude Include="tools\meshloader.h">
+      <Filter>tools</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

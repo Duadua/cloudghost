@@ -138,7 +138,7 @@
     <ClCompile Include="src\source\renderdata.cpp" />
     <ClCompile Include="src\source\scenecomponent.cpp" />
     <ClCompile Include="src\source\shader.cpp" />
-    <ClCompile Include="tools\meshtxtgen.cpp" />
+    <ClCompile Include="tools\meshloader.cpp" />
   </ItemGroup>
   <ItemGroup>
     <QtUic Include="resources\ui\cpbr.ui" />
@@ -167,7 +167,7 @@
     <ClInclude Include="src\include\renderdata.h" />
     <ClInclude Include="src\include\scenecomponent.h" />
     <ClInclude Include="src\include\shader.h" />
-    <ClInclude Include="tools\meshtxtgen.h" />
+    <ClInclude Include="tools\meshloader.h" />
     <QtMoc Include="src\include\cpbr.h" />
     <QtMoc Include="src\include\cglwidget.h" />
   </ItemGroup>

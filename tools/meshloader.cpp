@@ -1,18 +1,25 @@
-#include "meshtxtgen.h"
-#include <iostream>
+#include "meshloader.h"
+#include <memory>
+#include <sstream>
 #include <fstream>
 #include <QDebug>
 
 std::vector<MVertex> MeshTxtGen::vertices;
 std::vector<uint> MeshTxtGen::indices;
 
-bool MeshTxtGen::gen_mesh_txt(const std::string& path, MeshTxtGenType type, uint depth) {
-	std::ofstream out;
-	out.open("resources/models/txt/" + path, std::ios::trunc | std::ios::out);
-	if (!out.is_open()) { return false; }
-	out.fill('0');
-	out.precision(6);
-	out.setf(std::ios::fixed, std::ios::floatfield);
+bool MeshTxtGen::gen_mesh_txt(std::string& res, MeshTxtGenType type, uint depth, SourceType source_type) {
+	std::ostream* out;
+	std::ofstream fs;
+	std::stringstream ss;
+	if (source_type == SourceType::BY_FILE) {
+		fs.open("resources/models/txt/" + res, std::ios::trunc | std::ios::out);
+		if (!fs.is_open()) { return false; }
+		out = &fs;
+	}
+	else if (source_type == SourceType::BY_STRING) { ss.clear(); out = &ss; }
+	out->fill('0');
+	out->precision(6);
+	out->setf(std::ios::fixed, std::ios::floatfield);
 
 	vertices.clear();
 	indices.clear();
@@ -30,9 +37,11 @@ bool MeshTxtGen::gen_mesh_txt(const std::string& path, MeshTxtGenType type, uint
 	}
 
 	cac_normal();
-	write_to_file(out);
 
-	out.close();
+	write((*out));
+	if (source_type == SourceType::BY_FILE)		{ fs.close(); }
+	else if (source_type == SourceType::BY_STRING) { res = ss.str(); ss.clear(); }
+
 	return true;
 }
 
@@ -459,7 +468,7 @@ void MeshTxtGen::gen_cylinder(uint depth) {
 	}
 }
 
-void MeshTxtGen::write_to_file(std::ofstream& out) {
+void MeshTxtGen::write(std::ostream& out) {
 	for (auto i : vertices) { write_one_vertex(out, i); }
 	out << std::endl << std::endl;
 
@@ -467,7 +476,8 @@ void MeshTxtGen::write_to_file(std::ofstream& out) {
 		write_one_face(out, indices[i+0], indices[i+1], indices[i+2]);
 	}
 }
-void MeshTxtGen::write_one_vertex(std::ofstream& out, const MVertex& vertex) {
+
+void MeshTxtGen::write_one_vertex(std::ostream& out, const MVertex& vertex) {
 	out << "v ";
 	if (vertex.position.x() >=0.0f) out << " "; out << vertex.position.x() << ", ";
 	if (vertex.position.y() >= 0.0f) out << " "; out << vertex.position.y() << ", ";
@@ -481,7 +491,7 @@ void MeshTxtGen::write_one_vertex(std::ofstream& out, const MVertex& vertex) {
 	if (vertex.tex_coord.y() >= 0.0f) out << " "; out << vertex.tex_coord.y() << ", ";
 	out << std::endl;
 }
-void MeshTxtGen::write_one_face(std::ofstream& out, uint a, uint b, uint c) {
+void MeshTxtGen::write_one_face(std::ostream& out, uint a, uint b, uint c) {
 	out << "f ";
 	out << a << ", "; out << b << ", "; out << c << ", "; 
 	out << std::endl;
@@ -492,14 +502,14 @@ void MeshTxtGen::add_one_vertex(std::vector<MVertex>& v, const MVertex& x) { v.p
 void MeshTxtGen::add_one_face(uint a, uint b, uint c) {
 	// 利用混合积保持三角面片的一致性顺序 -- 逆时针
 	float det = vertices[a].position.mix(vertices[b].position, vertices[c].position);
-	//if (det > 1e-3) { std::swap(b, c); }		
+	if (det > 1e-3) { std::swap(b, c); }		
 
 	indices.push_back(a); indices.push_back(b); indices.push_back(c);
 }
 void MeshTxtGen::add_one_face(const std::vector<MVertex>& v, std::vector<uint>& idx, uint a, uint b, uint c) {
 	// 利用混合积保持三角面片的一致性顺序 -- 逆时针
 	float det = v[a].position.mix(v[b].position, v[c].position);
-	//if (det > 1e-3) { std::swap(b, c); }		
+	if (det > 1e-3) { std::swap(b, c); }		
 
 	idx.push_back(a); idx.push_back(b); idx.push_back(c);
 }
@@ -524,6 +534,53 @@ void MeshTxtGen::cac_normal() {
 	for (auto& i : vertices) { i.normal.normalize(); }
 }
 
+// ===============================================================================================
 
+bool MeshLoader::load_mesh_txt(const std::string& src, std::vector<MVertex>& vertices, std::vector<uint>& indices, SourceType source_type) {
 
+	// 打开文件
+	std::istream* in;
+	std::ifstream fs;
+	std::istringstream ss;
+	if (source_type == SourceType::BY_FILE) {
+		fs.open(src, std::ios::in);
+		if (!fs.is_open()) { return false; }
+		in = &fs;
+	}
+	else if (source_type == SourceType::BY_STRING) { ss.clear(); ss.str(src); in = &ss; }
 
+	vertices.clear();
+	indices.clear();
+
+	// 按行读取 -- 获得 vertices 和 indices
+	while ((*in)) {
+		std::string t_line;
+		std::getline((*in), t_line);
+		std::replace(t_line.begin(), t_line.end(), ',', ' ');
+		std::istringstream t_iss(t_line);
+
+		std::string head; t_iss >> head;
+
+		if (head.compare("v") == 0) {
+			std::vector<float> list;
+			float t_f;
+			while (t_iss >> t_f) list.push_back(t_f);
+
+			MVertex v;
+			if (list.size() >= 3) v.position = CVector3D(list[0], list[1], list[2]);
+			if (list.size() >= 6) v.normal = CVector3D(list[3], list[4], list[5]);
+			if (list.size() >= 8) v.tex_coord = CVector2D(list[6], list[7]);
+			vertices.push_back(v);
+		}
+		else if (head.compare("f") == 0) { uint t_u; while (t_iss >> t_u) indices.push_back(t_u); }
+
+	}
+
+	if (source_type == SourceType::BY_FILE) { fs.close(); }
+	
+	return true;
+}
+
+bool MeshLoader::load_mesh_obj(const std::string& src, std::vector<MVertex>& vertices, std::vector<uint>& indices, SourceType source_type) {
+	return true;
+}

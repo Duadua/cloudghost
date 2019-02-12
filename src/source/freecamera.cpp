@@ -15,7 +15,6 @@ FreeCamera::~FreeCamera() {}
 void FreeCamera::bind_input() {
 	// bind input maps -- after will do this in game manager
 	// turn 
-	
 
 	IM_BIND_AXIS(turn, FreeCamera, this, &FreeCamera::turn);
 	IM_BIND_ACTION(turn_over, FreeCamera, this, &FreeCamera::turn_over);

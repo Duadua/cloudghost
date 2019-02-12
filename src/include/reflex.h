@@ -10,8 +10,9 @@ class ClassFactory;
 
 #define DECLARE_AUTO_PTR(name)											\
 class name;																\
-using SPTR_##name  = std::shared_ptr<##name##>;							\
-using WPTR_##name  = std::weak_ptr<##name##>;							\
+using SPTR_##name = std::shared_ptr<##name##>;							\
+using WPTR_##name = std::weak_ptr<##name##>;							\
+using UPTR_##name = std::unique_ptr<##name##>;
 
 #define DECLARE_CLASS(name)												\
 	private:															\

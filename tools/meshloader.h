@@ -4,6 +4,11 @@
 #include <string>
 #include <vector>
 
+enum SourceType {
+	BY_FILE,
+	BY_STRING
+};
+
 enum MeshTxtGenType {
 	CIRCLE,						// Ô²
 	RECTANGLE,					// ¾ØÐÎ
@@ -26,8 +31,9 @@ struct MVertex {
 
 class MeshTxtGen {
 public:
+	static bool gen_mesh_txt(std::string& res, MeshTxtGenType type, uint depth = 32, SourceType source_type = SourceType::BY_FILE);
+
 	~MeshTxtGen() {}
-	static bool gen_mesh_txt(const std::string& path, MeshTxtGenType type, uint depth = 32);
 
 private:
 	MeshTxtGen() {}
@@ -45,10 +51,10 @@ private:
 	static void gen_cylinder(uint depth = 32);
 
 private:
-	static void write_to_file(std::ofstream& out);
+	static void write(std::ostream& out);
 
-	static void write_one_vertex(std::ofstream& out, const MVertex& vertex);
-	static void write_one_face(std::ofstream& out, uint a, uint b, uint c);
+	static void write_one_vertex(std::ostream& out, const MVertex& vertex);
+	static void write_one_face(std::ostream& out, uint a, uint b, uint c);
 
 	static void add_one_vertex(const MVertex& x);
 	static void add_one_vertex(std::vector<MVertex>& v, const MVertex& x);
@@ -59,5 +65,20 @@ private:
 
 	static std::vector<MVertex> vertices;
 	static std::vector<uint> indices;
+};
+
+// ===============================================================================================
+
+class MeshLoader {
+
+public:
+
+	static bool load_mesh_txt(const std::string& src, std::vector<MVertex>& vertices, std::vector<uint>& indices, SourceType source_type = SourceType::BY_FILE);
+	static bool load_mesh_obj(const std::string& src, std::vector<MVertex>& vertices, std::vector<uint>& indices, SourceType source_type = SourceType::BY_FILE);
+
+	~MeshLoader(){}
+
+private:
+	MeshLoader(){}
 };
 

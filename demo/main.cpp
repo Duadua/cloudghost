@@ -25,7 +25,7 @@ public:
 DECLARE_AUTO_PTR(A)
 */
 
-#include "tools/meshtxtgen.h"
+#include "tools/meshloader.h"
 
 int main(int argc, char *argv[]) {
 	QApplication a(argc, argv);
@@ -57,7 +57,8 @@ int main(int argc, char *argv[]) {
 	*/
 
 	// gen mesh txt
-	if (!MeshTxtGen::gen_mesh_txt("sphere.txt", MeshTxtGenType::SPHERE, 4)) {
+	QString path = "sphere.txt";
+	if (!MeshTxtGen::gen_mesh_txt(path.toStdString(), MeshTxtGenType::SPHERE, 4)) {
 		qDebug() << "cannot gen txt" << endl;
 	}
 

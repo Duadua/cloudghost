@@ -10,15 +10,15 @@ void MyGameManager::load_asset() {
 	AssetManager::load_shader("triangle", ":/asset/shaders/single.vert", ":/asset/shaders/single.frag");
 
 	// 原料 -- 顶点数据
-	AssetManager::load_mesh("triangle_right", ":/asset/models/txt/triangle_right.txt");
-	AssetManager::load_mesh("triangle_regular", ":/asset/models/txt/triangle_regular.txt");
-	AssetManager::load_mesh("rect", ":/asset/models/txt/rect.txt");
-	AssetManager::load_mesh("circle", ":/asset/models/txt/circle.txt");
+	AssetManager::load_mesh("triangle_right", "resources/models/txt/triangle_right.txt");
+	AssetManager::load_mesh("triangle_regular", "resources/models/txt/triangle_regular.txt");
+	AssetManager::load_mesh("rect", "resources/models/txt/rect.txt");
+	AssetManager::load_mesh("circle", "resources/models/txt/circle.txt");
 
-	AssetManager::load_mesh("cube", ":/asset/models/txt/cube.txt");
-	AssetManager::load_mesh("cone", ":/asset/models/txt/cone.txt");
-	AssetManager::load_mesh("cylinder", ":/asset/models/txt/cylinder.txt");
-	AssetManager::load_mesh("sphere", ":/asset/models/txt/sphere.txt");
+	AssetManager::load_mesh("cube", "resources/models/txt/cube.txt");
+	AssetManager::load_mesh("cone", "resources/models/txt/cone.txt");
+	AssetManager::load_mesh("cylinder", "resources/models/txt/cylinder.txt");
+	AssetManager::load_mesh("sphere", "resources/models/txt/sphere.txt");
 
 	// texture
 

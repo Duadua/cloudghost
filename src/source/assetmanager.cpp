@@ -2,7 +2,7 @@
 #include <QDebug>
 
 QMap<QString, SPTR_Shader> AssetManager::map_shaders;
-QMap<QString, SPTR_Mesh> AssetManager::map_meshs;
+QMap<std::string, SPTR_Mesh> AssetManager::map_meshs;
 
 SPTR_Shader AssetManager::load_shader(const QString& key, const QString& v_path, const QString& f_path, const QString& g_path) {
 	map_shaders[key] = CREATE_CLASS(Shader);
@@ -28,14 +28,14 @@ bool AssetManager::clear_shaders() {
 	return true;
 }
 
-SPTR_Mesh AssetManager::load_mesh(const QString& key, const QString path) {
+SPTR_Mesh AssetManager::load_mesh(const std::string& key, const std::string& src, SourceType source_type) {
 	map_meshs[key] = CREATE_CLASS(Mesh);
-	map_meshs[key]->load(path);
+	map_meshs[key]->load(src, source_type);
 	return map_meshs[key];
 }
-SPTR_Mesh AssetManager::get_mesh(const QString& key) {
+SPTR_Mesh AssetManager::get_mesh(const std::string& key) {
 	if (!map_meshs.count(key)) {
-		qDebug() << "¡¾error¡¿¡¾asset¡¿¡¾mesh¡¿no mesh calls " << key << endl;
+		qDebug() << "¡¾error¡¿¡¾asset¡¿¡¾mesh¡¿no mesh calls " << QString::fromStdString(key) << endl;
 		return map_meshs[key] = nullptr;
 	}
 	return map_meshs[key];

@@ -2,7 +2,8 @@
 
 #include "reflex.h"
 #include "renderdata.h"
-#include <QVector>
+#include "tools/meshloader.h"
+#include <string>
 
 class Mesh : public CObject{
 	DECLARE_CLASS(Mesh)
@@ -10,16 +11,12 @@ public:
 	Mesh();
 	~Mesh();
 
-	void load(const QString& path);
+	bool load(const std::string& src, SourceType source_type = SourceType::BY_FILE);
 	void draw();
 
 private:
-	void load_mesh_with_txt(const QString& path);
-	void load_mesh_with_obj(const QString& path);
 
-private:
-
-	QVector<SPTR_RenderData> render_datas;
+	std::vector<SPTR_RenderData> render_datas;
 
 };
 DECLARE_AUTO_PTR(Mesh)

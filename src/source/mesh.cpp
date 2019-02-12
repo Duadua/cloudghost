@@ -1,5 +1,4 @@
 #include "mesh.h"
-#include <QFile>
 #include <QDebug>
 
 IMPLEMENT_CLASS(Mesh)
@@ -7,56 +6,32 @@ IMPLEMENT_CLASS(Mesh)
 Mesh::Mesh() {}
 Mesh::~Mesh() {}
 
-void Mesh::load(const QString& path) {
-	// 获得文件路径后缀
-	QString suf = path.right(path.length() - path.lastIndexOf('.') - 1);
-	// 通过后缀调用函数
-	if (suf.compare("txt") == 0) { load_mesh_with_txt(path); }
-	else if (suf.compare("obj") == 0) { load_mesh_with_obj(path); }
-	else { load_mesh_with_txt(path); }
-}
+bool Mesh::load(const std::string& src, SourceType source_type) {
+	std::vector<MVertex> t_v;
+	std::vector<uint> t_i;
+	bool res = false;
 
-void Mesh::load_mesh_with_txt(const QString& path) {
-	QVector<Vertex> t_v;
-	QVector<GLuint> t_i;
+	if (source_type == SourceType::BY_FILE) {
+		// 获得文件路径后缀
+		int idx = src.find_last_of('.');
+		std::string suf = src.substr(idx);
 
-	// 打开文件
-	QFile file(path);
-	if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
-		qDebug() << "【error】【mesh】cannot open mesh text" << endl;
-		file.close();
-		return;
+		// 通过后缀调用函数
+		if (suf.compare(".txt") == 0) { res = MeshLoader::load_mesh_txt(src, t_v, t_i, SourceType::BY_FILE); }
+		else if (suf.compare(".obj") == 0) { res = MeshLoader::load_mesh_obj(src, t_v, t_i, SourceType::BY_FILE); }
+
 	}
-	QTextStream in(&file);
-
-	// 按行读取 -- 获得 vertices 和 indices
-	while (!in.atEnd()) {
-		QString line = in.readLine();
-		line.replace(",", " ");
-		QStringList list = line.split(" ", QString::SkipEmptyParts);
-		if (list.empty()) continue;
-
-		if (list[0].compare("v") == 0) {
-			Vertex v;
-			if(list.length() > 3) v.position = QVector3D(list[1].toFloat(), list[2].toFloat(), list[3].toFloat());
-			if(list.length() > 6) v.normal = QVector3D(list[4].toFloat(), list[5].toFloat(), list[6].toFloat());
-			if (list.length() > 8) v.tex_coord = QVector2D(list[7].toFloat(), list[8].toFloat());
-			t_v.append(v);
-		}
-		else if (list[0].compare("f") == 0) {
-			for (int i = 1; i < list.length(); ++i) t_i.append(list[i].toUInt());
-		}
+	else if (source_type == SourceType::BY_STRING) {
+		res = MeshLoader::load_mesh_txt(src, t_v, t_i, SourceType::BY_STRING);
 	}
-	file.close();
-
-	// 用上面获得的数据初始化 render_data
-	auto t_rd = CREATE_CLASS(RenderData);
-	t_rd->init(t_v, t_i);
-	render_datas.append(t_rd);
-
 	
-}
-void Mesh::load_mesh_with_obj(const QString& path) {
+	if (res) {
+		auto t_rd = CREATE_CLASS(RenderData);
+		t_rd->init(t_v, t_i);
+		render_datas.push_back(t_rd);
+		return true;
+	}
+	return false;
 
 }
 
