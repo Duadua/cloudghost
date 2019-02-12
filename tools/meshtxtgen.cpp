@@ -235,58 +235,183 @@ void MeshTxtGen::gen_sphere(uint depth) {
 	// first depth
 	{
 		--depth;
-		MVertex a(CVector3D(1.0f, 0.0f, 0.0f));
-		MVertex b(CVector3D(0.0f, 0.0f, 1.0f));
-		MVertex c(CVector3D(0.0f, 1.0f, 0.0f));
+		// x y z
+		{
+			MVertex a(CVector3D(1.0f, 0.0f, 0.0f));
+			MVertex b(CVector3D(0.0f, 0.0f, 1.0f));
+			MVertex c(CVector3D(0.0f, 1.0f, 0.0f));
 
-		a.tex_coord = CVector2D(0.0f, 0.5f);
-		b.tex_coord = CVector2D(0.0f, 1.0f);
-		c.tex_coord = CVector2D(0.25f, 0.5f);
+			a.tex_coord = CVector2D(0.0f, 0.5f);
+			b.tex_coord = CVector2D(0.25f, 0.5f);
+			c.tex_coord = CVector2D(0.0f, 1.0f);
 
-		add_one_vertex(a);
-		add_one_vertex(b);
-		add_one_vertex(c);
-		
-		add_one_face(0, 1, 2);
+			add_one_vertex(a);
+			add_one_vertex(b);
+			add_one_vertex(c);
 			
+			add_one_face(0, 1, 2);
+		}
+			
+		// -x y z
+		{
+			MVertex a(CVector3D(0.0f, 0.0f, 1.0f));
+			MVertex b(CVector3D(-1.0f, 0.0f, 0.0f));
+			MVertex c(CVector3D(0.0f, 1.0f, 0.0f));
+
+			a.tex_coord = CVector2D(0.25f, 0.5f);
+			b.tex_coord = CVector2D(0.50f, 0.5f);
+			c.tex_coord = CVector2D(0.0f, 1.0f);
+
+			add_one_vertex(a);
+			add_one_vertex(b);
+			add_one_vertex(c);
+			
+			add_one_face(3, 4, 5);
+		}
+
+		// -x y -z
+		{
+			MVertex a(CVector3D(-1.0f, 0.0f, 0.0f));
+			MVertex b(CVector3D(0.0f, 0.0f, -1.0f));
+			MVertex c(CVector3D(0.0f, 1.0f, 0.0f));
+
+			a.tex_coord = CVector2D(0.50f, 0.5f);
+			b.tex_coord = CVector2D(0.75f, 0.5f);
+			c.tex_coord = CVector2D(0.0f, 1.0f);
+
+			add_one_vertex(a);
+			add_one_vertex(b);
+			add_one_vertex(c);
+
+			add_one_face(6, 7, 8);
+		}
+
+		// x y -z
+		{
+			MVertex a(CVector3D(0.0f, 0.0f,-1.0f));
+			MVertex b(CVector3D(1.0f, 0.0f, 0.0f));
+			MVertex c(CVector3D(0.0f, 1.0f, 0.0f));
+
+			a.tex_coord = CVector2D(0.75f, 0.5f);
+			b.tex_coord = CVector2D(1.00f, 0.5f);
+			c.tex_coord = CVector2D(0.0f, 1.0f);
+
+			add_one_vertex(a);
+			add_one_vertex(b);
+			add_one_vertex(c);
+
+			add_one_face(9, 10, 11);
+		}
+
+		/*
+		// x -y z
+		{
+			MVertex a(CVector3D(1.0f, 0.0f, 0.0f));
+			MVertex b(CVector3D(0.0f, 0.0f, 1.0f));
+			MVertex c(CVector3D(0.0f, 1.0f, 0.0f));
+
+			a.tex_coord = CVector2D(0.0f, 0.5f);
+			b.tex_coord = CVector2D(0.0f, 1.0f);
+			c.tex_coord = CVector2D(0.25f, 0.5f);
+
+			add_one_vertex(a);
+			add_one_vertex(b);
+			add_one_vertex(c);
+
+			add_one_face(0, 1, 2);
+		}
+
+		// -x -y z
+		{
+			MVertex a(CVector3D(1.0f, 0.0f, 0.0f));
+			MVertex b(CVector3D(0.0f, 0.0f, 1.0f));
+			MVertex c(CVector3D(0.0f, 1.0f, 0.0f));
+
+			a.tex_coord = CVector2D(0.0f, 0.5f);
+			b.tex_coord = CVector2D(0.0f, 1.0f);
+			c.tex_coord = CVector2D(0.25f, 0.5f);
+
+			add_one_vertex(a);
+			add_one_vertex(b);
+			add_one_vertex(c);
+
+			add_one_face(0, 1, 2);
+		}
+
+
+		// -x -y -z
+		{
+			MVertex a(CVector3D(1.0f, 0.0f, 0.0f));
+			MVertex b(CVector3D(0.0f, 0.0f, 1.0f));
+			MVertex c(CVector3D(0.0f, 1.0f, 0.0f));
+
+			a.tex_coord = CVector2D(0.0f, 0.5f);
+			b.tex_coord = CVector2D(0.0f, 1.0f);
+			c.tex_coord = CVector2D(0.25f, 0.5f);
+
+			add_one_vertex(a);
+			add_one_vertex(b);
+			add_one_vertex(c);
+
+			add_one_face(0, 1, 2);
+		}
+
+		// x -y -z
+		{
+			MVertex a(CVector3D(1.0f, 0.0f, 0.0f));
+			MVertex b(CVector3D(0.0f, 0.0f, 1.0f));
+			MVertex c(CVector3D(0.0f, 1.0f, 0.0f));
+
+			a.tex_coord = CVector2D(0.0f, 0.5f);
+			b.tex_coord = CVector2D(0.0f, 1.0f);
+			c.tex_coord = CVector2D(0.25f, 0.5f);
+
+			add_one_vertex(a);
+			add_one_vertex(b);
+			add_one_vertex(c);
+
+			add_one_face(0, 1, 2);
+		}
+		*/
 	}
 
 	// loop depth
-	std::vector<MVertex> t_vetices;
-	std::vector<uint> t_indices;
-	while (depth--) {
-		t_vetices.clear();
-		t_indices.clear();
+	{
+		std::vector<MVertex> t_vetices;
+		std::vector<uint> t_indices;
+		while (depth--) {
+			t_vetices.clear();
+			t_indices.clear();
 
-		for (uint i = 0; i < indices.size(); i += 3) {
-			auto a = vertices[indices[i + 0]];
-			auto b = vertices[indices[i + 1]];
-			auto c = vertices[indices[i + 2]];
+			for (uint i = 0; i < indices.size(); i += 3) {
+				auto a = vertices[indices[i + 0]];
+				auto b = vertices[indices[i + 1]];
+				auto c = vertices[indices[i + 2]];
 
-			MVertex d = MVertex((a.position + b.position).normalize());
-			MVertex e = MVertex((b.position + c.position).normalize());
-			MVertex f = MVertex((c.position + a.position).normalize());
+				MVertex d = MVertex((a.position + b.position).normalize());
+				MVertex e = MVertex((b.position + c.position).normalize());
+				MVertex f = MVertex((c.position + a.position).normalize());
 
-			add_one_vertex(t_vetices, a);
-			add_one_vertex(t_vetices, b);
-			add_one_vertex(t_vetices, c);
+				add_one_vertex(t_vetices, a);
+				add_one_vertex(t_vetices, b);
+				add_one_vertex(t_vetices, c);
 
-			add_one_vertex(t_vetices, d);
-			add_one_vertex(t_vetices, e);
-			add_one_vertex(t_vetices, f);
-			
-			add_one_face(t_vetices, t_indices, i*2 + 0, i*2 + 3, i*2 + 5);
-			add_one_face(t_vetices, t_indices, i*2 + 3, i*2 + 1, i*2 + 4);
-			add_one_face(t_vetices, t_indices, i*2 + 5, i*2 + 4, i*2 + 2);
-			add_one_face(t_vetices, t_indices, i*2 + 4, i*2 + 5, i*2 + 3);
+				add_one_vertex(t_vetices, d);
+				add_one_vertex(t_vetices, e);
+				add_one_vertex(t_vetices, f);
+				
+				add_one_face(t_vetices, t_indices, i*2 + 0, i*2 + 3, i*2 + 5);
+				add_one_face(t_vetices, t_indices, i*2 + 3, i*2 + 1, i*2 + 4);
+				add_one_face(t_vetices, t_indices, i*2 + 5, i*2 + 4, i*2 + 2);
+				add_one_face(t_vetices, t_indices, i*2 + 4, i*2 + 5, i*2 + 3);
 
+			}
+
+			vertices.clear(); indices.clear();
+			vertices.assign(t_vetices.begin(), t_vetices.end());
+			indices.assign(t_indices.begin(), t_indices.end());
 		}
-
-		vertices.clear(); indices.clear();
-		vertices.assign(t_vetices.begin(), t_vetices.end());
-		indices.assign(t_indices.begin(), t_indices.end());
 	}
-
 }
 void MeshTxtGen::gen_cylinder(uint depth) {
 	// top
