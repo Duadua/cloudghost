@@ -1,0 +1,22 @@
+{
+	"files.associations": {
+		"memory": "cpp",
+		"cmath": "cpp",
+		"qvariant": "cpp",
+		"qstring": "cpp",
+		"xstring": "cpp"
+	}
+	"files.exclude": {
+		"**/.git": true,
+		"**/.svn": true,
+		"**/.hg": true,
+		"**/CVS": true,
+		"**/.DS_Store": true,
+		"**/.vs": true,
+		"**/x64": true,
+		"**/.gitattributes": true,
+		"**/.gitignore": true,
+		"**/*.sln": true,
+		"**/*.vcxproj*": true
+	}
+}
