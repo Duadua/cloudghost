@@ -1,9 +1,9 @@
 #pragma once
 
-#include <QOpenGLShader>
 #include "reflex.h"
+#include <string>
+#include <QOpenGLShader>
 
-class QString;
 class QOpenGLShaderProgram;
 
 DECLARE_AUTO_PTR(Shader)
@@ -14,13 +14,13 @@ public:
 	virtual ~Shader();
 
 	SPTR_Shader use(); 
-	void compile(const QString& v_path, const QString& f_path, const QString& g_path = nullptr);
+	void compile(const std::string& v_path, const std::string& f_path, const std::string& g_path = "");
 
-	void set_int(const QString& name, const GLuint& value);
-	void set_mat4(const QString& name, const QMatrix4x4& value);
+	void set_int(const std::string& name, const GLuint& value);
+	void set_mat4(const std::string& name, const QMatrix4x4& value);
 
 private:
-	void compile_shader(QOpenGLShader& shader, const QString& shader_path);
+	void compile_shader(QOpenGLShader& shader, const std::string& shader_path);
 	void link_shaders();
 
 private:

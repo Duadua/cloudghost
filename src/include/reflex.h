@@ -81,5 +81,11 @@ private:
 std::dynamic_pointer_cast<name>(ClassFactory::create_object((#name)))
 
 
+// ===========================================================================
+
+#define GET_SET(type, name)									\
+public:														\
+	void set_##name##(const type& t_name) { name = t_name; }\
+	type get_##name##() { return name; }
 
 

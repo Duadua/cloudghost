@@ -51,7 +51,7 @@ protected:
 	static GameManager* instance;
 	
 	SPTR_CameraComponent main_camera;
-	SPTR_Shader main_shader;
+	std::string main_shader;
 
 private:
 	void main_bind_input();

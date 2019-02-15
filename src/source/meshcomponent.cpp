@@ -1,16 +1,18 @@
 #include "meshcomponent.h"
+#include "assetmanager.h"
 
 IMPLEMENT_CLASS(MeshComponent)
 
-MeshComponent::MeshComponent(SPTR_Mesh m) { mesh = m; }
+MeshComponent::MeshComponent(const std::string& m) { mesh = m; }
 MeshComponent::~MeshComponent() { }
 
-void MeshComponent::set_mesh(SPTR_Mesh m) { mesh = m; }
+void MeshComponent::draw(const std::string& shader) {
+	if (mesh.compare("") != 0) {
+		auto t_shader = AssetManager::get_shader(shader);
+		if(t_shader != nullptr) t_shader->set_mat4("u_model", get_transform());
 
-void MeshComponent::draw(SPTR_Shader shader) {
-	if (mesh != nullptr) {
-		shader->set_mat4("model", get_transform());
-		mesh->draw();
+		auto t_mesh = AssetManager::get_mesh(mesh);
+		if(t_mesh != nullptr) t_mesh->draw();
 	}
 
 	for (auto cc : child_components) { cc->draw(shader); }

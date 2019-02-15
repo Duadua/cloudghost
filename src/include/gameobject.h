@@ -1,6 +1,5 @@
 #pragma once
 
-#include "shader.h"
 #include "reflex.h"
 #include "scenecomponent.h"
 #include <memory>
@@ -17,7 +16,7 @@ public:
 	virtual void bind_input();
 	virtual void begin_play();
 	virtual void tick();
-	virtual void draw(SPTR_Shader shader);
+	virtual void draw(const std::string& shader);
 
 protected:
 	SPTR_SceneComponent root_component;

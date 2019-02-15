@@ -13,7 +13,7 @@ SPTR_Shader Shader::use() {
 	return shared_from_this();
 }
 
-void Shader::compile(const QString& v_path, const QString& f_path, const QString& g_path) {
+void Shader::compile(const std::string& v_path, const std::string& f_path, const std::string& g_path) {
 	shader_program = new QOpenGLShaderProgram();
 
 	// compile vertex shader
@@ -25,15 +25,15 @@ void Shader::compile(const QString& v_path, const QString& f_path, const QString
 	compile_shader(f_shader, f_path);
 
 	// compile geometry shader
-	if (g_path != nullptr) { 
+	if (g_path.compare("") != 0) { 
 		QOpenGLShader g_shader(QOpenGLShader::Geometry);
 		compile_shader(g_shader, g_path);
 	}
 
 	link_shaders();
 }
-void Shader::compile_shader(QOpenGLShader& shader, const QString& shader_path) {
-	bool res = shader.compileSourceFile(shader_path);
+void Shader::compile_shader(QOpenGLShader& shader, const std::string& shader_path) {
+	bool res = shader.compileSourceFile(QString::fromStdString(shader_path));
 	if (!res) {
 		qDebug() << "¡¾error¡¿¡¾shader¡¿compile_failed" << endl;
 		qDebug() << shader.log() << endl;
@@ -48,11 +48,11 @@ void Shader::link_shaders() {
 	}
 }
 
-void Shader::set_int(const QString& name, const GLuint& value) {
-	GLuint location = shader_program->uniformLocation(name);
+void Shader::set_int(const std::string& name, const GLuint& value) {
+	GLuint location = shader_program->uniformLocation(QString::fromStdString(name));
 	shader_program->setUniformValue(location, value);
 }
-void Shader::set_mat4(const QString& name, const QMatrix4x4& value) {
-	GLuint location = shader_program->uniformLocation(name);
+void Shader::set_mat4(const std::string& name, const QMatrix4x4& value) {
+	GLuint location = shader_program->uniformLocation(QString::fromStdString(name));
 	shader_program->setUniformValue(location, value);
 }

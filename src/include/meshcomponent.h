@@ -1,18 +1,19 @@
 #pragma once
 
-#include "mesh.h"
 #include "scenecomponent.h"
+#include <string>
 
 class MeshComponent : public SceneComponent {
 	DECLARE_CLASS(MeshComponent)
 public:
-	MeshComponent(SPTR_Mesh m = nullptr);
+	MeshComponent(const std::string& m = "");
 	virtual ~MeshComponent();
 
-	virtual void draw(SPTR_Shader shader) override;
-	void set_mesh(SPTR_Mesh m);
+	virtual void draw(const std::string& shader) override;
+
+	GET_SET(std::string, mesh);
 
 private:
-	SPTR_Mesh mesh;
+	std::string mesh;
 };
 DECLARE_AUTO_PTR(MeshComponent)

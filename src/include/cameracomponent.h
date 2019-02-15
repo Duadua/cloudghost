@@ -10,15 +10,14 @@ public:
 	CameraComponent();
 	~CameraComponent();
 	
-	virtual void draw(SPTR_Shader shader) override;
+	virtual void draw(const std::string& shader) override;
  
 	QMatrix4x4 get_view_mat();
 
-	void set_camera_speed(float s);
-	float get_camera_speed();
+	GET_SET(float, camera_speed);
 
 private:
-	SPTR_Mesh camera_mesh;
+	std::string camera_mesh;
 
 	SPTR_CameraData camera_data;
 

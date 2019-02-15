@@ -13,6 +13,8 @@ public:
 	void init(const std::vector<MVertex>& v, const std::vector<uint>& i);
 	void draw();
 
+	GET_SET(std::string, material_name);
+
 private:
 	uint vao;
 	uint vbo;
@@ -20,6 +22,8 @@ private:
 	
 	std::vector<MVertex> vertices;
 	std::vector<uint> indices;		// Ë÷Òý
+
+	std::string material_name;
 
 	QOpenGLFunctions_3_3_Core * core;
 };

@@ -47,6 +47,12 @@
     <Filter Include="math\source">
       <UniqueIdentifier>{9de2265f-1a76-4ec1-a441-6663d38f0ac8}</UniqueIdentifier>
     </Filter>
+    <Filter Include="resources\materials">
+      <UniqueIdentifier>{abf4fd3f-44a6-44b9-a72b-7b79fb11c0bd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="resources\textures">
+      <UniqueIdentifier>{55d004bc-5876-47a6-8fda-fed908a1ffca}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="demo\main.cpp">
@@ -123,6 +129,12 @@
     </ClCompile>
     <ClCompile Include="src\source\material.cpp">
       <Filter>src\source</Filter>
+    </ClCompile>
+    <ClCompile Include="tools\textureloader.cpp">
+      <Filter>tools</Filter>
+    </ClCompile>
+    <ClCompile Include="tools\materialloader.cpp">
+      <Filter>tools</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -203,6 +215,9 @@
       <Filter>src\include</Filter>
     </ClInclude>
     <ClInclude Include="tools\textureloader.h">
+      <Filter>tools</Filter>
+    </ClInclude>
+    <ClInclude Include="tools\materialloader.h">
       <Filter>tools</Filter>
     </ClInclude>
   </ItemGroup>

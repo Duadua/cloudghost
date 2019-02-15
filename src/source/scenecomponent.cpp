@@ -5,7 +5,7 @@ IMPLEMENT_CLASS(SceneComponent)
 SceneComponent::SceneComponent() : scale(QVector3D(1.0f, 1.0f, 1.0f)) {}
 SceneComponent::~SceneComponent() {}
 
-void SceneComponent::draw(SPTR_Shader shader) {
+void SceneComponent::draw(const std::string& shader) {
 
 }
 

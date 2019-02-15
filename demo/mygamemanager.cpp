@@ -31,18 +31,18 @@ void MyGameManager::begin_play(QOpenGLWidget* gl) {
 
 	// gameobject 的 root
 	auto mc = CREATE_CLASS(MeshComponent);
-	mc->set_mesh(AssetManager::get_mesh("cube"));
+	mc->set_mesh("cube");
 	cube_object->set_root(mc);
 
 	// gameobject 的另一个显示组件
 	auto mcc = CREATE_CLASS(MeshComponent);
-	mcc->set_mesh(AssetManager::get_mesh("sphere"));
+	mcc->set_mesh("sphere");
 	mcc->attach_to(mc);
 	mcc->set_location(QVector3D(2.0f, 0.0f, 0.0f));
 	mcc->set_scale(QVector3D(0.5f, 0.5f, 0.5f));
 
 	auto mccc = CREATE_CLASS(MeshComponent);
-	mccc->set_mesh(AssetManager::get_mesh("cone"));
+	mccc->set_mesh("cone");
 	mccc->attach_to(mcc);
 	mccc->set_location(QVector3D(0.0f, 2.0f, 0.0f));
 	mccc->set_scale(QVector3D(0.5f, 0.5f, 0.5f));
@@ -52,8 +52,8 @@ void MyGameManager::begin_play(QOpenGLWidget* gl) {
 	view.translate(QVector3D(0.0f, 0.0f, 3.0f));
 	projection.perspective(45.0f, (GLfloat)gl->width() / gl->height(), 0.1f, 100.0f);
 	auto t_shader = AssetManager::get_shader("triangle")->use();
-	t_shader->set_mat4("view", view);
-	t_shader->set_mat4("projection", projection);
+	t_shader->set_mat4("u_view", view);
+	t_shader->set_mat4("u_projection", projection);
 }
 
 void MyGameManager::tick() {

@@ -1,6 +1,5 @@
 #pragma once
 
-#include "shader.h"
 #include "component.h"
 #include <QVector>
 #include <QVector3D>
@@ -13,7 +12,7 @@ public:
 	SceneComponent();
 	virtual ~SceneComponent();
 
-	virtual void draw(SPTR_Shader shader);
+	virtual void draw(const std::string& shader);
 
 	void attach_to(SPTR_SceneComponent parent);
 	

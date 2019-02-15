@@ -43,8 +43,9 @@ void GameManager::draw(QOpenGLWidget* gl) {
 	main_tick();
 
 	//cube_object->get_root()->set_roataion(QVector3D(45.0f, 0.0f, 0.0f));
-	main_shader = AssetManager::get_shader("triangle")->use();
-	main_shader->set_mat4("view", main_camera->get_view_mat());
+	main_shader = "triangle";
+	auto t_shader = AssetManager::get_shader(main_shader)->use();
+	t_shader->set_mat4("u_view", main_camera->get_view_mat());
 
 	// render
 	main_draw();
