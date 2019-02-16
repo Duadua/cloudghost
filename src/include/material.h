@@ -10,6 +10,8 @@ public:
 	Material();
 	~Material() {}
 
+	void use(const std::string& shader);
+
 	GET_SET(CVector3D, ka);
 	GET_SET(CVector3D, kd);
 	GET_SET(CVector3D, ks);
