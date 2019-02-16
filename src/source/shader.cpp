@@ -48,9 +48,17 @@ void Shader::link_shaders() {
 	}
 }
 
-void Shader::set_int(const std::string& name, const GLuint& value) {
-	GLuint location = shader_program->uniformLocation(QString::fromStdString(name));
+void Shader::set_int(const std::string& name, const uint& value) {
+	uint location = shader_program->uniformLocation(QString::fromStdString(name));
 	shader_program->setUniformValue(location, value);
+}
+void Shader::set_float(const std::string& name, const float& value) {
+	uint location = shader_program->uniformLocation(QString::fromStdString(name));
+	shader_program->setUniformValue(location, value);
+}
+void Shader::set_vec3(const std::string& name, const CVector3D& value) {
+	uint location = shader_program->uniformLocation(QString::fromStdString(name));
+	shader_program->setUniformValue(location, QVector3D(value.x(), value.y(), value.z()));
 }
 void Shader::set_mat4(const std::string& name, const QMatrix4x4& value) {
 	GLuint location = shader_program->uniformLocation(QString::fromStdString(name));

@@ -1,5 +1,6 @@
 #pragma once
 
+#include "cmath.h"
 #include "reflex.h"
 #include <string>
 #include <QOpenGLShader>
@@ -16,7 +17,9 @@ public:
 	SPTR_Shader use(); 
 	void compile(const std::string& v_path, const std::string& f_path, const std::string& g_path = "");
 
-	void set_int(const std::string& name, const GLuint& value);
+	void set_int(const std::string& name, const uint& value);
+	void set_float(const std::string& name, const float& value);
+	void set_vec3(const std::string& name, const CVector3D& value);
 	void set_mat4(const std::string& name, const QMatrix4x4& value);
 
 private:

@@ -48,12 +48,18 @@ void MyGameManager::begin_play(QOpenGLWidget* gl) {
 	mccc->set_scale(QVector3D(0.5f, 0.5f, 0.5f));
 
 	// shader ¾²Ì¬²ÎÊý¸³Öµ
-	QMatrix4x4 projection, view;
-	view.translate(QVector3D(0.0f, 0.0f, 3.0f));
+	QMatrix4x4 projection;
 	projection.perspective(45.0f, (GLfloat)gl->width() / gl->height(), 0.1f, 100.0f);
 	auto t_shader = AssetManager::get_shader("triangle")->use();
-	t_shader->set_mat4("u_view", view);
 	t_shader->set_mat4("u_projection", projection);
+
+	t_shader->set_vec3("u_light_pos", CVector3D(1.2f, 1.0f, 2.0f));
+	t_shader->set_vec3("u_light_color", CVector3D(1.0f, 1.0f, 1.0f));
+
+	t_shader->set_vec3("u_material.ka", CVector3D(0.0f, 0.1f, 0.06f));
+	t_shader->set_vec3("u_material.kd", CVector3D(0.0f, 0.50980392f, 0.50980392f));
+	t_shader->set_vec3("u_material.ks", CVector3D(0.50196078f, 0.50196078f, 0.50196078f));
+	t_shader->set_float("u_material.shininess", 32.0f);
 }
 
 void MyGameManager::tick() {

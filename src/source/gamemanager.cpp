@@ -46,7 +46,7 @@ void GameManager::draw(QOpenGLWidget* gl) {
 	main_shader = "triangle";
 	auto t_shader = AssetManager::get_shader(main_shader)->use();
 	t_shader->set_mat4("u_view", main_camera->get_view_mat());
-
+	t_shader->set_vec3("u_view_pos", CVector3D(main_camera->get_location().x(), main_camera->get_location().y(), main_camera->get_location().z()));
 	// render
 	main_draw();
 }

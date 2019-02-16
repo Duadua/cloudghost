@@ -24,6 +24,7 @@ bool MeshTxtGen::gen_mesh_txt(std::string& res, MeshTxtGenType type, uint depth,
 	vertices.clear();
 	indices.clear();
 
+	bool has_normal = false;
 	switch (type) {
 	case CIRCLE:			gen_circle(depth); break;
 	case RECTANGLE:			gen_rect(); break;
@@ -31,12 +32,12 @@ bool MeshTxtGen::gen_mesh_txt(std::string& res, MeshTxtGenType type, uint depth,
 	case TRIANGLE_REGULAR:	gen_triangle_regular(); break;
 	case CUBE:				gen_cube(); break;
 	case CONE:				gen_cone(depth); break;
-	case SPHERE:			gen_sphere(depth); break;
+	case SPHERE:			gen_sphere(depth); has_normal = true; break;
 	case CYLINDER:			gen_cylinder(depth); break;
 	default:				break;
 	}
 
-	cac_normal();
+	if(!has_normal) cac_normal();
 
 	write((*out));
 	if (source_type == SourceType::BY_FILE)		{ fs.close(); }
@@ -284,32 +285,32 @@ void MeshTxtGen::gen_sphere(uint depth) {
 			MVertex b(CVector3D(0.0f, 0.0f, -1.0f));
 			MVertex c(CVector3D(0.0f, 1.0f, 0.0f));
 
-a.tex_coord = CVector2D(0.50f, 0.5f);
-b.tex_coord = CVector2D(0.75f, 0.5f);
-c.tex_coord = CVector2D(0.50f, 1.0f);
+			a.tex_coord = CVector2D(0.50f, 0.5f);
+			b.tex_coord = CVector2D(0.75f, 0.5f);
+			c.tex_coord = CVector2D(0.50f, 1.0f);
 
-add_one_vertex(a);
-add_one_vertex(b);
-add_one_vertex(c);
+			add_one_vertex(a);
+			add_one_vertex(b);
+			add_one_vertex(c);
 
-add_one_face(6, 7, 8);
+			add_one_face(6, 7, 8);
 		}
 
 		// x y -z
 		{
-		MVertex a(CVector3D(0.0f, 0.0f, -1.0f));
-		MVertex b(CVector3D(1.0f, 0.0f, 0.0f));
-		MVertex c(CVector3D(0.0f, 1.0f, 0.0f));
+			MVertex a(CVector3D(0.0f, 0.0f, -1.0f));
+			MVertex b(CVector3D(1.0f, 0.0f, 0.0f));
+			MVertex c(CVector3D(0.0f, 1.0f, 0.0f));
 
-		a.tex_coord = CVector2D(0.75f, 0.5f);
-		b.tex_coord = CVector2D(1.00f, 0.5f);
-		c.tex_coord = CVector2D(1.00f, 1.0f);
+			a.tex_coord = CVector2D(0.75f, 0.5f);
+			b.tex_coord = CVector2D(1.00f, 0.5f);
+			c.tex_coord = CVector2D(1.00f, 1.0f);
 
-		add_one_vertex(a);
-		add_one_vertex(b);
-		add_one_vertex(c);
+			add_one_vertex(a);
+			add_one_vertex(b);
+			add_one_vertex(c);
 
-		add_one_face(9, 10, 11);
+			add_one_face(9, 10, 11);
 		}
 
 		// x -y z
@@ -418,6 +419,8 @@ add_one_face(6, 7, 8);
 			vertices.assign(t_vetices.begin(), t_vetices.end());
 			indices.assign(t_indices.begin(), t_indices.end());
 		}
+
+		for (auto& i : vertices) { i.normal = i.position.normalize(); }
 	}
 }
 void MeshTxtGen::gen_cylinder(uint depth) {
@@ -523,7 +526,8 @@ void MeshTxtGen::cac_normal() {
 		auto& c = vertices[indices[i+2]];
 		
 		// cac face normal
-		CVector3D t_normal = (b.position - a.position).cross(c.position - a.position);
+		CVector3D t_normal = (c.position - a.position).cross(b.position - a.position);	// ”“ ÷∂®‘Ú
+
 		// accumulate normal
 		a.normal += t_normal;
 		b.normal += t_normal;
