@@ -268,5 +268,8 @@
     <Text Include="resources\models\txt\sphere.txt">
       <Filter>resources\models\txt</Filter>
     </Text>
+    <Text Include="resources\materials\single_material.txt">
+      <Filter>resources\materials</Filter>
+    </Text>
   </ItemGroup>
 </Project>

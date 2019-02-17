@@ -1,8 +1,9 @@
 #include "assetmanager.h"
 #include <QDebug>
 
-QMap<std::string, SPTR_Shader> AssetManager::map_shaders;
-QMap<std::string, SPTR_Mesh> AssetManager::map_meshs;
+std::map<std::string, SPTR_Shader> AssetManager::map_shaders;
+std::map<std::string, SPTR_Mesh> AssetManager::map_meshs;
+std::map<std::string, SPTR_Material> AssetManager::map_materials;
 
 SPTR_Shader AssetManager::load_shader(const std::string& key, const std::string& v_path, const std::string& f_path, const std::string& g_path) {
 	map_shaders[key] = CREATE_CLASS(Shader);
@@ -19,11 +20,11 @@ SPTR_Shader AssetManager::get_shader(const std::string& key) {
 bool AssetManager::delete_shader(const std::string& key) {
 	if (!map_shaders.count(key)) return false;
 	map_shaders[key].reset();
-	map_shaders.remove(key);
+	map_shaders.erase(key);
 	return true;
 }
 bool AssetManager::clear_shaders() {
-	for (auto sp : map_shaders) { sp.reset(); }
+	for (auto sp : map_shaders) { sp.second.reset(); }
 	map_shaders.clear();
 	return true;
 }
@@ -61,4 +62,43 @@ SPTR_Mesh AssetManager::get_mesh(const std::string& key) {
 		return map_meshs[key] = nullptr;
 	}
 	return map_meshs[key];
+}
+
+bool AssetManager::load_materials(const std::string& src, SourceType source_ype) {
+	bool res = false;
+	
+	std::vector<MaterialData> t_mds;
+
+	if (source_ype == SourceType::BY_FILE) {
+		// 获得文件路径后缀
+		int idx = src.find_last_of('.');
+		std::string suf = src.substr(idx);
+		if (suf.compare(".txt") == 0) { res = MaterialLoader::load_material_txt(src,t_mds, SourceType::BY_FILE); }
+		else if (suf.compare(".mtl") == 0) { res = MaterialLoader::load_material_mtl(src,t_mds, SourceType::BY_FILE); }
+	}
+	else if(source_ype == SourceType::BY_STRING) { 
+		res = MaterialLoader::load_material_txt(src,t_mds, SourceType::BY_STRING);
+	}
+
+	for (auto i : t_mds) {
+		auto t_md = CREATE_CLASS(Material);
+		t_md->set_name(i.name);
+		t_md->set_ka(i.ka);
+		t_md->set_kd(i.kd);
+		t_md->set_ks(i.ks);
+		t_md->set_shininess(i.shininess);
+		t_md->set_map_ka(i.map_ka);
+		t_md->set_map_ka(i.map_ka);
+		t_md->set_map_ka(i.map_ka);
+		map_materials[t_md->get_name()] = t_md;
+	}
+
+	return res;
+}
+SPTR_Material AssetManager::get_material(const std::string& key) {
+	if (!map_materials.count(key)) {
+		qDebug() << "【error】【asset】【material】no mesh calls " << QString::fromStdString(key) << endl;
+		return map_materials[key] = nullptr;
+	}
+	return map_materials[key];
 }

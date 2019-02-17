@@ -1,8 +1,6 @@
 #include "meshloader.h"
 #include <map>
 #include <memory>
-#include <sstream>
-#include <fstream>
 #include <QDebug>
 
 std::vector<MVertex> MeshTxtGen::vertices;
@@ -484,8 +482,7 @@ bool MeshLoader::load_mesh_txt(const std::string& src, std::vector<MVertex>& ver
 		std::string head; t_iss >> head;
 
 		if (head.compare("v") == 0) {
-			std::vector<float> list;
-			float t_f;
+			std::vector<float> list; float t_f;
 			while (t_iss >> t_f) list.push_back(t_f);
 
 			MVertex v;

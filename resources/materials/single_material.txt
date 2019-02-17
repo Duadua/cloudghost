@@ -1,0 +1,13 @@
+name emerald
+	ka 0.0215	0.1745	0.0215
+	kd 0.07568	0.61424	0.07568
+	ks 0.633	0.727811	0.633
+	
+	shininess 32.0
+
+name red_plastic
+	ka 0.0 0.0 0.0
+	kd 0.5 0.0 0.0
+	ks 0.7 0.6 0.6
+	
+	shininess 32.0
