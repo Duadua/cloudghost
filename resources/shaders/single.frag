@@ -61,7 +61,7 @@ void main(void) {
     pre_cac();
 
     vec3 t_color = u_light_color * blinn_phong(t_normal, t_light_dir, t_view_dir, u_material, 1.0);
-    //t_color = vec3(1.0, 1.0, 1.0);
+    //t_color = vec3(1.0, 0.0, 0.0);
     r_color = vec4(t_color, 1.0);
 
 }

@@ -18,6 +18,7 @@ public:
 	CVector2D operator + (const CVector2D& b) const;
 	CVector2D operator - (const CVector2D& b) const;
 	CVector2D operator * (const CVector2D& b) const;
+	CVector2D operator * (const float& b) const;
 	CVector2D operator / (const CVector2D& b) const;
 	CVector2D operator +=(const CVector2D& b);
 

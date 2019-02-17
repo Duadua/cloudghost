@@ -1,4 +1,5 @@
 #include "meshloader.h"
+#include <map>
 #include <memory>
 #include <sstream>
 #include <fstream>
@@ -245,179 +246,99 @@ void MeshTxtGen::gen_sphere(uint depth) {
 	// first depth
 	{
 		--depth;
-		// x y z
-		{
-			MVertex a(CVector3D(1.0f, 0.0f, 0.0f));
-			MVertex b(CVector3D(0.0f, 0.0f, 1.0f));
-			MVertex c(CVector3D(0.0f, 1.0f, 0.0f));
 
-			a.tex_coord = CVector2D(0.0f, 0.5f);
-			b.tex_coord = CVector2D(0.25f, 0.5f);
-			c.tex_coord = CVector2D(0.0f, 1.0f);
+		MVertex o(CVector3D(0.0f, 1.0f, 0.0f));		//  y
+		MVertex a(CVector3D(1.0f, 0.0f, 0.0f));		//  x
+		MVertex b(CVector3D(0.0f, 0.0f, 1.0f));		//  z
+		MVertex c(CVector3D(-1.0f, 0.0f, 0.0f));	// -x
+		MVertex d(CVector3D(0.0f, 0.0f, -1.0f));	// -z
+		MVertex e(CVector3D(1.0f, 0.0f, 0.0f));		//  x
+		MVertex f(CVector3D(0.0f, -1.0f, 0.0f));	// -y
 
-			add_one_vertex(a);
-			add_one_vertex(b);
-			add_one_vertex(c);
-			
-			add_one_face(0, 1, 2);
-		}
-			
-		// -x y z
-		{
-			MVertex a(CVector3D(0.0f, 0.0f, 1.0f));
-			MVertex b(CVector3D(-1.0f, 0.0f, 0.0f));
-			MVertex c(CVector3D(0.0f, 1.0f, 0.0f));
+		o.tex_coord = CVector2D(0.00f, 1.0f);
+		a.tex_coord = CVector2D(0.00f, 0.5f);
+		b.tex_coord = CVector2D(0.25f, 0.5f);
+		c.tex_coord = CVector2D(0.50f, 0.5f);
+		d.tex_coord = CVector2D(0.75f, 0.5f);
+		e.tex_coord = CVector2D(1.00f, 0.5f);
+		f.tex_coord = CVector2D(0.00f, 0.0f);
 
-			a.tex_coord = CVector2D(0.25f, 0.5f);
-			b.tex_coord = CVector2D(0.50f, 0.5f);
-			c.tex_coord = CVector2D(0.25f, 1.0f);
+		add_one_vertex(o);	// 0
+		add_one_vertex(a);	// 1
+		add_one_vertex(b);	// 2
+		add_one_vertex(c);	// 3
+		add_one_vertex(d);	// 4
+		add_one_vertex(e);	// 5
+		add_one_vertex(f);	// 6
+	
+		add_one_face(0, 1, 2);	//  y  x  z
+		add_one_face(0, 2, 3);	//  y  z -x
+		add_one_face(0, 3, 4);	//  y -x -z
+		add_one_face(0, 4, 5);	//  y -z  x 
 
-			add_one_vertex(a);
-			add_one_vertex(b);
-			add_one_vertex(c);
-			
-			add_one_face(3, 4, 5);
-		}
-
-		// -x y -z
-		{
-			MVertex a(CVector3D(-1.0f, 0.0f, 0.0f));
-			MVertex b(CVector3D(0.0f, 0.0f, -1.0f));
-			MVertex c(CVector3D(0.0f, 1.0f, 0.0f));
-
-			a.tex_coord = CVector2D(0.50f, 0.5f);
-			b.tex_coord = CVector2D(0.75f, 0.5f);
-			c.tex_coord = CVector2D(0.50f, 1.0f);
-
-			add_one_vertex(a);
-			add_one_vertex(b);
-			add_one_vertex(c);
-
-			add_one_face(6, 7, 8);
-		}
-
-		// x y -z
-		{
-			MVertex a(CVector3D(0.0f, 0.0f, -1.0f));
-			MVertex b(CVector3D(1.0f, 0.0f, 0.0f));
-			MVertex c(CVector3D(0.0f, 1.0f, 0.0f));
-
-			a.tex_coord = CVector2D(0.75f, 0.5f);
-			b.tex_coord = CVector2D(1.00f, 0.5f);
-			c.tex_coord = CVector2D(1.00f, 1.0f);
-
-			add_one_vertex(a);
-			add_one_vertex(b);
-			add_one_vertex(c);
-
-			add_one_face(9, 10, 11);
-		}
-
-		// x -y z
-		{
-			MVertex a(CVector3D(1.0f, 0.0f, 0.0f));
-			MVertex b(CVector3D(0.0f, -1.0f, 0.0f));
-			MVertex c(CVector3D(0.0f, 0.0f, 1.0f));
-
-			a.tex_coord = CVector2D(0.0f, 0.5f);
-			b.tex_coord = CVector2D(0.0f, -1.0f);
-			c.tex_coord = CVector2D(0.25f, 0.5f);
-
-			add_one_vertex(a);
-			add_one_vertex(b);
-			add_one_vertex(c);
-
-			add_one_face(12, 13, 14);
-		}
-
-		// -x -y z
-		{
-			MVertex a(CVector3D(0.0f, 0.0f, 1.0f));
-			MVertex b(CVector3D(0.0f, -1.0f, 0.0f));
-			MVertex c(CVector3D(-1.0f, 0.0f, 0.0f));
-
-			a.tex_coord = CVector2D(0.25f, 0.5f);
-			b.tex_coord = CVector2D(0.25f, -1.0f);
-			c.tex_coord = CVector2D(0.50f, 0.5f);
-
-			add_one_vertex(a);
-			add_one_vertex(b);
-			add_one_vertex(c);
-
-			add_one_face(15, 16, 17);
-		}
-
-		// -x -y -z
-		{
-			MVertex a(CVector3D(-1.0f, 0.0f, 0.0f));
-			MVertex b(CVector3D(0.0f, -1.0f, 0.0f));
-			MVertex c(CVector3D(0.0f, 0.0f, -1.0f));
-
-			a.tex_coord = CVector2D(0.50f, 0.5f);
-			b.tex_coord = CVector2D(0.75f, -1.0f);
-			c.tex_coord = CVector2D(0.75f, 0.5f);
-
-			add_one_vertex(a);
-			add_one_vertex(b);
-			add_one_vertex(c);
-
-			add_one_face(18, 19, 20);
-		}
-
-		// x -y -z
-		{
-			MVertex a(CVector3D(0.0f, 0.0f, -1.0f));
-			MVertex b(CVector3D(0.0f, -1.0f, 0.0f));
-			MVertex c(CVector3D(1.0f, 0.0f, 0.0f));
-
-			a.tex_coord = CVector2D(0.75f, 0.5f);
-			b.tex_coord = CVector2D(1.00f, -1.0f);
-			c.tex_coord = CVector2D(1.00f, 0.5f);
-
-			add_one_vertex(a);
-			add_one_vertex(b);
-			add_one_vertex(c);
-
-			add_one_face(21, 22, 23);
-		}
+		add_one_face(6, 2, 1);	// -y  z  x
+		add_one_face(6, 3, 2);	// -y -x  z
+		add_one_face(6, 4, 3);	// -y -z -x
+		add_one_face(6, 5, 4);	// -y  x -z   
 
 	}
 
 	// loop depth
 	{
-		std::vector<MVertex> t_vetices;
-		std::vector<uint> t_indices;
+		std::map<std::pair<uint, uint>, uint> v_mid;
+		uint cur_id = 7;
 		while (depth--) {
-			t_vetices.clear();
-			t_indices.clear();
+			uint len = indices.size();
+			for (uint i = 0; i < len; i += 3) {
+				uint i_a = indices[i + 0];
+				uint i_b = indices[i + 1];
+				uint i_c = indices[i + 2];
+				uint i_d, i_e, i_f;
 
-			for (uint i = 0; i < indices.size(); i += 3) {
-				auto a = vertices[indices[i + 0]];
-				auto b = vertices[indices[i + 1]];
-				auto c = vertices[indices[i + 2]];
+				auto a = vertices[i_a];
+				auto b = vertices[i_b];
+				auto c = vertices[i_c];
 
-				MVertex d = MVertex((a.position + b.position).normalize());
-				MVertex e = MVertex((b.position + c.position).normalize());
-				MVertex f = MVertex((c.position + a.position).normalize());
+				auto puu_ab = std::make_pair(std::min(i_a, i_b), std::max(i_a, i_b));
+				auto puu_bc = std::make_pair(std::min(i_b, i_c), std::max(i_b, i_c));
+				auto puu_ca = std::make_pair(std::min(i_c, i_a), std::max(i_c, i_a));
 
-				add_one_vertex(t_vetices, a);
-				add_one_vertex(t_vetices, b);
-				add_one_vertex(t_vetices, c);
+				if (!v_mid.count(puu_ab)) {
+					MVertex d = MVertex((a.position + b.position).normalize()); 
+					if (a.position.y() == 1.0f || a.position.y() == -1.0f) a.tex_coord.set_x(b.tex_coord.x());
+					if (b.position.y() == 1.0f || b.position.y() == -1.0f) b.tex_coord.set_x(a.tex_coord.x());
+					d.tex_coord = (a.tex_coord + b.tex_coord) * 0.5f;
+					add_one_vertex(d); 
+					i_d = cur_id++; v_mid[puu_ab] = i_d;
+				}
+				else { i_d = v_mid[puu_ab]; }
 
-				add_one_vertex(t_vetices, d);
-				add_one_vertex(t_vetices, e);
-				add_one_vertex(t_vetices, f);
-				
-				add_one_face(t_vetices, t_indices, i*2 + 0, i*2 + 3, i*2 + 5);
-				add_one_face(t_vetices, t_indices, i*2 + 3, i*2 + 1, i*2 + 4);
-				add_one_face(t_vetices, t_indices, i*2 + 5, i*2 + 4, i*2 + 2);
-				add_one_face(t_vetices, t_indices, i*2 + 4, i*2 + 5, i*2 + 3);
+				if (!v_mid.count(puu_bc)) {
+					MVertex e = MVertex((b.position + c.position).normalize()); 					
+					if (b.position.y() == 1.0f || b.position.y() == -1.0f) b.tex_coord.set_x(c.tex_coord.x());
+					if (c.position.y() == 1.0f || c.position.y() == -1.0f) c.tex_coord.set_x(b.tex_coord.x());
+					e.tex_coord = (b.tex_coord + c.tex_coord) * 0.5f;
+					add_one_vertex(e);
+					i_e = cur_id++; v_mid[puu_bc] = i_e;
+				}
+				else { i_e = v_mid[puu_bc]; }
 
+				if (!v_mid.count(puu_ca)) {
+					MVertex f = MVertex((c.position + a.position).normalize()); 
+					if (c.position.y() == 1.0f || c.position.y() == -1.0f) c.tex_coord.set_x(a.tex_coord.x());
+					if (a.position.y() == 1.0f || a.position.y() == -1.0f) a.tex_coord.set_x(c.tex_coord.x());
+					f.tex_coord = (c.tex_coord + a.tex_coord) * 0.5f;
+					add_one_vertex(f);
+					i_f = cur_id++; v_mid[puu_ca] = i_f;
+				}
+				else { i_f = v_mid[puu_ca]; }
+
+				add_one_face(i_a, i_d, i_f);
+				add_one_face(i_d, i_b, i_e);
+				add_one_face(i_f, i_e, i_c);
+				add_one_face(i_d, i_e, i_f);
 			}
-
-			vertices.clear(); indices.clear();
-			vertices.assign(t_vetices.begin(), t_vetices.end());
-			indices.assign(t_indices.begin(), t_indices.end());
+			indices.erase(indices.begin(), indices.begin() + len);
 		}
 
 		for (auto& i : vertices) { i.normal = i.position.normalize(); }

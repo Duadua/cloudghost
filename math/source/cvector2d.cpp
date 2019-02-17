@@ -7,6 +7,7 @@ CVector2D::CVector2D(const CVector3D& abc) { _x = abc.x(); _y = abc.y(); }
 CVector2D CVector2D::operator + (const CVector2D& b) const { return CVector2D(_x + b.x(), _y + b.y()); }
 CVector2D CVector2D::operator - (const CVector2D& b) const { return CVector2D(_x - b.x(), _y - b.y()); }
 CVector2D CVector2D::operator * (const CVector2D& b) const { return CVector2D(_x * b.x(), _y * b.y()); }
+CVector2D CVector2D::operator * (const float& b) const { return CVector2D(_x * b, _y * b); }
 CVector2D CVector2D::operator / (const CVector2D& b) const {
 	if (b.x() == 0.0f || b.y() == 0.0f) return CVector2D();
 	return CVector2D(_x / b.x(), _y / b.y());
