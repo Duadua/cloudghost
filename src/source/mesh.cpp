@@ -1,4 +1,5 @@
 #include "mesh.h"
+#include "assetmanager.h"
 #include <QDebug>
 
 IMPLEMENT_CLASS(Mesh)
@@ -6,8 +7,12 @@ IMPLEMENT_CLASS(Mesh)
 Mesh::Mesh() {}
 Mesh::~Mesh() {}
 
-void Mesh::draw() {
-	for (auto rd : render_datas) { rd->draw(); }
+void Mesh::draw(const std::string& shader) {
+	for (auto rd : render_datas) { 
+		auto t_material = AssetManager::get_material(rd->get_material_name());
+		if(t_material != nullptr) t_material->use(shader);
+		rd->draw(); 
+	}
 }
 
 void Mesh::add_render_data(SPTR_RenderData rd) { if (rd != nullptr) render_datas.push_back(rd); }

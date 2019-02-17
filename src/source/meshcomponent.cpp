@@ -12,7 +12,7 @@ void MeshComponent::draw(const std::string& shader) {
 		if(t_shader != nullptr) t_shader->set_mat4("u_model", get_transform());
 
 		auto t_mesh = AssetManager::get_mesh(mesh);
-		if(t_mesh != nullptr) t_mesh->draw();
+		if(t_mesh != nullptr) t_mesh->draw(shader);
 	}
 
 	for (auto cc : child_components) { cc->draw(shader); }

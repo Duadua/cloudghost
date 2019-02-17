@@ -43,6 +43,8 @@ void MyGameManager::begin_play(QOpenGLWidget* gl) {
 	mcc->attach_to(mc);
 	mcc->set_location(QVector3D(2.0f, 0.0f, 0.0f));
 	mcc->set_scale(QVector3D(0.5f, 0.5f, 0.5f));
+	auto t_m = AssetManager::get_mesh(mcc->get_mesh());
+	t_m->get_render_datas()[0]->set_material_name("red_plastic");
 
 	auto mccc = CREATE_CLASS(MeshComponent);
 	mccc->set_mesh("cylinder");
@@ -59,13 +61,8 @@ void MyGameManager::begin_play(QOpenGLWidget* gl) {
 	t_shader->set_vec3("u_light_pos", CVector3D(1.2f, 5.0f, 2.0f));
 	t_shader->set_vec3("u_light_color", CVector3D(1.0f, 1.0f, 1.0f));
 
-	auto mt = AssetManager::get_material("red_plastic");
-	if (mt != nullptr) mt->use("triangle");
-	/*t_shader->set_vec3("u_material.ka", CVector3D(0.0f, 0.1f, 0.06f));
-	t_shader->set_vec3("u_material.kd", CVector3D(0.0f, 0.50980392f, 0.50980392f));
-	t_shader->set_vec3("u_material.ks", CVector3D(0.50196078f, 0.50196078f, 0.50196078f));
-	t_shader->set_float("u_material.shininess", 32.0f);
-	*/
+	//auto mt = AssetManager::get_material("cyan_plastic");
+	//if (mt != nullptr) mt->use("triangle");
 }
 
 void MyGameManager::tick() {

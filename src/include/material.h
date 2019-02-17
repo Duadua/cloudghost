@@ -24,6 +24,8 @@ public:
 
 	GET_SET(float, shininess);
 
+	static std::string default_material_name;
+
 private:
 	std::string name;
 

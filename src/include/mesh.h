@@ -10,9 +10,11 @@ public:
 	Mesh();
 	~Mesh();
 
-	void draw();
+	void draw(const std::string& shader);
 
 	void add_render_data(SPTR_RenderData rd);
+
+	GET_SET(std::vector<SPTR_RenderData>, render_datas);
 
 private:
 
