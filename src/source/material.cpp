@@ -4,7 +4,15 @@
 IMPLEMENT_CLASS(Material)
 
 Material::Material() {
-	
+	ka = CVector3D(1.0f);
+	kd = CVector3D(1.0f);
+	ks = CVector3D(1.0f);
+
+	shininess = 1.0f;
+
+	map_ka = "";
+	map_kd = "";
+	map_ks = "";
 }
 
 void Material::use(const std::string& shader) {

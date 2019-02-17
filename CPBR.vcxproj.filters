@@ -53,6 +53,9 @@
     <Filter Include="resources\textures">
       <UniqueIdentifier>{55d004bc-5876-47a6-8fda-fed908a1ffca}</UniqueIdentifier>
     </Filter>
+    <Filter Include="resources\materials\txt">
+      <UniqueIdentifier>{09101618-6da9-470b-842f-9e374f72a221}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="demo\main.cpp">
@@ -268,8 +271,8 @@
     <Text Include="resources\models\txt\sphere.txt">
       <Filter>resources\models\txt</Filter>
     </Text>
-    <Text Include="resources\materials\single_material.txt">
-      <Filter>resources\materials</Filter>
+    <Text Include="resources\materials\txt\single_material.txt">
+      <Filter>resources\materials\txt</Filter>
     </Text>
   </ItemGroup>
 </Project>
