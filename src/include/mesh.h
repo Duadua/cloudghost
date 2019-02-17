@@ -2,7 +2,6 @@
 
 #include "reflex.h"
 #include "renderdata.h"
-#include "tools/meshloader.h"
 #include <string>
 
 class Mesh : public CObject{
@@ -11,8 +10,10 @@ public:
 	Mesh();
 	~Mesh();
 
-	bool load(const std::string& src, SourceType source_type = SourceType::BY_FILE);
+	//bool load(const std::string& src, SourceType source_type = SourceType::BY_FILE);
 	void draw();
+
+	void add_render_data(SPTR_RenderData rd);
 
 private:
 

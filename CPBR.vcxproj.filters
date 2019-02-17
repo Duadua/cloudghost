@@ -136,6 +136,9 @@
     <ClCompile Include="tools\materialloader.cpp">
       <Filter>tools</Filter>
     </ClCompile>
+    <ClCompile Include="tools\loader.cpp">
+      <Filter>tools</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <QtUic Include="resources\ui\cpbr.ui">
@@ -218,6 +221,9 @@
       <Filter>tools</Filter>
     </ClInclude>
     <ClInclude Include="tools\materialloader.h">
+      <Filter>tools</Filter>
+    </ClInclude>
+    <ClInclude Include="tools\loader.h">
       <Filter>tools</Filter>
     </ClInclude>
   </ItemGroup>

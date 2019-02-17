@@ -1,6 +1,7 @@
 #pragma once
 
 #include "mesh.h"
+#include "tools/meshloader.h"
 #include "shader.h"
 #include <QMap>
 #include <map>
