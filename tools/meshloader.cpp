@@ -4,7 +4,8 @@
 #include <QDebug>
 
 std::vector<MVertex> MeshTxtGen::vertices;
-std::vector<uint> MeshTxtGen::indices;
+std::vector<MeshData> MeshTxtGen::mesh_datas;
+std::vector<std::string> MeshTxtGen::mt_files;
 
 bool MeshTxtGen::gen_mesh_txt(std::string& res, MeshTxtGenType type, uint depth, SourceType source_type) {
 	std::ostream* out;
@@ -21,7 +22,8 @@ bool MeshTxtGen::gen_mesh_txt(std::string& res, MeshTxtGenType type, uint depth,
 	out->setf(std::ios::fixed, std::ios::floatfield);
 
 	vertices.clear();
-	indices.clear();
+	mesh_datas.clear();
+	mt_files.clear();
 
 	bool has_normal = false;
 	switch (type) {
@@ -283,63 +285,69 @@ void MeshTxtGen::gen_sphere(uint depth) {
 		std::map<std::pair<uint, uint>, uint> v_mid;
 		uint cur_id = 6;
 		while (depth--) {
-			uint len = indices.size();
-			for (uint i = 0; i < len; i += 3) {
-				uint i_a = indices[i + 0];
-				uint i_b = indices[i + 1];
-				uint i_c = indices[i + 2];
-				uint i_d, i_e, i_f;
+			for (auto& md : mesh_datas) {
+				auto& indices = md.indices;
+				uint len = indices.size();
+				for (uint i = 0; i < len; i += 3) {
+					uint i_a = indices[i + 0];
+					uint i_b = indices[i + 1];
+					uint i_c = indices[i + 2];
+					uint i_d, i_e, i_f;
 
-				auto a = vertices[i_a];
-				auto b = vertices[i_b];
-				auto c = vertices[i_c];
+					auto a = vertices[i_a];
+					auto b = vertices[i_b];
+					auto c = vertices[i_c];
 
-				auto puu_ab = std::make_pair(std::min(i_a, i_b), std::max(i_a, i_b));
-				auto puu_bc = std::make_pair(std::min(i_b, i_c), std::max(i_b, i_c));
-				auto puu_ca = std::make_pair(std::min(i_c, i_a), std::max(i_c, i_a));
+					auto puu_ab = std::make_pair(std::min(i_a, i_b), std::max(i_a, i_b));
+					auto puu_bc = std::make_pair(std::min(i_b, i_c), std::max(i_b, i_c));
+					auto puu_ca = std::make_pair(std::min(i_c, i_a), std::max(i_c, i_a));
 
-				if (!v_mid.count(puu_ab)) {
-					MVertex d = MVertex((a.position + b.position).normalize()); 
-					if (a.position.y() == 1.0f || a.position.y() == -1.0f) a.tex_coord.set_x(b.tex_coord.x());
-					if (b.position.y() == 1.0f || b.position.y() == -1.0f) b.tex_coord.set_x(a.tex_coord.x());
-					d.tex_coord = (a.tex_coord + b.tex_coord) * 0.5f;
-					add_one_vertex(d); 
-					i_d = cur_id++; v_mid[puu_ab] = i_d;
+					if (!v_mid.count(puu_ab)) {
+						MVertex d = MVertex((a.position + b.position).normalize());
+						if (a.position.y() == 1.0f || a.position.y() == -1.0f) a.tex_coord.set_x(b.tex_coord.x());
+						if (b.position.y() == 1.0f || b.position.y() == -1.0f) b.tex_coord.set_x(a.tex_coord.x());
+						d.tex_coord = (a.tex_coord + b.tex_coord) * 0.5f;
+						add_one_vertex(d);
+						i_d = cur_id++; v_mid[puu_ab] = i_d;
+					}
+					else { i_d = v_mid[puu_ab]; }
+
+					if (!v_mid.count(puu_bc)) {
+						MVertex e = MVertex((b.position + c.position).normalize());
+						if (b.position.y() == 1.0f || b.position.y() == -1.0f) b.tex_coord.set_x(c.tex_coord.x());
+						if (c.position.y() == 1.0f || c.position.y() == -1.0f) c.tex_coord.set_x(b.tex_coord.x());
+						e.tex_coord = (b.tex_coord + c.tex_coord) * 0.5f;
+						add_one_vertex(e);
+						i_e = cur_id++; v_mid[puu_bc] = i_e;
+					}
+					else { i_e = v_mid[puu_bc]; }
+
+					if (!v_mid.count(puu_ca)) {
+						MVertex f = MVertex((c.position + a.position).normalize());
+						if (c.position.y() == 1.0f || c.position.y() == -1.0f) c.tex_coord.set_x(a.tex_coord.x());
+						if (a.position.y() == 1.0f || a.position.y() == -1.0f) a.tex_coord.set_x(c.tex_coord.x());
+						f.tex_coord = (c.tex_coord + a.tex_coord) * 0.5f;
+						add_one_vertex(f);
+						i_f = cur_id++; v_mid[puu_ca] = i_f;
+					}
+					else { i_f = v_mid[puu_ca]; }
+
+					add_one_face(i_a, i_d, i_f);
+					add_one_face(i_d, i_b, i_e);
+					add_one_face(i_f, i_e, i_c);
+					add_one_face(i_d, i_e, i_f);
 				}
-				else { i_d = v_mid[puu_ab]; }
-
-				if (!v_mid.count(puu_bc)) {
-					MVertex e = MVertex((b.position + c.position).normalize()); 					
-					if (b.position.y() == 1.0f || b.position.y() == -1.0f) b.tex_coord.set_x(c.tex_coord.x());
-					if (c.position.y() == 1.0f || c.position.y() == -1.0f) c.tex_coord.set_x(b.tex_coord.x());
-					e.tex_coord = (b.tex_coord + c.tex_coord) * 0.5f;
-					add_one_vertex(e);
-					i_e = cur_id++; v_mid[puu_bc] = i_e;
-				}
-				else { i_e = v_mid[puu_bc]; }
-
-				if (!v_mid.count(puu_ca)) {
-					MVertex f = MVertex((c.position + a.position).normalize()); 
-					if (c.position.y() == 1.0f || c.position.y() == -1.0f) c.tex_coord.set_x(a.tex_coord.x());
-					if (a.position.y() == 1.0f || a.position.y() == -1.0f) a.tex_coord.set_x(c.tex_coord.x());
-					f.tex_coord = (c.tex_coord + a.tex_coord) * 0.5f;
-					add_one_vertex(f);
-					i_f = cur_id++; v_mid[puu_ca] = i_f;
-				}
-				else { i_f = v_mid[puu_ca]; }
-
-				add_one_face(i_a, i_d, i_f);
-				add_one_face(i_d, i_b, i_e);
-				add_one_face(i_f, i_e, i_c);
-				add_one_face(i_d, i_e, i_f);
+				indices.erase(indices.begin(), indices.begin() + len);
 			}
-			indices.erase(indices.begin(), indices.begin() + len);
+			
 		}
 
 		for (auto& i : vertices) { i.normal = i.position.normalize(); }
 	}
 }
 void MeshTxtGen::gen_cylinder(uint depth) {
+	add_one_mtfile("resources/materials/txt/single_material.txt");
+
 	// top
 	{
 		MVertex o(CVector3D(0.0f, 1.0f, 0.0f), CVector3D(), CVector2D(0.5f));
@@ -350,6 +358,8 @@ void MeshTxtGen::gen_cylinder(uint depth) {
 			t.tex_coord = t.position.xz() + CVector2D(0.5f);
 			add_one_vertex(t);
 		}
+
+		add_one_material("emerald");
 		for (uint i = 1; i <= depth; ++i) { add_one_face(0, i, i%depth + 1); }
 	}
 	
@@ -364,6 +374,8 @@ void MeshTxtGen::gen_cylinder(uint depth) {
 			t.tex_coord = t.position.xz() + CVector2D(0.5f);
 			add_one_vertex(t);
 		}
+
+		add_one_material("red_plastic");
 		for (uint i = 1; i <= depth; ++i) { add_one_face(cnt, cnt + i%depth + 1, cnt + i); }
 	}
 
@@ -380,6 +392,7 @@ void MeshTxtGen::gen_cylinder(uint depth) {
 			add_one_vertex(tt);
 		}
 
+		add_one_material("cyan_plastic");
 		for (uint i = 0; i < depth; ++i) {
 			add_one_face(cnt + i*2, cnt + i*2 + 2, cnt + i*2 + 3);
 			add_one_face(cnt + i*2, cnt + i*2 + 3, cnt + i*2 + 1);
@@ -388,11 +401,21 @@ void MeshTxtGen::gen_cylinder(uint depth) {
 }
 
 void MeshTxtGen::write(std::ostream& out) {
-	for (auto i : vertices) { write_one_vertex(out, i); }
-	out << std::endl << std::endl;
+	// mt files
+	for (auto i : mt_files) { write_one_mtfile(out, i); }
+	out << std::endl;
 
-	for (uint i = 0; i < indices.size(); i += 3) {
-		write_one_face(out, indices[i+0], indices[i+1], indices[i+2]);
+	// vertices
+	for (auto i : vertices) { write_one_vertex(out, i);  }
+	out << std::endl <<std::endl;
+
+	// materials and indices
+	for (auto i : mesh_datas) {
+		if (i.material.compare("") != 0) { write_one_material(out, i.material); }
+		for (uint j = 0; j < i.indices.size(); j += 3) {
+			write_one_face(out, i.indices[j + 0], i.indices[j + 1], i.indices[j + 2]);
+		}
+		out << std::endl;
 	}
 }
 
@@ -415,48 +438,58 @@ void MeshTxtGen::write_one_face(std::ostream& out, uint a, uint b, uint c) {
 	out << a << ", "; out << b << ", "; out << c << ", "; 
 	out << std::endl;
 }
+void MeshTxtGen::write_one_material(std::ostream& out, const std::string& mt) {
+	out << "use_mt " << mt << std::endl;
+}
+void MeshTxtGen::write_one_mtfile(std::ostream& out, const std::string& path) {
+	out << "mt_file " << path << std::endl;
+}
 
 void MeshTxtGen::add_one_vertex(const MVertex& x) { vertices.push_back(x); }
-void MeshTxtGen::add_one_vertex(std::vector<MVertex>& v, const MVertex& x) { v.push_back(x); }
 void MeshTxtGen::add_one_face(uint a, uint b, uint c) {
 	// 利用混合积保持三角面片的一致性顺序 -- 逆时针
 	float det = vertices[a].position.mix(vertices[b].position, vertices[c].position);
 	if (det > 1e-3) { std::swap(b, c); }		
 
-	indices.push_back(a); indices.push_back(b); indices.push_back(c);
+	if (mesh_datas.size() == 0) mesh_datas.push_back(MeshData());
+	mesh_datas[mesh_datas.size()-1].indices.push_back(a); 
+	mesh_datas[mesh_datas.size()-1].indices.push_back(b); 
+	mesh_datas[mesh_datas.size()-1].indices.push_back(c);
 }
-void MeshTxtGen::add_one_face(const std::vector<MVertex>& v, std::vector<uint>& idx, uint a, uint b, uint c) {
-	// 利用混合积保持三角面片的一致性顺序 -- 逆时针
-	float det = v[a].position.mix(v[b].position, v[c].position);
-	if (det > 1e-3) { std::swap(b, c); }		
-
-	idx.push_back(a); idx.push_back(b); idx.push_back(c);
+void MeshTxtGen::add_one_material(const std::string& mt) {
+	mesh_datas.push_back(MeshData());
+	mesh_datas[mesh_datas.size() - 1].material = mt;
+}
+void MeshTxtGen::add_one_mtfile(const std::string& path) {
+	mt_files.push_back(path);
 }
 
 void MeshTxtGen::cac_normal() {
 	for (auto& i : vertices) { i.normal = CVector3D(); }
+	for (auto md : mesh_datas) {
+		auto indices = md.indices;
+		for (uint i = 0; i < indices.size(); i += 3) {
+			auto& a = vertices[indices[i + 0]];
+			auto& b = vertices[indices[i + 1]];
+			auto& c = vertices[indices[i + 2]];
 
-	for (uint i = 0; i < indices.size(); i += 3) {
-		auto& a = vertices[indices[i+0]];
-		auto& b = vertices[indices[i+1]];
-		auto& c = vertices[indices[i+2]];
-		
-		// cac face normal
-		CVector3D t_normal = (c.position - a.position).cross(b.position - a.position);	// 右手定则
+			// cac face normal
+			CVector3D t_normal = (c.position - a.position).cross(b.position - a.position);	// 右手定则
 
-		// accumulate normal
-		a.normal += t_normal;
-		b.normal += t_normal;
-		c.normal += t_normal;
+			// accumulate normal
+			a.normal += t_normal;
+			b.normal += t_normal;
+			c.normal += t_normal;
+		}
 	}
-
+	
 	// normalize normal
 	for (auto& i : vertices) { i.normal.normalize(); }
 }
 
 // ===============================================================================================
 
-bool MeshLoader::load_mesh_txt(const std::string& src, std::vector<MVertex>& vertices, std::vector<uint>& indices, SourceType source_type) {
+bool MeshLoader::load_mesh_txt(const std::string& src, std::vector<MVertex>& vertices, std::vector<MeshData>& mds, std::vector<std::string>& mt_files, SourceType source_type) {
 
 	// 打开文件
 	std::istream* in;
@@ -470,7 +503,8 @@ bool MeshLoader::load_mesh_txt(const std::string& src, std::vector<MVertex>& ver
 	else if (source_type == SourceType::BY_STRING) { ss.clear(); ss.str(src); in = &ss; }
 
 	vertices.clear();
-	indices.clear();
+	mds.clear();
+	mt_files.clear();
 
 	// 按行读取 -- 获得 vertices 和 indices
 	while ((*in)) {
@@ -491,7 +525,19 @@ bool MeshLoader::load_mesh_txt(const std::string& src, std::vector<MVertex>& ver
 			if (list.size() >= 8) v.tex_coord = CVector2D(list[6], list[7]);
 			vertices.push_back(v);
 		}
-		else if (head.compare("f") == 0) { uint t_u; while (t_iss >> t_u) indices.push_back(t_u); }
+		else if (head.compare("f") == 0) { 
+			if (mds.size() == 0) mds.push_back(MeshData());
+			uint t_u; while (t_iss >> t_u) mds[mds.size()-1].indices.push_back(t_u); 
+		}
+		else if (head.compare("mt_file") == 0) {
+			std::string t_path; t_iss >> t_path;
+			mt_files.push_back(t_path);
+		}
+		else if (head.compare("use_mt") == 0) {
+			std::string t_mt; t_iss >> t_mt;
+			mds.push_back(MeshData());
+			mds[mds.size() - 1].material = t_mt;
+		}
 
 	}
 
@@ -500,6 +546,6 @@ bool MeshLoader::load_mesh_txt(const std::string& src, std::vector<MVertex>& ver
 	return true;
 }
 
-bool MeshLoader::load_mesh_obj(const std::string& src, std::vector<MVertex>& vertices, std::vector<uint>& indices, SourceType source_type) {
+bool MeshLoader::load_mesh_obj(const std::string& src, std::vector<MVertex>& vertices, std::vector<MeshData>& mds, std::vector<std::string>& mt_files, SourceType source_type) {
 	return true;
 }

@@ -31,7 +31,8 @@ bool AssetManager::clear_shaders() {
 
 SPTR_Mesh AssetManager::load_mesh(const std::string& key, const std::string& src, SourceType source_type) {
 	std::vector<MVertex> t_v;
-	std::vector<uint> t_i;
+	std::vector<MeshData> t_md;
+	std::vector<std::string> t_mt_files;
 	bool res = false;
 
 	if (source_type == SourceType::BY_FILE) {
@@ -40,19 +41,32 @@ SPTR_Mesh AssetManager::load_mesh(const std::string& key, const std::string& src
 		std::string suf = src.substr(idx);
 
 		// 通过后缀调用函数
-		if (suf.compare(".txt") == 0) { res = MeshLoader::load_mesh_txt(src, t_v, t_i, SourceType::BY_FILE); }
-		else if (suf.compare(".obj") == 0) { res = MeshLoader::load_mesh_obj(src, t_v, t_i, SourceType::BY_FILE); }
+		if (suf.compare(".txt") == 0) { res = MeshLoader::load_mesh_txt(src, t_v, t_md, t_mt_files, SourceType::BY_FILE); }
+		else if (suf.compare(".obj") == 0) { res = MeshLoader::load_mesh_obj(src, t_v, t_md, t_mt_files, SourceType::BY_FILE); }
 
 	}
 	else if (source_type == SourceType::BY_STRING) {
-		res = MeshLoader::load_mesh_txt(src, t_v, t_i, SourceType::BY_STRING);
+		res = MeshLoader::load_mesh_txt(src, t_v, t_md, t_mt_files, SourceType::BY_STRING);
 	}
 
 	map_meshs[key] = CREATE_CLASS(Mesh);
 	if (res) {
-		auto t_rd = CREATE_CLASS(RenderData);
-		t_rd->init(t_v, t_i);
-		map_meshs[key]->add_render_data(t_rd);
+		for (auto i : t_mt_files) { AssetManager::load_materials(i); }
+		
+		uint t_idx_cnt = 0;
+		for (auto i : t_md) {
+			if (i.indices.size() == 0) continue;
+			++t_idx_cnt;
+			auto t_rd = CREATE_CLASS(RenderData);
+			t_rd->init(t_v, i.indices);
+			t_rd->set_material_name(i.material);
+			map_meshs[key]->add_render_data(t_rd);
+		}
+		if (t_idx_cnt == 0) {
+			auto t_rd = CREATE_CLASS(RenderData);
+			t_rd->init(t_v, std::vector<uint>());
+			map_meshs[key]->add_render_data(t_rd);
+		} // no indices -- by draw_array()
 	}
 	return map_meshs[key];
 }

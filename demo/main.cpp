@@ -61,6 +61,7 @@ int main(int argc, char *argv[]) {
 	if (!MeshTxtGen::gen_mesh_txt(path.toStdString(), MeshTxtGenType::CYLINDER)) {
 		qDebug() << "cannot gen txt" << endl;
 	}
+	
 
 	MyGameManager gm;
 	CPBR w;

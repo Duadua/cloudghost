@@ -24,6 +24,11 @@ struct MVertex {
 	: position(pos), normal(norm), tex_coord(coord) {}
 };
 
+struct MeshData {
+	std::vector<uint> indices;
+	std::string material;
+};
+
 class MeshTxtGen {
 public:
 	static bool gen_mesh_txt(std::string& res, MeshTxtGenType type, uint depth = 32, SourceType source_type = SourceType::BY_FILE);
@@ -50,16 +55,19 @@ private:
 
 	static void write_one_vertex(std::ostream& out, const MVertex& vertex);
 	static void write_one_face(std::ostream& out, uint a, uint b, uint c);
+	static void write_one_material(std::ostream& out, const std::string& mt);
+	static void write_one_mtfile(std::ostream& out, const std::string& path);
 
 	static void add_one_vertex(const MVertex& x);
-	static void add_one_vertex(std::vector<MVertex>& v, const MVertex& x);
 	static void add_one_face(uint a, uint b, uint c);
-	static void add_one_face(const std::vector<MVertex>& v, std::vector<uint>& idx, uint a, uint b, uint c);
+	static void add_one_material(const std::string& mt);
+	static void add_one_mtfile(const std::string& path);
 
 	static void cac_normal();
 
 	static std::vector<MVertex> vertices;
-	static std::vector<uint> indices;
+	static std::vector<MeshData> mesh_datas;
+	static std::vector<std::string> mt_files;
 };
 
 // ===============================================================================================
@@ -68,8 +76,8 @@ class MeshLoader {
 
 public:
 
-	static bool load_mesh_txt(const std::string& src, std::vector<MVertex>& vertices, std::vector<uint>& indices, SourceType source_type = SourceType::BY_FILE);
-	static bool load_mesh_obj(const std::string& src, std::vector<MVertex>& vertices, std::vector<uint>& indices, SourceType source_type = SourceType::BY_FILE);
+	static bool load_mesh_txt(const std::string& src, std::vector<MVertex>& vertices, std::vector<MeshData>& mds, std::vector<std::string>& mt_files, SourceType source_type = SourceType::BY_FILE);
+	static bool load_mesh_obj(const std::string& src, std::vector<MVertex>& vertices, std::vector<MeshData>& mds, std::vector<std::string>& mt_files, SourceType source_type = SourceType::BY_FILE);
 
 	~MeshLoader(){}
 
