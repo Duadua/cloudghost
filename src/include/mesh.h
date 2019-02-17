@@ -10,7 +10,6 @@ public:
 	Mesh();
 	~Mesh();
 
-	//bool load(const std::string& src, SourceType source_type = SourceType::BY_FILE);
 	void draw();
 
 	void add_render_data(SPTR_RenderData rd);
