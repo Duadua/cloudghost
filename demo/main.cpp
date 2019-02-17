@@ -57,8 +57,8 @@ int main(int argc, char *argv[]) {
 	*/
 
 	// gen mesh txt
-	QString path = "sphere.txt";
-	if (!MeshTxtGen::gen_mesh_txt(path.toStdString(), MeshTxtGenType::SPHERE)) {
+	QString path = "cylinder.txt";
+	if (!MeshTxtGen::gen_mesh_txt(path.toStdString(), MeshTxtGenType::CYLINDER)) {
 		qDebug() << "cannot gen txt" << endl;
 	}
 

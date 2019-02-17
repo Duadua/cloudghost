@@ -42,10 +42,10 @@ void MyGameManager::begin_play(QOpenGLWidget* gl) {
 	mcc->set_scale(QVector3D(0.5f, 0.5f, 0.5f));
 
 	auto mccc = CREATE_CLASS(MeshComponent);
-	mccc->set_mesh("cone");
+	mccc->set_mesh("cylinder");
 	mccc->attach_to(mcc);
-	mccc->set_location(QVector3D(0.0f, 2.0f, 0.0f));
-	mccc->set_scale(QVector3D(0.5f, 0.5f, 0.5f));
+	mccc->set_location(QVector3D(0.0f, 3.0f, 0.0f));
+	mccc->set_scale(QVector3D(1.5f, 1.5f, 1.5f));
 
 	// shader ¾²Ì¬²ÎÊý¸³Öµ
 	QMatrix4x4 projection;
@@ -53,7 +53,7 @@ void MyGameManager::begin_play(QOpenGLWidget* gl) {
 	auto t_shader = AssetManager::get_shader("triangle")->use();
 	t_shader->set_mat4("u_projection", projection);
 
-	t_shader->set_vec3("u_light_pos", CVector3D(1.2f, 1.0f, 2.0f));
+	t_shader->set_vec3("u_light_pos", CVector3D(1.2f, 5.0f, 2.0f));
 	t_shader->set_vec3("u_light_color", CVector3D(1.0f, 1.0f, 1.0f));
 
 	t_shader->set_vec3("u_material.ka", CVector3D(0.0f, 0.1f, 0.06f));
