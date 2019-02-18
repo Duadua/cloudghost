@@ -26,6 +26,7 @@ DECLARE_AUTO_PTR(A)
 */
 
 #include "tools/meshloader.h"
+#include "tools/materialloader.h"
 
 int main(int argc, char *argv[]) {
 	QApplication a(argc, argv);
@@ -57,11 +58,20 @@ int main(int argc, char *argv[]) {
 	*/
 
 	// gen mesh txt
-	QString path = "cylinder.txt";
+	/*QString path = "cylinder.txt";
 	if (!MeshTxtGen::gen_mesh_txt(path.toStdString(), MeshTxtGenType::CYLINDER)) {
-		qDebug() << "cannot gen txt" << endl;
+		qDebug() << "cannot gen mesh txt" << endl;
 	}
+	*/
 	
+	// gen material txt
+	/*QString path = "single_material.txt";
+	MaterialData md("jade", CVector3D(0.135, 0.2225, 0.1575), CVector3D(0.54, 0.89, 0.63), CVector3D(0.316228, 0.316228, 0.316228), 12.8f);
+	if (!MaterialGen::gen_material_txt(path.toStdString(), md)) {
+		qDebug() << "cannot gen material txt" << endl;
+	}
+	*/
+
 
 	MyGameManager gm;
 	CPBR w;

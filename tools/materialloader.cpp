@@ -1,8 +1,44 @@
 #include "materialloader.h"
 #include <algorithm>
 
+bool MaterialGen::gen_material_txt(std::string& res, const MaterialData& md, SourceType source_type) {
+	std::ostream* out;
+	std::ofstream fs;
+	std::stringstream ss;
+	if (source_type == SourceType::BY_FILE) {
+		fs.open("resources/materials/txt/" + res, std::ios::app | std::ios::out);
+		if (!fs.is_open()) { return false; }
+		out = &fs;
+	}
+	else if (source_type == SourceType::BY_STRING) { ss.clear(); out = &ss; }
+	out->fill('0');
+	out->precision(6);
+	out->setf(std::ios::fixed, std::ios::floatfield);
 
+	write_one_material((*out), md);
 
+	if (source_type == SourceType::BY_FILE)		{ fs.close(); }
+	else if (source_type == SourceType::BY_STRING) { res = ss.str(); ss.clear(); }
+
+	return true;
+}
+
+void MaterialGen::write_one_material(std::ostream& out, const MaterialData& md) {
+	out << "name " << md.name << "\n";
+
+	out << "\tka " << md.ka.x() << " " << md.ka.y() << " " << md.ka.z() << "\n";
+	out << "\tkd " << md.kd.x() << " " << md.kd.y() << " " << md.kd.z() << "\n";
+	out << "\tks " << md.ks.x() << " " << md.ks.y() << " " << md.ks.z() << "\n";
+	out << "\n";
+
+	out << "\tshininess " << md.shininess << "\n";
+	out << "\n";
+
+	if (md.map_ka.compare("") != 0) out << "\tmap_ka " << md.map_ka << "\n";
+	if (md.map_kd.compare("") != 0) out << "\tmap_kd " << md.map_kd << "\n";
+	if (md.map_ks.compare("") != 0) out << "\tmap_ks " << md.map_ks << "\n";
+	out << "\n";
+}
 
 // ===============================================================================================
 

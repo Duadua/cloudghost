@@ -27,5 +27,4 @@ void Material::use(const std::string& shader) {
 
 	t_shader->set_float("u_material.shininess", shininess);
 	
-
 }

@@ -22,7 +22,17 @@ struct MaterialData {
 };
 
 class MaterialGen {
+public:
 
+	static bool gen_material_txt(std::string& res, const MaterialData& md, SourceType source_type = SourceType::BY_FILE);
+
+
+	~MaterialGen() {}
+
+private:
+	MaterialGen() {}
+
+	static void write_one_material(std::ostream& out, const MaterialData& md);
 };
 
 // ===============================================================================================

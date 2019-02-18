@@ -15,4 +15,6 @@ void Mesh::draw(const std::string& shader) {
 	}
 }
 
-void Mesh::add_render_data(SPTR_RenderData rd) { if (rd != nullptr) render_datas.push_back(rd); }
+void Mesh::add_render_data(SPTR_RenderData rd) { 
+	if (rd != nullptr) render_datas.push_back(rd); 
+}
