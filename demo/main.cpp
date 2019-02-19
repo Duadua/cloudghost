@@ -2,8 +2,9 @@
 #include "reflex.h"
 #include "gameobject.h"
 #include "mygamemanager.h"
-#include <QDebug>
 #include <QtWidgets/QApplication>
+#include <QDebug>
+#include <QImage>
 
 // test shared_ptr
 /*
@@ -27,6 +28,7 @@ DECLARE_AUTO_PTR(A)
 
 #include "tools/meshloader.h"
 #include "tools/materialloader.h"
+#include "tools/textureloader.h"
 
 int main(int argc, char *argv[]) {
 	QApplication a(argc, argv);
@@ -65,14 +67,13 @@ int main(int argc, char *argv[]) {
 	*/
 	
 	// gen material txt
-	/*QString path = "single_material.txt";
-	MaterialData md("jade", CVector3D(0.135, 0.2225, 0.1575), CVector3D(0.54, 0.89, 0.63), CVector3D(0.316228, 0.316228, 0.316228), 12.8f);
+	/*QString path = "cube_material.txt";
+	MaterialData md("cube_wood", CVector3D(0.135, 0.2225, 0.1575), CVector3D(0.54, 0.89, 0.63), CVector3D(0.316228, 0.316228, 0.316228), 12.8f, "", "wood.png");
 	if (!MaterialGen::gen_material_txt(path.toStdString(), md)) {
 		qDebug() << "cannot gen material txt" << endl;
 	}
 	*/
-
-
+	
 	MyGameManager gm;
 	CPBR w;
 	w.show();

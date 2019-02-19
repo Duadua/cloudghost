@@ -1,0 +1,44 @@
+#pragma once
+
+#include "cmath.h"
+#include "reflex.h"
+
+class Texture2D : public CObject {
+	DECLARE_CLASS(Texture2D)
+public:
+
+	Texture2D();
+	~Texture2D() {}
+
+	void init(uint w, uint h, SPTR_uchar data);
+
+	void bind(uint tid = 0) const;
+	static void un_bind(uint tid = 0);
+
+	GET_SET(std::string, name);
+
+	GET_SET(uint, internal_format);
+	GET_SET(uint, image_format);
+
+	GET_SET(uint, wrap_s);
+	GET_SET(uint, wrap_t);
+	GET_SET(uint, filter_min);
+	GET_SET(uint, filter_max);
+
+private:
+	std::string name;
+
+	uint id;
+	uint width;
+	uint heigh;
+
+	uint internal_format;
+	uint image_format;
+
+	uint wrap_s;
+	uint wrap_t;
+	uint filter_min;
+	uint filter_max;
+	
+};
+DECLARE_AUTO_PTR(Texture2D)

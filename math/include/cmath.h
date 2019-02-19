@@ -2,8 +2,17 @@
 
 #include "cvector2d.h"
 #include "cvector3d.h"
+#include <memory>
 
 using uint = unsigned int;
+using uchar = unsigned char;
+
+using UPTR_char = std::unique_ptr<char>;
+using SPTR_char = std::shared_ptr<char>;
+using WPTR_char = std::weak_ptr<char>;
+using UPTR_uchar = std::unique_ptr<uchar>;
+using SPTR_uchar = std::shared_ptr<uchar>;
+using WPTR_uchar = std::weak_ptr<uchar>;
 
 class CMath {
 public:

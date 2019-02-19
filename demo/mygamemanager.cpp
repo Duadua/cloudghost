@@ -21,9 +21,10 @@ void MyGameManager::load_asset() {
 	AssetManager::load_mesh("sphere", "resources/models/txt/sphere.txt");
 
 	// 原料 -- 材质
-	//AssetManager::load_materials("resources/materials/txt/single_material.txt");
+	AssetManager::load_materials("resources/materials/txt/cube_material.txt");
 
 	// texture
+	AssetManager::load_texture("resources/textures/wood.png");
 
 }
 
@@ -36,6 +37,8 @@ void MyGameManager::begin_play(QOpenGLWidget* gl) {
 	auto mc = CREATE_CLASS(MeshComponent);
 	mc->set_mesh("cube");
 	cube_object->set_root(mc);
+	auto t_ms = AssetManager::get_mesh(mc->get_mesh());
+	t_ms->get_render_datas()[0]->set_material_name("cube_wood");
 
 	// gameobject 的另一个显示组件
 	auto mcc = CREATE_CLASS(MeshComponent);

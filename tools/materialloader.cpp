@@ -95,6 +95,18 @@ bool MaterialLoader::load_material_txt(const std::string& src, std::vector<Mater
 			float t_f; t_iss >> t_f;
 			md[md.size() - 1].shininess = t_f;
 		}
+		else if (head.compare("map_ka") == 0) {
+			std::string t_str; t_iss >> t_str;
+			md[md.size() - 1].map_ka = t_str;
+		}
+		else if (head.compare("map_kd") == 0) {
+			std::string t_str; t_iss >> t_str;
+			md[md.size() - 1].map_kd = t_str;
+		}
+		else if (head.compare("map_ks") == 0) {
+			std::string t_str; t_iss >> t_str;
+			md[md.size() - 1].map_ks = t_str;
+		}
 	}
 
 	return true;

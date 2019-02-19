@@ -1,9 +1,11 @@
 #include "assetmanager.h"
+#include <QImage>
 #include <QDebug>
 
 std::map<std::string, SPTR_Shader> AssetManager::map_shaders;
 std::map<std::string, SPTR_Mesh> AssetManager::map_meshs;
 std::map<std::string, SPTR_Material> AssetManager::map_materials;
+std::map<std::string, SPTR_Texture2D> AssetManager::map_textures;
 
 SPTR_Shader AssetManager::load_shader(const std::string& key, const std::string& v_path, const std::string& f_path, const std::string& g_path) {
 	map_shaders[key] = CREATE_CLASS(Shader);
@@ -102,8 +104,8 @@ bool AssetManager::load_materials(const std::string& src, SourceType source_ype)
 		t_md->set_ks(i.ks);
 		t_md->set_shininess(i.shininess);
 		t_md->set_map_ka(i.map_ka);
-		t_md->set_map_ka(i.map_ka);
-		t_md->set_map_ka(i.map_ka);
+		t_md->set_map_kd(i.map_kd);
+		t_md->set_map_ks(i.map_ks);
 		map_materials[t_md->get_name()] = t_md;
 	}
 
@@ -112,8 +114,58 @@ bool AssetManager::load_materials(const std::string& src, SourceType source_ype)
 SPTR_Material AssetManager::get_material(const std::string& key) {
 	if (!map_materials.count(key)) {
 		if (map_materials.count(Material::default_material_name)) { return map_materials[Material::default_material_name]; }
-		qDebug() << "【error】【asset】【material】no mesh calls " << QString::fromStdString(key) << endl;
+		qDebug() << "【error】【asset】【material】no material calls " << QString::fromStdString(key) << endl;
 		return map_materials[key] = nullptr;
 	}
 	return map_materials[key];
 }
+
+bool AssetManager::load_texture(const std::string& path) {
+	bool res = true;
+
+	SPTR_uchar t_data;
+	uint t_size;
+
+	// 获得文件名
+	uint t_f = path.find_last_of('/');
+	std::string t_name = path.substr(t_f + 1);
+	// 获得文件路径后缀
+	uint t_idx = path.find_last_of('.');
+	std::string t_suf = path.substr(t_idx);
+
+	if (t_suf.compare(".png") == 0) { 
+		res = TextureLoader::load_texture_png(path, t_data, t_size); 
+		if (!res) return false;
+
+		// 暂时使用 QImage 解析 png 数据 --也是使用了 libpng 库
+		QByteArray t_ba((char*)t_data.get(), t_size);
+		QImage t_img;
+		t_img.loadFromData(t_ba, "png");
+		t_img = t_img.mirrored();
+
+		// 从 QImage 提取出像素数据，以传给 texture
+		auto t_res = make_shared_array<uchar>(t_img.byteCount() + 1);
+		memcpy(t_res.get(), t_img.bits(), t_img.byteCount());
+
+		// 传给 texture
+		auto t_texture = CREATE_CLASS(Texture2D);
+		t_texture->set_name(t_name);
+		t_texture->set_internal_format(GL_BGRA);
+		t_texture->set_image_format(GL_BGRA);
+		t_texture->init(t_img.width(), t_img.height(), t_res);
+		map_textures[t_name] = t_texture;
+	}
+
+	return res;
+}
+SPTR_Texture2D AssetManager::get_texture(const std::string& key) {
+	if (!map_textures.count(key)) {
+		qDebug() << "【error】【asset】【texture】no texture calls " << QString::fromStdString(key) << endl;
+		return map_textures[key] = nullptr;
+	}
+	return map_textures[key];
+		
+}
+
+
+

@@ -142,6 +142,9 @@
     <ClCompile Include="tools\loader.cpp">
       <Filter>tools</Filter>
     </ClCompile>
+    <ClCompile Include="src\source\texture2d.cpp">
+      <Filter>src\source</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <QtUic Include="resources\ui\cpbr.ui">
@@ -229,6 +232,9 @@
     <ClInclude Include="tools\loader.h">
       <Filter>tools</Filter>
     </ClInclude>
+    <ClInclude Include="src\include\texture2d.h">
+      <Filter>src\include</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="src\include\cpbr.h">
@@ -274,5 +280,13 @@
     <Text Include="resources\materials\txt\single_material.txt">
       <Filter>resources\materials\txt</Filter>
     </Text>
+    <Text Include="resources\materials\txt\cube_material.txt">
+      <Filter>resources\materials\txt</Filter>
+    </Text>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="resources\textures\wood.png">
+      <Filter>resources\textures</Filter>
+    </Image>
   </ItemGroup>
 </Project>

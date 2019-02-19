@@ -12,6 +12,7 @@ void Mesh::draw(const std::string& shader) {
 		auto t_material = AssetManager::get_material(rd->get_material_name());
 		if(t_material != nullptr) t_material->use(shader);
 		rd->draw(); 
+		Material::un_use(shader);
 	}
 }
 

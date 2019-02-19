@@ -11,6 +11,7 @@ public:
 	~Material() {}
 
 	void use(const std::string& shader);
+	static void un_use(const std::string& shader);
 
 	GET_SET(std::string, name);
 
