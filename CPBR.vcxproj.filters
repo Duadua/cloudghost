@@ -145,6 +145,9 @@
     <ClCompile Include="src\source\texture2d.cpp">
       <Filter>src\source</Filter>
     </ClCompile>
+    <ClCompile Include="tools\qtpngrepair.cpp">
+      <Filter>tools</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <QtUic Include="resources\ui\cpbr.ui">
@@ -234,6 +237,9 @@
     </ClInclude>
     <ClInclude Include="src\include\texture2d.h">
       <Filter>src\include</Filter>
+    </ClInclude>
+    <ClInclude Include="tools\qtpngrepair.h">
+      <Filter>tools</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

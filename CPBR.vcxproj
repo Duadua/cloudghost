@@ -143,6 +143,7 @@
     <ClCompile Include="tools\loader.cpp" />
     <ClCompile Include="tools\materialloader.cpp" />
     <ClCompile Include="tools\meshloader.cpp" />
+    <ClCompile Include="tools\qtpngrepair.cpp" />
     <ClCompile Include="tools\textureloader.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -177,6 +178,7 @@
     <ClInclude Include="tools\loader.h" />
     <ClInclude Include="tools\materialloader.h" />
     <ClInclude Include="tools\meshloader.h" />
+    <ClInclude Include="tools\qtpngrepair.h" />
     <ClInclude Include="tools\textureloader.h" />
     <QtMoc Include="src\include\cpbr.h" />
     <QtMoc Include="src\include\cglwidget.h" />
