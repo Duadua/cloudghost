@@ -2,7 +2,20 @@
 
 #include "loader.h"
 
+enum TextureGenType {
+	SOLIDE,			// 纯色
+	GRADUA,			// 渐变 -- 线性
+	THE_TWO,		// 二种互补颜色相间
+
+};
+
 class TextureGen {
+public:
+	static bool gen_texture_txt(const std::string& path, TextureGenType type, CVector3D color = CVector3D(255.0f), SourceType source_type = SourceType::BY_FILE);
+
+	~TextureGen() {}
+private:
+	TextureGen() {}
 
 };
 
@@ -11,6 +24,7 @@ class TextureGen {
 class TextureLoader {
 public:
 
+	static bool load_texture_txt(const std::string& path, SPTR_uchar& data, uint& data_size, SourceType source_type = SourceType::BY_FILE);
 	static bool load_texture_png(const std::string& path, SPTR_uchar& data, uint& data_size);
 
 	~TextureLoader() {}

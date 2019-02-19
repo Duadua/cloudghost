@@ -1,7 +1,14 @@
 #include "textureloader.h"
 
+bool TextureGen::gen_texture_txt(const std::string& path, TextureGenType type, CVector3D color = CVector3D(255.0f), SourceType source_type) {
+	return true;
+}
+
 // ===============================================================================================
 
+bool TextureLoader::load_texture_txt(const std::string& path, SPTR_uchar& data, uint& data_size, SourceType source_type) {
+	return true;
+}
 
 bool TextureLoader::load_texture_png(const std::string& path, SPTR_uchar& data, uint& data_size) {
 	std::ifstream fs;
