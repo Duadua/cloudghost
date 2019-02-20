@@ -200,6 +200,7 @@
     <Text Include="resources\models\txt\sphere.txt" />
     <Text Include="resources\models\txt\triangle_regular.txt" />
     <Text Include="resources\models\txt\triangle_right.txt" />
+    <Text Include="resources\textures\txt\texture_solide_gray.txt" />
     <Text Include="resources\textures\txt\texture_solide_white.txt" />
   </ItemGroup>
   <ItemGroup>

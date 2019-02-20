@@ -75,17 +75,17 @@ SPTR_Mesh AssetManager::get_mesh(const std::string& key) {
 	return map_meshs[key];
 }
 
-bool AssetManager::load_materials(const std::string& src, SourceType source_ype) {
+bool AssetManager::load_materials(const std::string& src, SourceType source_type) {
 	bool res = false;
 	
 	std::vector<MaterialData> t_mds;
 
-	if (source_ype == SourceType::BY_FILE) {
+	if (source_type == SourceType::BY_FILE) {
 		std::string suf = get_suff_of_file(src);			// 获得文件路径后缀
 		if (suf.compare(".txt") == 0) { res = MaterialLoader::load_material_txt(src,t_mds, SourceType::BY_FILE); }
 		else if (suf.compare(".mtl") == 0) { res = MaterialLoader::load_material_mtl(src,t_mds, SourceType::BY_FILE); }
 	}
-	else if(source_ype == SourceType::BY_STRING) { 
+	else if(source_type == SourceType::BY_STRING) { 
 		res = MaterialLoader::load_material_txt(src,t_mds, SourceType::BY_STRING);
 	}
 
@@ -113,37 +113,50 @@ SPTR_Material AssetManager::get_material(const std::string& key) {
 	return map_materials[key];
 }
 
-bool AssetManager::load_texture(const std::string& path) {
-	bool res = true;
-
+bool AssetManager::load_texture(const std::string& path, SourceType source_type) {
 	std::string t_name = get_name_of_file(path);			// 获得文件名
 	std::string t_suf = get_suff_of_file(path);				// 获得文件路径后缀
+	uint width, heigh;
+	SPTR_uchar t_res;
 
-	if (t_suf.compare(".png") == 0) { 
-		uint t_size;
-		auto t_data = TextureLoader::load_texture_png(path, t_size); 
-		if (t_data == nullptr) return false;
+	if (source_type == SourceType::BY_FILE) {
 
-		// 暂时使用 QImage 解析 png 数据 --也是使用了 libpng 库
-		QByteArray t_ba((char*)t_data.get(), t_size);
-		QImage t_img;
-		t_img.loadFromData(t_ba, "png");
-		t_img = t_img.mirrored();
+		if (t_suf.compare(".png") == 0) { 
+			uint t_size;
+			auto t_data = TextureLoader::load_texture_png(path, t_size); 
+			if (t_data == nullptr) return false;
 
-		// 从 QImage 提取出像素数据，以传给 texture
-		auto t_res = make_shared_array<uchar>(t_img.byteCount() + 1);
-		memcpy(t_res.get(), t_img.bits(), t_img.byteCount());
+			// 暂时使用 QImage 解析 png 数据 --也是使用了 libpng 库
+			QByteArray t_ba((char*)t_data.get(), t_size);
+			QImage t_img;
+			t_img.loadFromData(t_ba, "png");
+			t_img = t_img.mirrored();
 
-		// 传给 texture
-		auto t_texture = CREATE_CLASS(Texture2D);
-		t_texture->set_name(t_name);
-		t_texture->set_internal_format(GL_BGRA);
-		t_texture->set_image_format(GL_BGRA);
-		t_texture->init(t_img.width(), t_img.height(), t_res);
-		map_textures[t_name] = t_texture;
+			// 从 QImage 提取出像素数据，以传给 texture
+			width = t_img.width(); 
+			heigh = t_img.height();
+			t_res = make_shared_array<uchar>(t_img.byteCount() + 1);
+			memcpy(t_res.get(), t_img.bits(), t_img.byteCount());
+			
+		}
+		else if (t_suf.compare(".txt") == 0) { t_res = TextureLoader::load_texture_txt(path, width, heigh, SourceType::BY_FILE); }
+
 	}
+	else if (source_type == SourceType::BY_STRING) { 
+		t_res = TextureLoader::load_texture_txt(path, width, heigh, SourceType::BY_STRING); 
+	} 
 
-	return res;
+	if (t_res == nullptr) return false;
+
+	// 传给 texture
+	auto t_texture = CREATE_CLASS(Texture2D);
+	t_texture->set_name(t_name);
+	t_texture->set_internal_format(GL_BGRA);
+	t_texture->set_image_format(GL_BGRA);
+	t_texture->init(width, heigh, t_res);
+	map_textures[t_name] = t_texture;
+
+	return true;
 }
 SPTR_Texture2D AssetManager::get_texture(const std::string& key) {
 	if (!map_textures.count(key)) {

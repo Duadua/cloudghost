@@ -301,6 +301,9 @@
     <Text Include="resources\textures\txt\texture_solide_white.txt">
       <Filter>resources\textures\txt</Filter>
     </Text>
+    <Text Include="resources\textures\txt\texture_solide_gray.txt">
+      <Filter>resources\textures\txt</Filter>
+    </Text>
   </ItemGroup>
   <ItemGroup>
     <Image Include="resources\textures\wood.png">

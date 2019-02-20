@@ -25,7 +25,11 @@ void MyGameManager::load_asset() {
 
 	// texture
 	AssetManager::load_texture("resources/textures/wood.png");
+	AssetManager::load_texture("resources/textures/txt/texture_solide_white.txt");
+	AssetManager::load_texture("resources/textures/txt/texture_solide_gray.txt");
 
+	auto cube_mt = AssetManager::get_material("cube_wood");
+	if (cube_mt) { cube_mt->set_map_kd("texture_solide_gray.txt"); }
 }
 
 void MyGameManager::begin_play(QOpenGLWidget* gl) {
