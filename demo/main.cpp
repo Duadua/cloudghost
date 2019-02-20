@@ -36,11 +36,12 @@ int main(int argc, char *argv[]) {
 	*/
 	
 	// gen material txt
-	QString path = "default_material.txt";
+	/*QString path = "default_material.txt";
 	MaterialData md("default", CVector3D(0.1f), CVector3D(0.7f), CVector3D(0.2f), 32.0f, "texture_default.txt", "texture_default.txt");
 	if (!MaterialGen::gen_material_txt(path.toStdString(), md)) {
 		qDebug() << "cannot gen material txt" << endl;
 	}
+	*/
 	
 	
 	

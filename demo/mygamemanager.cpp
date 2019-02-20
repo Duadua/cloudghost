@@ -29,7 +29,6 @@ void MyGameManager::load_asset() {
 	AssetManager::load_texture("resources/textures/txt/texture_solide_gray.txt");
 	AssetManager::load_texture("resources/textures/txt/texture_gradua_red.txt");
 
-	auto cube_mt = AssetManager::get_material("cube_wood");
 }
 
 void MyGameManager::begin_play(QOpenGLWidget* gl) {
