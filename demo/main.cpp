@@ -36,19 +36,20 @@ int main(int argc, char *argv[]) {
 	*/
 	
 	// gen material txt
-	/*QString path = "cube_material.txt";
-	MaterialData md("cube_wood", CVector3D(0.135, 0.2225, 0.1575), CVector3D(0.54, 0.89, 0.63), CVector3D(0.316228, 0.316228, 0.316228), 12.8f, "", "wood.png");
+	QString path = "default_material.txt";
+	MaterialData md("default", CVector3D(0.1f), CVector3D(0.7f), CVector3D(0.2f), 32.0f, "texture_default.txt", "texture_default.txt");
 	if (!MaterialGen::gen_material_txt(path.toStdString(), md)) {
 		qDebug() << "cannot gen material txt" << endl;
 	}
-	*/
+	
+	
 	
 	// repair png
 	//std::string str = "resources";
 	//QtImageHelper::repair_png(str);
 
 	// texture load test
-	{
+	/*{
 		std::string path = "texture_default.txt";
 		TextureGen::gen_texture_txt(path, TextureGenType::THE_TWO, CColor(80, 80, 80, 255));
 	}
@@ -57,6 +58,7 @@ int main(int argc, char *argv[]) {
 	uint width, heigh;
 	std::string path = "resources/textures/txt/texture_default.txt";
 	QtImageHelper::text_to_png(path);
+	*/
 	
 
 	MyGameManager gm;

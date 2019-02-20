@@ -3,7 +3,7 @@
 
 IMPLEMENT_CLASS(Material)
 
-std::string Material::default_material_name = "cyan_plastic";
+std::string Material::default_material_name = "default";
 
 Material::Material() {
 	ka = CVector3D(1.0f);

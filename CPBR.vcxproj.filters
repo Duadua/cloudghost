@@ -307,9 +307,27 @@
     <Text Include="resources\textures\txt\texture_gradua_red.txt">
       <Filter>resources\textures\txt</Filter>
     </Text>
+    <Text Include="resources\textures\txt\texture_default.txt">
+      <Filter>resources\textures\txt</Filter>
+    </Text>
+    <Text Include="resources\materials\txt\default_material.txt">
+      <Filter>resources\materials\txt</Filter>
+    </Text>
   </ItemGroup>
   <ItemGroup>
     <Image Include="resources\textures\wood.png">
+      <Filter>resources\textures</Filter>
+    </Image>
+    <Image Include="resources\textures\texture_default.png">
+      <Filter>resources\textures</Filter>
+    </Image>
+    <Image Include="resources\textures\texture_gradua_red.png">
+      <Filter>resources\textures</Filter>
+    </Image>
+    <Image Include="resources\textures\texture_solide_gray.png">
+      <Filter>resources\textures</Filter>
+    </Image>
+    <Image Include="resources\textures\texture_solide_white.png">
       <Filter>resources\textures</Filter>
     </Image>
   </ItemGroup>

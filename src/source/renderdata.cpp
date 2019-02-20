@@ -4,7 +4,7 @@ IMPLEMENT_CLASS(RenderData)
 
 RenderData::RenderData() : vao(0), vbo(0), ebo(0) {
 	core = QOpenGLContext::currentContext()->versionFunctions<QOpenGLFunctions_3_3_Core>();
-	//material_name = "cyan_plastic";		// default material
+	material_name = "default";		// default material
 }
 RenderData::~RenderData() {
 	//if (vao != 0) core->glDeleteVertexArrays(1, &vao);

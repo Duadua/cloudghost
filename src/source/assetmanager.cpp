@@ -106,8 +106,7 @@ bool AssetManager::load_materials(const std::string& src, SourceType source_type
 }
 SPTR_Material AssetManager::get_material(const std::string& key) {
 	if (!map_materials.count(key)) {
-		if (map_materials.count(Material::default_material_name)) { return map_materials[Material::default_material_name]; }
-		qDebug() << "¡¾error¡¿¡¾asset¡¿¡¾material¡¿no material calls " << QString::fromStdString(key) << endl;
+		qDebug() << "¡¾warning¡¿¡¾asset¡¿¡¾material¡¿no material calls " << QString::fromStdString(key) << endl;
 		return map_materials[key] = nullptr;
 	}
 	return map_materials[key];

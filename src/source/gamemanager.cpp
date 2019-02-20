@@ -14,6 +14,11 @@ void GameManager::init(QOpenGLWidget* gl) {
 	// init gl_core
 	core = QOpenGLContext::currentContext()->versionFunctions<QOpenGLFunctions_3_3_Core>();
 
+	// load default asset
+	AssetManager::load_materials("resources/materials/txt/default_material.txt");
+	AssetManager::load_texture("resources/textures/txt/texture_default.txt");
+	AssetManager::load_texture("resources/textures/txt/texture_default.png");
+
 	load_asset();						// 加载资源
 	begin_play(gl);						// 设置模型等
 	main_camera = set_main_camera();	// 绑定主相机
