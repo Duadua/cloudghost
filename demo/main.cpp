@@ -47,6 +47,17 @@ int main(int argc, char *argv[]) {
 	//std::string str = "resources";
 	//QtImageHelper::repair_png(str);
 
+	// texture load test
+	{
+		std::string path = "texture_solide_white.txt";
+		TextureGen::gen_texture_txt(path, TextureGenType::SOLIDE, CColor(100, 0, 0, 100));
+	}
+
+	uint width, heigh;
+	std::string path = "resources/textures/txt/texture_solide_white.txt";
+	QtImageHelper::text_to_png(path);
+	
+
 	MyGameManager gm;
 	CPBR w;
 	w.show();

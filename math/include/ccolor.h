@@ -8,6 +8,8 @@ public:
 	CColor(int r, int g, int b, int a = 0xffu);
 	~CColor() {}
 
+	crgb get_uint() const { return argb; }
+
 	// set rgba -- [0 ,, 255]
 	void reset(int r, int g, int b, int a = 0xffu);
 	void set_r(int r);

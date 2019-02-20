@@ -56,6 +56,9 @@
     <Filter Include="resources\materials\txt">
       <UniqueIdentifier>{09101618-6da9-470b-842f-9e374f72a221}</UniqueIdentifier>
     </Filter>
+    <Filter Include="resources\textures\txt">
+      <UniqueIdentifier>{a918e3d4-485e-42fe-8652-017d8cf682f1}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="demo\main.cpp">
@@ -294,6 +297,9 @@
     </Text>
     <Text Include="resources\materials\txt\cube_material.txt">
       <Filter>resources\materials\txt</Filter>
+    </Text>
+    <Text Include="resources\textures\txt\texture_solide_white.txt">
+      <Filter>resources\textures\txt</Filter>
     </Text>
   </ItemGroup>
   <ItemGroup>

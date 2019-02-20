@@ -38,14 +38,9 @@ SPTR_Mesh AssetManager::load_mesh(const std::string& key, const std::string& src
 	bool res = false;
 
 	if (source_type == SourceType::BY_FILE) {
-		// 获得文件路径后缀
-		int idx = src.find_last_of('.');
-		std::string suf = src.substr(idx);
-
-		// 通过后缀调用函数
+		std::string suf = get_suff_of_file(src);			// 获得文件路径后缀
 		if (suf.compare(".txt") == 0) { res = MeshLoader::load_mesh_txt(src, t_v, t_md, t_mt_files, SourceType::BY_FILE); }
 		else if (suf.compare(".obj") == 0) { res = MeshLoader::load_mesh_obj(src, t_v, t_md, t_mt_files, SourceType::BY_FILE); }
-
 	}
 	else if (source_type == SourceType::BY_STRING) {
 		res = MeshLoader::load_mesh_txt(src, t_v, t_md, t_mt_files, SourceType::BY_STRING);
@@ -86,9 +81,7 @@ bool AssetManager::load_materials(const std::string& src, SourceType source_ype)
 	std::vector<MaterialData> t_mds;
 
 	if (source_ype == SourceType::BY_FILE) {
-		// 获得文件路径后缀
-		int idx = src.find_last_of('.');
-		std::string suf = src.substr(idx);
+		std::string suf = get_suff_of_file(src);			// 获得文件路径后缀
 		if (suf.compare(".txt") == 0) { res = MaterialLoader::load_material_txt(src,t_mds, SourceType::BY_FILE); }
 		else if (suf.compare(".mtl") == 0) { res = MaterialLoader::load_material_mtl(src,t_mds, SourceType::BY_FILE); }
 	}
@@ -123,11 +116,8 @@ SPTR_Material AssetManager::get_material(const std::string& key) {
 bool AssetManager::load_texture(const std::string& path) {
 	bool res = true;
 
-
-	// 获得文件名
-	std::string t_name = get_name_of_file(path);
-	// 获得文件路径后缀
-	std::string t_suf = get_suff_of_file(path);
+	std::string t_name = get_name_of_file(path);			// 获得文件名
+	std::string t_suf = get_suff_of_file(path);				// 获得文件路径后缀
 
 	if (t_suf.compare(".png") == 0) { 
 		uint t_size;
