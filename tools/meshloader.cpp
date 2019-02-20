@@ -252,14 +252,16 @@ void MeshTxtGen::gen_sphere(uint depth) {
 		MVertex b(CVector3D(0.0f, 0.0f, 1.0f));		//  z
 		MVertex c(CVector3D(-1.0f, 0.0f, 0.0f));	// -x
 		MVertex d(CVector3D(0.0f, 0.0f, -1.0f));	// -z
-		MVertex e(CVector3D(0.0f, -1.0f, 0.0f));	// -y
+		MVertex e(CVector3D(1.0f, 0.0f, 0.0f));		//  x 
+		MVertex f(CVector3D(0.0f, -1.0f, 0.0f));	// -y
 
 		o.tex_coord = CVector2D(0.00f, 1.0f);
 		a.tex_coord = CVector2D(0.00f, 0.5f);
 		b.tex_coord = CVector2D(0.25f, 0.5f);
 		c.tex_coord = CVector2D(0.50f, 0.5f);
 		d.tex_coord = CVector2D(0.75f, 0.5f);
-		e.tex_coord = CVector2D(0.00f, 0.0f);
+		e.tex_coord = CVector2D(1.00f, 0.5f);
+		f.tex_coord = CVector2D(0.00f, 0.0f);
 
 		add_one_vertex(o);	// 0
 		add_one_vertex(a);	// 1
@@ -267,23 +269,24 @@ void MeshTxtGen::gen_sphere(uint depth) {
 		add_one_vertex(c);	// 3
 		add_one_vertex(d);	// 4
 		add_one_vertex(e);	// 5
+		add_one_vertex(f);	// 6
 	
 		add_one_face(0, 1, 2);	//  y  x  z
 		add_one_face(0, 2, 3);	//  y  z -x
 		add_one_face(0, 3, 4);	//  y -x -z
-		add_one_face(0, 4, 1);	//  y -z  x 
+		add_one_face(0, 4, 5);	//  y -z  x 
 
-		add_one_face(5, 2, 1);	// -y  z  x
-		add_one_face(5, 3, 2);	// -y -x  z
-		add_one_face(5, 4, 3);	// -y -z -x
-		add_one_face(5, 1, 4);	// -y  x -z   
+		add_one_face(6, 2, 1);	// -y  z  x
+		add_one_face(6, 3, 2);	// -y -x  z
+		add_one_face(6, 4, 3);	// -y -z -x
+		add_one_face(6, 5, 4);	// -y  x -z   
 
 	}
 
 	// loop depth
 	{
 		std::map<std::pair<uint, uint>, uint> v_mid;
-		uint cur_id = 6;
+		uint cur_id = 7;
 		while (depth--) {
 			for (auto& md : mesh_datas) {
 				auto& indices = md.indices;
@@ -342,8 +345,9 @@ void MeshTxtGen::gen_sphere(uint depth) {
 			
 		}
 
-		for (auto& i : vertices) { i.normal = i.position.normalize(); }
 	}
+
+	for (auto& i : vertices) { i.normal = i.position.normalize(); }
 }
 void MeshTxtGen::gen_cylinder(uint depth) {
 	add_one_mtfile("resources/materials/txt/single_material.txt");
@@ -388,7 +392,7 @@ void MeshTxtGen::gen_cylinder(uint depth) {
 			t.tex_coord = CVector2D((float)i / depth, 0.0f);
 			add_one_vertex(t);
 			MVertex tt(CVector3D(0.5f*std::cos(i*rad), 1.0f, 0.5f*std::sin(i*rad)));
-			t.tex_coord = CVector2D((float)i / depth, 1.0f);
+			tt.tex_coord = CVector2D((float)i / depth, 1.0f);
 			add_one_vertex(tt);
 		}
 

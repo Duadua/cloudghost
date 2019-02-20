@@ -29,11 +29,11 @@ int main(int argc, char *argv[]) {
 	*/
 
 	// gen mesh txt
-	/*QString path = "cylinder.txt";
-	if (!MeshTxtGen::gen_mesh_txt(path.toStdString(), MeshTxtGenType::CYLINDER)) {
+	QString path = "sphere.txt";
+	if (!MeshTxtGen::gen_mesh_txt(path.toStdString(), MeshTxtGenType::SPHERE)) {
 		qDebug() << "cannot gen mesh txt" << endl;
 	}
-	*/
+	
 	
 	// gen material txt
 	/*QString path = "default_material.txt";
