@@ -125,11 +125,9 @@ bool AssetManager::load_texture(const std::string& path) {
 
 
 	// 获得文件名
-	uint t_f = path.find_last_of('/');
-	std::string t_name = path.substr(t_f + 1);
+	std::string t_name = get_name_of_file(path);
 	// 获得文件路径后缀
-	uint t_idx = path.find_last_of('.');
-	std::string t_suf = path.substr(t_idx);
+	std::string t_suf = get_suff_of_file(path);
 
 	if (t_suf.compare(".png") == 0) { 
 		uint t_size;

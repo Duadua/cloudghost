@@ -6,7 +6,7 @@ CColor::CColor(int r, int g, int b, int a) {
 	argb = ( (a & 0xffu) << 24) | ((r & 0xffu) << 16) | ((g & 0xffu) << 8) | ((b & 0xffu) << 0);
 }
 
-void CColor::reset(int r, int g, int b, int a = 0xffu) {
+void CColor::reset(int r, int g, int b, int a) {
 	argb = ( (a & 0xffu) << 24) | ((r & 0xffu) << 16) | ((g & 0xffu) << 8) | ((b & 0xffu) << 0);
 }
 

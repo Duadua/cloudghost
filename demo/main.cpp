@@ -4,11 +4,12 @@
 #include "mygamemanager.h"
 #include <QtWidgets/QApplication>
 #include <QDebug>
-#include <QImage>
 
 #include "tools/meshloader.h"
 #include "tools/materialloader.h"
 #include "tools/textureloader.h"
+
+#include "tools/qtimagehelper.h"
 
 int main(int argc, char *argv[]) {
 	QApplication a(argc, argv);
@@ -42,6 +43,10 @@ int main(int argc, char *argv[]) {
 	}
 	*/
 	
+	// repair png
+	//std::string str = "resources";
+	//QtImageHelper::repair_png(str);
+
 	MyGameManager gm;
 	CPBR w;
 	w.show();
