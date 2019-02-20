@@ -5,6 +5,8 @@
 #include "meshcomponent.h"
 #include <QOpenGLWidget>
 
+#include "plane.h"
+
 void MyGameManager::load_asset() {
 	// 原料 -- 着色器
 	AssetManager::load_shader("triangle", ":/asset/shaders/single.vert", ":/asset/shaders/single.frag");
@@ -32,6 +34,11 @@ void MyGameManager::load_asset() {
 }
 
 void MyGameManager::begin_play(QOpenGLWidget* gl) {
+	// 生成 plan
+	auto plane = CREATE_CLASS(PlaneObject);
+	add_game_object("plane", plane);
+	plane->get_root()->set_location(QVector3D(0.0f, -0.5f, 0.0f));
+
 	// 生成 gameobject
 	auto cube_object = CREATE_CLASS(GameObject);
 	add_game_object("cube01", cube_object);

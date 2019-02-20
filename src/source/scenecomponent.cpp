@@ -6,7 +6,7 @@ SceneComponent::SceneComponent() : scale(QVector3D(1.0f, 1.0f, 1.0f)) {}
 SceneComponent::~SceneComponent() {}
 
 void SceneComponent::draw(const std::string& shader) {
-
+	for (auto cc : child_components) { cc->draw(shader); }
 }
 
 void SceneComponent::attach_to(SPTR_SceneComponent parent) {

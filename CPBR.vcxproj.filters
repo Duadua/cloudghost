@@ -154,6 +154,9 @@
     <ClCompile Include="math\source\ccolor.cpp">
       <Filter>math\source</Filter>
     </ClCompile>
+    <ClCompile Include="demo\plane.cpp">
+      <Filter>demo</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <QtUic Include="resources\ui\cpbr.ui">
@@ -249,6 +252,9 @@
     </ClInclude>
     <ClInclude Include="math\include\ccolor.h">
       <Filter>math\include</Filter>
+    </ClInclude>
+    <ClInclude Include="demo\plane.h">
+      <Filter>demo</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
