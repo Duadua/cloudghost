@@ -6,26 +6,6 @@
 #include <QDebug>
 #include <QImage>
 
-// test shared_ptr
-/*
-#include <memory>
-class Test {
-public:
-	Test() { qDebug() << "new test" << endl; }
-	virtual void run() { qDebug() << "test" << endl; }
-	virtual ~Test() { qDebug() << "delete test" << endl; }
-};
-DECLARE_AUTO_PTR(Test)
-
-class A : public Test {
-public:
-	A() { qDebug() << "new a" << endl; }
-	virtual void run() { qDebug() << "a" << endl; }
-	virtual ~A() { qDebug() << "delete a" << endl; }
-};
-DECLARE_AUTO_PTR(A)
-*/
-
 #include "tools/meshloader.h"
 #include "tools/materialloader.h"
 #include "tools/textureloader.h"
@@ -45,18 +25,6 @@ int main(int argc, char *argv[]) {
 
 	auto tmp = ClassFactory::create_object("CameraComponent");
 	qDebug() << QString::fromStdString(tmp->get_class_info()->get_class_name()) << endl;
-	*/
-
-	// test shared ptr
-	/*
-	SPTR_A sp_a(new A());
-	qDebug() << sp_a.use_count() << endl;
-	SPTR_Test sp_t(new Test());
-	qDebug() << sp_t.use_count() << endl;
-	sp_t = sp_a;
-	qDebug() << sp_t.use_count() << endl;
-	sp_a->run();
-	sp_t->run();
 	*/
 
 	// gen mesh txt

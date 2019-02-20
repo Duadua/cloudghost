@@ -6,7 +6,7 @@ class CVector3D {
 public:
 	CVector3D(float a, float b, float c) : _x(a), _y(b), _z(c) {}
 	CVector3D(float a = 0.0f) : _x(a), _y(a), _z(a) {}
-	CVector3D(CVector2D ab, float c = 0.0f) : _z(c) { _x = ab.x(); _y = ab.y(); }
+	CVector3D(const CVector2D& ab, float c = 0.0f) : _z(c) { _x = ab.x(); _y = ab.y(); }
 	~CVector3D() {}
 
 	void set_x(float a) { _x = a; }

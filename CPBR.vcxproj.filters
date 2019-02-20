@@ -145,8 +145,11 @@
     <ClCompile Include="src\source\texture2d.cpp">
       <Filter>src\source</Filter>
     </ClCompile>
-    <ClCompile Include="tools\qtpngrepair.cpp">
+    <ClCompile Include="tools\qtimagehelper.cpp">
       <Filter>tools</Filter>
+    </ClCompile>
+    <ClCompile Include="math\source\ccolor.cpp">
+      <Filter>math\source</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -238,8 +241,11 @@
     <ClInclude Include="src\include\texture2d.h">
       <Filter>src\include</Filter>
     </ClInclude>
-    <ClInclude Include="tools\qtpngrepair.h">
+    <ClInclude Include="tools\qtimagehelper.h">
       <Filter>tools</Filter>
+    </ClInclude>
+    <ClInclude Include="math\include\ccolor.h">
+      <Filter>math\include</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

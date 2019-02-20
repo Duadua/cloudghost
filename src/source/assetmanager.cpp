@@ -123,8 +123,6 @@ SPTR_Material AssetManager::get_material(const std::string& key) {
 bool AssetManager::load_texture(const std::string& path) {
 	bool res = true;
 
-	SPTR_uchar t_data;
-	uint t_size;
 
 	// 获得文件名
 	uint t_f = path.find_last_of('/');
@@ -134,8 +132,9 @@ bool AssetManager::load_texture(const std::string& path) {
 	std::string t_suf = path.substr(t_idx);
 
 	if (t_suf.compare(".png") == 0) { 
-		res = TextureLoader::load_texture_png(path, t_data, t_size); 
-		if (!res) return false;
+		uint t_size;
+		auto t_data = TextureLoader::load_texture_png(path, t_size); 
+		if (t_data == nullptr) return false;
 
 		// 暂时使用 QImage 解析 png 数据 --也是使用了 libpng 库
 		QByteArray t_ba((char*)t_data.get(), t_size);

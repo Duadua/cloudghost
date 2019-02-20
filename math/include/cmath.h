@@ -1,5 +1,6 @@
 #pragma once
 
+#include "ccolor.h"
 #include "cvector2d.h"
 #include "cvector3d.h"
 #include <memory>

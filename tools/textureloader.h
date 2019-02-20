@@ -11,7 +11,7 @@ enum TextureGenType {
 
 class TextureGen {
 public:
-	static bool gen_texture_txt(const std::string& path, TextureGenType type, CVector3D color = CVector3D(255.0f), SourceType source_type = SourceType::BY_FILE);
+	static bool gen_texture_txt(const std::string& res, TextureGenType type, CVector3D color = CVector3D(255.0f), SourceType source_type = SourceType::BY_FILE);
 
 	~TextureGen() {}
 private:
@@ -24,8 +24,8 @@ private:
 class TextureLoader {
 public:
 
-	static bool load_texture_txt(const std::string& path, SPTR_uchar& data, uint& data_size, SourceType source_type = SourceType::BY_FILE);
-	static bool load_texture_png(const std::string& path, SPTR_uchar& data, uint& data_size);
+	static SPTR_uchar load_texture_txt(const std::string& path, uint& data_size, SourceType source_type = SourceType::BY_FILE);
+	static SPTR_uchar load_texture_png(const std::string& path, uint& data_size);
 
 	~TextureLoader() {}
 private:

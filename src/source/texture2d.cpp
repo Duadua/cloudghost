@@ -19,6 +19,8 @@ void Texture2D::init(uint w, uint h, SPTR_uchar data) {
 	core->glTexImage2D(GL_TEXTURE_2D, 0, internal_format, width, heigh, 0, image_format, GL_UNSIGNED_BYTE, data.get());
 	// ÉèÖÃÎÆÀíÊôÐÔ
 	if (filter_min == GL_LINEAR_MIPMAP_LINEAR) { core->glGenerateMipmap(GL_TEXTURE_2D); }
+	if (internal_format == GL_RGBA || internal_format == GL_BGRA) { wrap_s = GL_CLAMP_TO_EDGE; wrap_t = GL_CLAMP_TO_EDGE; }
+
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, wrap_s);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, wrap_t);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, filter_min);
