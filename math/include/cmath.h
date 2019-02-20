@@ -29,6 +29,8 @@ public:
 	static float rad_to_deg(float rad);
 	static float deg_to_rad(float deg);
 
+	static float interp_linear(float v, float min, float max);		// ÏßĞÔ²åÖµ v ~ [0.0 ,, 1.0]
+
 private:
 	CMath() {}
 

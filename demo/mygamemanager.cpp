@@ -27,9 +27,11 @@ void MyGameManager::load_asset() {
 	AssetManager::load_texture("resources/textures/wood.png");
 	AssetManager::load_texture("resources/textures/txt/texture_solide_white.txt");
 	AssetManager::load_texture("resources/textures/txt/texture_solide_gray.txt");
+	AssetManager::load_texture("resources/textures/txt/texture_gradua_red.txt");
+	AssetManager::load_texture("resources/textures/txt/texture_default.txt");
 
 	auto cube_mt = AssetManager::get_material("cube_wood");
-	if (cube_mt) { cube_mt->set_map_kd("texture_solide_gray.txt"); }
+	if (cube_mt) { cube_mt->set_map_kd("texture_default.txt"); }
 }
 
 void MyGameManager::begin_play(QOpenGLWidget* gl) {
@@ -51,7 +53,7 @@ void MyGameManager::begin_play(QOpenGLWidget* gl) {
 	mcc->set_location(QVector3D(2.0f, 0.0f, 0.0f));
 	mcc->set_scale(QVector3D(0.5f, 0.5f, 0.5f));
 	auto t_m = AssetManager::get_mesh(mcc->get_mesh());
-	t_m->get_render_datas()[0]->set_material_name("red_plastic");
+	t_m->get_render_datas()[0]->set_material_name("cube_wood");
 
 	auto mccc = CREATE_CLASS(MeshComponent);
 	mccc->set_mesh("cylinder");

@@ -18,7 +18,8 @@ private:
 	TextureGen() {}
 
 	static SPTR_uchar gen_solide(uint& data_size, uint width, uint heigh, CColor color);
-
+	static SPTR_uchar gen_gradua(uint& data_size, uint width, uint heigh, CColor color);
+	static SPTR_uchar gen_thetwo(uint& data_size, uint width, uint heigh, CColor color);
 };
 
 // ===============================================================================================
