@@ -3,6 +3,7 @@
 #include "assetmanager.h"
 #include "mygamemanager.h"
 #include "meshcomponent.h"
+#include "lightobject.h"
 #include <QOpenGLWidget>
 
 #include "plane.h"
@@ -72,11 +73,13 @@ void MyGameManager::begin_play(QOpenGLWidget* gl) {
 	auto t_shader = AssetManager::get_shader("triangle")->use();
 	t_shader->set_mat4("u_projection", projection);
 
-	t_shader->set_vec3("u_light_pos", CVector3D(1.2f, 5.0f, 2.0f));
-	t_shader->set_vec3("u_light_color", CVector3D(1.0f, 1.0f, 1.0f));
+	//t_shader->set_vec3("u_light_pos", CVector3D(1.2f, 5.0f, 2.0f));
+	//t_shader->set_vec3("u_light_color", CVector3D(1.0f, 1.0f, 1.0f));
 
-	//auto mt = AssetManager::get_material("cyan_plastic");
-	//if (mt != nullptr) mt->use("triangle");
+	auto d_light = CREATE_CLASS(DirectLightObject);
+	std::string str = "triangle";
+	d_light->use(str);
+
 }
 
 void MyGameManager::tick() {

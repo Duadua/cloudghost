@@ -1,5 +1,12 @@
 #version 330 core
 
+// light num 
+const int max_direct_light_num	= 10;
+const int max_point_light_num	= 10;
+const int max_spot_light_num	= 10;
+const int max_sky_light_num	    = 1;
+
+
 out vec4 r_color;
 
 in vec3 o_world_pos;
@@ -35,22 +42,69 @@ struct material_helper {
 	float shininess;
 };
 
+// light struct 
+struct DirectLight {
+    vec3 color;
+    vec3 dirction;
 
-uniform vec3        u_light_pos;
-uniform vec3	    u_light_color;
+    float intensity;
+
+};
+struct PointLight {
+    vec3 color;
+    vec3 position;
+
+    float intensity;
+
+    // att
+    float att_ka, att_kb, att_kc;
+
+};
+struct SpotLight {
+    vec3 color;
+    vec3 position;
+    vec3 dirction;
+
+    float intensity;
+    
+    // att
+    float att_ka, att_kb, att_kc;
+
+    // inner and outer 
+    float inner, outer;
+    
+};
+struct SkyLight {
+    vec3 color;
+
+    float intensity;
+    
+};
+
+// uniform variable
+
+uniform DirectLight u_direct_light[max_direct_light_num];
+uniform PointLight  u_point_light[max_point_light_num];
+uniform SpotLight   u_spot_light[max_spot_light_num];
+uniform SkyLight    u_sky_light[max_sky_light_num];
+uniform int         u_direct_light_num;                         // default is 0
+uniform int         u_point_light_num;
+uniform int         u_spot_light_num;
+uniform int         u_sky_light_num;
+
 uniform vec3	    u_view_pos;
 uniform material    u_material;
 
-vec3 t_light_dir;
+// helper variable
 vec3 t_view_dir;
 vec3 t_normal;
 material_helper t_material_helper;
 
 void pre_cac() {
-    t_light_dir = normalize(u_light_pos - o_world_pos);
     t_view_dir = normalize(u_view_pos - o_world_pos);
     t_normal = normalize(o_normal);
 
+    // init material_helper by uniform material
     t_material_helper.ka = u_material.ka;
     t_material_helper.kd = u_material.kd;
     t_material_helper.ks = u_material.ks;
@@ -64,17 +118,17 @@ void pre_cac() {
 		
 }
  
+ // blinn_phong lighting
 vec3 cac_ambient() { return vec3(1.0); }
-vec3 cac_diffuse() { return max(0.0, dot(t_light_dir, t_normal)); }
-vec3 cac_spcular(float shininess) {
-    vec3 t_halfway = normalize(t_light_dir + t_view_dir);
-    return pow(max(0.0, dot(t_normal, t_halfway)), shininess);
+vec3 cac_diffuse(vec3 normal, vec3 light_dir) { return max(0.0, dot(light_dir, normal)); }
+vec3 cac_spcular(vec3 normal, vec3 light_dir, vec3 view_dir, float shininess) {
+    vec3 t_halfway = normalize(light_dir + view_dir);
+    return pow(max(0.0, dot(normal, t_halfway)), shininess);
 }
-
 vec3 blinn_phong(vec3 normal, vec3 light_dir, vec3 view_dir, material_helper mh, float att) {
     vec3 i_ambient = mh.ka * mh.map_ka_color * cac_ambient();    
-    vec3 i_diffuse = mh.kd * mh.map_kd_color * cac_diffuse();
-    vec3 i_spcular = mh.ks * mh.map_ks_color * cac_spcular(mh.shininess);
+    vec3 i_diffuse = mh.kd * mh.map_kd_color * cac_diffuse(normal, light_dir);
+    vec3 i_spcular = mh.ks * mh.map_ks_color * cac_spcular(normal, light_dir, view_dir, mh.shininess);
 
     return att * (i_ambient + i_diffuse + i_spcular);
     //return att * (i_diffuse);
@@ -85,17 +139,68 @@ float att_drect_light() { return 1.0; }
 float att_point_light() { return 1.0; }
 float att_spott_light() { return 1.0; }
 
+// cac light
+vec3 cac_direct_light_one(int i) {
+    vec3 res = vec3(0.0, 0.0, 0.0);
+    res += blinn_phong(t_normal, -u_direct_light[i].dirction, t_view_dir, t_material_helper, 1.0);
+    return res;
+}
+vec3 cac_point_light_one(int i) {
+    /*vec3 res = vec3(0.0, 0.0, 0.0);
+    vec3 t_light_dir = normalize(u_point_light[i].position - o_world_pos);
+    res += blinn_phong(t_normal, t_light_dir, t_view_dir, t_material_helper, 1.0);
+    return res;
+    */
+    return vec3(0.0, 0.0, 0.0);
+
+}
+vec3 cac_spot_light_one(int i) {
+    return vec3(0.0, 0.0, 0.0);
+}
+vec3 cac_sky_light_one(int i) {
+    return vec3(0.0, 0.0, 0.0);
+}
+vec3 cac_direct_light() {
+    vec3 res = vec3(0.0, 0.0, 0.0);
+    for(int i = 0; i < u_direct_light_num; ++i) { res += cac_direct_light_one(i); }
+    return res;
+}
+vec3 cac_point_light() {
+    vec3 res = vec3(0.0, 0.0, 0.0);
+    for(int i = 0; i < u_point_light_num; ++i) { res += cac_point_light_one(i); }
+    return res;
+}
+vec3 cac_spot_light() {
+    vec3 res = vec3(0.0, 0.0, 0.0);
+    for(int i = 0; i < u_spot_light_num; ++i) { res += cac_spot_light_one(i); }
+    return res;
+}
+vec3 cac_sky_light() {
+    vec3 res = vec3(0.0, 0.0, 0.0);
+    for(int i = 0; i < u_sky_light_num; ++i) { res += cac_sky_light_one(i); }
+    return res;
+}
+
+
 void main(void) {
 
     pre_cac();
 
-    vec3 t_color = u_light_color * blinn_phong(t_normal, t_light_dir, t_view_dir, t_material_helper, 1.0);
+    //vec3 t_color = u_light_color * blinn_phong(t_normal, t_light_dir, t_view_dir, t_material_helper, 1.0);
     // t_color = vec3(1.0, 0.0, 0.0);
-    r_color = vec4(t_color, 1.0);
+    //r_color = vec4(t_color, 1.0);
 
 	//vec4 t_c = texture(u_material.map_kd, o_tex_coord);
 	//if(t_c.a < 0.01) discard;
     //r_color = t_c;
+
+    vec3 t_color = vec3(0.0, 0.0, 0.0);
+    t_color += cac_direct_light();
+    t_color += cac_point_light();
+    t_color += cac_spot_light();
+    t_color += cac_sky_light();
+
+    r_color = vec4(t_color, 1.0);
 }
 
 /*

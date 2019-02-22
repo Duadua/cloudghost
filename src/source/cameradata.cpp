@@ -23,7 +23,7 @@ void CameraData::update(QVector3D l, QVector3D r) {
 	world_up.setY(qCos(roll));
 	world_up.normalize();
 
-	// 计算 front
+	// 计算 front -- 初始方向 (0.0, 0.0, 0.0)
 	front.setX(qSin(yaw) * qCos(pitch));
 	front.setZ(qCos(yaw) * qCos(pitch));
 	front.setY(qSin(pitch));

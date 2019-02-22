@@ -4,29 +4,89 @@
 #include "lightcomponent.h"
 
 enum LightType {
-	DIRECT,
-	POINT,
-	SPOT,
-	SKY
+	DIRECT_LIGHT,
+	POINT_LIGHT,
+	SPOT_LIGHT,
+	SKY_LIGHT
 };
 
 class LightObject : public GameObject {
-	DECLARE_CLASS(LightObject)
 public:
-	LightObject();
+	LightObject() {}
 	virtual ~LightObject() {}
 
-	bool init(LightType type);
+	LightType get_light_type() { return light_type; }
 
-	GET_SET(LightType, light_type);
+	bool use(std::string& shader);
 
-	SPTR_LightComponent get_light_component() { return light_component; }
-
-private:
-
-	SPTR_LightComponent light_component;
+protected:
 
 	LightType light_type;
 
 };
 DECLARE_AUTO_PTR(LightObject)
+
+
+// ===========================================================================
+
+class DirectLightObject : public LightObject {
+	DECLARE_CLASS(DirectLightObject)
+	
+public:
+
+	DirectLightObject();
+	virtual ~DirectLightObject() {}
+
+	SPTR_DirectLightComponent get_light_component() { return std::dynamic_pointer_cast<DirectLightComponent>(root_component); }
+
+private:
+
+};
+DECLARE_AUTO_PTR(DirectLightObject)
+
+// ===========================================================================
+
+class PointLightObject : public LightObject {
+	DECLARE_CLASS(PointLightObject)
+	
+public:
+
+	PointLightObject() {}
+	virtual ~PointLightObject() {}
+
+private:
+
+};
+DECLARE_AUTO_PTR(PointLightObject)
+
+// ===========================================================================
+
+class SpotLightObject : public LightObject {
+	DECLARE_CLASS(SpotLightObject)
+	
+public:
+
+	SpotLightObject() {}
+	virtual ~SpotLightObject() {}
+
+private:
+
+};
+DECLARE_AUTO_PTR(SpotLightObject)
+
+// ===========================================================================
+
+class SkyLightObject : public LightObject {
+	DECLARE_CLASS(SkyLightObject)
+	
+public:
+
+	SkyLightObject() {}
+	virtual ~SkyLightObject() {}
+
+private:
+
+};
+DECLARE_AUTO_PTR(SkyLightObject)
+
+

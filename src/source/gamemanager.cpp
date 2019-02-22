@@ -76,8 +76,8 @@ void GameManager::exit(QOpenGLWidget* gl) {
 SPTR_CameraComponent GameManager::set_main_camera() {
 	auto free_camera = CREATE_CLASS(FreeCamera);
 	add_game_object("free_camera", free_camera);
-	free_camera->get_root()->set_location(QVector3D(0.0f, 1.5f, -3.0f));
-	free_camera->get_root()->set_roataion(QVector3D(-20.0f, 0.0f, 0.0f));
+	free_camera->get_root()->set_location(QVector3D(0.0f, 1.5f, -10.0f));
+	free_camera->get_root()->set_roataion(QVector3D(0.0f, 0.0f, 0.0f));
 
 	return free_camera->get_camera_component();
 }

@@ -29,10 +29,11 @@ int main(int argc, char *argv[]) {
 	*/
 
 	// gen mesh txt
-	QString path = "rect.txt";
+	/*QString path = "rect.txt";
 	if (!MeshTxtGen::gen_mesh_txt(path.toStdString(), MeshTxtGenType::RECTANGLE)) {
 		qDebug() << "cannot gen mesh txt" << endl;
 	}
+	*/
 	
 	
 	// gen material txt
@@ -42,9 +43,7 @@ int main(int argc, char *argv[]) {
 		qDebug() << "cannot gen material txt" << endl;
 	}
 	*/
-	
-	
-	
+
 	// repair png
 	//std::string str = "resources";
 	//QtImageHelper::repair_png(str);
@@ -60,7 +59,6 @@ int main(int argc, char *argv[]) {
 	std::string path = "resources/textures/txt/texture_default.txt";
 	QtImageHelper::text_to_png(path);
 	*/
-	
 
 	MyGameManager gm;
 	CPBR w;
