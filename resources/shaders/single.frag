@@ -1,9 +1,9 @@
 #version 330 core
 
 // light num 
-const int max_direct_light_num	= 10;
-const int max_point_light_num	= 10;
-const int max_spot_light_num	= 10;
+const int max_direct_light_num	= 1;
+const int max_point_light_num	= 16;
+const int max_spot_light_num	= 16;
 const int max_sky_light_num	    = 1;
 
 
