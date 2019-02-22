@@ -4,11 +4,11 @@
 
 IMPLEMENT_CLASS(GameObject)
 
-GameObject::GameObject(SPTR_SceneComponent root) { root_component = root; }
+GameObject::GameObject(SPTR_SceneComponent root) { 
+	root_component = root; 
+	if (root_component == nullptr) root_component = CREATE_CLASS(SceneComponent);
+}
 GameObject::~GameObject() {} 
-
-void GameObject::set_root(SPTR_SceneComponent root) { root_component = root; }
-SPTR_SceneComponent GameObject::get_root() { return root_component; }
 
 void GameObject::bind_input() {}
 void GameObject::begin_play() {}

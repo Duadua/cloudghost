@@ -10,8 +10,7 @@ public:
 	GameObject(SPTR_SceneComponent root = nullptr);
 	virtual ~GameObject();
 
-	void set_root(SPTR_SceneComponent root);
-	SPTR_SceneComponent get_root();
+	GET_SET(SPTR_SceneComponent, root_component);
 
 	virtual void bind_input();
 	virtual void begin_play();
