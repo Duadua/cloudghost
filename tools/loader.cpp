@@ -20,8 +20,8 @@ void get_all_files_from_dir(std::string& path, std::vector<std::string>& res) {
 		if ((fd.attrib & _A_SUBDIR)) {
 			if (strcmp(fd.name, ".") == 0 || strcmp(fd.name, "..") == 0) continue;
 			get_all_files_from_dir(t_str, res);
-		} // 子文件夹
-		else { res.push_back(t_str); } // 文件
+		} // 瀛愭枃浠跺す
+		else { res.push_back(t_str); } // 鏂囦欢
 
 	} while (_findnext(h_file, &fd) == 0);
 

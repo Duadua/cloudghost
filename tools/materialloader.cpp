@@ -44,7 +44,7 @@ void MaterialGen::write_one_material(std::ostream& out, const MaterialData& md) 
 
 bool MaterialLoader::load_material_txt(const std::string& src, std::vector<MaterialData>& md, SourceType source_type) {
 
-	// 打开文件
+	// 鎵撳紑鏂囦欢
 	std::istream* in;
 	std::ifstream fs;
 	std::istringstream ss;

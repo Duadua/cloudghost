@@ -5,15 +5,15 @@
 #include <vector>
 
 enum MeshTxtGenType {
-	CIRCLE,						// Τ²
-	RECTANGLE,					// ΎΨΠΞ
-	TRIANGLE_RIGHT,				// Φ±½Η
-	TRIANGLE_REGULAR,			// µΘ±ί
+	CIRCLE,						// ε†
+	RECTANGLE,					// η©ε½Ά
+	TRIANGLE_RIGHT,				// η›΄θ§’
+	TRIANGLE_REGULAR,			// η­‰θΎΉ
 
-	CUBE,						// ΑΆ·½Με
-	CONE,						// Χ¶Με
-	SPHERE,						// ΗςΜε
-	CYLINDER					// ΦωΜε
+	CUBE,						// η«‹ζ–Ήδ½“
+	CONE,						// ι”¥δ½“
+	SPHERE,						// ηƒδ½“
+	CYLINDER					// ζ±δ½“
 };
 
 struct MVertex {

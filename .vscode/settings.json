@@ -4,8 +4,9 @@
 		"cmath": "cpp",
 		"qvariant": "cpp",
 		"qstring": "cpp",
-		"xstring": "cpp"
-	}
+		"xstring": "cpp",
+		"qopenglwidget": "cpp"
+	},
 	"files.exclude": {
 		"**/.git": true,
 		"**/.svn": true,

@@ -27,7 +27,7 @@ public:
 	static void exec_mouse_release_event(QMouseEvent* event, QOpenGLWidget* gl);
 	static void exec_mouse_moveeee_event(QMouseEvent* event, QOpenGLWidget* gl);
 	static void exec_mouse_wheeeel_event(QWheelEvent* event, QOpenGLWidget* gl);
-	static void mouse_pressed_over(); // Êó±êµ¥»÷½áÊø
+	static void mouse_pressed_over(); // é¼ æ ‡å•å‡»ç»“æŸ
 	
 	// cursor
 	static void cursor_clip();
@@ -60,10 +60,10 @@ public:
 
 private:
 	// mouse
-	static QTimer timer_mouse_pressed_over;					// Çå¿ÕÊó±êµ¥»÷ flag ÓÃ
+	static QTimer timer_mouse_pressed_over;					// æ¸…ç©ºé¼ æ ‡å•å‡» flag ç”¨
 
 	// key
-	static QTimer timer_key_pressed_over;						// Çå¿Õ¼üÅÌµ¥»÷ flag ÓÃ
+	static QTimer timer_key_pressed_over;						// æ¸…ç©ºé”®ç›˜å•å‡» flag ç”¨
 
 	// binders
 	static QMap<QString, QVector<InputState> > action_maps;
@@ -107,9 +107,9 @@ Q_DECLARE_OPERATORS_FOR_FLAGS(InputAxisTypes)
 struct InputState {
 
 	// mouse
-	Qt::MouseButtons mouse_pressed;		// °´ÏÂÊÂ¼ş
-	Qt::MouseButtons mouse_released;	// µ¯ÆğÊÂ¼ş
-	Qt::MouseButtons mouse_pressing;	// ³¤°´ÊÂ¼ş
+	Qt::MouseButtons mouse_pressed;		// æŒ‰ä¸‹äº‹ä»¶
+	Qt::MouseButtons mouse_released;	// å¼¹èµ·äº‹ä»¶
+	Qt::MouseButtons mouse_pressing;	// é•¿æŒ‰äº‹ä»¶
 
 	// axis can be used
 	InputAxisTypes axis_types;
@@ -141,8 +141,8 @@ struct InputData{
 	float mouse_wheel_delta;
 	float mouse_sensitivity;
 
-	int mouse_pressed_count;			// °´ÏÂ¼ÆÊı -- ¿ÉÓÃÓÚÊµÏÖË«»÷µÈĞ§¹û
-	int mouse_move_ignore_count;		// ÆÁ±ÎÊó±ê¹â±êÒÆ¶¯²úÉúµÄ mousemove ÊÂ¼ş
+	int mouse_pressed_count;			// æŒ‰ä¸‹è®¡æ•° -- å¯ç”¨äºå®ç°åŒå‡»ç­‰æ•ˆæœ
+	int mouse_move_ignore_count;		// å±è”½é¼ æ ‡å…‰æ ‡ç§»åŠ¨äº§ç”Ÿçš„ mousemove äº‹ä»¶
 
 	// key
 	int key_pressed_count;

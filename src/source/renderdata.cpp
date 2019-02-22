@@ -17,13 +17,13 @@ void RenderData::init(const std::vector<MVertex>& v, const std::vector<uint>& i)
 	vertices = v;
 	indices = i;
 
-	// ³õÊ¼»¯ vbo
+	// åˆå§‹åŒ– vbo
 	core->glGenBuffers(1, &vbo);
 	core->glBindBuffer(GL_ARRAY_BUFFER,vbo);
 	core->glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(MVertex), &vertices[0], GL_STATIC_DRAW);
 	core->glBindBuffer(GL_ARRAY_BUFFER, 0);
 
-	// ³õÊ¼»¯ ebo
+	// åˆå§‹åŒ– ebo
 	if (indices.size() > 0) {
 		core->glGenBuffers(1, &ebo);
 		core->glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
@@ -31,7 +31,7 @@ void RenderData::init(const std::vector<MVertex>& v, const std::vector<uint>& i)
 		core->glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 	}
 
-	// ³õÊ¼»¯ vao
+	// åˆå§‹åŒ– vao
 	core->glGenVertexArrays(1, &vao);
 	core->glBindVertexArray(vao);
 	core->glBindBuffer(GL_ARRAY_BUFFER, vbo);

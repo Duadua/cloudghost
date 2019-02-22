@@ -9,10 +9,10 @@
 #include "plane.h"
 
 void MyGameManager::load_asset() {
-	// Ô­ÁÏ -- ×ÅÉ«Æ÷
+	// åŸæ–™ -- ç€è‰²å™¨
 	AssetManager::load_shader("triangle", ":/asset/shaders/single.vert", ":/asset/shaders/single.frag");
 
-	// Ô­ÁÏ -- ¶¥µãÊı¾İ
+	// åŸæ–™ -- é¡¶ç‚¹æ•°æ®
 	AssetManager::load_mesh("triangle_right", "resources/models/txt/triangle_right.txt");
 	AssetManager::load_mesh("triangle_regular", "resources/models/txt/triangle_regular.txt");
 	AssetManager::load_mesh("rect", "resources/models/txt/rect.txt");
@@ -23,7 +23,7 @@ void MyGameManager::load_asset() {
 	AssetManager::load_mesh("cylinder", "resources/models/txt/cylinder.txt");
 	AssetManager::load_mesh("sphere", "resources/models/txt/sphere.txt");
 
-	// Ô­ÁÏ -- ²ÄÖÊ
+	// åŸæ–™ -- æè´¨
 	AssetManager::load_materials("resources/materials/txt/cube_material.txt");
 
 	// texture
@@ -35,22 +35,22 @@ void MyGameManager::load_asset() {
 }
 
 void MyGameManager::begin_play(QOpenGLWidget* gl) {
-	// Éú³É plan
+	// ç”Ÿæˆ plan
 	auto plane = CREATE_CLASS(PlaneObject);
 	add_game_object("plane", plane);
-	plane->get_root()->set_location(QVector3D(0.0f, -0.5f, 0.0f));
+	plane->get_root_component()->set_location(QVector3D(0.0f, -0.5f, 0.0f));
 
-	// Éú³É gameobject
+	// ç”Ÿæˆ gameobject
 	auto cube_object = CREATE_CLASS(GameObject);
 	add_game_object("cube01", cube_object);
-	// gameobject µÄ root
+	// gameobject çš„ root
 	auto mc = CREATE_CLASS(MeshComponent);
 	mc->set_mesh("cube");
-	cube_object->set_root(mc);
+	cube_object->set_root_component(mc);
 	auto t_ms = AssetManager::get_mesh(mc->get_mesh());
 	//t_ms->get_render_datas()[0]->set_material_name("cube_wood");
 
-	// gameobject µÄÁíÒ»¸öÏÔÊ¾×é¼ş
+	// gameobject çš„å¦ä¸€ä¸ªæ˜¾ç¤ºç»„ä»¶
 	auto mcc = CREATE_CLASS(MeshComponent);
 	mcc->set_mesh("sphere");
 	mcc->attach_to(mc);
@@ -67,7 +67,7 @@ void MyGameManager::begin_play(QOpenGLWidget* gl) {
 	auto t_m = AssetManager::get_mesh(mccc->get_mesh());
 	t_m->get_render_datas()[2]->set_material_name("");
 
-	// shader ¾²Ì¬²ÎÊı¸³Öµ
+	// shader é™æ€å‚æ•°èµ‹å€¼
 	QMatrix4x4 projection;
 	projection.perspective(45.0f, (GLfloat)gl->width() / gl->height(), 0.1f, 100.0f);
 	auto t_shader = AssetManager::get_shader("triangle")->use();

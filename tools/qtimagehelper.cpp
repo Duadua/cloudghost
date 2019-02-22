@@ -29,10 +29,10 @@ bool QtImageHelper::text_to_png(const std::string& path) {
 
 	uint t_size;
 	fs.seekg(0, std::ios::end);										
-	t_size = fs.tellg();												// ÒÔ»ñµÃÄÚÈİ´óĞ¡
-	auto t_data = make_shared_array<uchar>(t_size + 1);					// ÒÔ¿ª±ÙÏàÓ¦ÈİÁ¿µÄ´æ´¢¿Õ¼ä
+	t_size = fs.tellg();												// ä»¥è·å¾—å†…å®¹å¤§å°
+	auto t_data = make_shared_array<uchar>(t_size + 1);					// ä»¥å¼€è¾Ÿç›¸åº”å®¹é‡çš„å­˜å‚¨ç©ºé—´
 
-	fs.seekg(0, std::ios::beg);											// Ìøµ½ÎÄ¼şÍ·
+	fs.seekg(0, std::ios::beg);											// è·³åˆ°æ–‡ä»¶å¤´
 	fs.read((char*)t_data.get(), t_size);
 
 	uint width, heigh, data_size;
@@ -75,7 +75,7 @@ bool QtImageHelper::repair_one_png(std::string& path) {
 	uint t_size = fs.tellg();									
 	auto t_data = make_shared_array<uchar>(t_size + 1);
 
-	fs.seekg(0, std::ios::beg);			// Ìøµ½ÎÄ¼şÍ·
+	fs.seekg(0, std::ios::beg);			// è·³åˆ°æ–‡ä»¶å¤´
 	fs.read((char*)t_data.get(), t_size);
 
 	QByteArray t_ba((char*)t_data.get(), t_size);
@@ -109,8 +109,8 @@ void QtImageHelper::get_all_files_from_dir(const std::string& path, std::vector<
 		if ((fd.attrib & _A_SUBDIR)) {
 			if (strcmp(fd.name, ".") == 0 || strcmp(fd.name, "..") == 0) continue;
 			get_all_files_from_dir(t_str, res);
-		} // ×ÓÎÄ¼ş¼Ğ
-		else { res.push_back(t_str); } // ÎÄ¼ş
+		} // å­æ–‡ä»¶å¤¹
+		else { res.push_back(t_str); } // æ–‡ä»¶
 
 	} while (_findnext(h_file, &fd) == 0);
 

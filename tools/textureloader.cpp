@@ -5,7 +5,7 @@ bool TextureGen::gen_texture_txt(const std::string& res, TextureGenType type, CC
 	uint width = CMath::pow(2u, depth);
 	uint heigh = CMath::pow(2u, depth);
 
-	// ´ò¿ªÎÄ¼ş
+	// æ‰“å¼€æ–‡ä»¶
 	std::ostream* out;
 	std::ofstream fs;
 	std::stringstream ss;
@@ -16,7 +16,7 @@ bool TextureGen::gen_texture_txt(const std::string& res, TextureGenType type, CC
 	}
 	else if (source_type == SourceType::BY_STRING) { ss.clear(); out = &ss; }
 
-	// Éú³ÉÊı¾İ
+	// ç”Ÿæˆæ•°æ®
 	SPTR_uchar t_data;
 	uint t_size;
 	switch (type) {
@@ -103,11 +103,11 @@ SPTR_uchar TextureLoader::load_texture_txt(const std::string& path, uint& width,
 	else if (source_type == SourceType::BY_STRING) { ss.clear(); ss.str(path); in = &ss; }
 
 	uint t_size;
-	in->seekg(0, std::ios::end);										// Ìøµ½ÎÄ¼şÎ²
-	t_size = in->tellg();												// ÒÔ»ñµÃÄÚÈİ´óĞ¡
-	auto t_data = make_shared_array<uchar>(t_size + 1);					// ÒÔ¿ª±ÙÏàÓ¦ÈİÁ¿µÄ´æ´¢¿Õ¼ä
+	in->seekg(0, std::ios::end);										// è·³åˆ°æ–‡ä»¶å°¾
+	t_size = in->tellg();												// ä»¥è·å¾—å†…å®¹å¤§å°
+	auto t_data = make_shared_array<uchar>(t_size + 1);					// ä»¥å¼€è¾Ÿç›¸åº”å®¹é‡çš„å­˜å‚¨ç©ºé—´
 
-	in->seekg(0, std::ios::beg);										// Ìøµ½ÎÄ¼şÍ·
+	in->seekg(0, std::ios::beg);										// è·³åˆ°æ–‡ä»¶å¤´
 	in->read((char*)t_data.get(), t_size);
 	
 	memcpy(&width, t_data.get(), sizeof(uint));
@@ -123,11 +123,11 @@ SPTR_uchar TextureLoader::load_texture_png(const std::string& path, uint& data_s
 	fs.open(path, std::ios::binary);
 	if (!fs.is_open()) { return nullptr; }
 	
-	fs.seekg(0, std::ios::end);										// Ìøµ½ÎÄ¼şÎ²
-	data_size = fs.tellg();											// ÒÔ»ñµÃÄÚÈİ´óĞ¡
-	auto t_data = make_shared_array<uchar>(data_size + 1);			// ÒÔ¿ª±ÙÏàÓ¦ÈİÁ¿µÄ´æ´¢¿Õ¼ä
+	fs.seekg(0, std::ios::end);										// è·³åˆ°æ–‡ä»¶å°¾
+	data_size = fs.tellg();											// ä»¥è·å¾—å†…å®¹å¤§å°
+	auto t_data = make_shared_array<uchar>(data_size + 1);			// ä»¥å¼€è¾Ÿç›¸åº”å®¹é‡çš„å­˜å‚¨ç©ºé—´
 
-	fs.seekg(0, std::ios::beg);										// Ìøµ½ÎÄ¼şÍ·
+	fs.seekg(0, std::ios::beg);										// è·³åˆ°æ–‡ä»¶å¤´
 	fs.read((char*)t_data.get(), data_size);
 	
 	return t_data;

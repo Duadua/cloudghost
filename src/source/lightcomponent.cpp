@@ -16,7 +16,7 @@ IMPLEMENT_CLASS(DirectLightComponent)
 uint DirectLightComponent::direct_light_num = 0;
 
 DirectLightComponent::DirectLightComponent() {
-	rotation = QVector3D(-46.0f, 0.0f, 0.0f);		// ³õÊ¼·½Ïò
+	rotation = QVector3D(-46.0f, 0.0f, 0.0f);		// åˆå§‹æ–¹å‘
 }
 
 bool DirectLightComponent::use(const std::string& shader) {

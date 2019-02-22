@@ -13,7 +13,7 @@ enum SourceType {
 	BY_STRING
 };
 
-// array 使用 shared_ptr -- 需要手动指定删除器
+// array 浣跨敤 shared_ptr -- 闇�瑕佹墜鍔ㄦ寚瀹氬垹闄ゅ櫒
 template<class T>
 inline std::shared_ptr<T> make_shared_array(size_t size) { return std::shared_ptr<T>(new T[size], std::default_delete<T[]>()); }
 

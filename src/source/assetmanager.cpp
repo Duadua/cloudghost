@@ -14,7 +14,7 @@ SPTR_Shader AssetManager::load_shader(const std::string& key, const std::string&
 }
 SPTR_Shader AssetManager::get_shader(const std::string& key) {
 	if (!map_shaders.count(key)) {
-		qDebug() << "¡¾error¡¿¡¾asset¡¿¡¾shader¡¿no shader calls " << QString::fromStdString(key) << endl;
+		qDebug() << "ã€errorã€‘ã€assetã€‘ã€shaderã€‘no shader calls " << QString::fromStdString(key) << endl;
 		return map_shaders[key] = nullptr;
 	}
 	return map_shaders[key];
@@ -38,7 +38,7 @@ SPTR_Mesh AssetManager::load_mesh(const std::string& key, const std::string& src
 	bool res = false;
 
 	if (source_type == SourceType::BY_FILE) {
-		std::string suf = get_suff_of_file(src);			// »ñµÃÎÄ¼şÂ·¾¶ºó×º
+		std::string suf = get_suff_of_file(src);			// è·å¾—æ–‡ä»¶è·¯å¾„åç¼€
 		if (suf.compare(".txt") == 0) { res = MeshLoader::load_mesh_txt(src, t_v, t_md, t_mt_files, SourceType::BY_FILE); }
 		else if (suf.compare(".obj") == 0) { res = MeshLoader::load_mesh_obj(src, t_v, t_md, t_mt_files, SourceType::BY_FILE); }
 	}
@@ -69,7 +69,7 @@ SPTR_Mesh AssetManager::load_mesh(const std::string& key, const std::string& src
 }
 SPTR_Mesh AssetManager::get_mesh(const std::string& key) {
 	if (!map_meshs.count(key)) {
-		qDebug() << "¡¾error¡¿¡¾asset¡¿¡¾mesh¡¿no mesh calls " << QString::fromStdString(key) << endl;
+		qDebug() << "ã€errorã€‘ã€assetã€‘ã€meshã€‘no mesh calls " << QString::fromStdString(key) << endl;
 		return map_meshs[key] = nullptr;
 	}
 	return map_meshs[key];
@@ -81,7 +81,7 @@ bool AssetManager::load_materials(const std::string& src, SourceType source_type
 	std::vector<MaterialData> t_mds;
 
 	if (source_type == SourceType::BY_FILE) {
-		std::string suf = get_suff_of_file(src);			// »ñµÃÎÄ¼şÂ·¾¶ºó×º
+		std::string suf = get_suff_of_file(src);			// è·å¾—æ–‡ä»¶è·¯å¾„åç¼€
 		if (suf.compare(".txt") == 0) { res = MaterialLoader::load_material_txt(src,t_mds, SourceType::BY_FILE); }
 		else if (suf.compare(".mtl") == 0) { res = MaterialLoader::load_material_mtl(src,t_mds, SourceType::BY_FILE); }
 	}
@@ -106,15 +106,15 @@ bool AssetManager::load_materials(const std::string& src, SourceType source_type
 }
 SPTR_Material AssetManager::get_material(const std::string& key) {
 	if (!map_materials.count(key)) {
-		qDebug() << "¡¾warning¡¿¡¾asset¡¿¡¾material¡¿no material calls " << QString::fromStdString(key) << endl;
+		qDebug() << "ã€warningã€‘ã€assetã€‘ã€materialã€‘no material calls " << QString::fromStdString(key) << endl;
 		return map_materials[key] = nullptr;
 	}
 	return map_materials[key];
 }
 
 bool AssetManager::load_texture(const std::string& path, SourceType source_type) {
-	std::string t_name = get_name_of_file(path);			// »ñµÃÎÄ¼şÃû
-	std::string t_suf = get_suff_of_file(path);				// »ñµÃÎÄ¼şÂ·¾¶ºó×º
+	std::string t_name = get_name_of_file(path);			// è·å¾—æ–‡ä»¶å
+	std::string t_suf = get_suff_of_file(path);				// è·å¾—æ–‡ä»¶è·¯å¾„åç¼€
 	uint width, heigh;
 	SPTR_uchar t_res;
 
@@ -125,13 +125,13 @@ bool AssetManager::load_texture(const std::string& path, SourceType source_type)
 			auto t_data = TextureLoader::load_texture_png(path, t_size); 
 			if (t_data == nullptr) return false;
 
-			// ÔİÊ±Ê¹ÓÃ QImage ½âÎö png Êı¾İ --Ò²ÊÇÊ¹ÓÃÁË libpng ¿â
+			// æš‚æ—¶ä½¿ç”¨ QImage è§£æ png æ•°æ® --ä¹Ÿæ˜¯ä½¿ç”¨äº† libpng åº“
 			QByteArray t_ba((char*)t_data.get(), t_size);
 			QImage t_img;
 			t_img.loadFromData(t_ba, "png");
 			t_img = t_img.mirrored();
 
-			// ´Ó QImage ÌáÈ¡³öÏñËØÊı¾İ£¬ÒÔ´«¸ø texture
+			// ä» QImage æå–å‡ºåƒç´ æ•°æ®ï¼Œä»¥ä¼ ç»™ texture
 			width = t_img.width(); 
 			heigh = t_img.height();
 			t_res = make_shared_array<uchar>(t_img.byteCount() + 1);
@@ -147,7 +147,7 @@ bool AssetManager::load_texture(const std::string& path, SourceType source_type)
 
 	if (t_res == nullptr) return false;
 
-	// ´«¸ø texture
+	// ä¼ ç»™ texture
 	auto t_texture = CREATE_CLASS(Texture2D);
 	t_texture->set_name(t_name);
 	t_texture->set_internal_format(GL_BGRA);
@@ -159,7 +159,7 @@ bool AssetManager::load_texture(const std::string& path, SourceType source_type)
 }
 SPTR_Texture2D AssetManager::get_texture(const std::string& key) {
 	if (!map_textures.count(key)) {
-		qDebug() << "¡¾error¡¿¡¾asset¡¿¡¾texture¡¿no texture calls " << QString::fromStdString(key) << endl;
+		qDebug() << "ã€errorã€‘ã€assetã€‘ã€textureã€‘no texture calls " << QString::fromStdString(key) << endl;
 		return map_textures[key] = nullptr;
 	}
 	return map_textures[key];

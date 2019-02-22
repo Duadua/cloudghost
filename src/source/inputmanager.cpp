@@ -3,7 +3,7 @@
 #include <QCursor>
 #include <QMouseEvent>
 #include <QWheelEvent>
-#include <QOpenGLShader>	// ÎªÁËÊ¹ÓÃ wind32 µÄ ClipCursor
+#include <QOpenGLShader>	// ä¸ºäº†ä½¿ç”¨ wind32 çš„ ClipCursor
 #include <QOpenGLWidget>
 #include "inputmanager.h"
 
@@ -42,7 +42,7 @@ void InputManager::exec_mouse_pressed_event(QMouseEvent* event, QOpenGLWidget* g
 
 		cur_input_data.mouse_last_pos = event->pos();
 		cur_input_data.mouse_cur_pos = event->pos();
-	} // Ö»ÓĞÒ»¸ö¼ü°´ÏÂ
+	} // åªæœ‰ä¸€ä¸ªé”®æŒ‰ä¸‹
 	
 	exec_axis_mouse_move();
 }
@@ -91,7 +91,7 @@ void InputManager::exec_key_pressed_event(QKeyEvent* event, QOpenGLWidget* gl) {
 
 		cur_input_state.modifiers = event->modifiers();
 		
-	} // µÚÒ»´Î°´ÏÂ
+	} // ç¬¬ä¸€æ¬¡æŒ‰ä¸‹
 	else { }
 }
 void InputManager::exec_key_release_event(QKeyEvent* event, QOpenGLWidget* gl) {
@@ -114,17 +114,17 @@ void InputManager::key_pressed_over() {
 void InputManager::map_action(const QString& key, InputState is) { action_maps[key].append(is); }
 void InputManager::bind_action(const QString& key, DELEGATE_ICLASS(InputAction) ia) { input_actions[key] = ia; }
 void InputManager::exec_action() {
-	for (auto it = input_actions.cbegin(); it != input_actions.cend(); ++it) {	// ¶ÔÃ¿Ò»¸ö°ó¶¨µÄ¶¯×÷
-		if (!action_maps.count(it.key())) continue;								// map ÀïÃ»ÓĞÏàÓ¦µÄ¼üÎ»°ó¶¨
+	for (auto it = input_actions.cbegin(); it != input_actions.cend(); ++it) {	// å¯¹æ¯ä¸€ä¸ªç»‘å®šçš„åŠ¨ä½œ
+		if (!action_maps.count(it.key())) continue;								// map é‡Œæ²¡æœ‰ç›¸åº”çš„é”®ä½ç»‘å®š
 		for (auto itt = action_maps[it.key()].begin(); itt != action_maps[it.key()].end(); ++itt) {
 			if (cur_input_state.contain((*itt))) {
-				// Ö±½ÓÖ´ĞĞ
+				// ç›´æ¥æ‰§è¡Œ
 				(*it)->invoke();
-			} // Èç¹ûÓëµ±Ç°µÄ¼üÎ»×´Ì¬ÏàÍ¬£¬ ÔòÖ´ĞĞ
-		} // ±éÀúËùÓĞµÄ¼üÎ»°ó¶¨
+			} // å¦‚æœä¸å½“å‰çš„é”®ä½çŠ¶æ€ç›¸åŒï¼Œ åˆ™æ‰§è¡Œ
+		} // éå†æ‰€æœ‰çš„é”®ä½ç»‘å®š
 	}
 
-	// ÓĞĞ© flag ÒòÎªÃ»ÓĞÊÂ¼ş°ó¶¨¶ø²»»áÖ´ĞĞºóÇå¿Õ ´Ë´¦ÊÖ¶¯Çå¿Õ -- Õâ¸öbugÓĞµã·³
+	// æœ‰äº› flag å› ä¸ºæ²¡æœ‰äº‹ä»¶ç»‘å®šè€Œä¸ä¼šæ‰§è¡Œåæ¸…ç©º æ­¤å¤„æ‰‹åŠ¨æ¸…ç©º -- è¿™ä¸ªbugæœ‰ç‚¹çƒ¦
 	cur_input_state.mouse_pressed = Qt::NoButton;
 	cur_input_state.mouse_released = Qt::NoButton;
 
@@ -135,12 +135,12 @@ void InputManager::exec_action() {
 void InputManager::map_axis(const QString& key, InputState is) { axis_maps[key].append(is); }
 void InputManager::bind_axis(const QString& key, DELEGATE_ICLASS(InputAxis) ia) { input_axis[key] = ia; }
 void InputManager::exec_axis() {
-	for (auto it = input_axis.cbegin(); it != input_axis.cend(); ++it) {	// ¶ÔÃ¿Ò»¸ö°ó¶¨µÄ¶¯×÷
-		if (!axis_maps.count(it.key())) continue;							// map ÀïÃ»ÓĞÏàÓ¦µÄ¼üÎ»°ó¶¨
+	for (auto it = input_axis.cbegin(); it != input_axis.cend(); ++it) {	// å¯¹æ¯ä¸€ä¸ªç»‘å®šçš„åŠ¨ä½œ
+		if (!axis_maps.count(it.key())) continue;							// map é‡Œæ²¡æœ‰ç›¸åº”çš„é”®ä½ç»‘å®š
 		for (auto itt = axis_maps[it.key()].begin(); itt != axis_maps[it.key()].end(); ++itt) {
 			if (cur_input_state.contain((*itt))) {
 				float offset = (*itt).axis_scale;
-				// ±éÀúËùÊ¹ÓÃµÄ axis_types
+				// éå†æ‰€ä½¿ç”¨çš„ axis_types
 				bool flag = true;
 				switch ((*itt).axis_types) {
 				case InputAxisType::MOUSE_X: 
@@ -165,18 +165,18 @@ void InputManager::exec_axis() {
 				default: flag = false; break;
 				}
 				if(flag) (*it)->invoke(offset);
-			} // Èç¹ûÓëµ±Ç°µÄ¼üÎ»×´Ì¬ÏàÍ¬£¬ ÔòÖ´ĞĞ
-		} // ±éÀúËùÓĞµÄ¼üÎ»°ó¶¨
+			} // å¦‚æœä¸å½“å‰çš„é”®ä½çŠ¶æ€ç›¸åŒï¼Œ åˆ™æ‰§è¡Œ
+		} // éå†æ‰€æœ‰çš„é”®ä½ç»‘å®š
 	}
 	
 }
 void InputManager::exec_axis_mouse_move() {
-	for (auto it = input_axis.cbegin(); it != input_axis.cend(); ++it) {	// ¶ÔÃ¿Ò»¸ö°ó¶¨µÄ¶¯×÷
-		if (!axis_maps.count(it.key())) continue;							// map ÀïÃ»ÓĞÏàÓ¦µÄ¼üÎ»°ó¶¨
+	for (auto it = input_axis.cbegin(); it != input_axis.cend(); ++it) {	// å¯¹æ¯ä¸€ä¸ªç»‘å®šçš„åŠ¨ä½œ
+		if (!axis_maps.count(it.key())) continue;							// map é‡Œæ²¡æœ‰ç›¸åº”çš„é”®ä½ç»‘å®š
 		for (auto itt = axis_maps[it.key()].begin(); itt != axis_maps[it.key()].end(); ++itt) {
 			if (cur_input_state.contain((*itt))) {
 				float offset = (*itt).axis_scale;
-				// ±éÀúËùÊ¹ÓÃµÄ axis_types
+				// éå†æ‰€ä½¿ç”¨çš„ axis_types
 				bool flag = true;
 				switch ((*itt).axis_types) {
 				case InputAxisType::MOUSE_X: 
@@ -192,17 +192,17 @@ void InputManager::exec_axis_mouse_move() {
 				default: flag = false; break;
 				}
 				if(flag) (*it)->invoke(offset);
-			} // Èç¹ûÓëµ±Ç°µÄ¼üÎ»×´Ì¬ÏàÍ¬£¬ ÔòÖ´ĞĞ
-		} // ±éÀúËùÓĞµÄ¼üÎ»°ó¶¨
+			} // å¦‚æœä¸å½“å‰çš„é”®ä½çŠ¶æ€ç›¸åŒï¼Œ åˆ™æ‰§è¡Œ
+		} // éå†æ‰€æœ‰çš„é”®ä½ç»‘å®š
 	}
 }
 void InputManager::exec_axis_mouse_wheel() {
-	for (auto it = input_axis.cbegin(); it != input_axis.cend(); ++it) {	// ¶ÔÃ¿Ò»¸ö°ó¶¨µÄ¶¯×÷
-		if (!axis_maps.count(it.key())) continue;							// map ÀïÃ»ÓĞÏàÓ¦µÄ¼üÎ»°ó¶¨
+	for (auto it = input_axis.cbegin(); it != input_axis.cend(); ++it) {	// å¯¹æ¯ä¸€ä¸ªç»‘å®šçš„åŠ¨ä½œ
+		if (!axis_maps.count(it.key())) continue;							// map é‡Œæ²¡æœ‰ç›¸åº”çš„é”®ä½ç»‘å®š
 		for (auto itt = axis_maps[it.key()].begin(); itt != axis_maps[it.key()].end(); ++itt) {
 			if (cur_input_state.contain((*itt))) {
 				float offset = (*itt).axis_scale;
-				// ±éÀúËùÊ¹ÓÃµÄ axis_types
+				// éå†æ‰€ä½¿ç”¨çš„ axis_types
 				bool flag = true;
 				switch ((*itt).axis_types) {
 				case InputAxisType::WHEEL: 
@@ -213,17 +213,17 @@ void InputManager::exec_axis_mouse_wheel() {
 				default: flag = false; break;
 				}
 				if(flag) (*it)->invoke(offset);
-			} // Èç¹ûÓëµ±Ç°µÄ¼üÎ»×´Ì¬ÏàÍ¬£¬ ÔòÖ´ĞĞ
-		} // ±éÀúËùÓĞµÄ¼üÎ»°ó¶¨
+			} // å¦‚æœä¸å½“å‰çš„é”®ä½çŠ¶æ€ç›¸åŒï¼Œ åˆ™æ‰§è¡Œ
+		} // éå†æ‰€æœ‰çš„é”®ä½ç»‘å®š
 	}
 }
 void InputManager::exec_axis_key_pressing() {
-	for (auto it = input_axis.cbegin(); it != input_axis.cend(); ++it) {	// ¶ÔÃ¿Ò»¸ö°ó¶¨µÄ¶¯×÷
-		if (!axis_maps.count(it.key())) continue;							// map ÀïÃ»ÓĞÏàÓ¦µÄ¼üÎ»°ó¶¨
+	for (auto it = input_axis.cbegin(); it != input_axis.cend(); ++it) {	// å¯¹æ¯ä¸€ä¸ªç»‘å®šçš„åŠ¨ä½œ
+		if (!axis_maps.count(it.key())) continue;							// map é‡Œæ²¡æœ‰ç›¸åº”çš„é”®ä½ç»‘å®š
 		for (auto itt = axis_maps[it.key()].begin(); itt != axis_maps[it.key()].end(); ++itt) {
 			if (cur_input_state.contain((*itt))) {
 				float offset = (*itt).axis_scale;
-				// ±éÀúËùÊ¹ÓÃµÄ axis_types
+				// éå†æ‰€ä½¿ç”¨çš„ axis_types
 				bool flag = true;
 				switch ((*itt).axis_types) {
 				case InputAxisType::KEY_PRESSING: 
@@ -232,8 +232,8 @@ void InputManager::exec_axis_key_pressing() {
 				default: flag = false; break;
 				}
 				if(flag) (*it)->invoke(offset);
-			} // Èç¹ûÓëµ±Ç°µÄ¼üÎ»×´Ì¬ÏàÍ¬£¬ ÔòÖ´ĞĞ
-		} // ±éÀúËùÓĞµÄ¼üÎ»°ó¶¨
+			} // å¦‚æœä¸å½“å‰çš„é”®ä½çŠ¶æ€ç›¸åŒï¼Œ åˆ™æ‰§è¡Œ
+		} // éå†æ‰€æœ‰çš„é”®ä½ç»‘å®š
 	}
 }
 

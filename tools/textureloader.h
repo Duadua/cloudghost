@@ -3,9 +3,9 @@
 #include "loader.h"
 
 enum TextureGenType {
-	SOLIDE,			// ´¿É«
-	GRADUA,			// ½¥±ä -- ÏßÐÔ
-	THE_TWO,		// ¶þÖÖ»¥²¹ÑÕÉ«Ïà¼ä
+	SOLIDE,			// çº¯è‰²
+	GRADUA,			// æ¸å˜ -- çº¿æ€§
+	THE_TWO,		// äºŒç§äº’è¡¥é¢œè‰²ç›¸é—´
 
 };
 

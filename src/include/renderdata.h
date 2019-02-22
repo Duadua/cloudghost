@@ -21,7 +21,7 @@ private:
 	uint ebo;
 	
 	std::vector<MVertex> vertices;
-	std::vector<uint> indices;		// Ë÷Òý
+	std::vector<uint> indices;		// ç´¢å¼•
 
 	std::string material_name;
 

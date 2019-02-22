@@ -451,7 +451,7 @@ void MeshTxtGen::write_one_mtfile(std::ostream& out, const std::string& path) {
 
 void MeshTxtGen::add_one_vertex(const MVertex& x) { vertices.push_back(x); }
 void MeshTxtGen::add_one_face(uint a, uint b, uint c) {
-	// ÀûÓÃ»ìºÏ»ı±£³ÖÈı½ÇÃæÆ¬µÄÒ»ÖÂĞÔË³Ğò -- ÄæÊ±Õë
+	// åˆ©ç”¨æ··åˆç§¯ä¿æŒä¸‰è§’é¢ç‰‡çš„ä¸€è‡´æ€§é¡ºåº -- é€†æ—¶é’ˆ
 	float det = vertices[a].position.mix(vertices[b].position, vertices[c].position);
 	if (det > 1e-3) { std::swap(b, c); }		
 
@@ -478,7 +478,7 @@ void MeshTxtGen::cac_normal() {
 			auto& c = vertices[indices[i + 2]];
 
 			// cac face normal
-			CVector3D t_normal = (c.position - a.position).cross(b.position - a.position);	// ÓÒÊÖ¶¨Ôò
+			CVector3D t_normal = (c.position - a.position).cross(b.position - a.position);	// å³æ‰‹å®šåˆ™
 
 			// accumulate normal
 			a.normal += t_normal;
@@ -495,7 +495,7 @@ void MeshTxtGen::cac_normal() {
 
 bool MeshLoader::load_mesh_txt(const std::string& src, std::vector<MVertex>& vertices, std::vector<MeshData>& mds, std::vector<std::string>& mt_files, SourceType source_type) {
 
-	// ´ò¿ªÎÄ¼ş
+	// æ‰“å¼€æ–‡ä»¶
 	std::istream* in;
 	std::ifstream fs;
 	std::istringstream ss;
@@ -510,7 +510,7 @@ bool MeshLoader::load_mesh_txt(const std::string& src, std::vector<MVertex>& ver
 	mds.clear();
 	mt_files.clear();
 
-	// °´ĞĞ¶ÁÈ¡ -- »ñµÃ vertices ºÍ indices
+	// æŒ‰è¡Œè¯»å– -- è·å¾— vertices å’Œ indices
 	while ((*in)) {
 		std::string t_line;
 		std::getline((*in), t_line);

@@ -15,11 +15,11 @@ class GameManagerImpl {
 public:
 	virtual ~GameManagerImpl() {}
 
-	virtual void load_asset() = 0;						// ¼ÓÔØ×ÊÔ´
-	virtual void begin_play(QOpenGLWidget* gl) = 0;		// ÉèÖÃÄ£ĞÍµÈ
-	virtual void tick() = 0;							// Ã¿Ö¡±ä»¯µÄ²ÎÊı
-	virtual void map_input() = 0;						// °ó¶¨ÊäÈë
-	virtual SPTR_CameraComponent set_main_camera() = 0; // ÉèÖÃÖ÷Ïà»ú 
+	virtual void load_asset() = 0;						// åŠ è½½èµ„æº
+	virtual void begin_play(QOpenGLWidget* gl) = 0;		// è®¾ç½®æ¨¡å‹ç­‰
+	virtual void tick() = 0;							// æ¯å¸§å˜åŒ–çš„å‚æ•°
+	virtual void map_input() = 0;						// ç»‘å®šè¾“å…¥
+	virtual SPTR_CameraComponent set_main_camera() = 0; // è®¾ç½®ä¸»ç›¸æœº 
 
 };
 

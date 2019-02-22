@@ -17,23 +17,23 @@ void CameraData::update(QVector3D l, QVector3D r) {
 	float pitch = qDegreesToRadians(rotation.x());
 	float roll = qDegreesToRadians(rotation.z());
 
-	// ¼ÆËã world_up
+	// è®¡ç®— world_up
 	world_up.setZ(0.0f);
 	world_up.setX(qSin(roll));
 	world_up.setY(qCos(roll));
 	world_up.normalize();
 
-	// ¼ÆËã front -- ³õÊ¼·½Ïò (0.0, 0.0, 0.0)
+	// è®¡ç®— front -- åˆå§‹æ–¹å‘ (0.0, 0.0, 0.0)
 	front.setX(qSin(yaw) * qCos(pitch));
 	front.setZ(qCos(yaw) * qCos(pitch));
 	front.setY(qSin(pitch));
 	front.normalize();
 
-	// ¼ÆËã right
+	// è®¡ç®— right
 	right = QVector3D::crossProduct(front, world_up);
 	right.normalize();
 
-	// ¼ÆËã up
+	// è®¡ç®— up
 	up = QVector3D::crossProduct(right, front);
 	up.normalize();
 }
@@ -41,12 +41,12 @@ void CameraData::update(QVector3D l, QVector3D r) {
 QMatrix4x4 CameraData::look_at() {
 	QMatrix4x4 translate, rotate;
 
-	// ³õÊ¼»¯ translate
+	// åˆå§‹åŒ– translate
 	translate(0, 3) = -location.x();
 	translate(1, 3) = -location.y();
 	translate(2, 3) = -location.z();
 
-	// ³õÊ¼»¯ rotate
+	// åˆå§‹åŒ– rotate
 	rotate(0, 0) = -right.x();	rotate(0, 1) = -right.y();	rotate(0, 2) = -right.z(); 
 	rotate(1, 0) = up.x();		rotate(1, 1) = up.y();		rotate(1, 2) = up.z(); 
 	rotate(2, 0) = -front.x();	rotate(2, 1) = -front.y();	rotate(2, 2) = -front.z(); 

@@ -21,17 +21,17 @@ void SceneComponent::add_child(SPTR_SceneComponent child) {
 
 QMatrix4x4 SceneComponent::get_transform() {
 	QMatrix4x4 t_transform;
-	// Í¨¹ý lrs ¼ÆËã transform
+	// é€šè¿‡ lrs è®¡ç®— transform
 	t_transform.translate(location);
 	t_transform.rotate(rotation.x(), QVector3D(1.0f, 0.0f, 0.0f));
 	t_transform.rotate(rotation.y(), QVector3D(0.0f, 1.0f, 0.0f));
 	t_transform.rotate(rotation.z(), QVector3D(0.0f, 0.0f, 1.0f));
 	t_transform.scale(scale);
 
-	// ³ËÒÔ parent µÄ transform
+	// ä¹˜ä»¥ parent çš„ transform
 	if (!parent_component.expired()) {
 		t_transform = parent_component.lock()->get_transform() * t_transform;
-	} // expired() ·µ»Ø false Ê± lock() »á·µ»ØÒ»¸ö shared_ptr ¶ÔÏó
+	} // expired() è¿”å›ž false æ—¶ lock() ä¼šè¿”å›žä¸€ä¸ª shared_ptr å¯¹è±¡
 
 	return t_transform;
 }

@@ -35,7 +35,7 @@ void Shader::compile(const std::string& v_path, const std::string& f_path, const
 void Shader::compile_shader(QOpenGLShader& shader, const std::string& shader_path) {
 	bool res = shader.compileSourceFile(QString::fromStdString(shader_path));
 	if (!res) {
-		qDebug() << "¡¾error¡¿¡¾shader¡¿compile_failed" << endl;
+		qDebug() << "ã€errorã€‘ã€shaderã€‘compile_failed" << endl;
 		qDebug() << shader.log() << endl;
 	}
 	shader_program->addShader(&shader);
@@ -43,7 +43,7 @@ void Shader::compile_shader(QOpenGLShader& shader, const std::string& shader_pat
 void Shader::link_shaders() {
 	bool res = shader_program->link();
 	if (!res) {
-		qDebug() << "¡¾error¡¿¡¾shader¡¿link_failed" << endl;
+		qDebug() << "ã€errorã€‘ã€shaderã€‘link_failed" << endl;
 		qDebug() << shader_program->log() << endl;
 	}
 }

@@ -27,7 +27,7 @@ private:
 	void link_shaders();
 
 private:
-	QOpenGLShaderProgram* shader_program;	// 管理 shader 数据
+	QOpenGLShaderProgram* shader_program;	// 绠＄悊 shader 鏁版嵁
 };
 
 

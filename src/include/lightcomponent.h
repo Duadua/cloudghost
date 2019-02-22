@@ -38,7 +38,7 @@ public:
 
 private:
 	
-	CVector3D get_dirction();					// from rotation  -- ³õÊ¼·½Ïò (0.0, 0.0, 1.0)
+	CVector3D get_dirction();					// from rotation  -- åˆå§‹æ–¹å‘ (0.0, 0.0, 1.0)
 
 	static uint direct_light_num;
 

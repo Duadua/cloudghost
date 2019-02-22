@@ -19,16 +19,16 @@ void GameManager::init(QOpenGLWidget* gl) {
 	AssetManager::load_texture("resources/textures/txt/texture_default.txt");
 	AssetManager::load_texture("resources/textures/txt/texture_default.png");
 
-	load_asset();						// ¼ÓÔØ×ÊÔ´
-	begin_play(gl);						// ÉèÖÃÄ£ÐÍµÈ
-	main_camera = set_main_camera();	// °ó¶¨Ö÷Ïà»ú
+	load_asset();						// åŠ è½½èµ„æº
+	begin_play(gl);						// è®¾ç½®æ¨¡åž‹ç­‰
+	main_camera = set_main_camera();	// ç»‘å®šä¸»ç›¸æœº
 
 	main_begin_play();		
 
-	map_input();						// °ó¶¨ÊäÈë
+	map_input();						// ç»‘å®šè¾“å…¥
 	main_bind_input();
 
-	// gl ×´Ì¬³õÊ¼»¯
+	// gl çŠ¶æ€åˆå§‹åŒ–
 	core->glEnable(GL_DEPTH_TEST);
 	//core->glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);	
 	core->glPolygonMode(GL_BACK, GL_LINE);
@@ -36,7 +36,7 @@ void GameManager::init(QOpenGLWidget* gl) {
 }
 void GameManager::draw(QOpenGLWidget* gl) {
 
-	// gl »º´æ³õÊ¼»¯
+	// gl ç¼“å­˜åˆå§‹åŒ–
 	//core->glClearColor(0.5f, 0.5f, 0.5f, 1.0f);
 	core->glClearColor(205.0f / 255.0f, 220.0f / 255.0f, 232.0f / 255.0f, 1.0f);
 	core->glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);

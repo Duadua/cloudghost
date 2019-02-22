@@ -17,7 +17,7 @@ public:
 protected:
 
 	void turn(float offset);
-	void turn_over();							// ÒÆ¶¯½áÊøºóÏÔÊ¾Êó±ê
+	void turn_over();							// ç§»åŠ¨ç»“æŸåæ˜¾ç¤ºé¼ æ ‡
 	void look_up(float offset);
 
 	void move_forward(float offset);

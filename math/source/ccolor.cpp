@@ -12,8 +12,8 @@ void CColor::reset(int r, int g, int b, int a) {
 
 void CColor::set_r(int r) {
 	crgb t = (0xffu << 16);
-	argb |= t;								// r位置1
-	argb &= ((r << 16) & t) ^ (t ^ mask);	// 新r入位
+	argb |= t;								// r浣嶇疆1
+	argb &= ((r << 16) & t) ^ (t ^ mask);	// 鏂皉鍏ヤ綅
 }
 void CColor::set_g(int g) {
 	crgb t = (0xffu << 8);

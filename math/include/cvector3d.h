@@ -29,7 +29,7 @@ public:
 
 	float dot(const CVector3D& b) const;
 	CVector3D cross(const CVector3D& b) const;
-	float mix(const CVector3D& b, const CVector3D& c) const;	// »ìºÏ»ı -- ÓĞÏòÁùÃæÌåĞİ»ı
+	float mix(const CVector3D& b, const CVector3D& c) const;	// æ··åˆç§¯ -- æœ‰å‘å…­é¢ä½“ä¼‘ç§¯
 
 	CVector3D normalize();
 

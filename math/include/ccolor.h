@@ -6,7 +6,7 @@ class CColor {
 public:
 	CColor(crgb v = 0xffffffff) : argb(v) {}	// default is white
 	CColor(int r, int g, int b, int a = 0xffu);
-	~CColor() {}
+	~CColor() {} 
 
 	crgb get_uint() const { return argb; }
 

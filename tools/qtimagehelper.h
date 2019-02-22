@@ -1,8 +1,8 @@
 #pragma once
 
-// ´Ó data Êı×é Éú³É png ¼°ÆäËû¸ñÊ½Í¼Æ¬
-// ĞŞ¸´ libpng µÄ png warning
-// ÒÀÀµ <QImage>
+// ä» data æ•°ç»„ ç”Ÿæˆ png åŠå…¶ä»–æ ¼å¼å›¾ç‰‡
+// ä¿®å¤ libpng çš„ png warning
+// ä¾èµ– <QImage>
 
 #include <string>
 #include <vector>
@@ -28,12 +28,12 @@ private:
 
 	// file opr
 	static std::string get_suff_of_file(const std::string& path);
-	static std::string get_pref_of_file(const std::string& path);	// »ñµÃÈ¥µôºó×ººóµÄÇ°×º
+	static std::string get_pref_of_file(const std::string& path);	// è·å¾—å»æ‰åç¼€åçš„å‰ç¼€
 	static std::string get_name_of_file(const std::string& path);
 	static void get_all_files_from_dir(const std::string& path, std::vector<std::string>& res);
 
 
-	// array Ê¹ÓÃ shared_ptr -- ĞèÒªÊÖ¶¯Ö¸¶¨É¾³ıÆ÷
+	// array ä½¿ç”¨ shared_ptr -- éœ€è¦æ‰‹åŠ¨æŒ‡å®šåˆ é™¤å™¨
 	template<class T>
 	static inline std::shared_ptr<T> make_shared_array(size_t size) { return std::shared_ptr<T>(new T[size], std::default_delete<T[]>()); }
 

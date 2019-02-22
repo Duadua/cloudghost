@@ -14,10 +14,10 @@ void Texture2D::init(uint w, uint h, SPTR_uchar data) {
 	auto core = QOpenGLContext::currentContext()->versionFunctions<QOpenGLFunctions_3_3_Core>();
 	width = w; heigh = h;
 
-	// ´´½¨ÎÆÀí
+	// åˆ›å»ºçº¹ç†
 	core->glBindTexture(GL_TEXTURE_2D, id);
 	core->glTexImage2D(GL_TEXTURE_2D, 0, internal_format, width, heigh, 0, image_format, GL_UNSIGNED_BYTE, data.get());
-	// ÉèÖÃÎÆÀíÊôÐÔ
+	// è®¾ç½®çº¹ç†å±žæ€§
 	if (filter_min == GL_LINEAR_MIPMAP_LINEAR) { core->glGenerateMipmap(GL_TEXTURE_2D); }
 	if (internal_format == GL_RGBA || internal_format == GL_BGRA) { wrap_s = GL_CLAMP_TO_EDGE; wrap_t = GL_CLAMP_TO_EDGE; }
 
@@ -25,7 +25,7 @@ void Texture2D::init(uint w, uint h, SPTR_uchar data) {
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, wrap_t);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, filter_min);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, filter_max);
-	// ½â°ó
+	// è§£ç»‘
 	glBindTexture(GL_TEXTURE_2D, 0);
 
 	/*texture = new QOpenGLTexture(QOpenGLTexture::Target2D);
