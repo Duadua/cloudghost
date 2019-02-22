@@ -42,13 +42,12 @@ void MyGameManager::begin_play(QOpenGLWidget* gl) {
 	// 生成 gameobject
 	auto cube_object = CREATE_CLASS(GameObject);
 	add_game_object("cube01", cube_object);
-
 	// gameobject 的 root
 	auto mc = CREATE_CLASS(MeshComponent);
 	mc->set_mesh("cube");
 	cube_object->set_root(mc);
 	auto t_ms = AssetManager::get_mesh(mc->get_mesh());
-	t_ms->get_render_datas()[0]->set_material_name("cube_wood");
+	//t_ms->get_render_datas()[0]->set_material_name("cube_wood");
 
 	// gameobject 的另一个显示组件
 	auto mcc = CREATE_CLASS(MeshComponent);

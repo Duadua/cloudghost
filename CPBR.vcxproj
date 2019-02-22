@@ -134,6 +134,8 @@
     <ClCompile Include="src\source\gamemanager.cpp" />
     <ClCompile Include="src\source\gameobject.cpp" />
     <ClCompile Include="src\source\inputmanager.cpp" />
+    <ClCompile Include="src\source\lightcomponent.cpp" />
+    <ClCompile Include="src\source\lightobject.cpp" />
     <ClCompile Include="src\source\material.cpp" />
     <ClCompile Include="src\source\mesh.cpp" />
     <ClCompile Include="src\source\meshcomponent.cpp" />
@@ -171,6 +173,8 @@
     <ClInclude Include="src\include\gamemanager.h" />
     <ClInclude Include="src\include\gameobject.h" />
     <ClInclude Include="src\include\inputmanager.h" />
+    <ClInclude Include="src\include\lightcomponent.h" />
+    <ClInclude Include="src\include\lightobject.h" />
     <ClInclude Include="src\include\material.h" />
     <ClInclude Include="src\include\mesh.h" />
     <ClInclude Include="src\include\meshcomponent.h" />
