@@ -6,6 +6,7 @@
 
 ## 协变 -- 不能用于 shared_ptr
 
+```c++
 class A {
 public:
 	A() {}
@@ -55,3 +56,13 @@ public:
 		return (B*)v;
 	}
 };
+
+int main() {
+	
+	C c;
+	c.get_v()->set_y(1);
+	qDebug() << c.get_v()->get_y();
+	
+	return 0;
+}
+```
