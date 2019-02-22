@@ -163,6 +163,9 @@
     <ClCompile Include="src\source\lightobject.cpp">
       <Filter>src\source</Filter>
     </ClCompile>
+    <ClCompile Include="math\source\cmatrix4x4.cpp">
+      <Filter>math\source</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <QtUic Include="resources\ui\cpbr.ui">
@@ -267,6 +270,9 @@
     </ClInclude>
     <ClInclude Include="src\include\lightcomponent.h">
       <Filter>src\include</Filter>
+    </ClInclude>
+    <ClInclude Include="math\include\cmatrix4x4.h">
+      <Filter>math\include</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
