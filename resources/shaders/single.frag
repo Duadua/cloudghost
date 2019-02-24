@@ -137,7 +137,6 @@ vec3 blinn_phong(vec3 normal, vec3 light_dir, vec3 view_dir, material_helper mh,
     return k.x * i_ambient + k.y * i_diffuse + k.z * i_spcular;
 }
 
-
 // cac light_attenuation
 float att_dirct_light(int i) { return 1.0; }
 float att_point_light(int i) { 
