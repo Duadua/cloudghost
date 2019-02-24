@@ -48,7 +48,7 @@ void MyGameManager::begin_play(QOpenGLWidget* gl) {
 	mc->set_mesh("cube");
 	cube_object->set_root_component(mc);
 	auto t_ms = AssetManager::get_mesh(mc->get_mesh());
-	//t_ms->get_render_datas()[0]->set_material_name("cube_wood");
+	t_ms->get_render_datas()[0]->set_material_name("cube_wood");
 
 	// gameobject 的另一个显示组件
 	auto mcc = CREATE_CLASS(MeshComponent);
@@ -76,23 +76,39 @@ void MyGameManager::begin_play(QOpenGLWidget* gl) {
 	//t_shader->set_vec3("u_light_pos", CVector3D(1.2f, 5.0f, 2.0f));
 	//t_shader->set_vec3("u_light_color", CVector3D(1.0f, 1.0f, 1.0f));
 
-	// use direct light
-	auto d_light = CREATE_CLASS(DirectLightObject);
 	std::string str = "triangle";
-	//d_light->use(str);
+	// use direct light
+	{
+		auto d_light = CREATE_CLASS(DirectLightObject);
+		d_light->use(str);
+	}
 
 	// use point light
-	auto p_light = CREATE_CLASS(PointLightObject);
-	p_light->get_light_component()->set_intensity(3.0f);
-	p_light->use(str);
-	auto p_light_2 = CREATE_CLASS(PointLightObject);
-	p_light_2->get_root_component()->set_location(QVector3D(3.0f, 1.0f, 0.0f));
-	p_light_2->get_light_component()->set_att_radius(10.0f);
-	p_light_2->get_light_component()->set_color(CVector3D(1.0f, 0.0f, 0.0f));
-	p_light_2->use(str);
+	{
+		auto p_light = CREATE_CLASS(PointLightObject);
+		p_light->get_light_component()->set_intensity(3.0f);
+		//p_light->use(str);
+	}
+	{
+		auto p_light = CREATE_CLASS(PointLightObject);
+		p_light->get_root_component()->set_location(QVector3D(3.0f, 1.0f, 0.0f));
+		p_light->get_light_component()->set_att_radius(10.0f);
+		p_light->get_light_component()->set_color(CVector3D(1.0f, 0.0f, 0.0f));
+		p_light->use(str);
+	}
 	
 	// use spot light
+	{
+		auto s_light = CREATE_CLASS(SpotLightObject);
+		s_light->get_root_component()->set_location(QVector3D(2.0f, 3.0f, 0.0f));
+		s_light->get_root_component()->set_roataion(QVector3D(-45.0f, -90.0f, 0.0f));
+		s_light->get_light_component()->set_color(CVector3D(0.0f, 0.0f, 1.0f));
+		s_light->get_light_component()->set_intensity(10.0f);
+		s_light->get_light_component()->set_inner(15.0f);
+		s_light->get_light_component()->set_outer(20.0f);
 
+		s_light->use(str);
+	}
 
 
 }

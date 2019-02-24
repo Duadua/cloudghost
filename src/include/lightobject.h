@@ -68,8 +68,10 @@ class SpotLightObject : public LightObject {
 	
 public:
 
-	SpotLightObject() {}
+	SpotLightObject();
 	virtual ~SpotLightObject() {}
+
+	SPTR_SpotLightComponent get_light_component() { return std::dynamic_pointer_cast<SpotLightComponent>(root_component); }
 
 private:
 
@@ -83,9 +85,10 @@ class SkyLightObject : public LightObject {
 	
 public:
 
-	SkyLightObject() {}
+	SkyLightObject();
 	virtual ~SkyLightObject() {}
 
+	SPTR_SkyLightComponent get_light_component() { return std::dynamic_pointer_cast<SkyLightComponent>(root_component); }
 private:
 
 };

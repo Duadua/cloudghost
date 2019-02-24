@@ -46,6 +46,7 @@ struct material_helper {
 struct DirectLight {
     vec3 color;
     vec3 dirction;
+    vec3 k;             // 各分量占比 -- ambient / diffuse / specular
 
     float intensity;
 
@@ -53,6 +54,7 @@ struct DirectLight {
 struct PointLight {
     vec3 color;
     vec3 position;
+    vec3 k;
 
     float intensity;
 
@@ -64,18 +66,20 @@ struct SpotLight {
     vec3 color;
     vec3 position;
     vec3 dirction;
+    vec3 k;
 
     float intensity;
     
     // att
     float att_ka, att_kb, att_kc;
 
-    // inner and outer 
+    // inner and outer cutoff
     float inner, outer;
     
 };
 struct SkyLight {
     vec3 color;
+    vec3 k;
 
     float intensity;
     
@@ -125,12 +129,12 @@ vec3 cac_spcular(vec3 normal, vec3 light_dir, vec3 view_dir, float shininess) {
     vec3 t_halfway = normalize(light_dir + view_dir);
     return pow(max(0.0, dot(normal, t_halfway)), shininess);
 }
-vec3 blinn_phong(vec3 normal, vec3 light_dir, vec3 view_dir, material_helper mh) {
+vec3 blinn_phong(vec3 normal, vec3 light_dir, vec3 view_dir, material_helper mh, vec3 k) {
     vec3 i_ambient = mh.ka * mh.map_ka_color * cac_ambient();    
     vec3 i_diffuse = mh.kd * mh.map_kd_color * cac_diffuse(normal, light_dir);
     vec3 i_spcular = mh.ks * mh.map_ks_color * cac_spcular(normal, light_dir, view_dir, mh.shininess);
 
-    return i_ambient + i_diffuse + i_spcular;
+    return k.x * i_ambient + k.y * i_diffuse + k.z * i_spcular;
 }
 
 
@@ -141,23 +145,38 @@ float att_point_light(int i) {
     float att = 1.0 / (u_point_light[i].att_ka + u_point_light[i].att_kb*dis + u_point_light[i].att_kc*dis*dis);
     return att; 
 }
-float att_spott_light(int i) { return 1.0; }
+float att_spott_light(int i) { 
+    float dis = length(u_spot_light[i].position - o_world_pos);
+    float att = 1.0 / (u_spot_light[i].att_ka + u_spot_light[i].att_kb*dis + u_spot_light[i].att_kc*dis*dis);
+
+    vec3 t_light_dir = normalize(u_spot_light[i].position - o_world_pos);
+    float theta = dot(t_light_dir, normalize(-u_spot_light[i].dirction));   // cos value
+    float epsilon = u_spot_light[i].inner - u_spot_light[i].outer;          // cos value -- inner > outer
+    float intensity = clamp((theta - u_spot_light[i].outer) / epsilon, 0.0, 1.0);
+
+    return att * intensity;
+}
+
 // cac light
 vec3 cac_direct_light_one(int i) {
     vec3 t_c = u_direct_light[i].color * u_direct_light[i].intensity * att_dirct_light(i);
 
-    vec3 res = t_c * blinn_phong(t_normal, -u_direct_light[i].dirction, t_view_dir, t_material_helper);
+    vec3 res = t_c * blinn_phong(t_normal, -u_direct_light[i].dirction, t_view_dir, t_material_helper, u_direct_light[i].k);
     return res;
 }
 vec3 cac_point_light_one(int i) {
     vec3 t_light_dir = normalize(u_point_light[i].position - o_world_pos);
     vec3 t_c = u_point_light[i].color * u_point_light[i].intensity * att_point_light(i);
 
-    vec3 res = t_c * blinn_phong(t_normal, t_light_dir, t_view_dir, t_material_helper);
+    vec3 res = t_c * blinn_phong(t_normal, t_light_dir, t_view_dir, t_material_helper, u_point_light[i].k);
     return res;
 }
 vec3 cac_spot_light_one(int i) {
-    return vec3(0.0, 0.0, 0.0);
+    vec3 t_light_dir = normalize(u_spot_light[i].position - o_world_pos);
+    vec3 t_c = u_spot_light[i].color * u_spot_light[i].intensity * att_spott_light(i);
+
+    vec3 res = t_c * blinn_phong(t_normal, t_light_dir, t_view_dir, t_material_helper, u_spot_light[i].k);
+    return res;
 }
 vec3 cac_sky_light_one(int i) {
     return vec3(0.0, 0.0, 0.0);

@@ -29,8 +29,17 @@ PointLightObject::PointLightObject() {
 
 IMPLEMENT_CLASS(SpotLightObject)
 
+SpotLightObject::SpotLightObject() {
+	light_type = LightType::SPOT_LIGHT;
+	root_component = CREATE_CLASS(SpotLightComponent);
+}
+
 // ======================================================================
 
 IMPLEMENT_CLASS(SkyLightObject)
 
+SkyLightObject::SkyLightObject() {
+	light_type = LightType::SKY_LIGHT;
+	root_component = CREATE_CLASS(SkyLightComponent);
+}
 
