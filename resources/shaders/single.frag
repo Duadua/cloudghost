@@ -144,18 +144,17 @@ float att_point_light(int i) {
 float att_spott_light(int i) { return 1.0; }
 // cac light
 vec3 cac_direct_light_one(int i) {
-    vec3 res = vec3(0.0, 0.0, 0.0);
-    res += att_dirct_light(i) * blinn_phong(t_normal, -u_direct_light[i].dirction, t_view_dir, t_material_helper);
+    vec3 t_c = u_direct_light[i].color * u_direct_light[i].intensity * att_dirct_light(i);
+
+    vec3 res = t_c * blinn_phong(t_normal, -u_direct_light[i].dirction, t_view_dir, t_material_helper);
     return res;
 }
 vec3 cac_point_light_one(int i) {
-    vec3 res = vec3(0.0, 0.0, 0.0);
     vec3 t_light_dir = normalize(u_point_light[i].position - o_world_pos);
-    res += att_point_light(i) * blinn_phong(t_normal, t_light_dir, t_view_dir, t_material_helper);
-    return res;
-    
-    return vec3(0.0, 0.0, 0.0);
+    vec3 t_c = u_point_light[i].color * u_point_light[i].intensity * att_point_light(i);
 
+    vec3 res = t_c * blinn_phong(t_normal, t_light_dir, t_view_dir, t_material_helper);
+    return res;
 }
 vec3 cac_spot_light_one(int i) {
     return vec3(0.0, 0.0, 0.0);

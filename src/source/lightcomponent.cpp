@@ -31,7 +31,7 @@ bool DirectLightComponent::use(const std::string& shader) {
 
 	// bind uniform value for t_shader
 	t_shader->set_vec3(t_name + ".color", color);
-	t_shader->set_vec3(t_name + ".intensity", intensity);
+	t_shader->set_float(t_name + ".intensity", intensity);
 	t_shader->set_vec3(t_name + ".dirction", get_dirction());
 	
 	t_shader->set_int("u_direct_light_num", ++direct_light_num);
@@ -77,7 +77,7 @@ bool PointLightComponent::use(const std::string& shader) {
 
 	// bind uniform value for t_shader
 	t_shader->set_vec3(t_name + ".color", color);
-	t_shader->set_vec3(t_name + ".intensity", intensity);
+	t_shader->set_float(t_name + ".intensity", intensity);
 	t_shader->set_vec3(t_name + ".position", CVector3D(location.x(), location.y(), location.z()));
 	t_shader->set_float(t_name + ".att_ka", att_ka);
 	t_shader->set_float(t_name + ".att_kb", att_kb);

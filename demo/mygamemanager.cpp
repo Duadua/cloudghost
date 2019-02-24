@@ -83,7 +83,15 @@ void MyGameManager::begin_play(QOpenGLWidget* gl) {
 
 	// use point light
 	auto p_light = CREATE_CLASS(PointLightObject);
+	p_light->get_light_component()->set_intensity(3.0f);
 	p_light->use(str);
+	auto p_light_2 = CREATE_CLASS(PointLightObject);
+	p_light_2->get_root_component()->set_location(QVector3D(3.0f, 1.0f, 0.0f));
+	p_light_2->get_light_component()->set_att_radius(10.0f);
+	p_light_2->get_light_component()->set_color(CVector3D(1.0f, 0.0f, 0.0f));
+	p_light_2->use(str);
+	
+	// use spot light
 
 
 
