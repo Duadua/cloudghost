@@ -8,7 +8,7 @@
 #include <QMouseEvent>
 #include <QWheelEvent>
 #include <QOpenGLWidget>
-
+ 
 void GameManager::init(QOpenGLWidget* gl) {
 
 	// init gl_core
@@ -47,7 +47,7 @@ void GameManager::draw(QOpenGLWidget* gl) {
 	tick();
 	main_tick();
 
-	//cube_object->get_root()->set_roataion(QVector3D(45.0f, 0.0f, 0.0f));
+	//cube_object->get_root_component()->set_roataion(QVector3D(45.0f, 0.0f, 0.0f));
 	main_shader = "triangle";
 	auto t_shader = AssetManager::get_shader(main_shader)->use();
 	t_shader->set_mat4("u_view", main_camera->get_view_mat());
@@ -76,8 +76,8 @@ void GameManager::exit(QOpenGLWidget* gl) {
 SPTR_CameraComponent GameManager::set_main_camera() {
 	auto free_camera = CREATE_CLASS(FreeCamera);
 	add_game_object("free_camera", free_camera);
-	free_camera->get_root()->set_location(QVector3D(0.0f, 1.5f, -10.0f));
-	free_camera->get_root()->set_roataion(QVector3D(0.0f, 0.0f, 0.0f));
+	free_camera->get_root_component()->set_location(QVector3D(0.0f, 1.5f, -10.0f));
+	free_camera->get_root_component()->set_roataion(QVector3D(0.0f, 0.0f, 0.0f));
 
 	return free_camera->get_camera_component();
 }

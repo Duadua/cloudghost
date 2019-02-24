@@ -51,9 +51,11 @@ class PointLightObject : public LightObject {
 	
 public:
 
-	PointLightObject() {}
+	PointLightObject();
 	virtual ~PointLightObject() {}
 
+	SPTR_PointLightComponent get_light_component() { return std::dynamic_pointer_cast<PointLightComponent>(root_component); }
+	
 private:
 
 };

@@ -50,6 +50,27 @@ DECLARE_AUTO_PTR(DirectLightComponent)
 // point light
 class PointLightComponent : public LightComponent{
 	DECLARE_CLASS(PointLightComponent)
+public:
+	PointLightComponent ();
+	virtual ~PointLightComponent() {}
+
+	virtual bool use(const std::string& shader) override;
+	
+	GET(float, att_raduis);
+	void set_att_radius(float t_att_radius);
+	void update_att();			// 由衰减半径更新 参数
+
+private:
+
+	float att_raduis;			// 衰减半径
+
+	// attenuation
+	float att_ka;
+	float att_kb;
+	float att_kc;
+	
+	static uint point_light_num;
+
 
 };
 DECLARE_AUTO_PTR(PointLightComponent)

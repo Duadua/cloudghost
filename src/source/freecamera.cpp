@@ -28,10 +28,10 @@ void FreeCamera::bind_input() {
 }
 
 void FreeCamera::turn(float offset) {
-	QVector3D new_rotation = get_root()->get_rotation();
+	QVector3D new_rotation = get_root_component()->get_rotation();
 
 	new_rotation += QVector3D(0.0f, offset, 0.0f);
-	get_root()->set_roataion(new_rotation);
+	get_root_component()->set_roataion(new_rotation);
 
 	// set cursor pos
 	InputManager::cursor_clip();
@@ -44,11 +44,11 @@ void FreeCamera::turn_over() {
 	InputManager::cursor_move(InputManager::get_input_data().mouse_pressed_pos, 4);
 }
 void FreeCamera::look_up(float offset) {
-	QVector3D new_rotation = get_root()->get_rotation();
+	QVector3D new_rotation = get_root_component()->get_rotation();
 
 	// rotate x_axis
 	new_rotation += QVector3D(offset, 0.0f, 0.0f);
-	get_root()->set_roataion(new_rotation);
+	get_root_component()->set_roataion(new_rotation);
 
 	// set cursor pos
 	InputManager::cursor_clip();
@@ -57,36 +57,36 @@ void FreeCamera::look_up(float offset) {
 }
 
 void FreeCamera::move_forward(float offset) {
-	QVector3D new_location = get_root()->get_location();
-	QVector3D new_rotation = get_root()->get_rotation();
+	QVector3D new_location = get_root_component()->get_location();
+	QVector3D new_rotation = get_root_component()->get_rotation();
 
 	// move z_axis
 	float yaw = qDegreesToRadians(new_rotation.y());
 	float pitch = qDegreesToRadians(new_rotation.x());
 	new_location += offset * QVector3D(qSin(yaw)*qCos(pitch), qSin(pitch), qCos(yaw)*qCos(pitch));
 
-	get_root()->set_location(new_location);
+	get_root_component()->set_location(new_location);
 
 }
 void FreeCamera::move_forward_plane(float offset) {
-	QVector3D new_location = get_root()->get_location();
-	QVector3D new_rotation = get_root()->get_rotation();
+	QVector3D new_location = get_root_component()->get_location();
+	QVector3D new_rotation = get_root_component()->get_rotation();
 
 	// move z_axis
 	float yaw = qDegreesToRadians(new_rotation.y());
 	new_location += offset * QVector3D(qSin(yaw), 0.0f, qCos(yaw));
 
-	get_root()->set_location(new_location);
+	get_root_component()->set_location(new_location);
 }
 void FreeCamera::move_right(float offset) {
-	QVector3D new_location = get_root()->get_location();
-	QVector3D new_rotation = get_root()->get_rotation();
+	QVector3D new_location = get_root_component()->get_location();
+	QVector3D new_rotation = get_root_component()->get_rotation();
 
 	// move x_axis
 	float yaw = qDegreesToRadians(new_rotation.y());
 	new_location += offset * QVector3D(qCos(yaw), 0.0f, -qSin(yaw));
 
-	get_root()->set_location(new_location);
+	get_root_component()->set_location(new_location);
 
 	// set cursor pos
 	InputManager::cursor_clip();
@@ -94,13 +94,13 @@ void FreeCamera::move_right(float offset) {
 	if (InputManager::cursor_in_edge()) InputManager::cursor_move(InputManager::get_input_data().mouse_pressed_pos);
 }
 void FreeCamera::move_up(float offset) {
-	QVector3D new_location = get_root()->get_location();
-	QVector3D new_rotation = get_root()->get_rotation();
+	QVector3D new_location = get_root_component()->get_location();
+	QVector3D new_rotation = get_root_component()->get_rotation();
 
 	// move y_axis
 	float pitch = qDegreesToRadians(new_rotation.x());
 	float yaw = qDegreesToRadians(new_rotation.y());
 	new_location += offset * QVector3D(-qSin(yaw)*qSin(pitch), qCos(pitch), -qCos(yaw)*qSin(pitch));
 
-	get_root()->set_location(new_location);
+	get_root_component()->set_location(new_location);
 }

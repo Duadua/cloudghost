@@ -125,32 +125,35 @@ vec3 cac_spcular(vec3 normal, vec3 light_dir, vec3 view_dir, float shininess) {
     vec3 t_halfway = normalize(light_dir + view_dir);
     return pow(max(0.0, dot(normal, t_halfway)), shininess);
 }
-vec3 blinn_phong(vec3 normal, vec3 light_dir, vec3 view_dir, material_helper mh, float att) {
+vec3 blinn_phong(vec3 normal, vec3 light_dir, vec3 view_dir, material_helper mh) {
     vec3 i_ambient = mh.ka * mh.map_ka_color * cac_ambient();    
     vec3 i_diffuse = mh.kd * mh.map_kd_color * cac_diffuse(normal, light_dir);
     vec3 i_spcular = mh.ks * mh.map_ks_color * cac_spcular(normal, light_dir, view_dir, mh.shininess);
 
-    return att * (i_ambient + i_diffuse + i_spcular);
-    //return att * (i_diffuse);
-	
+    return i_ambient + i_diffuse + i_spcular;
 }
 
-float att_drect_light() { return 1.0; }
-float att_point_light() { return 1.0; }
-float att_spott_light() { return 1.0; }
 
+// cac light_attenuation
+float att_dirct_light(int i) { return 1.0; }
+float att_point_light(int i) { 
+    float dis = length(u_point_light[i].position - o_world_pos);
+    float att = 1.0 / (u_point_light[i].att_ka + u_point_light[i].att_kb*dis + u_point_light[i].att_kc*dis*dis);
+    return att; 
+}
+float att_spott_light(int i) { return 1.0; }
 // cac light
 vec3 cac_direct_light_one(int i) {
     vec3 res = vec3(0.0, 0.0, 0.0);
-    res += blinn_phong(t_normal, -u_direct_light[i].dirction, t_view_dir, t_material_helper, 1.0);
+    res += att_dirct_light(i) * blinn_phong(t_normal, -u_direct_light[i].dirction, t_view_dir, t_material_helper);
     return res;
 }
 vec3 cac_point_light_one(int i) {
-    /*vec3 res = vec3(0.0, 0.0, 0.0);
+    vec3 res = vec3(0.0, 0.0, 0.0);
     vec3 t_light_dir = normalize(u_point_light[i].position - o_world_pos);
-    res += blinn_phong(t_normal, t_light_dir, t_view_dir, t_material_helper, 1.0);
+    res += att_point_light(i) * blinn_phong(t_normal, t_light_dir, t_view_dir, t_material_helper);
     return res;
-    */
+    
     return vec3(0.0, 0.0, 0.0);
 
 }
@@ -186,7 +189,7 @@ void main(void) {
 
     pre_cac();
 
-    //vec3 t_color = u_light_color * blinn_phong(t_normal, t_light_dir, t_view_dir, t_material_helper, 1.0);
+    //vec3 t_color = u_light_color * blinn_phong(t_normal, t_light_dir, t_view_dir, t_material_helper);
     // t_color = vec3(1.0, 0.0, 0.0);
     //r_color = vec4(t_color, 1.0);
 

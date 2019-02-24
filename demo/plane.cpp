@@ -6,7 +6,7 @@ IMPLEMENT_CLASS(PlaneObject)
 
 PlaneObject::PlaneObject() {
 	auto rt = CREATE_CLASS(SceneComponent);
-	set_root(rt);
+	set_root_component(rt);
 
 	auto mc = CREATE_CLASS(MeshComponent);
 	mc->attach_to(rt);

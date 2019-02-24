@@ -18,11 +18,16 @@ DirectLightObject::DirectLightObject() {
 
 // ======================================================================
 
-IMPLEMENT_CLASS(SpotLightObject)
+IMPLEMENT_CLASS(PointLightObject)
+
+PointLightObject::PointLightObject() {
+	light_type = LightType::POINT_LIGHT;
+	root_component = CREATE_CLASS(PointLightComponent);
+}
 
 // ======================================================================
 
-IMPLEMENT_CLASS(PointLightObject)
+IMPLEMENT_CLASS(SpotLightObject)
 
 // ======================================================================
 

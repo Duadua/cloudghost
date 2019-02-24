@@ -76,9 +76,16 @@ void MyGameManager::begin_play(QOpenGLWidget* gl) {
 	//t_shader->set_vec3("u_light_pos", CVector3D(1.2f, 5.0f, 2.0f));
 	//t_shader->set_vec3("u_light_color", CVector3D(1.0f, 1.0f, 1.0f));
 
+	// use direct light
 	auto d_light = CREATE_CLASS(DirectLightObject);
 	std::string str = "triangle";
-	d_light->use(str);
+	//d_light->use(str);
+
+	// use point light
+	auto p_light = CREATE_CLASS(PointLightObject);
+	p_light->use(str);
+
+
 
 }
 
