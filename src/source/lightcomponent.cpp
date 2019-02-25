@@ -33,7 +33,7 @@ IMPLEMENT_CLASS(DirectLightComponent)
 uint DirectLightComponent::direct_light_num = 0;
 
 DirectLightComponent::DirectLightComponent() {
-	rotation = QVector3D(-46.0f, 0.0f, 0.0f);		// 初始方向
+	rotation = CVector3D(-46.0f, 0.0f, 0.0f);		// 初始方向
 	k = CVector3D(1.0f, 1.0f, 1.0f);
 }
 
@@ -67,7 +67,7 @@ IMPLEMENT_CLASS(PointLightComponent)
 uint PointLightComponent::point_light_num = 0;
 
 PointLightComponent::PointLightComponent() { 
-	location = QVector3D(0.0f, 1.0f, 0.0f); 
+	location = CVector3D(0.0f, 1.0f, 0.0f); 
 	k = CVector3D(0.1f, 0.9f, 1.0f);
 
 	set_att_radius(50.0f);
@@ -86,7 +86,7 @@ bool PointLightComponent::use(const std::string& shader) {
 	t_shader->set_vec3(t_name + ".color", color);
 	t_shader->set_float(t_name + ".intensity", intensity);
 	t_shader->set_vec3(t_name + ".k", k);
-	t_shader->set_vec3(t_name + ".position", CVector3D(location.x(), location.y(), location.z()));
+	t_shader->set_vec3(t_name + ".position", location);
 	t_shader->set_float(t_name + ".att_ka", att_ka);
 	t_shader->set_float(t_name + ".att_kb", att_kb);
 	t_shader->set_float(t_name + ".att_kc", att_kc);
@@ -113,8 +113,8 @@ IMPLEMENT_CLASS(SpotLightComponent)
 uint SpotLightComponent::spot_light_num = 0;
 
 SpotLightComponent::SpotLightComponent() {
-	location = QVector3D(0.0f, 1.0f, 0.0f);			// init location
-	rotation = QVector3D(-90.0f, 0.0f, 0.0f);		// init dirction
+	location = CVector3D(0.0f, 1.0f, 0.0f);			// init location
+	rotation = CVector3D(-90.0f, 0.0f, 0.0f);		// init dirction
 	k = CVector3D(0.0f, 1.0f, 1.0f);
 
 	set_att_radius(50.0f);							// init raduis
@@ -137,7 +137,7 @@ bool SpotLightComponent::use(const std::string& shader) {
 	t_shader->set_vec3(t_name + ".color", color);
 	t_shader->set_float(t_name + ".intensity", intensity);
 	t_shader->set_vec3(t_name + ".k", k);
-	t_shader->set_vec3(t_name + ".position", CVector3D(location.x(), location.y(), location.z()));
+	t_shader->set_vec3(t_name + ".position", location);
 	t_shader->set_vec3(t_name + ".dirction", get_dirction());
 	t_shader->set_float(t_name + ".att_ka", att_ka);
 	t_shader->set_float(t_name + ".att_kb", att_kb);

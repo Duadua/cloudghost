@@ -1,6 +1,4 @@
 #include "cameradata.h"
-#include <QtMath>
-#include <QVector3D>
 
 IMPLEMENT_CLASS(CameraData)
 
@@ -9,32 +7,32 @@ CameraData::~CameraData() {}
 
 QMatrix4x4 CameraData::get_view_mat() { return look_at(); }
 
-void CameraData::update(QVector3D l, QVector3D r) {
+void CameraData::update(CVector3D l, CVector3D r) {
 	location = l;
 	rotation = r;
 
-	float yaw = qDegreesToRadians(rotation.y());
-	float pitch = qDegreesToRadians(rotation.x());
-	float roll = qDegreesToRadians(rotation.z());
+	float yaw = CMath::deg_to_rad(rotation.y());
+	float pitch = CMath::deg_to_rad(rotation.x());
+	float roll = CMath::deg_to_rad(rotation.z());
 
 	// 计算 world_up
-	world_up.setZ(0.0f);
-	world_up.setX(qSin(roll));
-	world_up.setY(qCos(roll));
+	world_up.set_z(0.0f);
+	world_up.set_x(std::sin(roll));
+	world_up.set_y(std::cos(roll));
 	world_up.normalize();
 
 	// 计算 front -- 初始方向 (0.0, 0.0, 0.0)
-	front.setX(qSin(yaw) * qCos(pitch));
-	front.setZ(qCos(yaw) * qCos(pitch));
-	front.setY(qSin(pitch));
+	front.set_x(std::sin(yaw) * std::cos(pitch));
+	front.set_z(std::cos(yaw) * std::cos(pitch));
+	front.set_y(std::sin(pitch));
 	front.normalize();
 
 	// 计算 right
-	right = QVector3D::crossProduct(front, world_up);
+	right = front.cross(world_up);
 	right.normalize();
 
 	// 计算 up
-	up = QVector3D::crossProduct(right, front);
+	up = right.cross(front);
 	up.normalize();
 }
 

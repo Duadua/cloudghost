@@ -2,7 +2,6 @@
 #include "inputmanager.h"
 #include "scenecomponent.h"
 #include "cameracomponent.h"
-#include <QtMath>
 #include <QKeyEvent>
 #include <QMouseEvent>
 #include <QWheelEvent>
@@ -28,9 +27,9 @@ void FreeCamera::bind_input() {
 }
 
 void FreeCamera::turn(float offset) {
-	QVector3D new_rotation = get_root_component()->get_rotation();
+	CVector3D new_rotation = get_root_component()->get_rotation();
 
-	new_rotation += QVector3D(0.0f, offset, 0.0f);
+	new_rotation += CVector3D(0.0f, offset, 0.0f);
 	get_root_component()->set_roataion(new_rotation);
 
 	// set cursor pos
@@ -44,10 +43,10 @@ void FreeCamera::turn_over() {
 	InputManager::cursor_move(InputManager::get_input_data().mouse_pressed_pos, 4);
 }
 void FreeCamera::look_up(float offset) {
-	QVector3D new_rotation = get_root_component()->get_rotation();
+	CVector3D new_rotation = get_root_component()->get_rotation();
 
 	// rotate x_axis
-	new_rotation += QVector3D(offset, 0.0f, 0.0f);
+	new_rotation += CVector3D(offset, 0.0f, 0.0f);
 	get_root_component()->set_roataion(new_rotation);
 
 	// set cursor pos
@@ -57,34 +56,34 @@ void FreeCamera::look_up(float offset) {
 }
 
 void FreeCamera::move_forward(float offset) {
-	QVector3D new_location = get_root_component()->get_location();
-	QVector3D new_rotation = get_root_component()->get_rotation();
+	CVector3D new_location = get_root_component()->get_location();
+	CVector3D new_rotation = get_root_component()->get_rotation();
 
 	// move z_axis
-	float yaw = qDegreesToRadians(new_rotation.y());
-	float pitch = qDegreesToRadians(new_rotation.x());
-	new_location += offset * QVector3D(qSin(yaw)*qCos(pitch), qSin(pitch), qCos(yaw)*qCos(pitch));
+	float yaw = CMath::deg_to_rad(new_rotation.y());
+	float pitch = CMath::deg_to_rad(new_rotation.x());
+	new_location += offset * CVector3D(std::sin(yaw)*std::cos(pitch), std::sin(pitch), std::cos(yaw)*std::cos(pitch));
 
 	get_root_component()->set_location(new_location);
 
 }
 void FreeCamera::move_forward_plane(float offset) {
-	QVector3D new_location = get_root_component()->get_location();
-	QVector3D new_rotation = get_root_component()->get_rotation();
+	CVector3D new_location = get_root_component()->get_location();
+	CVector3D new_rotation = get_root_component()->get_rotation();
 
 	// move z_axis
-	float yaw = qDegreesToRadians(new_rotation.y());
-	new_location += offset * QVector3D(qSin(yaw), 0.0f, qCos(yaw));
+	float yaw = CMath::deg_to_rad(new_rotation.y());
+	new_location += offset * CVector3D(std::sin(yaw), 0.0f, std::cos(yaw));
 
 	get_root_component()->set_location(new_location);
 }
 void FreeCamera::move_right(float offset) {
-	QVector3D new_location = get_root_component()->get_location();
-	QVector3D new_rotation = get_root_component()->get_rotation();
+	CVector3D new_location = get_root_component()->get_location();
+	CVector3D new_rotation = get_root_component()->get_rotation();
 
 	// move x_axis
-	float yaw = qDegreesToRadians(new_rotation.y());
-	new_location += offset * QVector3D(qCos(yaw), 0.0f, -qSin(yaw));
+	float yaw = CMath::deg_to_rad(new_rotation.y());
+	new_location += offset * CVector3D(std::cos(yaw), 0.0f, -std::sin(yaw));
 
 	get_root_component()->set_location(new_location);
 
@@ -94,13 +93,13 @@ void FreeCamera::move_right(float offset) {
 	if (InputManager::cursor_in_edge()) InputManager::cursor_move(InputManager::get_input_data().mouse_pressed_pos);
 }
 void FreeCamera::move_up(float offset) {
-	QVector3D new_location = get_root_component()->get_location();
-	QVector3D new_rotation = get_root_component()->get_rotation();
+	CVector3D new_location = get_root_component()->get_location();
+	CVector3D new_rotation = get_root_component()->get_rotation();
 
 	// move y_axis
-	float pitch = qDegreesToRadians(new_rotation.x());
-	float yaw = qDegreesToRadians(new_rotation.y());
-	new_location += offset * QVector3D(-qSin(yaw)*qSin(pitch), qCos(pitch), -qCos(yaw)*qSin(pitch));
+	float pitch = CMath::deg_to_rad(new_rotation.x());
+	float yaw = CMath::deg_to_rad(new_rotation.y());
+	new_location += offset * CVector3D(-std::sin(yaw)*std::sin(pitch), std::cos(pitch), -std::cos(yaw)*std::sin(pitch));
 
 	get_root_component()->set_location(new_location);
 }

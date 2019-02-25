@@ -25,7 +25,17 @@ public:
 	CVector3D operator - (const CVector3D& b) const;
 	CVector3D operator * (const CVector3D& b) const;
 	CVector3D operator / (const CVector3D& b) const;
+
+	friend CVector3D operator + (const float& v, const CVector3D& b);
+	friend CVector3D operator - (const float& v, const CVector3D& b);
+	friend CVector3D operator * (const float& v, const CVector3D& b);
+	friend CVector3D operator / (const float& v, const CVector3D& b);
+
 	CVector3D operator +=(const CVector3D& b);
+	CVector3D operator *=(const CVector3D& b);
+
+	CVector3D operator + () const;
+	CVector3D operator - () const;
 
 	float dot(const CVector3D& b) const;
 	CVector3D cross(const CVector3D& b) const;

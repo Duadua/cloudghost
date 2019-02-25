@@ -1,8 +1,7 @@
 #pragma once
 
+#include "cmath.h"
 #include "component.h"
-#include <QVector>
-#include <QVector3D>
 #include <QMatrix4x4>
 
 DECLARE_AUTO_PTR(SceneComponent)
@@ -18,23 +17,27 @@ public:
 	
 	QMatrix4x4 get_transform();
 
-	void set_location(QVector3D l);
-	void set_roataion(QVector3D r);
-	void set_scale(QVector3D s);
+	void set_location(CVector3D l);
+	void set_roataion(CVector3D r);
+	void set_scale(CVector3D s);
 
-	QVector3D get_location();
-	QVector3D get_rotation();
-	QVector3D get_scale();
+	void set_location(float x, float y, float z);
+	void set_roataion(float x, float y, float z);
+	void set_scale(float x, float y, float z);
+
+	CVector3D get_location();
+	CVector3D get_rotation();
+	CVector3D get_scale();
 
 protected:
 	WPTR_SceneComponent parent_component;
-	QVector<SPTR_SceneComponent> child_components;
+	std::vector<SPTR_SceneComponent> child_components;
 
 	void add_child(SPTR_SceneComponent child);
 
 protected:
 	// transform
-	QVector3D location;
-	QVector3D rotation;
-	QVector3D scale;
+	CVector3D location;
+	CVector3D rotation;
+	CVector3D scale;
 };

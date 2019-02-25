@@ -38,7 +38,7 @@ void MyGameManager::begin_play(QOpenGLWidget* gl) {
 	// 生成 plan
 	auto plane = CREATE_CLASS(PlaneObject);
 	add_game_object("plane", plane);
-	plane->get_root_component()->set_location(QVector3D(0.0f, -0.5f, 0.0f));
+	plane->get_root_component()->set_location(0.0f, -0.5f, 0.0f);
 
 	// 生成 gameobject
 	auto cube_object = CREATE_CLASS(GameObject);
@@ -54,16 +54,16 @@ void MyGameManager::begin_play(QOpenGLWidget* gl) {
 	auto mcc = CREATE_CLASS(MeshComponent);
 	mcc->set_mesh("sphere");
 	mcc->attach_to(mc);
-	mcc->set_location(QVector3D(2.0f, 0.0f, 0.0f));
-	mcc->set_scale(QVector3D(0.5f, 0.5f, 0.5f));
+	mcc->set_location(2.0f, 0.0f, 0.0f);
+	mcc->set_scale(0.5f, 0.5f, 0.5f);
 	//auto t_m = AssetManager::get_mesh(mcc->get_mesh());
 	//t_m->get_render_datas()[0]->set_material_name("cube_wood");
 
 	auto mccc = CREATE_CLASS(MeshComponent);
 	mccc->set_mesh("cylinder");
 	mccc->attach_to(mcc);
-	mccc->set_location(QVector3D(0.0f, 3.0f, 0.0f));
-	mccc->set_scale(QVector3D(1.5f, 1.5f, 1.5f));
+	mccc->set_location(0.0f, 3.0f, 0.0f);
+	mccc->set_scale(1.5f, 1.5f, 1.5f);
 	auto t_m = AssetManager::get_mesh(mccc->get_mesh());
 	t_m->get_render_datas()[2]->set_material_name("");
 
@@ -91,7 +91,7 @@ void MyGameManager::begin_play(QOpenGLWidget* gl) {
 	}
 	{
 		auto p_light = CREATE_CLASS(PointLightObject);
-		p_light->get_root_component()->set_location(QVector3D(3.0f, 1.0f, 0.0f));
+		p_light->get_root_component()->set_location(3.0f, 1.0f, 0.0f);
 		p_light->get_light_component()->set_att_radius(10.0f);
 		p_light->get_light_component()->set_color(CVector3D(1.0f, 0.0f, 0.0f));
 		p_light->use(str);
@@ -100,8 +100,8 @@ void MyGameManager::begin_play(QOpenGLWidget* gl) {
 	// use spot light
 	{
 		auto s_light = CREATE_CLASS(SpotLightObject);
-		s_light->get_root_component()->set_location(QVector3D(2.0f, 3.0f, 0.0f));
-		s_light->get_root_component()->set_roataion(QVector3D(-45.0f, -90.0f, 0.0f));
+		s_light->get_root_component()->set_location(2.0f, 3.0f, 0.0f);
+		s_light->get_root_component()->set_roataion(-45.0f, -90.0f, 0.0f);
 		s_light->get_light_component()->set_color(CVector3D(0.0f, 0.0f, 1.0f));
 		s_light->get_light_component()->set_intensity(10.0f);
 		s_light->get_light_component()->set_inner(15.0f);
@@ -109,7 +109,6 @@ void MyGameManager::begin_play(QOpenGLWidget* gl) {
 
 		s_light->use(str);
 	}
-
 
 }
 

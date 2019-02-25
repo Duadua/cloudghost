@@ -125,6 +125,7 @@
     <ClCompile Include="math\source\cvector2d.cpp" />
     <ClCompile Include="math\source\cvector3d.cpp" />
     <ClCompile Include="math\source\cmatrix4x4.cpp" />
+    <ClCompile Include="math\source\cvector4d.cpp" />
     <ClCompile Include="src\source\assetmanager.cpp" />
     <ClCompile Include="src\source\cameracomponent.cpp" />
     <ClCompile Include="src\source\cameradata.cpp" />
@@ -167,6 +168,7 @@
     <ClInclude Include="math\include\cvector2d.h" />
     <ClInclude Include="math\include\cvector3d.h" />
     <ClInclude Include="math\include\cmatrix4x4.h" />
+    <ClInclude Include="math\include\cvector4d.h" />
     <ClInclude Include="src\include\assetmanager.h" />
     <ClInclude Include="src\include\cameracomponent.h" />
     <ClInclude Include="src\include\cameradata.h" />

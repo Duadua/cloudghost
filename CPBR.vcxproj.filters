@@ -166,6 +166,9 @@
     <ClCompile Include="math\source\cmatrix4x4.cpp">
       <Filter>math\source</Filter>
     </ClCompile>
+    <ClCompile Include="math\source\cvector4d.cpp">
+      <Filter>math\source</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <QtUic Include="resources\ui\cpbr.ui">
@@ -272,6 +275,9 @@
       <Filter>src\include</Filter>
     </ClInclude>
     <ClInclude Include="math\include\cmatrix4x4.h">
+      <Filter>math\include</Filter>
+    </ClInclude>
+    <ClInclude Include="math\include\cvector4d.h">
       <Filter>math\include</Filter>
     </ClInclude>
   </ItemGroup>
