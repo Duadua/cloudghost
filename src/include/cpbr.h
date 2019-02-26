@@ -4,6 +4,7 @@
 #include "ui_cpbr.h"
 
 class CGLWidget;
+class QResizeEvent;
 
 class CPBR : public QMainWindow {
 	Q_OBJECT
@@ -11,6 +12,10 @@ class CPBR : public QMainWindow {
 public:
 	CPBR(QWidget *parent = Q_NULLPTR);
 	~CPBR();
+
+protected:
+	virtual void resizeEvent(QResizeEvent *event) override;
+
 private:
 	void init_gl_view(int a, int b, int w, int h);
 	CGLWidget* gl_view;

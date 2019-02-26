@@ -1,20 +1,12 @@
 #include "cvector3d.h"
 #include <cmath>
 
-CVector3D CVector3D::operator + (const CVector3D& b) const { return CVector3D(v[0] + b[0], v[1] + b[1], v[2] + b[2]); }
-CVector3D CVector3D::operator - (const CVector3D& b) const { return CVector3D(v[0] - b[0], v[1] - b[1], v[2] - b[2]); }
-CVector3D CVector3D::operator * (const CVector3D& b) const { return CVector3D(v[0] * b[0], v[1] * b[1], v[2] * b[2]); }
-CVector3D CVector3D::operator / (const CVector3D& b) const { 
+CVector3D operator + (const CVector3D& a, const CVector3D& b) { return CVector3D(a[0] + b[0], a[1] + b[1], a[2] + b[2]); }
+CVector3D operator - (const CVector3D& a, const CVector3D& b) { return CVector3D(a[0] - b[0], a[1] - b[1], a[2] - b[2]); }
+CVector3D operator * (const CVector3D& a, const CVector3D& b) { return CVector3D(a[0] * b[0], a[1] * b[1], a[2] * b[2]); }
+CVector3D operator / (const CVector3D& a, const CVector3D& b) {
 	if (b[0] == 0.0f || b[1] == 0.0f || b[2] == 0.0f) { return CVector3D(); }
-	return CVector3D(v[0] / b[0], v[1] / b[1], v[2] / b[2]); 
-}
-
-CVector3D operator + (const float& v, const CVector3D& b) { return b + v;  }
-CVector3D operator - (const float& v, const CVector3D& b) { return -b + v; }
-CVector3D operator * (const float& v, const CVector3D& b) { return b * v;  }
-CVector3D operator / (const float& v, const CVector3D& b) {
-	if (b[0] == 0.0f || b[1] == 0.0f || b[2] == 0.0f) { return CVector3D(); }
-	return CVector3D(v / b[0], v / b[1], v / b[2]);
+	return CVector3D(a[0] / b[0], a[1] / b[1], a[2] / b[2]);
 }
 
 CVector3D CVector3D::operator +=(const CVector3D& b) { v[0] += b[0]; v[1] += b[1]; v[2] += b[2]; return (*this); }
@@ -31,4 +23,4 @@ float CVector3D::mix(const CVector3D& b, const CVector3D& c) const { return dot(
 
 CVector3D CVector3D::normalize() { float len = length(); v[0] /= len; v[1] /= len; v[2] /= len; return (*this); }
 
-float CVector3D::length() const { return std::sqrt(v[0]*v[0] + v[1]*v[1] + v[2]*v[2]); }
+float CVector3D::length() const { return std::sqrt(v[0] * v[0] + v[1] * v[1] + v[2] * v[2]); }

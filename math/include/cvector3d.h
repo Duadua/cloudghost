@@ -23,15 +23,10 @@ public:
 	CVector2D xz() const { return CVector2D(v[0], v[2]); }
 	CVector2D yz() const { return CVector2D(v[1], v[2]); }
 
-	CVector3D operator + (const CVector3D& b) const;
-	CVector3D operator - (const CVector3D& b) const;
-	CVector3D operator * (const CVector3D& b) const;
-	CVector3D operator / (const CVector3D& b) const;
-
-	friend CVector3D operator + (const float& v, const CVector3D& b);
-	friend CVector3D operator - (const float& v, const CVector3D& b);
-	friend CVector3D operator * (const float& v, const CVector3D& b);
-	friend CVector3D operator / (const float& v, const CVector3D& b);
+	friend CVector3D operator + (const CVector3D& a, const CVector3D& b);
+	friend CVector3D operator - (const CVector3D& a, const CVector3D& b);
+	friend CVector3D operator * (const CVector3D& a, const CVector3D& b);
+	friend CVector3D operator / (const CVector3D& a, const CVector3D& b);
 
 	CVector3D operator +=(const CVector3D& b);
 	CVector3D operator *=(const CVector3D& b);
@@ -39,8 +34,8 @@ public:
 	CVector3D operator + () const;
 	CVector3D operator - () const;
 
-	inline float& operator[](int i) { if (i < 0) i = 0; if (i > 2) i = 2; return v[i]; }
-	inline const float& operator[](int i) const { if (i < 0) i = 0; if (i > 2) i = 2; return v[i]; }
+	float& operator[](int i) { if (i < 0) i = 0; if (i > 2) i = 2; return v[i]; }
+	const float& operator[](int i) const { if (i < 0) i = 0; if (i > 2) i = 2; return v[i]; }
 
 	float dot(const CVector3D& b) const;
 	CVector3D cross(const CVector3D& b) const;
@@ -50,7 +45,7 @@ public:
 
 	float length() const;
 
-	inline const float* data() const { return v; }
+	const float* data() const { return v; }
 
 private:
 	float v[3];

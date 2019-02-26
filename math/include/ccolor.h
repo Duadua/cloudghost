@@ -39,7 +39,7 @@ public:
 	CColor bgra() const { return CColor(b(), g(), r(), a()); }
 
 	static const crgb mask;		// mask rgb value
-
+	
 private:
 	crgb argb;
 	

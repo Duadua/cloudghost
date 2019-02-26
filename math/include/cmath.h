@@ -3,6 +3,7 @@
 #include "ccolor.h"
 #include "cvector2d.h"
 #include "cvector3d.h"
+#include "cvector4d.h"
 #include <memory>
 
 using uint = unsigned int;
