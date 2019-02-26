@@ -4,18 +4,30 @@
 
 CVector2D::CVector2D(const CVector3D& abc) { v[0] = abc.x(); v[1] = abc.y(); }
 
-CVector2D CVector2D::operator + (const CVector2D& b) const { return CVector2D(v[0] + b.x(), v[1] + b.y()); }
-CVector2D CVector2D::operator - (const CVector2D& b) const { return CVector2D(v[0] - b.x(), v[1] - b.y()); }
-CVector2D CVector2D::operator * (const CVector2D& b) const { return CVector2D(v[0] * b.x(), v[1] * b.y()); }
-CVector2D CVector2D::operator * (const float& b) const { return CVector2D(v[0] * b, v[1] * b); }
+CVector2D CVector2D::operator + (const CVector2D& b) const { return CVector2D(v[0] + b[0], v[1] + b[1]); }
+CVector2D CVector2D::operator - (const CVector2D& b) const { return CVector2D(v[0] - b[0], v[1] - b[1]); }
+CVector2D CVector2D::operator * (const CVector2D& b) const { return CVector2D(v[0] * b[0], v[1] * b[1]); }
 CVector2D CVector2D::operator / (const CVector2D& b) const {
-	if (b.x() == 0.0f || b.y() == 0.0f) return CVector2D();
-	return CVector2D(v[0] / b.x(), v[1] / b.y());
+	if (b[0] == 0.0f || b[1] == 0.0f) return CVector2D();
+	return CVector2D(v[0] / b[0], v[1] / b[1]);
 }
-CVector2D CVector2D::operator +=(const CVector2D& b) { v[0] += b.x(); v[1] += b.y(); return (*this); }
 
-float CVector2D::dot(const CVector2D& b) const { return v[0] * b.x() + v[1] * b.y(); }
-float CVector2D::cross(const CVector2D& b) const { return v[0] * b.y() - b.x() * v[1]; }
+CVector2D operator + (const float& v, const CVector2D& b) { return b + v;  }
+CVector2D operator - (const float& v, const CVector2D& b) { return -b + v; }
+CVector2D operator * (const float& v, const CVector2D& b) { return b * v;  }
+CVector2D operator / (const float& v, const CVector2D& b) {
+	if (b[0] == 0.0f || b[1] == 0.0f) { return CVector2D(); }
+	return CVector2D(v / b[0], v / b[1]);
+}
+
+CVector2D CVector2D::operator +=(const CVector2D& b) { v[0] += b[0]; v[1] += b[1]; return (*this); }
+CVector2D CVector2D::operator *=(const CVector2D& b) { v[0] *= b[0]; v[1] *= b[1]; return (*this); }
+
+CVector2D CVector2D::operator + () const { return (*this); }
+CVector2D CVector2D::operator - () const { return CVector2D(-v[0], -v[1]); }
+
+float CVector2D::dot(const CVector2D& b) const { return v[0] * b[0] + v[1] * b[1]; }
+float CVector2D::cross(const CVector2D& b) const { return v[0] * b[1] - b[0] * v[1]; }
 
 CVector2D CVector2D::normalize() { float len = length(); v[0] /= len; v[1] /= len; return (*this); }
 

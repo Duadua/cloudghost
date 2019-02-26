@@ -60,6 +60,11 @@ int main(int argc, char *argv[]) {
 	QtImageHelper::text_to_png(path);
 	*/
 
+	const float t[2] = { 1.0f, 2.0f };
+	CVector2D c(t);
+	c[0] = 3.0f;
+	qDebug() << c[0] << " " << c[1] << endl;
+
 	MyGameManager gm;
 	CPBR w;
 	w.show();

@@ -1,25 +1,27 @@
 #pragma once
 
 #include "cvector2d.h"
+#include <memory>
 
 class CVector3D {
 public:
-	CVector3D(float a, float b, float c) : _x(a), _y(b), _z(c) {}
-	CVector3D(float a = 0.0f) : _x(a), _y(a), _z(a) {}
-	CVector3D(const CVector2D& ab, float c = 0.0f) : _z(c) { _x = ab.x(); _y = ab.y(); }
+	CVector3D(float a, float b, float c) { v[0] = a; v[1] = b; v[2] = c; }
+	CVector3D(float a = 0.0f) { v[0] = v[1] = v[2] = a; }
+	CVector3D(const CVector2D& ab, float c = 0.0f) { v[0] = ab[0]; v[1] = ab[1]; v[2] = c; }
+	CVector3D(const float* d) { memcpy(v, d, sizeof(v)); }
 	~CVector3D() {}
 
-	void set_x(float a) { _x = a; }
-	void set_y(float b) { _y = b; }
-	void set_z(float c) { _z = c; }
+	void set_x(float a) { v[0] = a; }
+	void set_y(float b) { v[1] = b; }
+	void set_z(float c) { v[2] = c; }
 
-	float x() const { return _x; }
-	float y() const { return _y; }
-	float z() const { return _z; }
+	float x() const { return v[0]; }
+	float y() const { return v[1]; }
+	float z() const { return v[2]; }
 	
-	CVector2D xy() const { return CVector2D(_x, _y); }
-	CVector2D xz() const { return CVector2D(_x, _z); }
-	CVector2D yz() const { return CVector2D(_y, _z); }
+	CVector2D xy() const { return CVector2D(v[0], v[1]); }
+	CVector2D xz() const { return CVector2D(v[0], v[2]); }
+	CVector2D yz() const { return CVector2D(v[1], v[2]); }
 
 	CVector3D operator + (const CVector3D& b) const;
 	CVector3D operator - (const CVector3D& b) const;
@@ -37,6 +39,9 @@ public:
 	CVector3D operator + () const;
 	CVector3D operator - () const;
 
+	inline float& operator[](int i) { if (i < 0) i = 0; if (i > 2) i = 2; return v[i]; }
+	inline const float& operator[](int i) const { if (i < 0) i = 0; if (i > 2) i = 2; return v[i]; }
+
 	float dot(const CVector3D& b) const;
 	CVector3D cross(const CVector3D& b) const;
 	float mix(const CVector3D& b, const CVector3D& c) const;	// 混合积 -- 有向六面体休积
@@ -45,9 +50,8 @@ public:
 
 	float length() const;
 
-private:
-	float _x;
-	float _y;
-	float _z;
+	inline const float* data() const { return v; }
 
+private:
+	float v[3];
 };
