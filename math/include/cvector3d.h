@@ -3,11 +3,14 @@
 #include "cvector2d.h"
 #include <memory>
 
+class CVector4D;
+
 class CVector3D {
 public:
 	CVector3D(float a, float b, float c) { v[0] = a; v[1] = b; v[2] = c; }
 	CVector3D(float a = 0.0f) { v[0] = v[1] = v[2] = a; }
 	CVector3D(const CVector2D& ab, float c = 0.0f) { v[0] = ab[0]; v[1] = ab[1]; v[2] = c; }
+	CVector3D(const CVector4D& abcd);
 	CVector3D(const float* d) { memcpy(v, d, sizeof(v)); }
 	~CVector3D() {}
 
