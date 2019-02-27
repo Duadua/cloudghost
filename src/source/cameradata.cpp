@@ -5,7 +5,7 @@ IMPLEMENT_CLASS(CameraData)
 CameraData::CameraData() {}
 CameraData::~CameraData() {}
 
-QMatrix4x4 CameraData::get_view_mat() { return look_at(); }
+CMatrix4x4 CameraData::get_view_mat() { return look_at(); }
 
 void CameraData::update(CVector3D l, CVector3D r) {
 	location = l;
@@ -36,8 +36,8 @@ void CameraData::update(CVector3D l, CVector3D r) {
 	up.normalize();
 }
 
-QMatrix4x4 CameraData::look_at() {
-	QMatrix4x4 translate, rotate;
+CMatrix4x4 CameraData::look_at() {
+	CMatrix4x4 translate, rotate;
 
 	// 初始化 translate
 	translate(0, 3) = -location.x();
@@ -48,6 +48,6 @@ QMatrix4x4 CameraData::look_at() {
 	rotate(0, 0) = -right.x();	rotate(0, 1) = -right.y();	rotate(0, 2) = -right.z(); 
 	rotate(1, 0) = up.x();		rotate(1, 1) = up.y();		rotate(1, 2) = up.z(); 
 	rotate(2, 0) = -front.x();	rotate(2, 1) = -front.y();	rotate(2, 2) = -front.z(); 
-
+	
 	return rotate * translate;
 }

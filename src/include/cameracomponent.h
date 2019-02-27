@@ -12,7 +12,7 @@ public:
 	
 	virtual void draw(const std::string& shader) override;
  
-	QMatrix4x4 get_view_mat();
+	CMatrix4x4 get_view_mat();
 
 	GET_SET(float, camera_speed);
 

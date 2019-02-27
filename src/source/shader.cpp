@@ -60,7 +60,8 @@ void Shader::set_vec3(const std::string& name, const CVector3D& value) {
 	uint location = shader_program->uniformLocation(QString::fromStdString(name));
 	shader_program->setUniformValue(location, QVector3D(value.x(), value.y(), value.z()));
 }
-void Shader::set_mat4(const std::string& name, const QMatrix4x4& value) {
+void Shader::set_mat4(const std::string& name, const CMatrix4x4& value) {
 	GLuint location = shader_program->uniformLocation(QString::fromStdString(name));
-	shader_program->setUniformValue(location, value);
+	QMatrix4x4 t_m(value.get_transpose().data());
+	shader_program->setUniformValue(location, t_m);
 }

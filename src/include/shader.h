@@ -20,7 +20,7 @@ public:
 	void set_int(const std::string& name, const uint& value);
 	void set_float(const std::string& name, const float& value);
 	void set_vec3(const std::string& name, const CVector3D& value);
-	void set_mat4(const std::string& name, const QMatrix4x4& value);
+	void set_mat4(const std::string& name, const CMatrix4x4& value);
 
 private:
 	void compile_shader(QOpenGLShader& shader, const std::string& shader_path);

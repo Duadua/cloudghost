@@ -9,7 +9,7 @@ MeshComponent::~MeshComponent() { }
 void MeshComponent::draw(const std::string& shader) {
 	if (mesh.compare("") != 0) {
 		auto t_shader = AssetManager::get_shader(shader);
-		if(t_shader != nullptr) t_shader->set_mat4("u_model", get_transform());
+		if(t_shader != nullptr) t_shader->set_mat4("u_model", CMatrix4x4(get_transform().data()));
 
 		auto t_mesh = AssetManager::get_mesh(mesh);
 		if(t_mesh != nullptr) t_mesh->draw(shader);

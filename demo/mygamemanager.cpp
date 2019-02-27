@@ -71,7 +71,7 @@ void MyGameManager::begin_play(QOpenGLWidget* gl) {
 	QMatrix4x4 projection;
 	projection.perspective(45.0f, (GLfloat)gl->width() / gl->height(), 0.1f, 100.0f);
 	auto t_shader = AssetManager::get_shader("triangle")->use();
-	t_shader->set_mat4("u_projection", projection);
+	t_shader->set_mat4("u_projection", CMatrix4x4(projection.data()));
 
 	//t_shader->set_vec3("u_light_pos", CVector3D(1.2f, 5.0f, 2.0f));
 	//t_shader->set_vec3("u_light_color", CVector3D(1.0f, 1.0f, 1.0f));

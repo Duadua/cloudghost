@@ -13,7 +13,7 @@ void CameraComponent::draw(const std::string& shader) {
 
 }
 
-QMatrix4x4 CameraComponent::get_view_mat() {
+CMatrix4x4 CameraComponent::get_view_mat() {
 	camera_data->update(get_location(), get_rotation());
 	return camera_data->get_view_mat();
 }

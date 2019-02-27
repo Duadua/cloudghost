@@ -16,15 +16,23 @@ public:
 	);
 
 	inline CVector4D column(int index) const;
-	inline void set_column(int index, const CVector4D& value);
+	inline CMatrix4x4& set_column(int index, const CVector4D& value);
 	inline CVector4D row(int index) const;
-	inline void set_row(int index, const CVector4D& value);
+	inline CMatrix4x4& set_row(int index, const CVector4D& value);
 
 	inline float& operator()(int row, int col);						// return m[column][row]
 	inline const float& operator()(int row, int col) const;
 
-	void set_to_identity();											// 单位矩阵
-	void set_to_zero();												// 0矩阵
+	friend CMatrix4x4 operator * (const CMatrix4x4& a, const CMatrix4x4& b);
+
+	// transform
+	CMatrix4x4& lookAt(const CVector3D& eye, const CVector3D& center, const CVector3D& up);
+
+	CMatrix4x4& set_to_identity();									// 单位矩阵
+	CMatrix4x4& set_to_zero();										// 0矩阵
+	CMatrix4x4& set_to_transpose();									// 转置矩阵
+
+	CMatrix4x4 get_transpose() const;								// 转置矩阵										
 
 	inline const float* data() const { return *m; }
 private:
@@ -47,14 +55,16 @@ inline CMatrix4x4::CMatrix4x4 (
 inline CVector4D CMatrix4x4::column(int index) const {
 	return CVector4D(m[index][0], m[index][1], m[index][2], m[index][3]); 
 }
-inline void CMatrix4x4::set_column(int index, const CVector4D& value) {
+inline CMatrix4x4& CMatrix4x4::set_column(int index, const CVector4D& value) {
 	m[index][0] = value[0]; m[index][1] = value[1]; m[index][2] = value[2]; m[index][3] = value[3]; 
+	return (*this);
 }
 inline CVector4D CMatrix4x4::row(int index) const {
 	return CVector4D(m[0][index], m[1][index], m[2][index], m[3][index]);
 }
-inline void CMatrix4x4::set_row(int index, const CVector4D& value) {
+inline CMatrix4x4& CMatrix4x4::set_row(int index, const CVector4D& value) {
 	m[0][index] = value[0]; m[1][index] = value[1]; m[2][index] = value[2]; m[3][index] = value[3];
+	return (*this);
 }
 
 inline float& CMatrix4x4::operator()(int row, int col) {
