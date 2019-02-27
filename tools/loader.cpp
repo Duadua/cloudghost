@@ -27,3 +27,20 @@ void get_all_files_from_dir(std::string& path, std::vector<std::string>& res) {
 
 	_findclose(h_file);
 }
+
+std::string load_txt(const std::string& path) {
+	std::string res;
+	std::ifstream ifs;
+	ifs.exceptions(std::ifstream::failbit | std::ifstream::badbit);
+	try {
+		ifs.open(path);
+		std::stringstream ss;
+		ss << ifs.rdbuf();
+		res = ss.str();
+		ifs.close();
+
+	}
+	catch (std::ifstream::failure e) { res = ""; }
+	return res;
+}
+

@@ -10,7 +10,7 @@
 
 void MyGameManager::load_asset() {
 	// 原料 -- 着色器
-	AssetManager::load_shader("triangle", ":/asset/shaders/single.vert", ":/asset/shaders/single.frag");
+	AssetManager::load_shader("triangle", "resources/shaders/single.vert", "resources/shaders/single.frag");
 
 	// 原料 -- 顶点数据
 	AssetManager::load_mesh("triangle_right", "resources/models/txt/triangle_right.txt");

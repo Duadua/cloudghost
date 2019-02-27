@@ -7,9 +7,26 @@ std::map<std::string, SPTR_Mesh> AssetManager::map_meshs;
 std::map<std::string, SPTR_Material> AssetManager::map_materials;
 std::map<std::string, SPTR_Texture2D> AssetManager::map_textures;
 
-SPTR_Shader AssetManager::load_shader(const std::string& key, const std::string& v_path, const std::string& f_path, const std::string& g_path) {
+SPTR_Shader AssetManager::load_shader(const std::string& key, const std::string& v_path, const std::string& f_path, const std::string& g_path, SourceType source_type) {
+	std::string v_code, f_code, g_code;
+	if (source_type == SourceType::BY_FILE) {
+		v_code = load_txt(v_path); 
+		f_code = load_txt(f_path); 
+		if(g_path.compare("") != 0) g_code = load_txt(g_path);
+	}
+	else if (source_type == SourceType::BY_STRING) {
+		v_code = v_path; 
+		f_code = f_path; 
+		g_code = g_path; 
+	}
+
+	if (v_code.compare("") == 0 || f_code.compare("") == 0) {
+		qDebug() << "【error】【asset】【shader】cannot load shader " << QString::fromStdString(key);
+		return nullptr;
+	}
+
 	map_shaders[key] = CREATE_CLASS(Shader);
-	map_shaders[key]->compile(v_path, f_path, g_path);
+	map_shaders[key]->compile(v_code, f_code, g_code);
 	return map_shaders[key];
 }
 SPTR_Shader AssetManager::get_shader(const std::string& key) {

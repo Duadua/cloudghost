@@ -18,7 +18,7 @@ public:
 	static std::map<std::string, SPTR_Texture2D> map_textures;
 
 public:
-	static SPTR_Shader load_shader(const std::string& key, const std::string& v_path, const std::string& f_path, const std::string& g_path = "");
+	static SPTR_Shader load_shader(const std::string& key, const std::string& v_path, const std::string& f_path, const std::string& g_path = "", SourceType source_type = SourceType::BY_FILE);
 	static SPTR_Shader get_shader(const std::string& key);
 	static bool delete_shader(const std::string& key);
 	static bool clear_shaders();
