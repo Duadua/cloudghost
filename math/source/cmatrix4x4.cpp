@@ -56,9 +56,35 @@ CMatrix4x4& CMatrix4x4::lookAt(const CVector3D& eye, const CVector3D& center, co
 	return (*this);
 }
 
+CMatrix4x4& CMatrix4x4::ortho(float width, float aspect_ratio, float near, float far) {
+	float height = width / aspect_ratio;
+	ortho(-width/2.0f, width / 2.0f, -height/2.0f, height / 2.0f, near, far);
+	return (*this);
+}
 CMatrix4x4& CMatrix4x4::ortho(float left, float right, float bottom, float top, float near, float far) {
+	set_to_identity();									// w = 1
+	// x
+	m[0][0] = 2.0f / (right - left);
+	m[3][0] = -(right + left) / (right - left);
+
+	// y
+	m[1][1] = 2.0f / (top - bottom);
+	m[3][1] = -(top + bottom) / (top - bottom);
+
+	// z
+	m[2][2] = -2.0f / (far - near);
+	m[3][2] = -(far + near) / (far - near);
+
 	return (*this);
 
+}
+CMatrix4x4& CMatrix4x4::ortho_2d(float width, float aspect_ratio) {
+	ortho(width, aspect_ratio, -1.0f, 1.0f);
+	return (*this);
+}
+CMatrix4x4& CMatrix4x4::ortho_2d(float left, float right, float bottom, float top) {
+	ortho(left, right, bottom, top, -1.0f, 1.0f);
+	return (*this);
 }
 CMatrix4x4& CMatrix4x4::frustum(float left, float right, float bottom, float top, float near, float far) {
 	set_to_zero();

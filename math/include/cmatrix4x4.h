@@ -30,8 +30,11 @@ public:
 	// look at
 	CMatrix4x4& lookAt(const CVector3D& eye, const CVector3D& center, const CVector3D& worldup);
 
-	// projection
-	CMatrix4x4& ortho(float left, float right, float bottom, float top, float near, float far);
+	// projection -- 右手系 and z belong [-1 ,, 1] 
+	CMatrix4x4& ortho(float width, float aspect_ratio, float near, float far);						// aspect_ratio -- width / height
+	CMatrix4x4& ortho(float left, float right, float bottom, float top, float near, float far);	
+	CMatrix4x4& ortho_2d(float width, float aspect_ratio);	
+	CMatrix4x4& ortho_2d(float left, float right, float bottom, float top);							// near = -1 and far = 1
 	CMatrix4x4& frustum(float left, float right, float bottom, float top, float near, float far);	// 平截头体
 	CMatrix4x4& perspective(float vertical_angle, float aspect_ratio, float near, float far);		// 透视 -- 投影平面为x轴和z轴中心
 
