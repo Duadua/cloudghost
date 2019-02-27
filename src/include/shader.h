@@ -5,8 +5,6 @@
 #include <string>
 #include <QOpenGLFunctions_3_3_Core>
 
-class QOpenGLShaderProgram;
-
 DECLARE_AUTO_PTR(Shader)
 class Shader : public CObject, public std::enable_shared_from_this<Shader> {
 	DECLARE_CLASS(Shader)

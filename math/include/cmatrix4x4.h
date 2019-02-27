@@ -26,7 +26,14 @@ public:
 	friend CMatrix4x4 operator * (const CMatrix4x4& a, const CMatrix4x4& b);
 
 	// transform
+
+	// look at
 	CMatrix4x4& lookAt(const CVector3D& eye, const CVector3D& center, const CVector3D& worldup);
+
+	// projection
+	CMatrix4x4& ortho(float left, float right, float bottom, float top, float near, float far);
+	CMatrix4x4& frustum(float left, float right, float bottom, float top, float near, float far);	// 平截头体
+	CMatrix4x4& perspective(float vertical_angle, float aspect_ratio, float near, float far);		// 透视 -- 投影平面为x轴和z轴中心
 
 	CMatrix4x4& set_to_identity();									// 单位矩阵
 	CMatrix4x4& set_to_zero();										// 0矩阵

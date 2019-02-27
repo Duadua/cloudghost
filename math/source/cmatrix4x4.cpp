@@ -1,3 +1,4 @@
+#include "cmath.h"
 #include "cmatrix4x4.h"
 
 CMatrix4x4::CMatrix4x4(const float* d, int cols, int rows) {
@@ -55,4 +56,23 @@ CMatrix4x4& CMatrix4x4::lookAt(const CVector3D& eye, const CVector3D& center, co
 	return (*this);
 }
 
+CMatrix4x4& CMatrix4x4::ortho(float left, float right, float bottom, float top, float near, float far) {
+	return (*this);
 
+}
+CMatrix4x4& CMatrix4x4::frustum(float left, float right, float bottom, float top, float near, float far) {
+	return (*this);
+}
+CMatrix4x4& CMatrix4x4::perspective(float vertical_angle, float aspect_ratio, float near, float far) {
+	float alpha = 1.0f / std::tan(CMath::deg_to_rad(vertical_angle / 2.0f));
+	set_to_zero();
+	m[0][0] = alpha / aspect_ratio;					// x
+	m[1][1] = alpha;								// y
+
+	// z
+	m[2][2] = -(far + near) / (far - near);
+	m[3][2] = -(far * near * 2.0f) / (far - near);
+
+	m[2][3] = -1;									// w
+	return (*this);
+}

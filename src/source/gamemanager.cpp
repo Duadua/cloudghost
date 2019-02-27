@@ -67,10 +67,10 @@ void GameManager::pre_init(QOpenGLWidget* gl) {
 }
 void GameManager::resize(QOpenGLWidget* gl, int w, int h) {
 	core->glViewport(0, 0, w, h);
-	QMatrix4x4 projection;
+	CMatrix4x4 projection;
 	projection.perspective(45.0f, (GLfloat)gl->width() / gl->height(), 0.1f, 100.0f);
 	auto t_shader = AssetManager::get_shader("triangle")->use();
-	t_shader->set_mat4("u_projection", CMatrix4x4(projection.data()));
+	t_shader->set_mat4("u_projection", projection);
 }
 void GameManager::exit(QOpenGLWidget* gl) {
 	InputManager::exit();
