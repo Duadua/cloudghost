@@ -61,6 +61,15 @@ CMatrix4x4& CMatrix4x4::ortho(float left, float right, float bottom, float top, 
 
 }
 CMatrix4x4& CMatrix4x4::frustum(float left, float right, float bottom, float top, float near, float far) {
+	set_to_zero();
+	m[0][0] = (2.0f * near) / (right - left);		// x
+	m[1][1] = (2.0f * near) / (top - bottom);		// y
+
+	// z
+	m[2][2] = -(far + near) / (far - near);
+	m[3][2] = -(far * near * 2.0f) / (far - near);
+
+	m[2][3] = -1.0f;								// w
 	return (*this);
 }
 CMatrix4x4& CMatrix4x4::perspective(float vertical_angle, float aspect_ratio, float near, float far) {
@@ -76,3 +85,6 @@ CMatrix4x4& CMatrix4x4::perspective(float vertical_angle, float aspect_ratio, fl
 	m[2][3] = -1;									// w
 	return (*this);
 }
+
+
+

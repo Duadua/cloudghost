@@ -69,6 +69,7 @@ void GameManager::resize(QOpenGLWidget* gl, int w, int h) {
 	core->glViewport(0, 0, w, h);
 	CMatrix4x4 projection;
 	projection.perspective(45.0f, (GLfloat)gl->width() / gl->height(), 0.1f, 100.0f);
+	//projection.frustum(-0.1f, 0.1f, -0.1f / t, 0.1f / t, 0.1f, 100.0f);
 	auto t_shader = AssetManager::get_shader("triangle")->use();
 	t_shader->set_mat4("u_projection", projection);
 }
