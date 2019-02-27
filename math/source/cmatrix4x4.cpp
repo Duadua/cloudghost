@@ -34,8 +34,24 @@ CMatrix4x4 operator * (const CMatrix4x4& a, const CMatrix4x4& b) {
 	return res;
 }
 
-CMatrix4x4& CMatrix4x4::lookAt(const CVector3D& eye, const CVector3D& center, const CVector3D& up) {
+CMatrix4x4& CMatrix4x4::lookAt(const CVector3D& eye, const CVector3D& center, const CVector3D& world_up) {
+	CVector3D front = (center - eye).normalize();
+	CVector3D right = front.cross(world_up).normalize();
+	CVector3D up	= right.cross(front).normalize();
 
+	CMatrix4x4 translate, rotate;
+
+	// 初始化 translate
+	translate(0, 3) = -eye.x();
+	translate(1, 3) = -eye.y();
+	translate(2, 3) = -eye.z();
+
+	// 初始化 rotate
+	rotate(0, 0) = -right.x();	rotate(0, 1) = -right.y();	rotate(0, 2) = -right.z();
+	rotate(1, 0) = up.x();		rotate(1, 1) = up.y();		rotate(1, 2) = up.z();
+	rotate(2, 0) = -front.x();	rotate(2, 1) = -front.y();	rotate(2, 2) = -front.z();
+
+	(*this) = rotate * translate;
 	return (*this);
 }
 

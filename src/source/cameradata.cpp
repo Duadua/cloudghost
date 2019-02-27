@@ -37,17 +37,6 @@ void CameraData::update(CVector3D l, CVector3D r) {
 }
 
 CMatrix4x4 CameraData::look_at() {
-	CMatrix4x4 translate, rotate;
-
-	// 初始化 translate
-	translate(0, 3) = -location.x();
-	translate(1, 3) = -location.y();
-	translate(2, 3) = -location.z();
-
-	// 初始化 rotate
-	rotate(0, 0) = -right.x();	rotate(0, 1) = -right.y();	rotate(0, 2) = -right.z(); 
-	rotate(1, 0) = up.x();		rotate(1, 1) = up.y();		rotate(1, 2) = up.z(); 
-	rotate(2, 0) = -front.x();	rotate(2, 1) = -front.y();	rotate(2, 2) = -front.z(); 
-	
-	return rotate * translate;
+	CMatrix4x4 res;
+	return res.lookAt(location, location + front, world_up);
 }

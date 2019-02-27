@@ -26,7 +26,7 @@ public:
 	friend CMatrix4x4 operator * (const CMatrix4x4& a, const CMatrix4x4& b);
 
 	// transform
-	CMatrix4x4& lookAt(const CVector3D& eye, const CVector3D& center, const CVector3D& up);
+	CMatrix4x4& lookAt(const CVector3D& eye, const CVector3D& center, const CVector3D& worldup);
 
 	CMatrix4x4& set_to_identity();									// 单位矩阵
 	CMatrix4x4& set_to_zero();										// 0矩阵
