@@ -169,6 +169,9 @@
     <ClCompile Include="math\source\cvector4d.cpp">
       <Filter>math\source</Filter>
     </ClCompile>
+    <ClCompile Include="math\source\cquaternion.cpp">
+      <Filter>math\source</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <QtUic Include="resources\ui\cpbr.ui">
@@ -278,6 +281,9 @@
       <Filter>math\include</Filter>
     </ClInclude>
     <ClInclude Include="math\include\cvector4d.h">
+      <Filter>math\include</Filter>
+    </ClInclude>
+    <ClInclude Include="math\include\cquaternion.h">
       <Filter>math\include</Filter>
     </ClInclude>
   </ItemGroup>
