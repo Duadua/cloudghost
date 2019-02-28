@@ -6,8 +6,8 @@
 
 class CMatrix4x4 {
 public:
-	CMatrix4x4() { set_to_identity(); }
-	CMatrix4x4(const float* d) { memcpy(m, d, sizeof(m)); }
+	CMatrix4x4() : scaled(1.0f) { set_to_identity(); }
+	CMatrix4x4(const float* d) : scaled(1.0f) { memcpy(m, d, sizeof(m)); }
 	CMatrix4x4(const float* d, int cols, int rows);
 	inline CMatrix4x4(
 		float m11, float m12, float m13, float m14,
@@ -63,6 +63,8 @@ public:
 private:
 	float m[4][4];													// 列主序 -- m[i][j] -- 第 i 列 第 j 行
 
+	CVector3D scaled;												// 已经缩放的因子
+
 };
 
 inline CMatrix4x4::CMatrix4x4 (
@@ -70,7 +72,7 @@ inline CMatrix4x4::CMatrix4x4 (
 	float m21, float m22, float m23, float m24,
 	float m31, float m32, float m33, float m34,
 	float m41, float m42, float m43, float m44
-) {
+) : scaled(1.0f) {
 	m[0][0] = m11; m[0][1] = m21; m[0][2] = m31; m[0][3] = m41;
     m[1][0] = m12; m[1][1] = m22; m[1][2] = m32; m[1][3] = m42;
     m[2][0] = m13; m[2][1] = m23; m[2][2] = m33; m[2][3] = m43;

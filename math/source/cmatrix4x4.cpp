@@ -1,13 +1,14 @@
 #include "cmath.h"
 #include "cmatrix4x4.h"
 
-CMatrix4x4::CMatrix4x4(const float* d, int cols, int rows) {
+CMatrix4x4::CMatrix4x4(const float* d, int cols, int rows) : scaled(1.0f) {
 	for (int i = 0; i < cols && i < 4; ++i) { for (int j = 0; j < rows && j < 4; ++j) {
 			m[i][j] = d[i*cols + j];
 	}}
 }
 
 CMatrix4x4& CMatrix4x4::set_to_identity() {
+	scaled = CVector3D(1.0f);
 	for (int i = 0; i < 4; ++i) { for (int j = 0; j < 4; ++j) {
 		if(i == j) m[i][j]= 1.0f; 
 		else m[i][j] = 0.0f;
@@ -15,6 +16,7 @@ CMatrix4x4& CMatrix4x4::set_to_identity() {
 	return (*this);
 }
 CMatrix4x4& CMatrix4x4::set_to_zero() {
+	scaled = CVector3D(1.0f);
 	for (int i = 0; i < 4; ++i) { for (int j = 0; j < 4; ++j) { m[i][j] = 0; }} 
 	return (*this);
 }
@@ -30,6 +32,7 @@ CMatrix4x4 CMatrix4x4::get_transpose() const {
 
 CMatrix4x4 operator * (const CMatrix4x4& a, const CMatrix4x4& b) {
 	CMatrix4x4 res;
+	res.scaled = a.scaled * b.scaled;
 	for (int i = 0; i < 4; ++i) { for (int j = 0; j < 4; ++j) {
 			res(i, j) = a.row(i).dot(b.column(j));
 	}}
@@ -50,6 +53,7 @@ CMatrix4x4& CMatrix4x4::translate(float x, float y, float z) {
 }
 
 CMatrix4x4& CMatrix4x4::scale(const CVector3D& v) {
+	scaled *= v;
 	CMatrix4x4 tmp((*this));
 	set_column(0, tmp.column(0) * v[0]);
 	set_column(1, tmp.column(1) * v[1]);
@@ -57,6 +61,7 @@ CMatrix4x4& CMatrix4x4::scale(const CVector3D& v) {
 	return (*this);
 }
 CMatrix4x4& CMatrix4x4::scale(float x, float y, float z) {
+	scaled *= CVector3D(x, y, z);
 	CMatrix4x4 tmp((*this));
 	set_column(0, tmp.column(0) * x);
 	set_column(1, tmp.column(1) * y);
@@ -64,6 +69,7 @@ CMatrix4x4& CMatrix4x4::scale(float x, float y, float z) {
 	return (*this);
 }
 CMatrix4x4& CMatrix4x4::scale(float f) {
+	scaled *= f;
 	CMatrix4x4 tmp((*this));
 	set_column(0, tmp.column(0) * f);
 	set_column(1, tmp.column(1) * f);
@@ -144,7 +150,25 @@ CMatrix4x4& CMatrix4x4::rotate_quaternion(const CQuaternion& quaternion) {
 }
 
 CVector3D	CMatrix4x4::get_rotate_euler() const {
-	return CVector3D();
+	float sy = std::sqrt(m[0][0]*m[0][0] + m[0][1] * m[0][1]);
+
+	float x = (float)std::atan2(m[1][2], m[2][2]);
+	float y = (float)std::atan2(-m[0][2], sy);
+	float z = (float)std::atan2(m[0][1], m[0][0]);
+
+	/*if (sy < CMath::eps) {
+		x = (float)std::atan2(-m[2][1], m[1][1]);
+		y = (float)std::atan2(-m[0][2], sy);
+		z = 0.0f;
+	}
+	else {
+		x = (float)std::atan2(m[1][2], m[2][2]);
+		y = (float)std::atan2(-m[0][2], sy);
+		z = (float)std::atan2(m[0][1], m[0][0]);
+	}
+	*/
+
+	return CVector3D(CMath::rad_to_deg(x), CMath::rad_to_deg(y), CMath::rad_to_deg(z));
 }
 CVector4D	CMatrix4x4::get_rotate_angle_axis() const {
 	return CVector4D();

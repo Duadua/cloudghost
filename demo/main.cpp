@@ -71,10 +71,16 @@ int main(int argc, char *argv[]) {
 	qDebug() << QMatrix4x4(t.get_transpose().data());
 
 	CMatrix4x4 tt;
-	tt.translate(1.0f, 2.0f);
-	tt.rotate_euler(30.0f, 40.0f, 50.0f);
+	//tt.translate(1.0f, 2.0f);
+	tt.rotate_euler(5.0f, 90.0f, 30.0f);
 	tt.scale(3.0f);
 	qDebug() << QMatrix4x4(tt.get_transpose().data());
+	qDebug() << tt.get_rotate_euler()[0] << " " << tt.get_rotate_euler()[1] << " " << tt.get_rotate_euler()[2];
+
+	CMatrix4x4 ttt;
+	ttt.rotate_euler(tt.get_rotate_euler());
+	ttt.scale(3.0f);
+	qDebug() << QMatrix4x4(ttt.get_transpose().data());
 
 	MyGameManager gm;
 	CPBR w;

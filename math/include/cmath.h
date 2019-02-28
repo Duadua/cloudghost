@@ -22,6 +22,7 @@ class CMath {
 public:
 	~CMath() {}
 	static const float pi;
+	static const float eps;
 
 	template<class T>
 	static T clamp(T x, T a, T b) { if (x < a) x = a; if (x > b) x = b; return x; }
