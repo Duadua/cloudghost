@@ -101,7 +101,7 @@ void MyGameManager::begin_play(QOpenGLWidget* gl) {
 	{
 		auto s_light = CREATE_CLASS(SpotLightObject);
 		s_light->get_root_component()->set_location(2.0f, 3.0f, 0.0f);
-		s_light->get_root_component()->set_roataion(-45.0f, -90.0f, 0.0f);
+		s_light->get_root_component()->set_rotation(-45.0f, -90.0f, 0.0f);
 		s_light->get_light_component()->set_color(CVector3D(0.0f, 0.0f, 1.0f));
 		s_light->get_light_component()->set_intensity(10.0f);
 		s_light->get_light_component()->set_inner(15.0f);

@@ -71,9 +71,39 @@ CMatrix4x4& CMatrix4x4::scale(float f) {
 	return (*this);
 }
 
-CMatrix4x4& CMatrix4x4::rotate(float angle, const CVector3D& vector) {
-	return (*this);
+CMatrix4x4& CMatrix4x4::rotate(float angle, const CVector3D& v) {
+	float a = CMath::deg_to_rad(angle);
+	float c = std::cos(a);
+	float s = std::sin(a);
+	
+	CVector3D axis(v.get_normalize());
+	CVector3D temp((1.0f - c) * axis);					// axis * (1 - cos)
 
+	CMatrix4x4 rotate;
+	rotate(0, 0) = c + temp[0] * axis[0];
+	rotate(1, 0) = temp[0] * axis[1] + s * axis[2];
+	rotate(2, 0) = temp[0] * axis[2] - s * axis[1];
+
+	rotate(0, 1) = temp[1] * axis[0] - s * axis[2];
+	rotate(1, 1) = c + temp[1] * axis[1];
+	rotate(2, 1) = temp[1] * axis[2] + s * axis[0];
+
+	rotate(0, 2) = temp[2] * axis[0] + s * axis[1];
+	rotate(1, 2) = temp[2] * axis[1] - s * axis[0];
+	rotate(2, 2) = c + temp[2] * axis[2];
+
+	CMatrix4x4 res(*this);
+	CVector4D t_c0 = res.column(0); CVector4D t_c1 = res.column(1);
+	CVector4D t_c2 = res.column(2); CVector4D t_c3 = res.column(3);
+	set_column(0, t_c0 * rotate(0, 0) + t_c1 * rotate(1, 0) + t_c2 * rotate(2, 0));
+	set_column(1, t_c0 * rotate(0, 1) + t_c1 * rotate(1, 1) + t_c2 * rotate(2, 1));
+	set_column(2, t_c0 * rotate(0, 2) + t_c1 * rotate(1, 2) + t_c2 * rotate(2, 2));
+
+	return (*this);
+}
+CMatrix4x4& CMatrix4x4::rotate(float angle, float x, float y, float z) {
+	rotate(angle, CVector3D(x, y, z));
+	return (*this);
 }
 
 CMatrix4x4& CMatrix4x4::lookAt(const CVector3D& eye, const CVector3D& center, const CVector3D& world_up) {

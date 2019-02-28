@@ -20,14 +20,14 @@ void SceneComponent::add_child(SPTR_SceneComponent child) {
 	if (child != nullptr) child_components.push_back(child);
 }
 
-QMatrix4x4 SceneComponent::get_transform() {
-	QMatrix4x4 t_transform;
+CMatrix4x4 SceneComponent::get_transform() {
+	CMatrix4x4 t_transform;
 	// 通过 lrs 计算 transform
-	t_transform.translate(QVector3D(location.x(), location.y(), location.z()));
-	t_transform.rotate(rotation.z(), QVector3D(0.0f, 0.0f, 1.0f));
-	t_transform.rotate(rotation.y(), QVector3D(0.0f, 1.0f, 0.0f));
-	t_transform.rotate(rotation.x(), QVector3D(1.0f, 0.0f, 0.0f));
-	t_transform.scale(QVector3D(scale.x(), scale.y(), scale.z()));
+	t_transform.translate(location);
+	t_transform.rotate(rotation.z(), CVector3D(0.0f, 0.0f, 1.0f));
+	t_transform.rotate(rotation.y(), CVector3D(0.0f, 1.0f, 0.0f));
+	t_transform.rotate(rotation.x(), CVector3D(1.0f, 0.0f, 0.0f));
+	t_transform.scale(scale);
 
 	// 乘以 parent 的 transform
 	if (!parent_component.expired()) {
@@ -37,12 +37,8 @@ QMatrix4x4 SceneComponent::get_transform() {
 	return t_transform;
 }
 
-void SceneComponent::set_location(CVector3D l) { location = l; }
-void SceneComponent::set_roataion(CVector3D r) { rotation = r; }
-void SceneComponent::set_scale(CVector3D s) { scale = s; }
-
 void SceneComponent::set_location(float x, float y, float z) { location = CVector3D(x, y, z); }
-void SceneComponent::set_roataion(float x, float y, float z) { rotation = CVector3D(x, y, z); }
+void SceneComponent::set_rotation(float x, float y, float z) { rotation = CVector3D(x, y, z); }
 void SceneComponent::set_scale(float x, float y, float z) { scale = CVector3D(x, y, z); }
 
 CVector3D SceneComponent::get_location() { 

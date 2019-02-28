@@ -44,7 +44,8 @@ public:
 	CVector3D cross(const CVector3D& b) const;
 	float mix(const CVector3D& b, const CVector3D& c) const;	// 混合积 -- 有向六面体休积
 
-	CVector3D normalize();
+	CVector3D& normalize();
+	CVector3D get_normalize() const;
 
 	float length() const;
 

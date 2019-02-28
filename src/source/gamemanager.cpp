@@ -50,7 +50,7 @@ void GameManager::draw(QOpenGLWidget* gl) {
 	main_shader = "triangle";
 	auto t_shader = AssetManager::get_shader(main_shader)->use();
 	t_shader->set_mat4("u_view", main_camera->get_view_mat());
-	t_shader->set_vec3("u_view_pos", CVector3D(main_camera->get_location().x(), main_camera->get_location().y(), main_camera->get_location().z()));
+	t_shader->set_vec3("u_view_pos", main_camera->get_location());
 	// render
 	main_draw();
 }
@@ -87,7 +87,7 @@ SPTR_CameraComponent GameManager::set_main_camera() {
 	auto free_camera = CREATE_CLASS(FreeCamera);
 	add_game_object("free_camera", free_camera);
 	free_camera->get_root_component()->set_location(0.0f, 1.5f, -10.0f);
-	free_camera->get_root_component()->set_roataion(0.0f, 0.0f, 0.0f);
+	free_camera->get_root_component()->set_rotation(0.0f, 0.0f, 0.0f);
 
 	return free_camera->get_camera_component();
 }

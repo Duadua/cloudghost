@@ -2,7 +2,6 @@
 
 #include "cmath.h"
 #include "component.h"
-#include <QMatrix4x4>
 
 DECLARE_AUTO_PTR(SceneComponent)
 class SceneComponent : public Component, public std::enable_shared_from_this<SceneComponent> {
@@ -15,14 +14,14 @@ public:
 
 	void attach_to(SPTR_SceneComponent parent);
 	
-	QMatrix4x4 get_transform();
+	CMatrix4x4 get_transform();
 
-	void set_location(CVector3D l);
-	void set_roataion(CVector3D r);
-	void set_scale(CVector3D s);
+	SET(CVector3D, location);
+	SET(CVector3D, rotation);
+	SET(CVector3D, scale);
 
 	void set_location(float x, float y, float z);
-	void set_roataion(float x, float y, float z);
+	void set_rotation(float x, float y, float z);
 	void set_scale(float x, float y, float z);
 
 	CVector3D get_location();

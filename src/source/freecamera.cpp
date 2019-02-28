@@ -30,7 +30,7 @@ void FreeCamera::turn(float offset) {
 	CVector3D new_rotation = get_root_component()->get_rotation();
 
 	new_rotation += CVector3D(0.0f, offset, 0.0f);
-	get_root_component()->set_roataion(new_rotation);
+	get_root_component()->set_rotation(new_rotation);
 
 	// set cursor pos
 	InputManager::cursor_clip();
@@ -47,8 +47,8 @@ void FreeCamera::look_up(float offset) {
 
 	// rotate x_axis
 	new_rotation += CVector3D(offset, 0.0f, 0.0f);
-	get_root_component()->set_roataion(new_rotation);
-
+	get_root_component()->set_rotation(new_rotation);
+	
 	// set cursor pos
 	InputManager::cursor_clip();
 	InputManager::cursor_show(Qt::BlankCursor);
