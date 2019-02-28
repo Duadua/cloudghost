@@ -27,6 +27,7 @@ CMatrix4x4 CMatrix4x4::get_transpose() const {
 	CMatrix4x4 res = (*this);
 	return res.set_to_transpose();
 }
+
 CMatrix4x4 operator * (const CMatrix4x4& a, const CMatrix4x4& b) {
 	CMatrix4x4 res;
 	for (int i = 0; i < 4; ++i) { for (int j = 0; j < 4; ++j) {
@@ -48,17 +49,26 @@ CMatrix4x4& CMatrix4x4::translate(float x, float y, float z) {
 	return (*this);
 }
 
-CMatrix4x4& CMatrix4x4::scale(const CVector3D& vector) {
-
+CMatrix4x4& CMatrix4x4::scale(const CVector3D& v) {
+	CMatrix4x4 tmp((*this));
+	set_column(0, tmp.column(0) * v[0]);
+	set_column(1, tmp.column(1) * v[1]);
+	set_column(2, tmp.column(2) * v[2]);
 	return (*this);
 }
 CMatrix4x4& CMatrix4x4::scale(float x, float y, float z) {
+	CMatrix4x4 tmp((*this));
+	set_column(0, tmp.column(0) * x);
+	set_column(1, tmp.column(1) * y);
+	set_column(2, tmp.column(2) * z);
 	return (*this);
-
 }
-CMatrix4x4& CMatrix4x4::scale(float factor) {
+CMatrix4x4& CMatrix4x4::scale(float f) {
+	CMatrix4x4 tmp((*this));
+	set_column(0, tmp.column(0) * f);
+	set_column(1, tmp.column(1) * f);
+	set_column(2, tmp.column(2) * f);
 	return (*this);
-
 }
 
 CMatrix4x4& CMatrix4x4::rotate(float angle, const CVector3D& vector) {

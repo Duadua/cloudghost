@@ -24,9 +24,9 @@ QMatrix4x4 SceneComponent::get_transform() {
 	QMatrix4x4 t_transform;
 	// 通过 lrs 计算 transform
 	t_transform.translate(QVector3D(location.x(), location.y(), location.z()));
-	t_transform.rotate(rotation.x(), QVector3D(1.0f, 0.0f, 0.0f));
-	t_transform.rotate(rotation.y(), QVector3D(0.0f, 1.0f, 0.0f));
 	t_transform.rotate(rotation.z(), QVector3D(0.0f, 0.0f, 1.0f));
+	t_transform.rotate(rotation.y(), QVector3D(0.0f, 1.0f, 0.0f));
+	t_transform.rotate(rotation.x(), QVector3D(1.0f, 0.0f, 0.0f));
 	t_transform.scale(QVector3D(scale.x(), scale.y(), scale.z()));
 
 	// 乘以 parent 的 transform
