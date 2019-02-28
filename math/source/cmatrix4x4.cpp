@@ -35,6 +35,37 @@ CMatrix4x4 operator * (const CMatrix4x4& a, const CMatrix4x4& b) {
 	return res;
 }
 
+CMatrix4x4& CMatrix4x4::translate(const CVector3D& v) {
+	CMatrix4x4 tmp((*this));
+	CVector4D t_col = tmp.column(0) * v[0] + tmp.column(1) * v[1] + tmp.column(2) * v[2] + tmp.column(3);
+	set_column(3, t_col);
+	return (*this);
+}
+CMatrix4x4& CMatrix4x4::translate(float x, float y, float z) {
+	CMatrix4x4 tmp((*this));
+	CVector4D t_col = tmp.column(0) * x + tmp.column(1) * y + tmp.column(2) * z + tmp.column(3);
+	set_column(3, t_col);
+	return (*this);
+}
+
+CMatrix4x4& CMatrix4x4::scale(const CVector3D& vector) {
+
+	return (*this);
+}
+CMatrix4x4& CMatrix4x4::scale(float x, float y, float z) {
+	return (*this);
+
+}
+CMatrix4x4& CMatrix4x4::scale(float factor) {
+	return (*this);
+
+}
+
+CMatrix4x4& CMatrix4x4::rotate(float angle, const CVector3D& vector) {
+	return (*this);
+
+}
+
 CMatrix4x4& CMatrix4x4::lookAt(const CVector3D& eye, const CVector3D& center, const CVector3D& world_up) {
 	CVector3D front = (center - eye).normalize();
 	CVector3D right = front.cross(world_up).normalize();

@@ -60,6 +60,10 @@ int main(int argc, char *argv[]) {
 	QtImageHelper::text_to_png(path);
 	*/
 
+	CMatrix4x4 t;
+	//t.translate(CVector3D(1.0f, 2.0f, 3.0f));
+	t.translate(1.0f, 2.0f);
+	qDebug() << QMatrix4x4(t.get_transpose().data());
 
 	MyGameManager gm;
 	CPBR w;

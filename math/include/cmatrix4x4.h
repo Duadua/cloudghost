@@ -26,6 +26,17 @@ public:
 	friend CMatrix4x4 operator * (const CMatrix4x4& a, const CMatrix4x4& b);
 
 	// transform
+	CMatrix4x4& translate(const CVector3D& v);
+	CMatrix4x4& translate(float x, float y, float z = 0.0f);
+
+	CMatrix4x4& scale(const CVector3D& vector);
+	CMatrix4x4& scale(float x, float y, float z = 1.0f);
+	CMatrix4x4& scale(float factor);
+
+	CMatrix4x4& rotate(float angle, const CVector3D& vector);					
+	CMatrix4x4& rotate(float angle, float x, float y, float z = 0.0f);
+	// void rotate(const CVector3D& euler_angle);								// z_y_x
+	// void rotate(const CQuaternion& quaternion);
 
 	// look at
 	CMatrix4x4& lookAt(const CVector3D& eye, const CVector3D& center, const CVector3D& worldup);
