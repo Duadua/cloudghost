@@ -5,6 +5,7 @@
 #include "cvector3d.h"
 #include "cvector4d.h"
 #include "cmatrix4x4.h"
+#include "cquaternion.h"
 #include <memory>
 
 using uint = unsigned int;

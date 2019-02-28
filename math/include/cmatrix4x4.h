@@ -1,6 +1,7 @@
 #pragma once
 
 #include "cvector4d.h"
+#include "cquaternion.h"
 #include <memory>
 
 class CMatrix4x4 {
@@ -35,9 +36,12 @@ public:
 
 	CMatrix4x4& rotate(float angle, const CVector3D& v);					
 	CMatrix4x4& rotate(float angle, float x, float y, float z = 0.0f);
-	// void rotate(const CVector3D& euler_angle);								// z_y_x
-	// void rotate(const CQuaternion& quaternion);
-
+	CMatrix4x4& rotate_euler(const CVector3D& euler_angle);								// z_y_x -- 以欧拉角旋转
+	CMatrix4x4& rotate_euler(float x, float y, float z = 0.0f);
+	CMatrix4x4& rotate_quaternion(const CQuaternion& quaternion);						// 以 四元数 旋转
+	CVector3D	get_rotate_euler() const;												// 由旋转矩阵得 欧拉角
+	CVector4D	get_rotate_angle_axis() const;											// 由旋转矩阵得 轴角
+	CQuaternion get_rotate_quaternion() const;											// 由旋转矩阵得 四元数
 	// look at
 	CMatrix4x4& lookAt(const CVector3D& eye, const CVector3D& center, const CVector3D& worldup);
 

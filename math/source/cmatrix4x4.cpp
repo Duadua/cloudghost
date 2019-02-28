@@ -105,6 +105,54 @@ CMatrix4x4& CMatrix4x4::rotate(float angle, float x, float y, float z) {
 	rotate(angle, CVector3D(x, y, z));
 	return (*this);
 }
+CMatrix4x4& CMatrix4x4::rotate_euler(const CVector3D& euler_angle) {
+	float x = CMath::deg_to_rad(euler_angle[0]);
+	float y = CMath::deg_to_rad(euler_angle[1]);
+	float z = CMath::deg_to_rad(euler_angle[2]);
+	CVector3D c(std::cos(x), std::cos(y), std::cos(z));
+	CVector3D s(std::sin(x), std::sin(y), std::sin(z));
+
+	CMatrix4x4 rotate;
+	rotate(0, 0) = c[1] * c[2];
+	rotate(1, 0) = c[1] * s[2];
+	rotate(2, 0) = -s[1];
+
+	rotate(0, 1) = c[2] * s[0] * s[1] - c[0] * s[2];
+	rotate(1, 1) = s[0] * s[1] * s[2] + c[0] * c[2];
+	rotate(2, 1) = c[1] * s[0];
+
+	rotate(0, 2) = c[0] * c[2] * s[1] + s[0] * s[2];
+	rotate(1, 2) = c[0] * s[1] * s[2] - c[2] * s[2];
+	rotate(2, 2) = c[0] * c[1];
+
+	CMatrix4x4 res(*this);
+	CVector4D t_c0 = res.column(0); CVector4D t_c1 = res.column(1);
+	CVector4D t_c2 = res.column(2); CVector4D t_c3 = res.column(3);
+	set_column(0, t_c0 * rotate(0, 0) + t_c1 * rotate(1, 0) + t_c2 * rotate(2, 0));
+	set_column(1, t_c0 * rotate(0, 1) + t_c1 * rotate(1, 1) + t_c2 * rotate(2, 1));
+	set_column(2, t_c0 * rotate(0, 2) + t_c1 * rotate(1, 2) + t_c2 * rotate(2, 2));
+ 
+	return (*this);
+}
+CMatrix4x4& CMatrix4x4::rotate_euler(float x, float y, float z) {
+	rotate_euler(CVector3D(x, y, z));
+	return (*this);
+}
+CMatrix4x4& CMatrix4x4::rotate_quaternion(const CQuaternion& quaternion) {
+
+	return (*this);
+}
+
+CVector3D	CMatrix4x4::get_rotate_euler() const {
+	return CVector3D();
+}
+CVector4D	CMatrix4x4::get_rotate_angle_axis() const {
+	return CVector4D();
+
+}
+CQuaternion CMatrix4x4::get_rotate_quaternion() const {
+	return CQuaternion();
+}
 
 CMatrix4x4& CMatrix4x4::lookAt(const CVector3D& eye, const CVector3D& center, const CVector3D& world_up) {
 	CVector3D front = (center - eye).normalize();

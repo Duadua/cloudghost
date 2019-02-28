@@ -64,15 +64,17 @@ int main(int argc, char *argv[]) {
 	CMatrix4x4 t;
 	//t.translate(CVector3D(1.0f, 2.0f, 3.0f));
 	t.translate(1.0f, 2.0f);
-	t.rotate(50.0f, 0.0f, 1.0f, 0.0f);
+	t.rotate(50.0f, 0.0f, 0.0f, 1.0f);
+	t.rotate(40.0f, 0.0f, 1.0f, 0.0f);
+	t.rotate(30.0f, 1.0f, 0.0f, 0.0f);
 	t.scale(3.0f);
 	qDebug() << QMatrix4x4(t.get_transpose().data());
 
-	QMatrix4x4 tt;
+	CMatrix4x4 tt;
 	tt.translate(1.0f, 2.0f);
-	tt.rotate(50.0f, QVector3D(0.0f, 1.0f, 0.0f));
+	tt.rotate_euler(30.0f, 40.0f, 50.0f);
 	tt.scale(3.0f);
-	qDebug() << tt << endl;
+	qDebug() << QMatrix4x4(tt.get_transpose().data());
 
 	MyGameManager gm;
 	CPBR w;
