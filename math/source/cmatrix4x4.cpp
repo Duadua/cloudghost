@@ -151,6 +151,24 @@ CMatrix4x4& CMatrix4x4::rotate_euler(float x, float y, float z) {
 	return (*this);
 }
 CMatrix4x4& CMatrix4x4::rotate_quaternion(const CQuaternion& quaternion) {
+	float a = quaternion.w;
+	float b = quaternion.x;
+	float c = quaternion.y;
+	float d = quaternion.z;
+
+	/*CMatrix4x4 rotate;
+	rotate(0, 0) = c[1] * c[2];
+	rotate(1, 0) = c[1] * s[2];
+	rotate(2, 0) = -s[1];
+
+	rotate(0, 1) = c[2] * s[0] * s[1] - c[0] * s[2];
+	rotate(1, 1) = s[0] * s[1] * s[2] + c[0] * c[2];
+	rotate(2, 1) = c[1] * s[0];
+
+	rotate(0, 2) = c[0] * c[2] * s[1] + s[0] * s[2];
+	rotate(1, 2) = c[0] * s[1] * s[2] - c[2] * s[2];
+	rotate(2, 2) = c[0] * c[1];
+*/	
 
 	return (*this);
 }

@@ -12,6 +12,8 @@
 
 #include "tools/qtimagehelper.h"
 
+#include "plane.h"
+
 int main(int argc, char *argv[]) {
 	QApplication a(argc, argv);
 	
@@ -69,6 +71,9 @@ int main(int argc, char *argv[]) {
 		qDebug() << QMatrix4x4(t.get_transpose().data());
 		qDebug() << v[0] << " " << v[1] << " " << v[2];
 		qDebug() << v.length();
+
+		
+		t.set_to_identity().set_to_zero().set_to_zero();
 	}
 	{
 		CVector3D v(10.0, 20.0, 30.0);
@@ -82,6 +87,16 @@ int main(int argc, char *argv[]) {
 		qDebug() << v[0] << " " << v[1] << " " << v[2];
 	}
 	
+	PlaneObject plane;
+	plane.width = 6.0;
+	auto t = plane.get_class_info();
+	qDebug() << QString::fromStdString(t->get_class_name());
+	for (auto i : t->get_attrs()) {
+		qDebug() << QString::fromStdString(i.second.get_type()) << " " << QString::fromStdString(i.second.get_key());
+		double width;
+		i.second.get(&plane, width);
+		qDebug() << width;
+	}
 
 	MyGameManager gm;
 	CPBR w;

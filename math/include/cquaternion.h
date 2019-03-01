@@ -18,9 +18,6 @@ public:
 	friend CQuaternion operator * (const CQuaternion& a, const CQuaternion& b);
 	CQuaternion operator / (const float v) const { return CQuaternion(x / v, y / v, z / v, w / v); }
 
-	static CQuaternion llerp(const CQuaternion& a, const CQuaternion& b);	// linear lerp
-	static CQuaternion slerp(const CQuaternion& a, const CQuaternion& b);	// spherical lerp
-
 	CQuaternion& normalize() { float len = length(); x /= len; y /= len; z /= len; w /= len; return (*this); }	// x*x + y*y + z*z + w*w = 1
 	CQuaternion get_normalize() const { CQuaternion res = (*this); return res.normalize(); }
 
@@ -32,12 +29,17 @@ public:
 
 	void rotate(CVector3D& v) const;				// 旋转向量
 
+	static CQuaternion llerp(const CQuaternion& a, const CQuaternion& b);	// linear lerp
+	static CQuaternion slerp(const CQuaternion& a, const CQuaternion& b);	// spherical lerp
+
 private:
 
 	float x;			// x = v_x * sin(angle / 2)
 	float y;			// y = v_y * sin(angle / 2)
 	float z;			// z = v_z * sin(angle / 2)
 	float w;			// w = cos(angle / 2)
+
+	friend class CMatrix4x4;
 
 
 };

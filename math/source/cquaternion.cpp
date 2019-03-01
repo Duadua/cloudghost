@@ -33,16 +33,16 @@ CQuaternion operator * (const CQuaternion& a, const CQuaternion& b) {
 	return CQuaternion(t_r[0], t_r[1], t_r[2], t_w);
 }
 
-CQuaternion CQuaternion::llerp(const CQuaternion& a, const CQuaternion& b) {
-	return CQuaternion();
-}
-CQuaternion CQuaternion::slerp(const CQuaternion& a, const CQuaternion& b) {
-	return CQuaternion();
-}
-
 void CQuaternion::rotate(CVector3D& v) const {
 	CQuaternion t_q = get_normalize();
 	CQuaternion t_v(v[0], v[1], v[2], 0.0f);
 	CQuaternion t_r = t_q * t_v * t_q.inverse();
 	v[0] = t_r.x; v[1] = t_r.y; v[2] = t_r.z;
+}
+
+CQuaternion CQuaternion::llerp(const CQuaternion& a, const CQuaternion& b) {
+	return CQuaternion();
+}
+CQuaternion CQuaternion::slerp(const CQuaternion& a, const CQuaternion& b) {
+	return CQuaternion();
 }

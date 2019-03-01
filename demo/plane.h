@@ -1,7 +1,6 @@
 #pragma once
 #include "gameobject.h"
 
-
 class PlaneObject : public GameObject {
 	DECLARE_CLASS(PlaneObject)
 public:
@@ -10,7 +9,8 @@ public:
 
 	virtual void begin_play();
 	virtual void tick();
-private:
+
+	DECLARE_ATTR(public, double, width, PlaneObject);
 
 };
 DECLARE_AUTO_PTR(PlaneObject)
