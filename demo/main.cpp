@@ -61,26 +61,27 @@ int main(int argc, char *argv[]) {
 	QtImageHelper::text_to_png(path);
 	*/
 
-	CMatrix4x4 t;
-	//t.translate(CVector3D(1.0f, 2.0f, 3.0f));
-	t.translate(1.0f, 2.0f);
-	t.rotate(50.0f, 0.0f, 0.0f, 1.0f);
-	t.rotate(40.0f, 0.0f, 1.0f, 0.0f);
-	t.rotate(30.0f, 1.0f, 0.0f, 0.0f);
-	t.scale(3.0f);
-	qDebug() << QMatrix4x4(t.get_transpose().data());
+	{
+		CVector3D v(10.0, 20.0, 30.0);
+		CMatrix4x4 t;
+		t.rotate(20.0f, 30.0f, 40.0f, 50.0f);
+		v = t * v;
+		qDebug() << QMatrix4x4(t.get_transpose().data());
+		qDebug() << v[0] << " " << v[1] << " " << v[2];
+		qDebug() << v.length();
+	}
+	{
+		CVector3D v(10.0, 20.0, 30.0);
+		CVector3D ax(30.0f, 40.0f, 50.0f);
+		CQuaternion t(CVector4D(20.0f, ax[0], ax[1], ax[2]));
+		t.rotate(v);
+		CVector4D aa = t.get_angle_axis();
 
-	CMatrix4x4 tt;
-	//tt.translate(1.0f, 2.0f);
-	tt.rotate_euler(5.0f, 90.0f, 30.0f);
-	tt.scale(3.0f);
-	qDebug() << QMatrix4x4(tt.get_transpose().data());
-	qDebug() << tt.get_rotate_euler()[0] << " " << tt.get_rotate_euler()[1] << " " << tt.get_rotate_euler()[2];
-
-	CMatrix4x4 ttt;
-	ttt.rotate_euler(tt.get_rotate_euler());
-	ttt.scale(3.0f);
-	qDebug() << QMatrix4x4(ttt.get_transpose().data());
+		qDebug() << ax[0] << " " << ax[1] << " " << ax[2];
+		qDebug() << aa[0] << " " << aa[1] << " " << aa[2] << " " << aa[3];
+		qDebug() << v[0] << " " << v[1] << " " << v[2];
+	}
+	
 
 	MyGameManager gm;
 	CPBR w;

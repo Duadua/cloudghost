@@ -38,6 +38,12 @@ CMatrix4x4 operator * (const CMatrix4x4& a, const CMatrix4x4& b) {
 	}}
 	return res;
 }
+CVector4D operator * (const CMatrix4x4& a, const CVector4D& b) {
+	CVector4D res;
+	for (int i = 0; i < 4; ++i) { res += a.column(i)*b[i]; }
+	return res;
+}
+CVector3D operator * (const CMatrix4x4& a, const CVector3D& b) { return (a*CVector4D(b)).xyz(); }
 
 CMatrix4x4& CMatrix4x4::translate(const CVector3D& v) {
 	CMatrix4x4 tmp((*this));

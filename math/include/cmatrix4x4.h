@@ -25,6 +25,8 @@ public:
 	inline const float& operator()(int row, int col) const;
 
 	friend CMatrix4x4 operator * (const CMatrix4x4& a, const CMatrix4x4& b);
+	friend CVector4D operator * (const CMatrix4x4& a, const CVector4D& b);
+	friend CVector3D operator * (const CMatrix4x4& a, const CVector3D& b);
 
 	// transform
 	CMatrix4x4& translate(const CVector3D& v);
