@@ -156,19 +156,25 @@ CMatrix4x4& CMatrix4x4::rotate_quaternion(const CQuaternion& quaternion) {
 	float c = quaternion.y;
 	float d = quaternion.z;
 
-	/*CMatrix4x4 rotate;
-	rotate(0, 0) = c[1] * c[2];
-	rotate(1, 0) = c[1] * s[2];
-	rotate(2, 0) = -s[1];
+	CMatrix4x4 rotate;
+	rotate(0, 0) = 1.0f - 2.0f * (c*c + d*d);
+	rotate(1, 0) = 2.0f * (b*c + a*d);
+	rotate(2, 0) = 2.0f * (b*d - a*c);
 
-	rotate(0, 1) = c[2] * s[0] * s[1] - c[0] * s[2];
-	rotate(1, 1) = s[0] * s[1] * s[2] + c[0] * c[2];
-	rotate(2, 1) = c[1] * s[0];
+	rotate(0, 1) = 2.0f * (b*c - a*d);
+	rotate(1, 1) = 1.0f - 2.0f * (b*b + d*d);
+	rotate(2, 1) = 2.0f * (a*b + c*d);
 
-	rotate(0, 2) = c[0] * c[2] * s[1] + s[0] * s[2];
-	rotate(1, 2) = c[0] * s[1] * s[2] - c[2] * s[2];
-	rotate(2, 2) = c[0] * c[1];
-*/	
+	rotate(0, 2) = 2.0f * (a*c + b*d);
+	rotate(1, 2) = 2.0f * (c*d - a*b);
+	rotate(2, 2) = 1.0f - 2.0f * (b*b + c*c);
+
+	CMatrix4x4 res(*this);
+	CVector4D t_c0 = res.column(0); CVector4D t_c1 = res.column(1);
+	CVector4D t_c2 = res.column(2); CVector4D t_c3 = res.column(3);
+	set_column(0, t_c0 * rotate(0, 0) + t_c1 * rotate(1, 0) + t_c2 * rotate(2, 0));
+	set_column(1, t_c0 * rotate(0, 1) + t_c1 * rotate(1, 1) + t_c2 * rotate(2, 1));
+	set_column(2, t_c0 * rotate(0, 2) + t_c1 * rotate(1, 2) + t_c2 * rotate(2, 2));
 
 	return (*this);
 }

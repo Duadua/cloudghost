@@ -10,7 +10,7 @@ public:
 	virtual void begin_play();
 	virtual void tick();
 
-	DECLARE_ATTR(public, double, width, PlaneObject);
+	// DECLARE_ATTR(public, double, width, PlaneObject);
 
 };
 DECLARE_AUTO_PTR(PlaneObject)

@@ -12,6 +12,15 @@ CQuaternion::CQuaternion(const CVector4D& angle_axis) {
 	z = t_r[2] * (std::sin(t_a));
 	w = std::cos(t_a);
 }
+CQuaternion::CQuaternion(float angle, const CVector3D& axis) {
+	CVector3D t_r = axis.get_normalize();
+	float t_a = CMath::deg_to_rad(angle / 2.0f);		// angle / 2.0
+	x = t_r[0] * (std::sin(t_a));
+	y = t_r[1] * (std::sin(t_a));
+	z = t_r[2] * (std::sin(t_a));
+	w = std::cos(t_a);
+
+}
 
 CVector3D CQuaternion::get_euler_angle() const {
 	return CVector3D();
