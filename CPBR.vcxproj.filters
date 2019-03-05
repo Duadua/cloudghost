@@ -172,6 +172,9 @@
     <ClCompile Include="math\source\cquaternion.cpp">
       <Filter>math\source</Filter>
     </ClCompile>
+    <ClCompile Include="src\source\rendertarget.cpp">
+      <Filter>src\source</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <QtUic Include="resources\ui\cpbr.ui">
@@ -285,6 +288,9 @@
     </ClInclude>
     <ClInclude Include="math\include\cquaternion.h">
       <Filter>math\include</Filter>
+    </ClInclude>
+    <ClInclude Include="src\include\rendertarget.h">
+      <Filter>src\include</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

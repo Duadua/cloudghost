@@ -146,6 +146,7 @@
     <ClCompile Include="src\source\meshcomponent.cpp" />
     <ClCompile Include="src\source\reflex.cpp" />
     <ClCompile Include="src\source\renderdata.cpp" />
+    <ClCompile Include="src\source\rendertarget.cpp" />
     <ClCompile Include="src\source\scenecomponent.cpp" />
     <ClCompile Include="src\source\shader.cpp" />
     <ClCompile Include="src\source\texture2d.cpp" />
@@ -188,6 +189,7 @@
     <ClInclude Include="src\include\meshcomponent.h" />
     <ClInclude Include="src\include\reflex.h" />
     <ClInclude Include="src\include\renderdata.h" />
+    <ClInclude Include="src\include\rendertarget.h" />
     <ClInclude Include="src\include\scenecomponent.h" />
     <ClInclude Include="src\include\shader.h" />
     <ClInclude Include="src\include\texture2d.h" />
