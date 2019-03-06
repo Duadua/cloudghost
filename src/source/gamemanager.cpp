@@ -29,30 +29,42 @@ void GameManager::init(QOpenGLWidget* gl) {
 	main_bind_input();
 
 	// gl 状态初始化
-	core->glEnable(GL_DEPTH_TEST);
+	background_color = CColor(205, 220, 232);
+	set_depth_test();
+
 	//core->glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);	
 	core->glPolygonMode(GL_BACK, GL_LINE);
 	//core->glEnable(GL_CULL_FACE);
 }
 void GameManager::draw(QOpenGLWidget* gl) {
 
-	// gl 缓存初始化
-	//core->glClearColor(0.5f, 0.5f, 0.5f, 1.0f);
-	core->glClearColor(205.0f / 255.0f, 220.0f / 255.0f, 232.0f / 255.0f, 1.0f);
-	core->glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	// exec input
+	{
+		InputManager::exec_action();
+		InputManager::exec_axis_key_pressing();
+	}
 
-	InputManager::exec_action();
-	InputManager::exec_axis_key_pressing();
+	// update
+	{
+		tick();
+		main_tick();
+	}
+	
+	// draw
+	{
+		// gl init
+		core->glClearColor(background_color.r_f(), background_color.g_f(), background_color.b_f(), background_color.a_f());
+		core->glClear(GL_COLOR_BUFFER_BIT);
+		if (b_depth_test) { core->glClear(GL_DEPTH_BUFFER_BIT); }
 
-	tick();
-	main_tick();
+		main_shader = "triangle";
+		auto t_shader = AssetManager::get_shader(main_shader)->use();
+		t_shader->set_mat4("u_view", main_camera->get_view_mat());
+		t_shader->set_vec3("u_view_pos", main_camera->get_location());
 
-	main_shader = "triangle";
-	auto t_shader = AssetManager::get_shader(main_shader)->use();
-	t_shader->set_mat4("u_view", main_camera->get_view_mat());
-	t_shader->set_vec3("u_view_pos", main_camera->get_location());
-	// render
-	main_draw();
+		// render
+		main_draw();
+	}
 }
 
 void GameManager::pre_init(QOpenGLWidget* gl) {
@@ -60,7 +72,6 @@ void GameManager::pre_init(QOpenGLWidget* gl) {
 	// init gl mouse cursor
 	gl->setCursor(Qt::CrossCursor);
 	gl->setFocusPolicy(Qt::StrongFocus);
-
 
 	// init input manager
 	InputManager::init(gl);
@@ -90,6 +101,14 @@ SPTR_CameraComponent GameManager::set_main_camera() {
 	free_camera->get_root_component()->set_rotation(0.0f, 0.0f, 0.0f);
 
 	return free_camera->get_camera_component();
+}
+
+void GameManager::set_depth_test(bool enable, uint depth_mask, uint depth_func) {
+	if (enable) { core->glEnable(GL_DEPTH_TEST); b_depth_test = true; }
+	else { core->glDisable(GL_DEPTH_TEST); b_depth_test = false; }
+
+	core->glDepthMask(depth_mask);
+	core->glDepthFunc(depth_func);
 }
 
 // ===========================================================================

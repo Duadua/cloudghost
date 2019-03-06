@@ -20,7 +20,6 @@ public:
 	virtual void tick() = 0;							// 每帧变化的参数
 	virtual void map_input() = 0;						// 绑定输入
 	virtual SPTR_CameraComponent set_main_camera() = 0; // 设置主相机 
-
 };
 
 class GameManager : public GameManagerImpl {
@@ -38,6 +37,7 @@ public:
 	virtual void begin_play(QOpenGLWidget* gl) override {}
 	virtual void tick() override {}
 	virtual void map_input() override {}
+
 	virtual SPTR_CameraComponent set_main_camera() override;
 
 public:
@@ -47,11 +47,18 @@ public:
 
 	void add_game_object(const QString& key, SPTR_GameObject value);
 
+	// gl state
+	void set_depth_test(bool enable = true, uint depth_mask = GL_TRUE, uint depth_func = GL_LESS);
+
 protected:
 	static GameManager* instance;
 	
 	SPTR_CameraComponent main_camera;
 	std::string main_shader;
+
+	// gl state
+	bool b_depth_test;
+	CColor background_color;
 
 private:
 	void main_bind_input();
