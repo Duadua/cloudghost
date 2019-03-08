@@ -14,27 +14,56 @@ void GameManager::init(QOpenGLWidget* gl) {
 	// init gl_core
 	core = QOpenGLContext::currentContext()->versionFunctions<QOpenGLFunctions_3_3_Core>();
 
-	// load default asset
-	AssetManager::load_materials("resources/materials/txt/default_material.txt");
-	AssetManager::load_texture("resources/textures/txt/texture_default.txt");
-	AssetManager::load_texture("resources/textures/txt/texture_default.png");
+	// load asset
+	{
+		// shader
+		AssetManager::load_shader("default", "resources/shaders/single.vert", "resources/shaders/single.frag");
+		AssetManager::load_shader("depth", "resources/shaders/single.vert", "resources/shaders/depth.frag");
 
-	load_asset();						// 加载资源
-	begin_play(gl);						// 设置模型等
+		// mesh
+		AssetManager::load_mesh("triangle_right", "resources/models/txt/triangle_right.txt");
+		AssetManager::load_mesh("triangle_regular", "resources/models/txt/triangle_regular.txt");
+		AssetManager::load_mesh("rect", "resources/models/txt/rect.txt");
+		AssetManager::load_mesh("circle", "resources/models/txt/circle.txt");
+
+		AssetManager::load_mesh("cube", "resources/models/txt/cube.txt");
+		AssetManager::load_mesh("cone", "resources/models/txt/cone.txt");
+		AssetManager::load_mesh("cylinder", "resources/models/txt/cylinder.txt");
+		AssetManager::load_mesh("sphere", "resources/models/txt/sphere.txt");
+
+		// material
+		AssetManager::load_materials("resources/materials/txt/default_material.txt");
+		AssetManager::load_texture("resources/textures/txt/texture_default.txt");
+		AssetManager::load_texture("resources/textures/txt/texture_default.png");
+
+		load_asset();						// 加载资源
+	}
+
 	main_camera = set_main_camera();	// 绑定主相机
+	main_shader = set_main_shader();	// 绑定主shader
 
-	main_begin_play();		
+	// init input map
+	{
+		map_input();						
+		main_bind_input();
+	}
 
-	map_input();						// 绑定输入
-	main_bind_input();
+	// begin play
+	{
+		begin_play(gl);						// 设置模型等
+		main_begin_play();		
+	}
 
 	// gl 状态初始化
-	background_color = CColor(205, 220, 232);
-	set_depth_test();
+	{
+		background_color = CColor(205, 220, 232);
+		set_depth_test(true);
 
-	//core->glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);	
-	core->glPolygonMode(GL_BACK, GL_LINE);
-	//core->glEnable(GL_CULL_FACE);
+		//core->glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);	
+		core->glPolygonMode(GL_BACK, GL_LINE);
+		//core->glEnable(GL_CULL_FACE);
+	}
+
 }
 void GameManager::draw(QOpenGLWidget* gl) {
 
@@ -57,13 +86,18 @@ void GameManager::draw(QOpenGLWidget* gl) {
 		core->glClear(GL_COLOR_BUFFER_BIT);
 		if (b_depth_test) { core->glClear(GL_DEPTH_BUFFER_BIT); }
 
-		main_shader = "triangle";
-		auto t_shader = AssetManager::get_shader(main_shader)->use();
-		t_shader->set_mat4("u_view", main_camera->get_view_mat());
-		t_shader->set_vec3("u_view_pos", main_camera->get_location());
+		if (main_shader != nullptr) {
+			main_shader->use();
+			main_shader->set_mat4("u_view", main_camera->get_view_mat());
+			main_shader->set_vec3("u_view_pos", main_camera->get_location());
+		}
 
 		// render
 		main_draw();
+
+		base_pass();
+		post_process_pass();
+
 	}
 }
 
@@ -87,8 +121,11 @@ void GameManager::resize(QOpenGLWidget* gl, int w, int h) {
 	//projection.ortho(20.0f, t, 0.01f, 100.0f);
 	//projection.ortho_2d(0.0f, 20.0f, 0.0f / t, 20.0f /t);
 
-	auto t_shader = AssetManager::get_shader("triangle")->use();
-	t_shader->set_mat4("u_projection", projection);
+	if (main_shader != nullptr) {
+		main_shader->use();
+		main_shader->set_mat4("u_projection", projection);
+		qDebug() << "resize ok";
+	}
 }
 void GameManager::exit(QOpenGLWidget* gl) {
 	InputManager::exit();
@@ -102,8 +139,9 @@ SPTR_CameraComponent GameManager::set_main_camera() {
 
 	return free_camera->get_camera_component();
 }
+SPTR_Shader	GameManager::set_main_shader() { return AssetManager::get_shader("default"); }
 
-void GameManager::set_depth_test(bool enable, uint depth_mask, uint depth_func) {
+void GameManager::set_depth_test(bool enable, uint depth_func, uint depth_mask) {
 	if (enable) { core->glEnable(GL_DEPTH_TEST); b_depth_test = true; }
 	else { core->glDisable(GL_DEPTH_TEST); b_depth_test = false; }
 
@@ -151,8 +189,16 @@ void GameManager::main_tick() {
 }
 void GameManager::main_draw() {
 	for (auto it = game_objects.begin(); it != game_objects.end(); ++it) {
-		(*it)->draw(main_shader);
+		(*it)->draw(main_shader->get_name());
 	}
+}
+
+// render pass
+void GameManager::base_pass() {
+
+}
+void GameManager::post_process_pass() {
+
 }
 
 void GameManager::exec_mouse_wheeeel_event(QWheelEvent* event, QOpenGLWidget* gl) { InputManager::exec_mouse_wheeeel_event(event, gl); }

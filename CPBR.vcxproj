@@ -202,6 +202,7 @@
     <QtMoc Include="src\include\cglwidget.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="resources\shaders\depth.frag" />
     <None Include="resources\shaders\single.frag" />
     <None Include="resources\shaders\single.vert" />
   </ItemGroup>

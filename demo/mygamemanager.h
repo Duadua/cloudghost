@@ -10,6 +10,8 @@ public:
 	virtual void tick() override;
 	virtual void map_input() override;
 
+	virtual SPTR_Shader	set_main_shader() override;
+
 private:
 
 };

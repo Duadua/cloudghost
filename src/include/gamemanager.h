@@ -1,5 +1,6 @@
 #pragma once
 
+#include "shader.h"
 #include "gameobject.h"
 #include "cameracomponent.h"
 #include <QMap>
@@ -15,11 +16,13 @@ class GameManagerImpl {
 public:
 	virtual ~GameManagerImpl() {}
 
-	virtual void load_asset() = 0;						// 加载资源
-	virtual void begin_play(QOpenGLWidget* gl) = 0;		// 设置模型等
-	virtual void tick() = 0;							// 每帧变化的参数
-	virtual void map_input() = 0;						// 绑定输入
-	virtual SPTR_CameraComponent set_main_camera() = 0; // 设置主相机 
+	virtual void load_asset() = 0;							// 加载资源
+	virtual void begin_play(QOpenGLWidget* gl) = 0;			// 设置模型等
+	virtual void tick() = 0;								// 每帧变化的参数
+	virtual void map_input() = 0;							// 绑定输入
+
+	virtual SPTR_CameraComponent	set_main_camera() = 0;	// 设置主相机 
+	virtual SPTR_Shader				set_main_shader() = 0;	// 设置主Shader
 };
 
 class GameManager : public GameManagerImpl {
@@ -38,7 +41,8 @@ public:
 	virtual void tick() override {}
 	virtual void map_input() override {}
 
-	virtual SPTR_CameraComponent set_main_camera() override;
+	virtual SPTR_CameraComponent	set_main_camera() override;
+	virtual SPTR_Shader				set_main_shader() override;
 
 public:
 	GameManager();
@@ -48,13 +52,13 @@ public:
 	void add_game_object(const QString& key, SPTR_GameObject value);
 
 	// gl state
-	void set_depth_test(bool enable = true, uint depth_mask = GL_TRUE, uint depth_func = GL_LESS);
+	void set_depth_test(bool enable = true, uint depth_func = GL_LESS, uint depth_mask = GL_TRUE);
 
 protected:
 	static GameManager* instance;
 	
 	SPTR_CameraComponent main_camera;
-	std::string main_shader;
+	SPTR_Shader main_shader;
 
 	// gl state
 	bool b_depth_test;
@@ -66,6 +70,10 @@ private:
 	void main_tick();
 	void main_draw();
 	
+	// render pipe
+	void base_pass();
+	void post_process_pass();
+
 private:
 	QOpenGLFunctions_3_3_Core * core;
 

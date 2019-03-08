@@ -9,22 +9,12 @@
 #include "plane.h"
 
 void MyGameManager::load_asset() {
-	// 原料 -- 着色器
-	AssetManager::load_shader("triangle", "resources/shaders/single.vert", "resources/shaders/single.frag");
+	// shader
 
-	// 原料 -- 顶点数据
-	AssetManager::load_mesh("triangle_right", "resources/models/txt/triangle_right.txt");
-	AssetManager::load_mesh("triangle_regular", "resources/models/txt/triangle_regular.txt");
-	AssetManager::load_mesh("rect", "resources/models/txt/rect.txt");
-	AssetManager::load_mesh("circle", "resources/models/txt/circle.txt");
+	// mesh
 
-	AssetManager::load_mesh("cube", "resources/models/txt/cube.txt");
-	AssetManager::load_mesh("cone", "resources/models/txt/cone.txt");
-	AssetManager::load_mesh("cylinder", "resources/models/txt/cylinder.txt");
-	AssetManager::load_mesh("sphere", "resources/models/txt/sphere.txt");
-
-	// 原料 -- 材质
-	AssetManager::load_materials("resources/materials/txt/cube_material.txt");
+	// material
+	AssetManager::load_materials("resources/materials/txt/cube_material.txt"); 
 
 	// texture
 	AssetManager::load_texture("resources/textures/wood.png");
@@ -70,31 +60,31 @@ void MyGameManager::begin_play(QOpenGLWidget* gl) {
 	// shader 静态参数赋值
 	CMatrix4x4 projection;
 	projection.perspective(45.0f, (GLfloat)gl->width() / gl->height(), 0.1f, 100.0f);
-	auto t_shader = AssetManager::get_shader("triangle")->use();
-	t_shader->set_mat4("u_projection", projection);
+	if (main_shader != nullptr) {
+		main_shader->use();
+		main_shader->set_mat4("u_projection", projection);
+		main_shader->set_float("u_near", 0.1f);
+		main_shader->set_float("u_far", 100.0f);
+	}
 
-	//t_shader->set_vec3("u_light_pos", CVector3D(1.2f, 5.0f, 2.0f));
-	//t_shader->set_vec3("u_light_color", CVector3D(1.0f, 1.0f, 1.0f));
-
-	std::string str = "triangle";
 	// use direct light
 	{
 		auto d_light = CREATE_CLASS(DirectLightObject);
-		d_light->use(str);
+		d_light->use(main_shader->get_name());
 	}
 
 	// use point light
 	{
 		auto p_light = CREATE_CLASS(PointLightObject);
 		p_light->get_light_component()->set_intensity(3.0f);
-		//p_light->use(str);
+		//p_light->use(main_shader->get_name());
 	}
 	{
 		auto p_light = CREATE_CLASS(PointLightObject);
 		p_light->get_root_component()->set_location(3.0f, 1.0f, 0.0f);
 		p_light->get_light_component()->set_att_radius(10.0f);
 		p_light->get_light_component()->set_color(CVector3D(1.0f, 0.0f, 0.0f));
-		p_light->use(str);
+		p_light->use(main_shader->get_name());
 	}
 	
 	// use spot light
@@ -107,7 +97,7 @@ void MyGameManager::begin_play(QOpenGLWidget* gl) {
 		s_light->get_light_component()->set_inner(15.0f);
 		s_light->get_light_component()->set_outer(20.0f);
 
-		s_light->use(str);
+		s_light->use(main_shader->get_name());
 	}
 
 }
@@ -282,4 +272,11 @@ void MyGameManager::map_input() {
 	is.axis_types = InputAxisType::KEY_PRESSING;
 	is.axis_scale = -0.1f;
 	InputManager::map_axis("move_up", is);
+}
+
+
+SPTR_Shader	MyGameManager::set_main_shader() {
+	auto t_shader = AssetManager::get_shader("depth");
+	if (t_shader == nullptr) { return GameManager::set_main_shader(); }
+	return t_shader;
 }
