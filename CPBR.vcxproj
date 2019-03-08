@@ -205,6 +205,7 @@
     <None Include="resources\shaders\blinn_phong.frag" />
     <None Include="resources\shaders\depth.frag" />
     <None Include="resources\shaders\mvp.vert" />
+    <None Include="resources\shaders\single_texture.frag" />
     <None Include="resources\shaders\solid_color.frag" />
   </ItemGroup>
   <ItemGroup>

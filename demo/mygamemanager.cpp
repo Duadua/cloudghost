@@ -287,5 +287,8 @@ SPTR_Shader	MyGameManager::set_main_shader() {
 	if (t_shader == nullptr) { return GameManager::set_main_shader(); }
 	t_shader->use();
 	t_shader->set_vec4("u_solid_color", CVector4D(CColor(221, 161, 18).rgba_f()));
+	t_shader->set_int("u_texture", 0);
+	AssetManager::get_texture("texture_default.png")->bind();
+
 	return t_shader;
 }

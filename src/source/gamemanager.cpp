@@ -20,6 +20,7 @@ void GameManager::init(QOpenGLWidget* gl) {
 		AssetManager::load_shader("default", "resources/shaders/mvp.vert", "resources/shaders/blinn_phong.frag");
 		AssetManager::load_shader("depth", "resources/shaders/mvp.vert", "resources/shaders/depth.frag");
 		AssetManager::load_shader("solid_color", "resources/shaders/mvp.vert", "resources/shaders/solid_color.frag");
+		AssetManager::load_shader("single_texture", "resources/shaders/mvp.vert", "resources/shaders/single_texture.frag");
 
 		// mesh
 		AssetManager::load_mesh("triangle_right", "resources/models/txt/triangle_right.txt");
@@ -60,6 +61,7 @@ void GameManager::init(QOpenGLWidget* gl) {
 		background_color = CColor(205, 220, 232);
 		set_depth_test(true);
 		set_stencil_test(true, GL_NOTEQUAL, 1, 0xff, GL_KEEP, GL_KEEP, GL_REPLACE);
+		set_blend(true, GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 		//core->glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);	
 		core->glPolygonMode(GL_BACK, GL_LINE);
@@ -87,7 +89,7 @@ void GameManager::draw(QOpenGLWidget* gl) {
 		core->glClearColor(background_color.r_f(), background_color.g_f(), background_color.b_f(), background_color.a_f());
 		core->glClear(GL_COLOR_BUFFER_BIT);
 		if (b_depth_test) { core->glClear(GL_DEPTH_BUFFER_BIT); }
-		if (core->glIsEnabled(GL_STENCIL_TEST)) { core->glClear(GL_STENCIL_BUFFER_BIT); }
+		if (b_stencil_test) { core->glClear(GL_STENCIL_BUFFER_BIT); }
 
 		if (main_shader != nullptr) {
 			main_shader->use();
@@ -183,6 +185,13 @@ void GameManager::set_stencil_test(bool enable, uint func, uint ref, uint mask, 
 	core->glStencilFunc(func, ref, mask);
 	core->glStencilOp(fail, zfail, zpass);
 	
+}
+
+void GameManager::set_blend(bool enable, uint sfactor, uint dfactor) {
+	if (enable) { core->glEnable(GL_BLEND); }
+	else { core->glDisable(GL_BLEND); }
+
+	core->glBlendFunc(sfactor, dfactor);
 }
 
 // ===========================================================================

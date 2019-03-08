@@ -6,7 +6,6 @@ const int max_point_light_num	= 16;
 const int max_spot_light_num	= 16;
 const int max_sky_light_num	    = 1;
 
-
 out vec4 r_color;
 
 in vec3 o_world_pos;
