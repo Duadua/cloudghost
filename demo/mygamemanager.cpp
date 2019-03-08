@@ -42,7 +42,7 @@ void MyGameManager::begin_play(QOpenGLWidget* gl) {
 
 	// gameobject 的另一个显示组件
 	auto mcc = CREATE_CLASS(MeshComponent);
-	mcc->set_mesh("sphere");
+	mcc->set_mesh("cone");
 	mcc->attach_to(mc);
 	mcc->set_location(2.0f, 0.0f, 0.0f);
 	mcc->set_scale(0.5f, 0.5f, 0.5f);
@@ -63,9 +63,16 @@ void MyGameManager::begin_play(QOpenGLWidget* gl) {
 	if (main_shader != nullptr) {
 		main_shader->use();
 		main_shader->set_mat4("u_projection", projection);
-		main_shader->set_float("u_near", 0.1f);
-		main_shader->set_float("u_far", 100.0f);
+		//main_shader->set_float("u_near", 0.1f);
+		//main_shader->set_float("u_far", 100.0f);
 	}
+
+	auto t_s = AssetManager::get_shader("solid_color");
+	if (t_s != nullptr) {
+		t_s->use();
+		t_s->set_mat4("u_projection", projection);
+	}
+	
 
 	// use direct light
 	{
@@ -276,9 +283,9 @@ void MyGameManager::map_input() {
 
 
 SPTR_Shader	MyGameManager::set_main_shader() {
-	auto t_shader = AssetManager::get_shader("solid_color");
+	auto t_shader = AssetManager::get_shader("");
 	if (t_shader == nullptr) { return GameManager::set_main_shader(); }
 	t_shader->use();
-	t_shader->set_vec4("u_solid_color", CVector4D(CColor(0, 100, 0).rgba_f()));
+	t_shader->set_vec4("u_solid_color", CVector4D(CColor(221, 161, 18).rgba_f()));
 	return t_shader;
 }

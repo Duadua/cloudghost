@@ -48,6 +48,7 @@ bool DirectLightComponent::use(const std::string& shader) {
 	std::string t_name = oss.str();
 
 	// bind uniform value for t_shader
+	t_shader->use();
 	t_shader->set_vec3(t_name + ".color", color);
 	t_shader->set_float(t_name + ".intensity", intensity);
 	t_shader->set_vec3(t_name + ".k", k);
@@ -83,6 +84,7 @@ bool PointLightComponent::use(const std::string& shader) {
 	std::string t_name = oss.str();
 
 	// bind uniform value for t_shader
+	t_shader->use();
 	t_shader->set_vec3(t_name + ".color", color);
 	t_shader->set_float(t_name + ".intensity", intensity);
 	t_shader->set_vec3(t_name + ".k", k);
@@ -134,6 +136,7 @@ bool SpotLightComponent::use(const std::string& shader) {
 	std::string t_name = oss.str();
 
 	// bind uniform value for t_shader
+	t_shader->use();
 	t_shader->set_vec3(t_name + ".color", color);
 	t_shader->set_float(t_name + ".intensity", intensity);
 	t_shader->set_vec3(t_name + ".k", k);

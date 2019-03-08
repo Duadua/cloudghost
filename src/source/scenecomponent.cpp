@@ -3,7 +3,7 @@
 
 IMPLEMENT_CLASS(SceneComponent)
 
-SceneComponent::SceneComponent() : scale(CVector3D(1.0f, 1.0f, 1.0f)) {}
+SceneComponent::SceneComponent() : scale(CVector3D(1.0f, 1.0f, 1.0f)), is_border(false) {}
 SceneComponent::~SceneComponent() {}
 
 void SceneComponent::draw(const std::string& shader) {
@@ -61,3 +61,7 @@ CVector3D SceneComponent::get_scale() {
 	return t_scale; 
 }
 
+void SceneComponent::set_all_border(bool border) {
+	is_border = border;
+	for (auto cc : child_components) { cc->set_all_border(border); }
+}

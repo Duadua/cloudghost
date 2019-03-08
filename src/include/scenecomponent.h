@@ -28,11 +28,16 @@ public:
 	CVector3D get_rotation();
 	CVector3D get_scale();
 
+	GET_SET(bool, is_border);
+	void set_all_border(bool border);			// 设置 此 MC 和 其子MC 都为 border
+
 protected:
 	WPTR_SceneComponent parent_component;
 	std::vector<SPTR_SceneComponent> child_components;
 
 	void add_child(SPTR_SceneComponent child);
+
+	bool is_border;					// 是否为边界 -- 描边用
 
 protected:
 	// transform

@@ -53,6 +53,7 @@ public:
 
 	// gl state
 	void set_depth_test(bool enable = true, uint depth_func = GL_LESS, uint depth_mask = GL_TRUE);
+	void set_stencil_test(bool enable = false, uint func = GL_EQUAL, uint ref = 1, uint mask = 0xff, uint fail = GL_KEEP, uint zfail = GL_KEEP, uint zpass = GL_KEEP);
 
 protected:
 	static GameManager* instance;
@@ -62,13 +63,14 @@ protected:
 
 	// gl state
 	bool b_depth_test;
+	bool b_stencil_test;
 	CColor background_color;
 
 private:
 	void main_bind_input();
 	void main_begin_play();
 	void main_tick();
-	void main_draw();
+	void main_draw(const std::string& shader);
 	
 	// render pipe
 	void base_pass();

@@ -15,5 +15,6 @@ public:
 
 private:
 	std::string mesh;
+
 };
 DECLARE_AUTO_PTR(MeshComponent)

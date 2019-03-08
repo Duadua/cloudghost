@@ -216,11 +216,11 @@ void MeshTxtGen::gen_cube() {
 void MeshTxtGen::gen_cone(uint depth) {
 	// bottom
 	{
-		MVertex o(CVector3D(0.0f, 0.0f, 0.0f), CVector3D(), CVector2D(0.5f));
+		MVertex o(CVector3D(0.0f, -0.5f, 0.0f), CVector3D(), CVector2D(0.5f));
 		add_one_vertex(o);
 		float rad = 2.0f*CMath::pi / depth;
 		for (uint i = 0; i < depth; ++i) {
-			MVertex t(CVector3D(0.5f*std::cos(i*rad), 0.0f, 0.5f*std::sin(i*rad)));
+			MVertex t(CVector3D(0.5f*std::cos(i*rad), -0.5f, 0.5f*std::sin(i*rad)));
 			t.tex_coord = t.position.xz() + CVector2D(0.5f);
 			add_one_vertex(t);
 		}
@@ -229,11 +229,11 @@ void MeshTxtGen::gen_cone(uint depth) {
 
 	// side
 	{
-		MVertex o(CVector3D(0.0f, 1.0f, 0.0f), CVector3D(), CVector2D(0.5f));
+		MVertex o(CVector3D(0.0f, 0.5f, 0.0f), CVector3D(), CVector2D(0.5f));
 		add_one_vertex(o);
 		float rad = 2.0f*CMath::pi / depth;
 		for (uint i = 0; i < depth; ++i) {
-			MVertex t(CVector3D(0.5f*std::cos(i*rad), 0.0f, 0.5f*std::sin(i*rad)));
+			MVertex t(CVector3D(0.5f*std::cos(i*rad), -0.5f, 0.5f*std::sin(i*rad)));
 			t.tex_coord = t.position.xz() + CVector2D(0.5f);
 			add_one_vertex(t);
 		}
@@ -354,11 +354,11 @@ void MeshTxtGen::gen_cylinder(uint depth) {
 
 	// top
 	{
-		MVertex o(CVector3D(0.0f, 1.0f, 0.0f), CVector3D(), CVector2D(0.5f));
+		MVertex o(CVector3D(0.0f, 0.5f, 0.0f), CVector3D(), CVector2D(0.5f));
 		add_one_vertex(o);
 		float rad = 2.0f*CMath::pi / depth;
 		for (uint i = 0; i < depth; ++i) {
-			MVertex t(CVector3D(0.5f*std::cos(i*rad), 1.0f, 0.5f*std::sin(i*rad)));
+			MVertex t(CVector3D(0.5f*std::cos(i*rad), 0.5f, 0.5f*std::sin(i*rad)));
 			t.tex_coord = t.position.xz() + CVector2D(0.5f);
 			add_one_vertex(t);
 		}
@@ -370,11 +370,11 @@ void MeshTxtGen::gen_cylinder(uint depth) {
 	uint cnt = depth + 1;
 	// bottom
 	{
-		MVertex o(CVector3D(0.0f, 0.0f, 0.0f), CVector3D(), CVector2D(0.5f));
+		MVertex o(CVector3D(0.0f, -0.5f, 0.0f), CVector3D(), CVector2D(0.5f));
 		add_one_vertex(o);
 		float rad = 2.0f*CMath::pi / depth;
 		for (uint i = 0; i < depth; ++i) {
-			MVertex t(CVector3D(0.5f*std::cos(i*rad), 0.0f, 0.5f*std::sin(i*rad)));
+			MVertex t(CVector3D(0.5f*std::cos(i*rad), -0.5f, 0.5f*std::sin(i*rad)));
 			t.tex_coord = t.position.xz() + CVector2D(0.5f);
 			add_one_vertex(t);
 		}
@@ -388,10 +388,10 @@ void MeshTxtGen::gen_cylinder(uint depth) {
 	{
 		float rad = 2.0f*CMath::pi / depth;
 		for (uint i = 0; i <= depth; ++i) {
-			MVertex t(CVector3D(0.5f*std::cos(i*rad), 0.0f, 0.5f*std::sin(i*rad)));
+			MVertex t(CVector3D(0.5f*std::cos(i*rad), -0.5f, 0.5f*std::sin(i*rad)));
 			t.tex_coord = CVector2D((float)i / depth, 0.0f);
 			add_one_vertex(t);
-			MVertex tt(CVector3D(0.5f*std::cos(i*rad), 1.0f, 0.5f*std::sin(i*rad)));
+			MVertex tt(CVector3D(0.5f*std::cos(i*rad), 0.5f, 0.5f*std::sin(i*rad)));
 			tt.tex_coord = CVector2D((float)i / depth, 1.0f);
 			add_one_vertex(tt);
 		}
