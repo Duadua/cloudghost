@@ -17,8 +17,9 @@ void GameManager::init(QOpenGLWidget* gl) {
 	// load asset
 	{
 		// shader
-		AssetManager::load_shader("default", "resources/shaders/single.vert", "resources/shaders/single.frag");
-		AssetManager::load_shader("depth", "resources/shaders/single.vert", "resources/shaders/depth.frag");
+		AssetManager::load_shader("default", "resources/shaders/mvp.vert", "resources/shaders/blinn_phong.frag");
+		AssetManager::load_shader("depth", "resources/shaders/mvp.vert", "resources/shaders/depth.frag");
+		AssetManager::load_shader("solid_color", "resources/shaders/mvp.vert", "resources/shaders/solid_color.frag");
 
 		// mesh
 		AssetManager::load_mesh("triangle_right", "resources/models/txt/triangle_right.txt");

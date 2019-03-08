@@ -302,13 +302,16 @@
     </QtMoc>
   </ItemGroup>
   <ItemGroup>
-    <None Include="resources\shaders\single.vert">
-      <Filter>resources\shaders</Filter>
-    </None>
-    <None Include="resources\shaders\single.frag">
-      <Filter>resources\shaders</Filter>
-    </None>
     <None Include="resources\shaders\depth.frag">
+      <Filter>resources\shaders</Filter>
+    </None>
+    <None Include="resources\shaders\mvp.vert">
+      <Filter>resources\shaders</Filter>
+    </None>
+    <None Include="resources\shaders\blinn_phong.frag">
+      <Filter>resources\shaders</Filter>
+    </None>
+    <None Include="resources\shaders\solid_color.frag">
       <Filter>resources\shaders</Filter>
     </None>
   </ItemGroup>

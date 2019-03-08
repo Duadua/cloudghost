@@ -276,7 +276,9 @@ void MyGameManager::map_input() {
 
 
 SPTR_Shader	MyGameManager::set_main_shader() {
-	auto t_shader = AssetManager::get_shader("depth");
+	auto t_shader = AssetManager::get_shader("solid_color");
 	if (t_shader == nullptr) { return GameManager::set_main_shader(); }
+	t_shader->use();
+	t_shader->set_vec4("u_solid_color", CVector4D(CColor(0, 100, 0).rgba_f()));
 	return t_shader;
 }

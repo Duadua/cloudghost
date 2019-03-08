@@ -1,5 +1,8 @@
 #pragma once
 
+#include "cvector3d.h"
+#include "cvector4d.h"
+
 using crgb = unsigned int;
 
 class CColor {
@@ -18,21 +21,24 @@ public:
 	void set_a(int r);
 
 	// [0 ,, 255]
-	inline int r() const { return ((argb >> 16) & 0xff); }	// red
-	inline int g() const { return ((argb >>  8) & 0xff); }	// green
-	inline int b() const { return ((argb >>  0) & 0xff); }	// blue
-	inline int a() const { return ((argb >> 24) & 0xff); }	// alpha
+	int r() const { return ((argb >> 16) & 0xff); }	// red
+	int g() const { return ((argb >>  8) & 0xff); }	// green
+	int b() const { return ((argb >>  0) & 0xff); }	// blue
+	int a() const { return ((argb >> 24) & 0xff); }	// alpha
 
 	// [0.0 ,, 1.0]
-	inline float r_f() const { return r() / 255.0f; }		
-	inline float g_f() const { return g() / 255.0f; }			
-	inline float b_f() const { return b() / 255.0f; }			
-	inline float a_f() const { return a() / 255.0f; }			
+	float r_f() const { return r() / 255.0f; }		
+	float g_f() const { return g() / 255.0f; }			
+	float b_f() const { return b() / 255.0f; }			
+	float a_f() const { return a() / 255.0f; }			
+
+	CVector3D rgb_f() const { return CVector3D(r_f(), g_f(), b_f()); }
+	CVector4D rgba_f() const { return CVector4D(r_f(), g_f(), b_f(), a_f()); }
 
 	// gray
-	inline int		gray() const { return (r() * 11 + g() * 16 + b() * 5) / 32; }
-	inline float	gray_f() const { return gray() / 255.0f; }
-	inline bool		is_gray() const { return r() == g() && r() == b(); }
+	int		gray() const { return (r() * 11 + g() * 16 + b() * 5) / 32; }
+	float	gray_f() const { return gray() / 255.0f; }
+	bool	is_gray() const { return r() == g() && r() == b(); }
 
 	CColor rgb() const { return CColor(r(), g(), b()); }
 	CColor bgr() const { return CColor(b(), g(), r()); }
@@ -45,3 +51,6 @@ private:
 	
 
 };
+
+
+

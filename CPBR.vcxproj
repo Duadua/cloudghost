@@ -202,9 +202,10 @@
     <QtMoc Include="src\include\cglwidget.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="resources\shaders\blinn_phong.frag" />
     <None Include="resources\shaders\depth.frag" />
-    <None Include="resources\shaders\single.frag" />
-    <None Include="resources\shaders\single.vert" />
+    <None Include="resources\shaders\mvp.vert" />
+    <None Include="resources\shaders\solid_color.frag" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="resources\materials\txt\cube_material.txt" />

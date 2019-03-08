@@ -1,8 +1,6 @@
 <RCC>
     <qresource prefix="/CPBR"/>
     <qresource prefix="/asset">
-        <file>shaders/single.vert</file>
-        <file>shaders/single.frag</file>
         <file>models/txt/cube.txt</file>
         <file>models/txt/triangle_right.txt</file>
         <file>models/txt/triangle_regular.txt</file>
