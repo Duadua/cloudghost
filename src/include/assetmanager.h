@@ -31,6 +31,7 @@ public:
 
 	static bool load_texture(const std::string& path, SourceType source_type = SourceType::BY_FILE);
 	static SPTR_Texture2D get_texture(const std::string& key);
+	static SPTR_Texture2D gen_blank_texture(const std::string& key, uint width, uint heigh, uint internal_format = GL_RGB, uint format = GL_RGB, uint data_type = GL_UNSIGNED_BYTE);		// 创建空白的 texutre2D -- for RT
 
 private:
 	AssetManager() {}

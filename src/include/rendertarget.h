@@ -1,7 +1,8 @@
 #pragma once
 
-#include "cmath.h"
 // RT -- fbo
+
+#include "cmath.h"
 
 class RenderTarget {
 public:
