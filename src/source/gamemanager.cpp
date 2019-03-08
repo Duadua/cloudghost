@@ -50,22 +50,20 @@ void GameManager::init(QOpenGLWidget* gl) {
 		main_bind_input();
 	}
 
-	// begin play
-	{
-		begin_play(gl);						// 设置模型等
-		main_begin_play();		
-	}
-
 	// gl 状态初始化
 	{
 		background_color = CColor(205, 220, 232);
 		set_depth_test(true);
 		set_stencil_test(true, GL_NOTEQUAL, 1, 0xff, GL_KEEP, GL_KEEP, GL_REPLACE);
 		set_blend(true, GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
-		//core->glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);	
-		core->glPolygonMode(GL_BACK, GL_LINE);
-		//core->glEnable(GL_CULL_FACE);
+		set_polygon_mode();
+		set_cull_face();
+	}
+	
+	// begin play
+	{
+		begin_play(gl);						// 设置模型等
+		main_begin_play();		
 	}
 
 }
@@ -177,7 +175,6 @@ void GameManager::set_depth_test(bool enable, uint depth_func, uint depth_mask) 
 	core->glDepthMask(depth_mask);
 	core->glDepthFunc(depth_func);
 }
-
 void GameManager::set_stencil_test(bool enable, uint func, uint ref, uint mask, uint fail, uint zfail, uint zpass) {
 	if (enable) { core->glEnable(GL_STENCIL_TEST); b_stencil_test = true; }
 	else { core->glDisable(GL_STENCIL_TEST); b_stencil_test = false; }
@@ -186,12 +183,22 @@ void GameManager::set_stencil_test(bool enable, uint func, uint ref, uint mask, 
 	core->glStencilOp(fail, zfail, zpass);
 	
 }
-
 void GameManager::set_blend(bool enable, uint sfactor, uint dfactor) {
 	if (enable) { core->glEnable(GL_BLEND); }
 	else { core->glDisable(GL_BLEND); }
 
 	core->glBlendFunc(sfactor, dfactor);
+}
+void GameManager::set_polygon_mode(uint front_mode, uint back_mode) {
+	core->glPolygonMode(GL_FRONT, front_mode);
+	core->glPolygonMode(GL_BACK, back_mode);
+}
+void GameManager::set_cull_face(bool enable, uint mode, uint front_face) {
+	if (enable) { core->glEnable(GL_CULL_FACE); }
+	else { core->glDisable(GL_CULL_FACE); }
+
+	core->glCullFace(mode);
+	core->glFrontFace(front_face);			// 默认逆时针 -- CCW -- 此状态同时也影响 polygon_mode
 }
 
 // ===========================================================================

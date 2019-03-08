@@ -55,6 +55,8 @@ public:
 	void set_depth_test(bool enable = true, uint depth_func = GL_LESS, uint depth_mask = GL_TRUE);
 	void set_stencil_test(bool enable = false, uint func = GL_EQUAL, uint ref = 1, uint mask = 0xff, uint fail = GL_KEEP, uint zfail = GL_KEEP, uint zpass = GL_KEEP);
 	void set_blend(bool enable, uint sfactor = GL_SRC_ALPHA, uint dfactor = GL_ONE_MINUS_SRC_ALPHA);
+	void set_polygon_mode(uint front_mode = GL_FILL, uint back_mode = GL_LINE);
+	void set_cull_face(bool enable = false, uint mode = GL_BACK, uint front_face = GL_CCW);
 
 protected:
 	static GameManager* instance;
