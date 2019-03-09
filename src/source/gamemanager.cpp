@@ -123,11 +123,6 @@ void GameManager::base_pass() {
 		t_shader->set_vec3("u_view_pos", main_camera->get_location());
 	}
 
-	// 修复窗口大小改变问题
-	uint t_w = scene_rt->get_attach_textures()[0].texture->get_width();
-	uint t_h = scene_rt->get_attach_textures()[0].texture->get_heigh();
-	core->glViewport(0, 0, t_w, t_h);
-
 	scene_rt->use();
 	core->glClearColor(background_color.r_f(), background_color.g_f(), background_color.b_f(), background_color.a_f());
 	core->glClear(GL_COLOR_BUFFER_BIT);
@@ -150,8 +145,6 @@ void GameManager::base_pass() {
 	core->glStencilMask(0xff);							// 重新允许写入模板缓冲
 	scene_rt->un_use();
 	
-	core->glViewport(0, 0, gl->width(), gl->height());
-
 	// update scene texture
 	if (scene_rt->get_attach_textures().size() > 0) {
 		scene_texture = scene_rt->get_attach_textures()[0].texture;
@@ -211,6 +204,15 @@ void GameManager::resize(QOpenGLWidget* gl, int w, int h) {
 	if (t_s != nullptr) {
 		t_s->use();
 		t_s->set_mat4("u_projection", projection);
+	}
+
+	// resize scene_rt texture size to scene size
+	scene_rt.reset();
+	scene_rt = CREATE_CLASS(RenderTarget);
+	if (scene_rt != nullptr) {
+		if (!scene_rt->init_normal(gl->width(), gl->height())) {
+			qDebug() << "create rt fail";
+		}
 	}
 	
 }
