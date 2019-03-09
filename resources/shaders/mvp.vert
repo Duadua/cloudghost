@@ -11,7 +11,7 @@ uniform mat4 u_model;
 uniform mat4 u_view;
 uniform mat4 u_projection;
 
-void main(){
+void main() {
 	
     o_world_pos = vec3(u_model * vec4(a_pos, 1.0));
     o_normal = mat3(transpose(inverse(u_model))) * a_normal;  // 法线矩阵 -- 变换法线到 world space 同步修正缩放影响

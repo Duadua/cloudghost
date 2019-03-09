@@ -317,6 +317,9 @@
     <None Include="resources\shaders\single_texture.frag">
       <Filter>resources\shaders</Filter>
     </None>
+    <None Include="resources\shaders\scene2d.vert">
+      <Filter>resources\shaders</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Text Include="resources\models\txt\cube.txt">

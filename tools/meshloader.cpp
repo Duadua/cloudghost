@@ -80,15 +80,15 @@ void MeshTxtGen::gen_triangle_regular() {
 	add_one_face(0, 1, 2);
 }
 void MeshTxtGen::gen_rect() {
-	MVertex a(CVector3D(-0.5f, -0.5f, 0.0f));
-	MVertex b(CVector3D(0.5f, -0.5f, 0.0f));
-	MVertex c(CVector3D(0.5f, 0.5f, 0.0f));
-	MVertex d(CVector3D(-0.5f, 0.5f, 0.0f));
+	MVertex a(CVector3D(-1.0f, -1.0f, 0.0f));
+	MVertex b(CVector3D(1.0f, -1.0f, 0.0f));
+	MVertex c(CVector3D(1.0f, 1.0f, 0.0f));
+	MVertex d(CVector3D(-1.0f, 1.0f, 0.0f));
 
-	a.tex_coord = a.position.xy() + CVector2D(0.5f);
-	b.tex_coord = b.position.xy() + CVector2D(0.5f);
-	c.tex_coord = c.position.xy() + CVector2D(0.5f);
-	d.tex_coord = d.position.xy() + CVector2D(0.5f);
+	a.tex_coord = a.position.xy() / 2.0f + CVector2D(0.5f);
+	b.tex_coord = b.position.xy() / 2.0f + CVector2D(0.5f);
+	c.tex_coord = c.position.xy() / 2.0f + CVector2D(0.5f);
+	d.tex_coord = d.position.xy() / 2.0f + CVector2D(0.5f);
 
 	add_one_vertex(a);
 	add_one_vertex(b);

@@ -57,12 +57,33 @@ bool RenderTarget::init(uint tg) {
 	
 }
 
-SPTR_RenderTarget RenderTarget::add_attach_texture() {
+bool RenderTarget::init_normal(uint w, uint h) {
+	add_attach_texture(GL_COLOR_ATTACHMENT0, w, h);
+	add_attach_renderbuffer(w, h);
+
+	return init();
+}
+bool RenderTarget::init_simple(uint w, uint h) {
+	add_attach_texture(GL_COLOR_ATTACHMENT0, w, h);
+	return init();
+}
+
+SPTR_RenderTarget RenderTarget::add_attach_texture(uint at_type, uint width, uint heigh, uint internal_format, uint format, uint data_type) {
+	auto t_texture = CREATE_CLASS(Texture2D);
+	t_texture->gen(width, heigh, internal_format, format, data_type);
+	if (t_texture != nullptr) {
+		TextureBuffer t_tb;
+		t_tb.attach_type = at_type;
+		t_tb.texture = t_texture;
+		attach_textures.push_back(t_tb);
+	}
 	return shared_from_this();
 }
-SPTR_RenderTarget RenderTarget::add_attach_renderbuffer() {
+SPTR_RenderTarget RenderTarget::add_attach_renderbuffer(uint w, uint h, uint at_type, uint fmt) {
+	auto t_rb = CREATE_CLASS(RenderBuffer);
+	t_rb->init(w, h, at_type, fmt);
+	if (t_rb != nullptr) { attach_renderbuffers.push_back(t_rb); }
 	return shared_from_this();
-
 }
 
 SPTR_RenderTarget RenderTarget::use() {

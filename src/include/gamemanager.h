@@ -2,6 +2,7 @@
 
 #include "shader.h"
 #include "gameobject.h"
+#include "rendertarget.h"
 #include "cameracomponent.h"
 #include <QMap>
 #include <memory>
@@ -65,8 +66,6 @@ protected:
 	SPTR_Shader main_shader;
 
 	// gl state
-	bool b_depth_test;
-	bool b_stencil_test;
 	CColor background_color;
 
 private:
@@ -76,11 +75,15 @@ private:
 	void main_draw(const std::string& shader);
 	
 	// render pipe
+	SPTR_RenderTarget scene_rt;
+	SPTR_Texture2D scene_texture;
 	void base_pass();
+	void scene_pass();
 	void post_process_pass();
 
 private:
 	QOpenGLFunctions_3_3_Core * core;
+	QOpenGLWidget* gl;
 
 	QMap<QString, SPTR_GameObject> game_objects;
 

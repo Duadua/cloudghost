@@ -2,6 +2,7 @@
 
 #include "cmath.h"
 #include "reflex.h"
+#include <QOpenGLFunctions_3_3_Core>
 
 class Texture2D : public CObject {
 	DECLARE_CLASS(Texture2D)
@@ -11,6 +12,7 @@ public:
 	~Texture2D() {}
 
 	void init(uint w, uint h, SPTR_uchar data);
+	void gen(uint w, uint h, uint in_fmt, uint fmt, uint d_type);
 
 	void bind(uint tid = 0) const;
 	static void un_bind(uint tid = 0);
@@ -47,5 +49,8 @@ private:
 	uint filter_min;
 	uint filter_max;
 	
+private:
+	QOpenGLFunctions_3_3_Core * core;
+
 };
 DECLARE_AUTO_PTR(Texture2D)

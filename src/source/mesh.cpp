@@ -4,13 +4,13 @@
 
 IMPLEMENT_CLASS(Mesh)
 
-Mesh::Mesh() {}
+Mesh::Mesh() : use_default_mt(true) {}
 Mesh::~Mesh() {}
 
 void Mesh::draw(const std::string& shader) {
 	for (auto rd : render_datas) { 
 		auto t_material = AssetManager::get_material(rd->get_material_name());
-		if (t_material == nullptr) { t_material = AssetManager::get_material(Material::default_material_name); }
+		if (t_material == nullptr && use_default_mt) { t_material = AssetManager::get_material(Material::default_material_name); }
 		if (t_material != nullptr) { t_material->use(shader); }
 		rd->draw(); 
 		Material::un_use(shader);

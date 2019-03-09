@@ -14,9 +14,13 @@ public:
 
 	void add_render_data(SPTR_RenderData rd);
 
+	GET_SET(bool, use_default_mt);
+
 	GET_SET(std::vector<SPTR_RenderData>, render_datas);
 
 private:
+
+	bool use_default_mt;
 
 	std::vector<SPTR_RenderData> render_datas;
 
