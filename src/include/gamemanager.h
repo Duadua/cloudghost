@@ -76,6 +76,7 @@ private:
 	
 	// render pipe
 	SPTR_RenderTarget scene_rt;
+	SPTR_RenderTarget pp_rt;
 	SPTR_Texture2D scene_texture;
 	void base_pass();
 	void scene_pass();

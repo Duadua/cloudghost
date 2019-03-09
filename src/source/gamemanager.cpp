@@ -23,6 +23,7 @@ void GameManager::init(QOpenGLWidget* gl) {
 		AssetManager::load_shader("solid_color", "resources/shaders/mvp.vert", "resources/shaders/solid_color.frag");
 		AssetManager::load_shader("single_texture", "resources/shaders/mvp.vert", "resources/shaders/single_texture.frag");
 		AssetManager::load_shader("scene2d", "resources/shaders/scene2d.vert", "resources/shaders/single_texture.frag");
+		AssetManager::load_shader("pp", "resources/shaders/scene2d.vert", "resources/shaders/post_process.frag");
 
 		// mesh
 		AssetManager::load_mesh("triangle_right", "resources/models/txt/triangle_right.txt");
@@ -70,6 +71,12 @@ void GameManager::init(QOpenGLWidget* gl) {
 				qDebug() << "create rt fail";
 			}
 		}
+		pp_rt = CREATE_CLASS(RenderTarget);
+		if (pp_rt != nullptr) {
+			if (!pp_rt->init_normal(gl->width(), gl->height())) {
+				qDebug() << "create rt fail";
+			}
+		}
 	}
 	
 	// begin play
@@ -108,6 +115,28 @@ void GameManager::draw(QOpenGLWidget* gl) {
 }
 
 // render pass
+void GameManager::scene_pass() {
+
+	core->glClearColor(background_color.r_f(), background_color.g_f(), background_color.b_f(), background_color.a_f());
+	core->glClear(GL_COLOR_BUFFER_BIT);
+	if (core->glIsEnabled(GL_DEPTH_TEST)) { core->glClear(GL_DEPTH_BUFFER_BIT); }
+	if (core->glIsEnabled(GL_STENCIL_TEST)) { core->glClear(GL_STENCIL_BUFFER_BIT); }
+
+	core->glDisable(GL_DEPTH_TEST);
+	auto s_shader = AssetManager::get_shader("scene2d");
+	if (s_shader != nullptr) {
+		auto s_mesh = AssetManager::get_mesh("rect");
+		if (s_mesh != nullptr) {
+			if (scene_texture != nullptr) { scene_texture->bind(0); }
+			s_shader->set_int("u_texture", 0);
+			s_shader->use();
+			s_mesh->set_use_default_mt(false);
+			s_mesh->draw(s_shader->get_name());
+			s_mesh->set_use_default_mt(true);
+		}
+	}
+	core->glEnable(GL_DEPTH_TEST);
+}
 void GameManager::base_pass() {
 
 	if (main_shader != nullptr) {
@@ -150,15 +179,15 @@ void GameManager::base_pass() {
 		scene_texture = scene_rt->get_attach_textures()[0].texture;
 	}
 }
-void GameManager::scene_pass() {
-
+void GameManager::post_process_pass() {
+	pp_rt->use();
 	core->glClearColor(background_color.r_f(), background_color.g_f(), background_color.b_f(), background_color.a_f());
 	core->glClear(GL_COLOR_BUFFER_BIT);
 	if (core->glIsEnabled(GL_DEPTH_TEST)) { core->glClear(GL_DEPTH_BUFFER_BIT); }
 	if (core->glIsEnabled(GL_STENCIL_TEST)) { core->glClear(GL_STENCIL_BUFFER_BIT); }
 
 	core->glDisable(GL_DEPTH_TEST);
-	auto s_shader = AssetManager::get_shader("scene2d");
+	auto s_shader = AssetManager::get_shader("pp");
 	if (s_shader != nullptr) {
 		auto s_mesh = AssetManager::get_mesh("rect");
 		if (s_mesh != nullptr) {
@@ -171,9 +200,12 @@ void GameManager::scene_pass() {
 		}
 	}
 	core->glEnable(GL_DEPTH_TEST);
-}
-void GameManager::post_process_pass() {
+	pp_rt->un_use();
 
+	// update scene texture
+	if (pp_rt->get_attach_textures().size() > 0) {
+		scene_texture = pp_rt->get_attach_textures()[0].texture;
+	}
 }
 
 void GameManager::pre_init(QOpenGLWidget* gl) {
