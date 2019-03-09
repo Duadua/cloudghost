@@ -12,6 +12,9 @@ public:
 
 	GET_SET(SPTR_SceneComponent, root_component);
 
+	GET(uint, id);
+	static uint get_num() { return num; }
+
 	virtual void bind_input();
 	virtual void begin_play();
 	virtual void tick();
@@ -19,5 +22,8 @@ public:
 
 protected:
 	SPTR_SceneComponent root_component;
+
+	uint id;			// pick 用
+	static uint num;	// 数量
 };
 DECLARE_AUTO_PTR(GameObject)

@@ -182,12 +182,10 @@ void InputManager::exec_axis_mouse_move() {
 				case InputAxisType::MOUSE_X: 
 					offset *= cur_input_data.mouse_move_delta_x;
 					offset *= cur_input_data.mouse_sensitivity;
-					cur_input_data.mouse_move_delta_x = 0.0f;
 					break;
 				case InputAxisType::MOUSE_Y: 
 					offset *= cur_input_data.mouse_move_delta_y;
 					offset *= cur_input_data.mouse_sensitivity;
-					cur_input_data.mouse_move_delta_y = 0.0f;
 					break;
 				default: flag = false; break;
 				}
@@ -195,6 +193,10 @@ void InputManager::exec_axis_mouse_move() {
 			} // 如果与当前的键位状态相同， 则执行
 		} // 遍历所有的键位绑定
 	}
+
+	cur_input_data.mouse_move_delta_x = 0.0f;
+	cur_input_data.mouse_move_delta_y = 0.0f;
+
 }
 void InputManager::exec_axis_mouse_wheel() {
 	for (auto it = input_axis.cbegin(); it != input_axis.cend(); ++it) {	// 对每一个绑定的动作

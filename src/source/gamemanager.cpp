@@ -14,6 +14,7 @@ void GameManager::init(QOpenGLWidget* gl) {
 	// init gl_core
 	core = QOpenGLContext::currentContext()->versionFunctions<QOpenGLFunctions_3_3_Core>();
 	this->gl = gl;
+	b_mouse_clicked = false;
 
 	// load asset
 	{
@@ -24,6 +25,7 @@ void GameManager::init(QOpenGLWidget* gl) {
 		AssetManager::load_shader("single_texture", "resources/shaders/mvp.vert", "resources/shaders/single_texture.frag");
 		AssetManager::load_shader("scene2d", "resources/shaders/scene2d.vert", "resources/shaders/single_texture.frag");
 		AssetManager::load_shader("pp", "resources/shaders/scene2d.vert", "resources/shaders/post_process.frag");
+		AssetManager::load_shader("pick", "resources/shaders/mvp.vert", "resources/shaders/pick.frag");
 
 		// mesh
 		AssetManager::load_mesh("triangle_right", "resources/models/txt/triangle_right.txt");
@@ -49,6 +51,9 @@ void GameManager::init(QOpenGLWidget* gl) {
 
 	// init input map
 	{
+		map_input_default();
+		bind_input_default();
+
 		map_input();						
 		main_bind_input();
 	}
@@ -57,7 +62,7 @@ void GameManager::init(QOpenGLWidget* gl) {
 	{
 		background_color = CColor(205, 220, 232);
 		set_depth_test(true);
-		set_stencil_test(true, GL_NOTEQUAL, 1, 0xff, GL_KEEP, GL_KEEP, GL_REPLACE);
+		set_stencil_test(true, GL_NOTEQUAL, 1, 0xff, GL_KEEP, GL_REPLACE, GL_REPLACE);
 		set_blend(true, GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 		set_polygon_mode();
 		set_cull_face();
@@ -65,18 +70,7 @@ void GameManager::init(QOpenGLWidget* gl) {
 	
 	// init rt
 	{
-		scene_rt = CREATE_CLASS(RenderTarget);
-		if (scene_rt != nullptr) {
-			if (!scene_rt->init_normal(gl->width(), gl->height())) {
-				qDebug() << "create rt fail";
-			}
-		}
-		pp_rt = CREATE_CLASS(RenderTarget);
-		if (pp_rt != nullptr) {
-			if (!pp_rt->init_normal(gl->width(), gl->height())) {
-				qDebug() << "create rt fail";
-			}
-		}
+		init_rt();
 	}
 	
 	// begin play
@@ -106,9 +100,12 @@ void GameManager::draw(QOpenGLWidget* gl) {
 		scene_pass();			// 渲染到默认缓冲 -- 必须第一个执行
 
 		// pass 1
-		base_pass();
+		pick_pass();			// 得到拾取贴图 -- 用来判断哪个物体被拾取
 
 		// pass 2
+		base_pass();
+
+		// pass 3
 		post_process_pass();
 
 	}
@@ -137,6 +134,33 @@ void GameManager::scene_pass() {
 	}
 	core->glEnable(GL_DEPTH_TEST);
 }
+void GameManager::pick_pass() {
+	pick_rt->use();
+	core->glClearColor(background_color.r_f(), background_color.g_f(), background_color.b_f(), background_color.a_f());
+	core->glClear(GL_COLOR_BUFFER_BIT);
+	if (core->glIsEnabled(GL_DEPTH_TEST)) { core->glClear(GL_DEPTH_BUFFER_BIT); }
+	if (core->glIsEnabled(GL_STENCIL_TEST)) { core->glClear(GL_STENCIL_BUFFER_BIT); }
+
+	auto p_shader = AssetManager::get_shader("pick");
+	if (p_shader != nullptr) {
+		p_shader->use();
+		p_shader->set_mat4("u_view", main_camera->get_view_mat());
+		p_shader->set_vec3("u_view_pos", main_camera->get_location());
+		p_shader->set_uint("u_object_id", 0);
+		p_shader->set_uint("u_component_id", 0);
+	}
+	main_draw(p_shader->get_name());
+
+	if (b_mouse_clicked) {
+		b_mouse_clicked = false;
+		uint data[3] = { 0 };
+		core->glReadPixels(mouse_clicked_x, mouse_clicked_y, 1, 1, GL_RGB_INTEGER, GL_UNSIGNED_INT, &data);
+		cur_pick_object_id = data[0];
+		cur_pick_component_id = data[1];
+	}
+	pick_rt->un_use();
+
+}
 void GameManager::base_pass() {
 
 	if (main_shader != nullptr) {
@@ -158,18 +182,33 @@ void GameManager::base_pass() {
 	if (core->glIsEnabled(GL_DEPTH_TEST)) { core->glClear(GL_DEPTH_BUFFER_BIT); }
 	if (core->glIsEnabled(GL_STENCIL_TEST)) { core->glClear(GL_STENCIL_BUFFER_BIT); }
 
-	core->glStencilFunc(GL_ALWAYS, 1, 0xff);			// 总是通过测试 -- 且通过后置1
 	core->glStencilMask(0xff);							// 允许写入模板缓冲
-	main_draw(main_shader->get_name());
+	
+	for (auto go : game_objects) {
+		if (go->get_id() != cur_pick_object_id) { 
+			core->glStencilFunc(GL_ALWAYS, 0, 0xff); 
+			go->draw(main_shader->get_name());
+		} // 总是通过测试 -- 且通过后置0
+	} // 先画没被选中的 -- 保证最后写入的 1 不被 0 覆盖
+	for (auto go : game_objects) {
+		if (go->get_id() == cur_pick_object_id) { 
+			core->glStencilFunc(GL_ALWAYS, 1, 0xff); 
+			go->draw(main_shader->get_name());
+		} // 总是通过测试 -- 且通过后置1
+	}
 
 	core->glStencilFunc(GL_NOTEQUAL, 1, 0xff);			// 之前置 1 了的 不通过
 	core->glStencilMask(0x00);							// 不允许写入模板缓冲
 
-	core->glDisable(GL_DEPTH_TEST);
-	for (auto i : game_objects) { i->get_root_component()->set_all_border(true); }
-	main_draw(t_shader->get_name());
-	for (auto i : game_objects) { i->get_root_component()->set_all_border(false); }
-	core->glEnable(GL_DEPTH_TEST);
+	//core->glDisable(GL_DEPTH_TEST);
+	for (auto go : game_objects) {
+		if (go->get_id() == cur_pick_object_id) {
+			go->get_root_component()->set_all_border(true);
+			go->draw(t_shader->get_name());
+			go->get_root_component()->set_all_border(false);
+		}	// 拾取 -- 绘制边框
+	}
+	//core->glEnable(GL_DEPTH_TEST);
 
 	core->glStencilMask(0xff);							// 重新允许写入模板缓冲
 	scene_rt->un_use();
@@ -208,6 +247,37 @@ void GameManager::post_process_pass() {
 	}
 }
 
+void GameManager::init_rt() {
+	if (scene_rt != nullptr) scene_rt.reset();
+	scene_rt = CREATE_CLASS(RenderTarget);
+	if (scene_rt != nullptr) {
+		if (!scene_rt->init_normal(gl->width(), gl->height())) {
+			qDebug() << "create rt fail";
+		}
+	}
+
+	if (pp_rt != nullptr) pp_rt.reset();
+	pp_rt = CREATE_CLASS(RenderTarget);
+	if (pp_rt != nullptr) {
+		if (!pp_rt->init_normal(gl->width(), gl->height())) {
+			qDebug() << "create rt fail";
+		}
+	}
+
+	init_pick_rt();
+}
+void GameManager::init_pick_rt() {
+	if(pick_rt != nullptr) pick_rt.reset();
+	pick_rt = CREATE_CLASS(RenderTarget);
+	if (pick_rt != nullptr) {
+		pick_rt->add_attach_texture(GL_COLOR_ATTACHMENT0, gl->width(), gl->height(), GL_RGB32UI, GL_RGB_INTEGER, GL_UNSIGNED_INT)
+			->add_attach_renderbuffer(gl->width(), gl->height())
+			->init();
+	}
+}
+
+// ===========================================================================
+
 void GameManager::pre_init(QOpenGLWidget* gl) {
 
 	// init gl mouse cursor
@@ -237,15 +307,13 @@ void GameManager::resize(QOpenGLWidget* gl, int w, int h) {
 		t_s->use();
 		t_s->set_mat4("u_projection", projection);
 	}
-
-	// resize scene_rt texture size to scene size
-	scene_rt.reset();
-	scene_rt = CREATE_CLASS(RenderTarget);
-	if (scene_rt != nullptr) {
-		if (!scene_rt->init_normal(gl->width(), gl->height())) {
-			qDebug() << "create rt fail";
-		}
+	auto p_s = AssetManager::get_shader("pick");
+	if (p_s != nullptr) {
+		p_s->use();
+		p_s->set_mat4("u_projection", projection);
 	}
+
+	init_rt();
 	
 }
 void GameManager::exit(QOpenGLWidget* gl) {
@@ -339,6 +407,28 @@ void GameManager::main_draw(const std::string& shader) {
 	}
 }
 
+void GameManager::map_input_default() {
+	{
+		InputState is;
+		is.mouse_released = Qt::LeftButton;
+		InputManager::map_action("gm_m_r", is);
+	}
+	
+}
+void GameManager::bind_input_default() {
+	IM_BIND_ACTION(gm_m_r, GameManager, this, &GameManager::mouse_released);
+}
+
+void GameManager::mouse_released() {
+	// 造成一次单击事件
+	// read pix
+	float delta = (InputManager::get_input_data().mouse_pressed_pos - InputManager::get_input_data().mouse_cur_pos).manhattanLength();
+	if (delta < CMath::eps) {
+		b_mouse_clicked = true;
+		mouse_clicked_x = InputManager::get_input_data().mouse_cur_pos.x();
+		mouse_clicked_y = gl->height() - InputManager::get_input_data().mouse_cur_pos.y() - 1;
+	}
+}
 
 void GameManager::exec_mouse_wheeeel_event(QWheelEvent* event, QOpenGLWidget* gl) { InputManager::exec_mouse_wheeeel_event(event, gl); }
 void GameManager::exec_mouse_moveeee_event(QMouseEvent* event, QOpenGLWidget* gl) { InputManager::exec_mouse_moveeee_event(event, gl); }

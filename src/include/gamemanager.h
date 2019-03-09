@@ -73,14 +73,23 @@ private:
 	void main_begin_play();
 	void main_tick();
 	void main_draw(const std::string& shader);
+
+	// default init
+	void map_input_default();
+	void bind_input_default();
 	
 	// render pipe
 	SPTR_RenderTarget scene_rt;
 	SPTR_RenderTarget pp_rt;
+	SPTR_RenderTarget pick_rt;
 	SPTR_Texture2D scene_texture;
-	void base_pass();
 	void scene_pass();
+	void pick_pass();					// 拾取阶段
+	void base_pass();
 	void post_process_pass();
+
+	void init_rt();
+	void init_pick_rt();
 
 private:
 	QOpenGLFunctions_3_3_Core * core;
@@ -98,4 +107,14 @@ public:
 	void exec_key_pressed_event(QKeyEvent* event, QOpenGLWidget* gl);
 	void exec_key_release_event(QKeyEvent* event, QOpenGLWidget* gl);
 	void key_pressed_over();
+
+private:
+	// 鼠标事件 --拾取用
+	bool b_mouse_clicked;
+	uint mouse_clicked_x;
+	uint mouse_clicked_y;
+	uint cur_pick_object_id;
+	uint cur_pick_component_id;
+	void mouse_released();
+
 };

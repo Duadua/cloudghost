@@ -323,6 +323,9 @@
     <None Include="resources\shaders\post_process.frag">
       <Filter>resources\shaders</Filter>
     </None>
+    <None Include="resources\shaders\pick.frag">
+      <Filter>resources\shaders</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Text Include="resources\models\txt\cube.txt">

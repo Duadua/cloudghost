@@ -19,7 +19,8 @@ public:
 
 	// set uniform
 	void set_bool(const std::string& name, const bool& value);
-	void set_int(const std::string& name, const uint& value);
+	void set_int(const std::string& name, const int& value);
+	void set_uint(const std::string& name, const uint& value);
 	void set_float(const std::string& name, const float& value);
 
 	void set_vec2(const std::string& name, const CVector2D& value);

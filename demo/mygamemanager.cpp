@@ -72,6 +72,12 @@ void MyGameManager::begin_play(QOpenGLWidget* gl) {
 		t_s->use();
 		t_s->set_mat4("u_projection", projection);
 	}
+
+	auto p_s = AssetManager::get_shader("pick");
+	if (p_s != nullptr) {
+		p_s->use();
+		p_s->set_mat4("u_projection", projection);
+	}
 	
 
 	// use direct light

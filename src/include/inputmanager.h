@@ -89,6 +89,15 @@ private:
 	DELEGATE_BIND(InputAxis, type, type##name##, obj, func);	\
 	InputManager::bind_axis(#name, type##name##);
 
+// 没有类对象时使用
+#define IM_BIND_ACTION_VOID(name, type, func)					\
+	DELEGATE_BIND_VOID(InputAction, type##name##, func);		\
+	InputManager::bind_action(#name, type##name##);
+
+#define IM_BIND_AXIS_VOID(name, type, func)						\
+	DELEGATE_BIND_VOID(InputAxis, type##name##, func);			\
+	InputManager::bind_axis(#name, type##name##);
+
 // ======================================================================
 
 enum InputAxisType {
