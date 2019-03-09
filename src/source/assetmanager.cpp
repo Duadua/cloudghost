@@ -184,6 +184,7 @@ SPTR_Texture2D AssetManager::get_texture(const std::string& key) {
 		
 }
 SPTR_Texture2D AssetManager::gen_blank_texture(const std::string& key, uint width, uint heigh, uint internal_format, uint format, uint data_type) {
+
 	return nullptr;
 }
 
