@@ -66,8 +66,8 @@ vec3 sharpen() {
 }
 
 vec3 pp(vec3 color) {
-	return color;
-	//return sharpen();
+	//return color;
+	return sharpen();
 	//return blur();
 	return edge_det();
 	return gray(color, vec3(0.3, 0.6, 0.1).rgb);

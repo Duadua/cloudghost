@@ -16,6 +16,8 @@ public:
 
 	GET_SET(float, camera_speed);
 
+	CVector3D get_right_axis();
+
 private:
 	std::string camera_mesh;
 

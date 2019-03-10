@@ -12,10 +12,12 @@ public:
 	CMatrix4x4 get_view_mat();
 
 	void update(CVector3D location, CVector3D rotation);
+	
+	GET(CVector3D, right);
 
 private:
 
-	CMatrix4x4 look_at();
+	CMatrix4x4 look_at();			
 
 	CVector3D location;
 	CVector3D rotation;

@@ -3,7 +3,7 @@
 #include "shader.h"
 #include "gameobject.h"
 #include "rendertarget.h"
-#include "cameracomponent.h"
+#include "cameraobject.h"
 #include <QMap>
 #include <memory>
 #include <QOpenGLFunctions_3_3_core>
@@ -22,8 +22,8 @@ public:
 	virtual void tick() = 0;								// 每帧变化的参数
 	virtual void map_input() = 0;							// 绑定输入
 
-	virtual SPTR_CameraComponent	set_main_camera() = 0;	// 设置主相机 
-	virtual SPTR_Shader				set_main_shader() = 0;	// 设置主Shader
+	virtual SPTR_CameraObject	set_main_camera() = 0;		// 设置主相机 
+	virtual SPTR_Shader			set_main_shader() = 0;		// 设置主Shader
 };
 
 class GameManager : public GameManagerImpl {
@@ -42,8 +42,8 @@ public:
 	virtual void tick() override {}
 	virtual void map_input() override {}
 
-	virtual SPTR_CameraComponent	set_main_camera() override;
-	virtual SPTR_Shader				set_main_shader() override;
+	virtual SPTR_CameraObject	set_main_camera() override;
+	virtual SPTR_Shader			set_main_shader() override;
 
 public:
 	GameManager();
@@ -62,11 +62,12 @@ public:
 protected:
 	static GameManager* instance;
 	
-	SPTR_CameraComponent main_camera;
+	SPTR_CameraObject main_camera;
 	SPTR_Shader main_shader;
 
 	// gl state
 	CColor background_color;
+	CColor border_color;			// 物体边框颜色
 
 private:
 	void main_bind_input();
@@ -82,14 +83,23 @@ private:
 	SPTR_RenderTarget scene_rt;
 	SPTR_RenderTarget pp_rt;
 	SPTR_RenderTarget pick_rt;
+	SPTR_RenderTarget vr_rt;
 	SPTR_Texture2D scene_texture;
 	void scene_pass();
 	void pick_pass();					// 拾取阶段
 	void base_pass();
 	void post_process_pass();
+	void vr_pass();
 
 	void init_rt();
 	void init_pick_rt();
+	void init_vr_rt();
+
+	void draw_scene(const std::string& shader);
+	void draw_all_objs(const std::string& shader);
+	void draw_border(const std::string& shader);
+
+	bool b_use_vr;
 
 private:
 	QOpenGLFunctions_3_3_Core * core;
