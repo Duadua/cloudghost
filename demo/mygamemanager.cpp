@@ -116,6 +116,7 @@ void MyGameManager::begin_play(QOpenGLWidget* gl) {
 	// gl_state
 	{
 		b_use_vr = true;
+		//vr_delta = 1.0f;
 	}
 
 }

@@ -11,7 +11,9 @@ vec4 vr_mix() {
 	vec4 l_color = texture(u_texture_left, o_tex_coord);
 	vec4 r_color = texture(u_texture_right, o_tex_coord);
 
-	return vec4(l_color.b, l_color.g, r_color.g, 1);
+//				0,			l_color.g,	l_color.b,	1
+//				r_color.r,	r_color.g,	0,			1
+	return vec4(r_color.g, l_color.g, 0, 1);
 }
 
 void main() {
