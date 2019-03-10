@@ -210,6 +210,7 @@
     <None Include="resources\shaders\scene2d.vert" />
     <None Include="resources\shaders\single_texture.frag" />
     <None Include="resources\shaders\solid_color.frag" />
+    <None Include="resources\shaders\vr_mix.frag" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="resources\materials\txt\cube_material.txt" />

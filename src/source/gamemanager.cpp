@@ -26,6 +26,7 @@ void GameManager::init(QOpenGLWidget* gl) {
 		AssetManager::load_shader("scene2d", "resources/shaders/scene2d.vert", "resources/shaders/single_texture.frag");
 		AssetManager::load_shader("pp", "resources/shaders/scene2d.vert", "resources/shaders/post_process.frag");
 		AssetManager::load_shader("pick", "resources/shaders/mvp.vert", "resources/shaders/pick.frag");
+		AssetManager::load_shader("vr_mix", "resources/shaders/scene2d.vert", "resources/shaders/vr_mix.frag");
 
 		// mesh
 		AssetManager::load_mesh("triangle_right", "resources/models/txt/triangle_right.txt");
@@ -63,6 +64,7 @@ void GameManager::init(QOpenGLWidget* gl) {
 		background_color = CColor(205, 220, 232);
 		border_color = CColor(221, 161, 18);
 		b_use_vr = true;
+		vr_delta = 0.1f;
 
 		set_depth_test(true);
 		set_stencil_test(true, GL_NOTEQUAL, 1, 0xff, GL_KEEP, GL_REPLACE, GL_REPLACE);
@@ -123,7 +125,14 @@ void GameManager::scene_pass() {
 	if (core->glIsEnabled(GL_DEPTH_TEST)) { core->glClear(GL_DEPTH_BUFFER_BIT); }
 	if (core->glIsEnabled(GL_STENCIL_TEST)) { core->glClear(GL_STENCIL_BUFFER_BIT); }
 
-	draw_scene("scene2d");
+	auto s_shader = AssetManager::get_shader("scene2d");
+	if (s_shader != nullptr) {
+		s_shader->use();
+		if (scene_texture != nullptr) { scene_texture->bind(0); }
+		s_shader->set_int("u_texture", 0);
+	}
+
+	draw_scene(s_shader->get_name());
 
 }
 void GameManager::pick_pass() {
@@ -168,6 +177,7 @@ void GameManager::base_pass() {
 		t_shader->use();
 		t_shader->set_mat4("u_view", main_camera->get_camera_component()->get_view_mat());
 		t_shader->set_vec3("u_view_pos", main_camera->get_root_component()->get_location());
+		t_shader->set_vec4("u_solid_color", border_color.rgba_f());
 	}
 
 	scene_rt->use();
@@ -177,16 +187,20 @@ void GameManager::base_pass() {
 	if (core->glIsEnabled(GL_STENCIL_TEST)) { core->glClear(GL_STENCIL_BUFFER_BIT); }
 
 	// draw all objects
-	core->glStencilMask(0xff);							// 允许写入模板缓冲
-	draw_all_objs(main_shader->get_name());
+	{
+		core->glStencilMask(0xff);							// 允许写入模板缓冲
+		draw_all_objs(main_shader->get_name());
+	}
 
 	// draw border
-	core->glStencilFunc(GL_NOTEQUAL, 1, 0xff);			// 之前置 1 了的 不通过
-	core->glStencilMask(0x00);							// 不允许写入模板缓冲
-	//core->glDisable(GL_DEPTH_TEST);
-	draw_border(t_shader->get_name());
-	//core->glEnable(GL_DEPTH_TEST);
-	core->glStencilMask(0xff);							// 重新允许写入模板缓冲
+	{
+		core->glStencilFunc(GL_NOTEQUAL, 1, 0xff);			// 之前置 1 了的 不通过
+		core->glStencilMask(0x00);							// 不允许写入模板缓冲
+		//core->glDisable(GL_DEPTH_TEST);
+		draw_border(t_shader->get_name());
+		//core->glEnable(GL_DEPTH_TEST);
+		core->glStencilMask(0xff);							// 重新允许写入模板缓冲
+	}
 
 	scene_rt->un_use();
 	
@@ -202,7 +216,14 @@ void GameManager::post_process_pass() {
 	if (core->glIsEnabled(GL_DEPTH_TEST)) { core->glClear(GL_DEPTH_BUFFER_BIT); }
 	if (core->glIsEnabled(GL_STENCIL_TEST)) { core->glClear(GL_STENCIL_BUFFER_BIT); }
 
-	draw_scene("pp");
+	auto p_shader = AssetManager::get_shader("pp");
+	if (p_shader != nullptr) {
+		p_shader->use();
+		if (scene_texture != nullptr) { scene_texture->bind(0); }
+		p_shader->set_int("u_texture", 0);
+	}
+
+	draw_scene(p_shader->get_name());
 
 	pp_rt->un_use();
 
@@ -213,110 +234,126 @@ void GameManager::post_process_pass() {
 }
 void GameManager::vr_pass() {
 
-	vr_rt->use();
-
-	// left eyes scene
+	// get left and right pic pass
 	{
-		core->glDrawBuffer(GL_COLOR_ATTACHMENT0);
-		core->glClearColor(background_color.r_f(), background_color.g_f(), background_color.b_f(), background_color.a_f());
-		core->glClear(GL_COLOR_BUFFER_BIT);
-		if (core->glIsEnabled(GL_DEPTH_TEST)) { core->glClear(GL_DEPTH_BUFFER_BIT); }
-		if (core->glIsEnabled(GL_STENCIL_TEST)) { core->glClear(GL_STENCIL_BUFFER_BIT); }
+		vr_rt->use();
 
-		auto t_old_location = main_camera->get_root_component()->get_location();
-		auto t_new_location = t_old_location + main_camera->get_camera_component()->get_right_axis() * 1.0;
-		main_camera->get_root_component()->set_location(t_new_location);
-		if (main_shader != nullptr) {
-			main_shader->use();
-			main_shader->set_mat4("u_view", main_camera->get_camera_component()->get_view_mat());
-			main_shader->set_vec3("u_view_pos", main_camera->get_root_component()->get_location());
-		}
-		auto t_shader = AssetManager::get_shader("solid_color");
-		if (t_shader != nullptr) {
-			t_shader->use();
-			t_shader->set_mat4("u_view", main_camera->get_camera_component()->get_view_mat());
-			t_shader->set_vec3("u_view_pos", main_camera->get_root_component()->get_location());
-		}
+		// left eyes scene
+		{
+			core->glDrawBuffer(GL_COLOR_ATTACHMENT0);
+			core->glClearColor(background_color.r_f(), background_color.g_f(), background_color.b_f(), background_color.a_f());
+			core->glClear(GL_COLOR_BUFFER_BIT);
+			if (core->glIsEnabled(GL_DEPTH_TEST)) { core->glClear(GL_DEPTH_BUFFER_BIT); }
+			if (core->glIsEnabled(GL_STENCIL_TEST)) { core->glClear(GL_STENCIL_BUFFER_BIT); }
 
-		// draw all objects
-		core->glStencilMask(0xff);							// 允许写入模板缓冲
-		draw_all_objs(main_shader->get_name());
+			auto t_old_location = main_camera->get_root_component()->get_location();
+			auto t_new_location = t_old_location + main_camera->get_camera_component()->get_right_axis() * vr_delta;
+			main_camera->get_root_component()->set_location(t_new_location);
+			if (main_shader != nullptr) {
+				main_shader->use();
+				main_shader->set_mat4("u_view", main_camera->get_camera_component()->get_view_mat());
+				main_shader->set_vec3("u_view_pos", main_camera->get_root_component()->get_location());
+			}
+			auto t_shader = AssetManager::get_shader("solid_color");
+			if (t_shader != nullptr) {
+				t_shader->use();
+				t_shader->set_mat4("u_view", main_camera->get_camera_component()->get_view_mat());
+				t_shader->set_vec3("u_view_pos", main_camera->get_root_component()->get_location());
+			}
 
-		// draw border
-		core->glStencilFunc(GL_NOTEQUAL, 1, 0xff);			// 之前置 1 了的 不通过
-		core->glStencilMask(0x00);							// 不允许写入模板缓冲
-															//core->glDisable(GL_DEPTH_TEST);
-		draw_border(t_shader->get_name());
-		//core->glEnable(GL_DEPTH_TEST);
-		core->glStencilMask(0xff);							// 重新允许写入模板缓冲
+			// draw all objects
+			core->glStencilMask(0xff);							// 允许写入模板缓冲
+			draw_all_objs(main_shader->get_name());
 
-		main_camera->get_root_component()->set_location(t_old_location);
-	}
-	
-	// right eyes scene
-	{
-		core->glDrawBuffer(GL_COLOR_ATTACHMENT1);
-		core->glClearColor(background_color.r_f(), background_color.g_f(), background_color.b_f(), background_color.a_f());
-		core->glClear(GL_COLOR_BUFFER_BIT);
-		if (core->glIsEnabled(GL_DEPTH_TEST)) { core->glClear(GL_DEPTH_BUFFER_BIT); }
-		if (core->glIsEnabled(GL_STENCIL_TEST)) { core->glClear(GL_STENCIL_BUFFER_BIT); }
+			// draw border
+			core->glStencilFunc(GL_NOTEQUAL, 1, 0xff);			// 之前置 1 了的 不通过
+			core->glStencilMask(0x00);							// 不允许写入模板缓冲
+																//core->glDisable(GL_DEPTH_TEST);
+			draw_border(t_shader->get_name());
+			//core->glEnable(GL_DEPTH_TEST);
+			core->glStencilMask(0xff);							// 重新允许写入模板缓冲
 
-		auto t_old_location = main_camera->get_root_component()->get_location();
-		auto t_new_location = t_old_location + main_camera->get_camera_component()->get_right_axis() * -1.0;
-		main_camera->get_root_component()->set_location(t_new_location);
-
-		if (main_shader != nullptr) {
-			main_shader->use();
-			main_shader->set_mat4("u_view", main_camera->get_camera_component()->get_view_mat());
-			main_shader->set_vec3("u_view_pos", main_camera->get_root_component()->get_location());
-		}
-		auto t_shader = AssetManager::get_shader("solid_color");
-		if (t_shader != nullptr) {
-			t_shader->use();
-			t_shader->set_mat4("u_view", main_camera->get_camera_component()->get_view_mat());
-			t_shader->set_vec3("u_view_pos", main_camera->get_root_component()->get_location());
+			main_camera->get_root_component()->set_location(t_old_location);
 		}
 
-		// draw all objects
-		core->glStencilMask(0xff);							// 允许写入模板缓冲
-		draw_all_objs(main_shader->get_name());
+		// right eyes scene
+		{
+			core->glDrawBuffer(GL_COLOR_ATTACHMENT1);
+			core->glClearColor(background_color.r_f(), background_color.g_f(), background_color.b_f(), background_color.a_f());
+			core->glClear(GL_COLOR_BUFFER_BIT);
+			if (core->glIsEnabled(GL_DEPTH_TEST)) { core->glClear(GL_DEPTH_BUFFER_BIT); }
+			if (core->glIsEnabled(GL_STENCIL_TEST)) { core->glClear(GL_STENCIL_BUFFER_BIT); }
 
-		// draw border
-		core->glStencilFunc(GL_NOTEQUAL, 1, 0xff);			// 之前置 1 了的 不通过
-		core->glStencilMask(0x00);							// 不允许写入模板缓冲
-															//core->glDisable(GL_DEPTH_TEST);
-		draw_border(t_shader->get_name());
-		//core->glEnable(GL_DEPTH_TEST);
-		core->glStencilMask(0xff);							// 重新允许写入模板缓冲
+			auto t_old_location = main_camera->get_root_component()->get_location();
+			auto t_new_location = t_old_location + main_camera->get_camera_component()->get_right_axis() * -vr_delta;
+			main_camera->get_root_component()->set_location(t_new_location);
 
-		main_camera->get_root_component()->set_location(t_old_location);
+			if (main_shader != nullptr) {
+				main_shader->use();
+				main_shader->set_mat4("u_view", main_camera->get_camera_component()->get_view_mat());
+				main_shader->set_vec3("u_view_pos", main_camera->get_root_component()->get_location());
+			}
+			auto t_shader = AssetManager::get_shader("solid_color");
+			if (t_shader != nullptr) {
+				t_shader->use();
+				t_shader->set_mat4("u_view", main_camera->get_camera_component()->get_view_mat());
+				t_shader->set_vec3("u_view_pos", main_camera->get_root_component()->get_location());
+			}
 
-	}
+			// draw all objects
+			core->glStencilMask(0xff);							// 允许写入模板缓冲
+			draw_all_objs(main_shader->get_name());
 
-	vr_rt->un_use();
+			// draw border
+			core->glStencilFunc(GL_NOTEQUAL, 1, 0xff);			// 之前置 1 了的 不通过
+			core->glStencilMask(0x00);							// 不允许写入模板缓冲
+																//core->glDisable(GL_DEPTH_TEST);
+			draw_border(t_shader->get_name());
+			//core->glEnable(GL_DEPTH_TEST);
+			core->glStencilMask(0xff);							// 重新允许写入模板缓冲
 
-	if (vr_rt->get_attach_textures().size() > 1) {
-		scene_texture = vr_rt->get_attach_textures()[1].texture;
+			main_camera->get_root_component()->set_location(t_old_location);
+
+		}
+
+		vr_rt->un_use();
 	}
 
 	// mix pass -- mix left and right pic
+	{
+		vr_rt_mix->use();
+		core->glClearColor(background_color.r_f(), background_color.g_f(), background_color.b_f(), background_color.a_f());
+		core->glClear(GL_COLOR_BUFFER_BIT);
+		if (core->glIsEnabled(GL_DEPTH_TEST)) { core->glClear(GL_DEPTH_BUFFER_BIT); }
+		if (core->glIsEnabled(GL_STENCIL_TEST)) { core->glClear(GL_STENCIL_BUFFER_BIT); }
 
+		auto m_shader = AssetManager::get_shader("vr_mix");
+		if (m_shader != nullptr && vr_rt->get_attach_textures().size() >= 2) {
+			auto t_left = vr_rt->get_attach_textures()[0].texture;
+			auto t_right = vr_rt->get_attach_textures()[1].texture;
+			if (t_left != nullptr) { t_left->bind(0); }
+			if (t_right != nullptr) { t_right->bind(1); }
+			m_shader->use();
+			m_shader->set_int("u_texture_left", 0);
+			m_shader->set_int("u_texture_right", 1);
+		}
+		draw_scene(m_shader->get_name());
 
+		vr_rt_mix->un_use();
+	}
+
+	if (vr_rt_mix->get_attach_textures().size() > 0) {
+		scene_texture = vr_rt_mix->get_attach_textures()[0].texture;
+	}
 }
 
 void GameManager::draw_scene(const std::string& shader) {
 	core->glDisable(GL_DEPTH_TEST);
-	auto s_shader = AssetManager::get_shader(shader);
-	if (s_shader != nullptr) {
-		auto s_mesh = AssetManager::get_mesh("rect");
-		if (s_mesh != nullptr) {
-			if (scene_texture != nullptr) { scene_texture->bind(0); }
-			s_shader->set_int("u_texture", 0);
-			s_shader->use();
-			s_mesh->set_use_default_mt(false);
-			s_mesh->draw(s_shader->get_name());
-			s_mesh->set_use_default_mt(true);
-		}
+	auto s_mesh = AssetManager::get_mesh("rect");
+	if (s_mesh != nullptr) {
+		s_mesh->set_use_default_mt(false);
+		s_mesh->draw(shader);
+		s_mesh->set_use_default_mt(true);
 	}
 	core->glEnable(GL_DEPTH_TEST);
 }
@@ -336,19 +373,14 @@ void GameManager::draw_all_objs(const std::string& shader) {
 
 }
 void GameManager::draw_border(const std::string& shader) {
-	auto p_shader = AssetManager::get_shader(shader);
-	if (p_shader != nullptr) {
-		p_shader->use();
-		p_shader->set_vec4("u_solid_color", border_color.rgba_f());
-		for (auto go : game_objects) {
-			if (go->get_id() == cur_pick_object_id) {
-				go->get_root_component()->set_all_border(true);
-				go->draw(shader);
-				go->get_root_component()->set_all_border(false);
-			}	// 拾取 -- 绘制边框
-		}
+	for (auto go : game_objects) {
+		if (go->get_id() == cur_pick_object_id) {
+			go->get_root_component()->set_all_border(true);
+			go->draw(shader);
+			go->get_root_component()->set_all_border(false);
+		}	// 拾取 -- 绘制边框
 	}
-	
+
 }
 
 void GameManager::init_rt() {
@@ -381,13 +413,19 @@ void GameManager::init_pick_rt() {
 	}
 }
 void GameManager::init_vr_rt() {
-	if (vr_rt != nullptr)vr_rt.reset();
+	if (vr_rt != nullptr) vr_rt.reset();
 	vr_rt = CREATE_CLASS(RenderTarget);
 	if (vr_rt != nullptr) {
 		vr_rt->add_attach_texture(GL_COLOR_ATTACHMENT0, gl->width(), gl->height())
 			->add_attach_texture(GL_COLOR_ATTACHMENT1, gl->width(), gl->height())
 			->add_attach_renderbuffer(gl->width(), gl->height())
 			->init();
+	}
+
+	if (vr_rt_mix != nullptr) vr_rt_mix.reset();
+	vr_rt_mix = CREATE_CLASS(RenderTarget);
+	if (vr_rt_mix != nullptr) {
+		vr_rt_mix->init_normal(gl->width(), gl->height());
 	}
 }
 

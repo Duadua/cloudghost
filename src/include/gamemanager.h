@@ -68,6 +68,8 @@ protected:
 	// gl state
 	CColor background_color;
 	CColor border_color;			// 物体边框颜色
+	bool b_use_vr;
+	float vr_delta;
 
 private:
 	void main_bind_input();
@@ -84,6 +86,7 @@ private:
 	SPTR_RenderTarget pp_rt;
 	SPTR_RenderTarget pick_rt;
 	SPTR_RenderTarget vr_rt;
+	SPTR_RenderTarget vr_rt_mix;
 	SPTR_Texture2D scene_texture;
 	void scene_pass();
 	void pick_pass();					// 拾取阶段
@@ -99,7 +102,7 @@ private:
 	void draw_all_objs(const std::string& shader);
 	void draw_border(const std::string& shader);
 
-	bool b_use_vr;
+	
 
 private:
 	QOpenGLFunctions_3_3_Core * core;

@@ -113,6 +113,11 @@ void MyGameManager::begin_play(QOpenGLWidget* gl) {
 		s_light->use(main_shader->get_name());
 	}
 
+	// gl_state
+	{
+		b_use_vr = true;
+	}
+
 }
 
 void MyGameManager::tick() {
