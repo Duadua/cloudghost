@@ -25,7 +25,12 @@ void CPBR::init_ui() {
 		ag->addAction(ui.action_pp_sharpen);
 		ag->addAction(ui.action_pp_edge_det);
 		ui.action_pp_normal->setChecked(true);
-		connect(ag, SIGNAL(triggered(QAction*)), this, SLOT(select_pp(QAction*)));
+		connect(ag, SIGNAL(triggered(QAction*)), this, SLOT(trigger_select_pp(QAction*)));
+	}
+
+	// init shader_toy menu
+	{
+		connect(ui.action_st_show, SIGNAL(triggered()), this, SLOT(trigger_shader_toy()));
 	}
 }
 
@@ -43,7 +48,7 @@ void CPBR::resizeEvent(QResizeEvent *event) {
 
 void CPBR::trigger_rb_3d() { GameManager::get_instance()->set_b_use_vr(!GameManager::get_instance()->get_b_use_vr()); }
 
-void CPBR::select_pp(QAction* act) {
+void CPBR::trigger_select_pp(QAction* act) {
 	if (act->objectName().compare("action_pp_normal") == 0) {
 		GameManager::get_instance()->set_pp_type(PostProcessType::NOPE);
 	}
@@ -64,3 +69,6 @@ void CPBR::select_pp(QAction* act) {
 	}
 }
 
+void CPBR::trigger_shader_toy() {
+	GameManager::get_instance()->set_b_use_shader_toy(!GameManager::get_instance()->get_b_use_shader_toy());
+}

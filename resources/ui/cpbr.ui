@@ -62,7 +62,7 @@
     <property name="title">
      <string>shadertoy</string>
     </property>
-    <widget class="QMenu" name="menu">
+    <widget class="QMenu" name="menu_st_edit">
      <property name="title">
       <string>编辑</string>
      </property>
@@ -73,8 +73,8 @@
      <addaction name="action_st_buffer_c"/>
      <addaction name="action_st_buffer_d"/>
     </widget>
-    <addaction name="action_show"/>
-    <addaction name="menu"/>
+    <addaction name="action_st_show"/>
+    <addaction name="menu_st_edit"/>
    </widget>
    <addaction name="menu_start"/>
    <addaction name="menu_shading"/>
@@ -181,7 +181,7 @@
     <string>Ctrl+S, Ctrl+T</string>
    </property>
   </action>
-  <action name="action_show">
+  <action name="action_st_show">
    <property name="checkable">
     <bool>true</bool>
    </property>
