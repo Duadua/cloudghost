@@ -33,6 +33,7 @@
     <property name="title">
      <string>开始</string>
     </property>
+    <addaction name="action_exit"/>
    </widget>
    <widget class="QMenu" name="menu_shading">
     <property name="title">
@@ -57,8 +58,27 @@
     <addaction name="separator"/>
     <addaction name="menu_post_process"/>
    </widget>
+   <widget class="QMenu" name="menushadertoy">
+    <property name="title">
+     <string>shadertoy</string>
+    </property>
+    <widget class="QMenu" name="menu">
+     <property name="title">
+      <string>编辑</string>
+     </property>
+     <addaction name="action_st_img"/>
+     <addaction name="separator"/>
+     <addaction name="action_sd_buffer_a"/>
+     <addaction name="action_st_buffer_b"/>
+     <addaction name="action_st_buffer_c"/>
+     <addaction name="action_st_buffer_d"/>
+    </widget>
+    <addaction name="action_show"/>
+    <addaction name="menu"/>
+   </widget>
    <addaction name="menu_start"/>
    <addaction name="menu_shading"/>
+   <addaction name="menushadertoy"/>
   </widget>
   <widget class="QToolBar" name="mainToolBar">
    <attribute name="toolBarArea">
@@ -159,6 +179,44 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+S, Ctrl+T</string>
+   </property>
+  </action>
+  <action name="action_show">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>显示</string>
+   </property>
+  </action>
+  <action name="action_exit">
+   <property name="text">
+    <string>退出</string>
+   </property>
+  </action>
+  <action name="action_sd_buffer_a">
+   <property name="text">
+    <string>BufferA</string>
+   </property>
+  </action>
+  <action name="action_st_buffer_b">
+   <property name="text">
+    <string>BufferB</string>
+   </property>
+  </action>
+  <action name="action_st_buffer_c">
+   <property name="text">
+    <string>BufferC</string>
+   </property>
+  </action>
+  <action name="action_st_buffer_d">
+   <property name="text">
+    <string>BufferD</string>
+   </property>
+  </action>
+  <action name="action_st_img">
+   <property name="text">
+    <string>Image</string>
    </property>
   </action>
  </widget>

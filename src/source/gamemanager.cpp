@@ -3,11 +3,14 @@
 #include "gamemanager.h"
 #include "assetmanager.h"
 #include "inputmanager.h"
+#include <chrono>					// get time
 #include <assert.h>
 #include <QKeyEvent>
 #include <QMouseEvent>
 #include <QWheelEvent>
 #include <QOpenGLWidget>
+
+const auto t_time_begin_s = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch());
 
 void GameManager::init(QOpenGLWidget* gl) {
 
@@ -27,6 +30,12 @@ void GameManager::init(QOpenGLWidget* gl) {
 		AssetManager::load_shader("pp", "resources/shaders/scene2d.vert", "resources/shaders/post_process.frag");
 		AssetManager::load_shader("pick", "resources/shaders/mvp.vert", "resources/shaders/pick.frag");
 		AssetManager::load_shader("vr_mix", "resources/shaders/scene2d.vert", "resources/shaders/vr_mix.frag");
+
+		AssetManager::load_shader("shader_toy_img", "resources/shaders/scene2d.vert", "resources/shaders/shadertoy_img.frag");
+		AssetManager::load_shader("shader_toy_buffer_a", "resources/shaders/scene2d.vert", "resources/shaders/shadertoy_buffer_a.frag");
+		AssetManager::load_shader("shader_toy_buffer_b", "resources/shaders/scene2d.vert", "resources/shaders/shadertoy_buffer_b.frag");
+		AssetManager::load_shader("shader_toy_buffer_c", "resources/shaders/scene2d.vert", "resources/shaders/shadertoy_buffer_c.frag");
+		AssetManager::load_shader("shader_toy_buffer_d", "resources/shaders/scene2d.vert", "resources/shaders/shadertoy_buffer_d.frag");
 
 		// mesh
 		AssetManager::load_mesh("triangle_right", "resources/models/txt/triangle_right.txt");
@@ -66,6 +75,7 @@ void GameManager::init(QOpenGLWidget* gl) {
 		b_use_vr = false;
 		vr_delta = 0.1f;
 		pp_type = PostProcessType::NOPE;
+		b_use_shader_toy = false;
 	}
 
 	// gl state init
@@ -107,14 +117,18 @@ void GameManager::draw(QOpenGLWidget* gl) {
 	{
 		// pass 0
 		scene_pass();			// 渲染到默认缓冲 -- 必须第一个执行
-
-		// pass 1
-		pick_pass();			// 得到拾取贴图 -- 用来判断哪个物体被拾取
-
-		// pass 2
-		if (b_use_vr) { vr_pass(); }
-		else { base_pass(); }
-
+	
+		if(!b_use_shader_toy) {
+			// pass 1
+			pick_pass();			// 得到拾取贴图 -- 用来判断哪个物体被拾取
+			// pass 2
+			if (b_use_vr) { vr_pass(); }
+			else { base_pass(); }
+		}
+		else {
+			shader_toy_pass();		// render_shader_toy
+		}
+		
 		// pass 3
 		if(pp_type != PostProcessType::NOPE) post_process_pass();
 
@@ -124,10 +138,7 @@ void GameManager::draw(QOpenGLWidget* gl) {
 // render pass
 void GameManager::scene_pass() {
 
-	core->glClearColor(background_color.r_f(), background_color.g_f(), background_color.b_f(), background_color.a_f());
-	core->glClear(GL_COLOR_BUFFER_BIT);
-	if (core->glIsEnabled(GL_DEPTH_TEST)) { core->glClear(GL_DEPTH_BUFFER_BIT); }
-	if (core->glIsEnabled(GL_STENCIL_TEST)) { core->glClear(GL_STENCIL_BUFFER_BIT); }
+	draw_init();
 
 	auto s_shader = AssetManager::get_shader("scene2d");
 	if (s_shader != nullptr) {
@@ -141,10 +152,7 @@ void GameManager::scene_pass() {
 }
 void GameManager::pick_pass() {
 	pick_rt->use();
-	core->glClearColor(background_color.r_f(), background_color.g_f(), background_color.b_f(), background_color.a_f());
-	core->glClear(GL_COLOR_BUFFER_BIT);
-	if (core->glIsEnabled(GL_DEPTH_TEST)) { core->glClear(GL_DEPTH_BUFFER_BIT); }
-	if (core->glIsEnabled(GL_STENCIL_TEST)) { core->glClear(GL_STENCIL_BUFFER_BIT); }
+	draw_init();
 
 	auto p_shader = AssetManager::get_shader("pick");
 	if (p_shader != nullptr) {
@@ -185,10 +193,7 @@ void GameManager::base_pass() {
 	}
 
 	scene_rt->use();
-	core->glClearColor(background_color.r_f(), background_color.g_f(), background_color.b_f(), background_color.a_f());
-	core->glClear(GL_COLOR_BUFFER_BIT);
-	if (core->glIsEnabled(GL_DEPTH_TEST)) { core->glClear(GL_DEPTH_BUFFER_BIT); }
-	if (core->glIsEnabled(GL_STENCIL_TEST)) { core->glClear(GL_STENCIL_BUFFER_BIT); }
+	draw_init();
 
 	// draw all objects
 	{
@@ -215,10 +220,7 @@ void GameManager::base_pass() {
 }
 void GameManager::post_process_pass() {
 	pp_rt->use();
-	core->glClearColor(background_color.r_f(), background_color.g_f(), background_color.b_f(), background_color.a_f());
-	core->glClear(GL_COLOR_BUFFER_BIT);
-	if (core->glIsEnabled(GL_DEPTH_TEST)) { core->glClear(GL_DEPTH_BUFFER_BIT); }
-	if (core->glIsEnabled(GL_STENCIL_TEST)) { core->glClear(GL_STENCIL_BUFFER_BIT); }
+	draw_init();
 
 	auto p_shader = AssetManager::get_shader("pp");
 	if (p_shader != nullptr) {
@@ -246,10 +248,7 @@ void GameManager::vr_pass() {
 		// left eyes scene
 		{
 			core->glDrawBuffer(GL_COLOR_ATTACHMENT0);
-			core->glClearColor(background_color.r_f(), background_color.g_f(), background_color.b_f(), background_color.a_f());
-			core->glClear(GL_COLOR_BUFFER_BIT);
-			if (core->glIsEnabled(GL_DEPTH_TEST)) { core->glClear(GL_DEPTH_BUFFER_BIT); }
-			if (core->glIsEnabled(GL_STENCIL_TEST)) { core->glClear(GL_STENCIL_BUFFER_BIT); }
+			draw_init();
 
 			auto t_old_location = main_camera->get_root_component()->get_location();
 			auto t_new_location = t_old_location + main_camera->get_camera_component()->get_right_axis() * vr_delta;
@@ -284,10 +283,7 @@ void GameManager::vr_pass() {
 		// right eyes scene
 		{
 			core->glDrawBuffer(GL_COLOR_ATTACHMENT1);
-			core->glClearColor(background_color.r_f(), background_color.g_f(), background_color.b_f(), background_color.a_f());
-			core->glClear(GL_COLOR_BUFFER_BIT);
-			if (core->glIsEnabled(GL_DEPTH_TEST)) { core->glClear(GL_DEPTH_BUFFER_BIT); }
-			if (core->glIsEnabled(GL_STENCIL_TEST)) { core->glClear(GL_STENCIL_BUFFER_BIT); }
+			draw_init();
 
 			auto t_old_location = main_camera->get_root_component()->get_location();
 			auto t_new_location = t_old_location + main_camera->get_camera_component()->get_right_axis() * -vr_delta;
@@ -327,10 +323,7 @@ void GameManager::vr_pass() {
 	// mix pass -- mix left and right pic
 	{
 		vr_rt_mix->use();
-		core->glClearColor(background_color.r_f(), background_color.g_f(), background_color.b_f(), background_color.a_f());
-		core->glClear(GL_COLOR_BUFFER_BIT);
-		if (core->glIsEnabled(GL_DEPTH_TEST)) { core->glClear(GL_DEPTH_BUFFER_BIT); }
-		if (core->glIsEnabled(GL_STENCIL_TEST)) { core->glClear(GL_STENCIL_BUFFER_BIT); }
+		draw_init();
 
 		auto m_shader = AssetManager::get_shader("vr_mix");
 		if (m_shader != nullptr && vr_rt->get_attach_textures().size() >= 2) {
@@ -350,6 +343,44 @@ void GameManager::vr_pass() {
 	if (vr_rt_mix->get_attach_textures().size() > 0) {
 		scene_texture = vr_rt_mix->get_attach_textures()[0].texture;
 	}
+}
+void GameManager::shader_toy_pass() {
+
+	// get time
+	auto t_time_cur = std::chrono::system_clock::now();
+	auto t_time_cur_s = std::chrono::duration_cast<std::chrono::milliseconds>(t_time_cur.time_since_epoch());
+	float t_time = (t_time_cur_s - t_time_begin_s).count() / 1000.0f;
+
+	for (uint i = 0; i < 4; ++i) {
+		auto stbr = shader_toy_buffer_rts[i];
+		stbr->use();
+		draw_init();
+		std::string t_name = "shader_toy_buffer_"; t_name.push_back(i + 'a');
+		auto t_shader = AssetManager::get_shader(t_name);
+		if (t_shader != nullptr) {
+			t_shader->set_vec3("iResolution", CVector3D(gl->width(), gl->height(), 0.0f));
+
+		}
+		draw_scene(t_shader->get_name());
+
+		stbr->un_use();
+	}
+
+	shader_toy_rt->use();
+	draw_init();
+	auto t_shader = AssetManager::get_shader("shader_toy_img");
+	if (t_shader != nullptr) {
+		t_shader->use();
+		t_shader->set_vec3("iResolution", CVector3D(gl->width(), gl->height(), 0.0f));
+		t_shader->set_float("iTime", t_time);
+	}
+	draw_scene(t_shader->get_name());
+	shader_toy_rt->un_use();
+
+	if (shader_toy_rt->get_attach_textures().size() > 0) {
+		scene_texture = shader_toy_rt->get_attach_textures()[0].texture;
+	}
+
 }
 
 void GameManager::draw_scene(const std::string& shader) {
@@ -387,6 +418,12 @@ void GameManager::draw_border(const std::string& shader) {
 	}
 
 }
+void GameManager::draw_init() {
+	core->glClearColor(background_color.r_f(), background_color.g_f(), background_color.b_f(), background_color.a_f());
+	core->glClear(GL_COLOR_BUFFER_BIT);
+	if (core->glIsEnabled(GL_DEPTH_TEST)) { core->glClear(GL_DEPTH_BUFFER_BIT); }
+	if (core->glIsEnabled(GL_STENCIL_TEST)) { core->glClear(GL_STENCIL_BUFFER_BIT); }
+}
 
 void GameManager::init_rt() {
 	if (scene_rt != nullptr) scene_rt.reset();
@@ -407,6 +444,7 @@ void GameManager::init_rt() {
 
 	init_pick_rt();
 	init_vr_rt();
+	init_shader_toy_rt();
 }
 void GameManager::init_pick_rt() {
 	if(pick_rt != nullptr) pick_rt.reset();
@@ -431,6 +469,17 @@ void GameManager::init_vr_rt() {
 	vr_rt_mix = CREATE_CLASS(RenderTarget);
 	if (vr_rt_mix != nullptr) {
 		vr_rt_mix->init_normal(gl->width(), gl->height());
+	}
+}
+void GameManager::init_shader_toy_rt() {
+	if (shader_toy_rt != nullptr) shader_toy_rt.reset();
+	shader_toy_rt = CREATE_CLASS(RenderTarget);
+	if (shader_toy_rt != nullptr) { shader_toy_rt->init_simple(gl->width(), gl->height()); }
+
+	for (auto& stbr : shader_toy_buffer_rts) {
+		if (stbr != nullptr) stbr.reset();
+		stbr = CREATE_CLASS(RenderTarget);
+		if (stbr != nullptr) { stbr->init_simple(gl->width(), gl->height()); }
 	}
 }
 

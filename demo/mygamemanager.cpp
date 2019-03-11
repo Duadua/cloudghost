@@ -114,6 +114,7 @@ void MyGameManager::begin_play(QOpenGLWidget* gl) {
 	}
 
 	// vr_delta = 0.5f;
+	b_use_shader_toy = true;
 
 }
 

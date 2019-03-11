@@ -329,6 +329,21 @@
     <None Include="resources\shaders\vr_mix.frag">
       <Filter>resources\shaders</Filter>
     </None>
+    <None Include="resources\shaders\shadertoy_img.frag">
+      <Filter>resources\shaders</Filter>
+    </None>
+    <None Include="resources\shaders\shadertoy_buffer_a.frag">
+      <Filter>resources\shaders</Filter>
+    </None>
+    <None Include="resources\shaders\shadertoy_buffer_b.frag">
+      <Filter>resources\shaders</Filter>
+    </None>
+    <None Include="resources\shaders\shadertoy_buffer_c.frag">
+      <Filter>resources\shaders</Filter>
+    </None>
+    <None Include="resources\shaders\shadertoy_buffer_d.frag">
+      <Filter>resources\shaders</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Text Include="resources\models\txt\cube.txt">

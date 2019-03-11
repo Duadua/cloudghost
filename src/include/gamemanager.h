@@ -75,6 +75,7 @@ public:									// used for qt ui
 	GET_SET(bool, b_use_vr);
 	GET_SET(float, vr_delta);
 	GET_SET(PostProcessType, pp_type);
+	GET_SET(bool, b_use_shader_toy);
 
 protected:
 	static GameManager* instance;
@@ -85,9 +86,13 @@ protected:
 	// ui shading setting
 	CColor background_color;
 	CColor border_color;			// 物体边框颜色
+
 	bool b_use_vr;
 	float vr_delta;
+
 	PostProcessType pp_type;		// 当前后处理效果
+
+	bool b_use_shader_toy;
 
 private:
 	void main_bind_input();
@@ -105,22 +110,26 @@ private:
 	SPTR_RenderTarget pick_rt;
 	SPTR_RenderTarget vr_rt;
 	SPTR_RenderTarget vr_rt_mix;
+	SPTR_RenderTarget shader_toy_rt;
+	SPTR_RenderTarget shader_toy_buffer_rts[4];
 	SPTR_Texture2D scene_texture;
 	void scene_pass();
 	void pick_pass();					// 拾取阶段
 	void base_pass();
 	void post_process_pass();
 	void vr_pass();
+	void shader_toy_pass();
 
 	void init_rt();
 	void init_pick_rt();
 	void init_vr_rt();
+	void init_shader_toy_rt();
 
 	void draw_scene(const std::string& shader);
 	void draw_all_objs(const std::string& shader);
 	void draw_border(const std::string& shader);
 
-	
+	void draw_init();
 
 private:
 	QOpenGLFunctions_3_3_Core * core;
@@ -147,5 +156,9 @@ private:
 	uint cur_pick_object_id;
 	uint cur_pick_component_id;
 	void mouse_released();
+
+// time
+private:
+		
 
 };
