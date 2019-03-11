@@ -59,6 +59,12 @@ public:
 	void set_polygon_mode(uint front_mode = GL_FILL, uint back_mode = GL_LINE);
 	void set_cull_face(bool enable = false, uint mode = GL_BACK, uint front_face = GL_CCW);
 
+public:									// used for qt ui
+	GET_SET(CColor, background_color);
+	GET_SET(CColor, border_color);
+	GET_SET(bool, b_use_vr);
+	GET_SET(float, vr_delta);
+
 protected:
 	static GameManager* instance;
 	

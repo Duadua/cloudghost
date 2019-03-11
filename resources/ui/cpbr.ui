@@ -29,22 +29,47 @@
      <height>29</height>
     </rect>
    </property>
-   <widget class="QMenu" name="menu">
+   <widget class="QMenu" name="menu_start">
     <property name="title">
      <string>开始</string>
     </property>
    </widget>
-   <addaction name="menu"/>
+   <widget class="QMenu" name="menu_shading">
+    <property name="title">
+     <string>渲染选项</string>
+    </property>
+    <addaction name="red_blue_3d"/>
+    <addaction name="eye_delta"/>
+    <addaction name="separator"/>
+   </widget>
+   <addaction name="menu_start"/>
+   <addaction name="menu_shading"/>
   </widget>
   <widget class="QToolBar" name="mainToolBar">
    <attribute name="toolBarArea">
     <enum>TopToolBarArea</enum>
    </attribute>
    <attribute name="toolBarBreak">
-    <bool>false</bool>
+    <bool>true</bool>
    </attribute>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
+  <action name="red_blue_3d">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>红蓝3D</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+V</string>
+   </property>
+  </action>
+  <action name="eye_delta">
+   <property name="text">
+    <string>双眼视距</string>
+   </property>
+  </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <resources>
