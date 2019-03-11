@@ -13,7 +13,10 @@ vec4 vr_mix() {
 
 //				0,			l_color.g,	l_color.b,	1
 //				r_color.r,	r_color.g,	0,			1
-	return vec4(r_color.g, l_color.g, 0, 1);
+
+	float t_l = (l_color.g + l_color.b + l_color.r) / 3.0;
+	float t_r = (r_color.r + r_color.g + r_color.b) / 3.0;
+	return vec4(t_l*1.3, t_r*0.3, t_r*0.7, 1.0);
 }
 
 void main() {

@@ -113,6 +113,8 @@ void MyGameManager::begin_play(QOpenGLWidget* gl) {
 		s_light->use(main_shader->get_name());
 	}
 
+	// vr_delta = 0.5f;
+
 }
 
 void MyGameManager::tick() {
