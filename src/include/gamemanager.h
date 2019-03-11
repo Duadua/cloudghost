@@ -13,6 +13,16 @@ class QMouseEvent;
 class QWheelEvent;
 class QOpenGLWidget;
 
+enum PostProcessType {
+	NOPE,					// 原色
+	GRAY,					// 灰度
+	INVERS,					// 反相
+	BLUR,					// 模糊
+	SHARPEN,				// 锐化
+	EDGE_DET,				// 边缘检测
+	
+};
+
 class GameManagerImpl {
 public:
 	virtual ~GameManagerImpl() {}
@@ -64,6 +74,7 @@ public:									// used for qt ui
 	GET_SET(CColor, border_color);
 	GET_SET(bool, b_use_vr);
 	GET_SET(float, vr_delta);
+	GET_SET(PostProcessType, pp_type);
 
 protected:
 	static GameManager* instance;
@@ -71,11 +82,12 @@ protected:
 	SPTR_CameraObject main_camera;
 	SPTR_Shader main_shader;
 
-	// gl state
+	// ui shading setting
 	CColor background_color;
 	CColor border_color;			// 物体边框颜色
 	bool b_use_vr;
 	float vr_delta;
+	PostProcessType pp_type;		// 当前后处理效果
 
 private:
 	void main_bind_input();

@@ -22,7 +22,9 @@ private:
 
 private:
 	Ui::CPBRClass ui;
+	void init_ui();
 
 public slots:
-	void trigger_menu_shading(QAction* action);
+	void trigger_rb_3d();
+	void select_pp(QAction* act);
 };

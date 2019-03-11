@@ -38,9 +38,24 @@
     <property name="title">
      <string>渲染选项</string>
     </property>
-    <addaction name="red_blue_3d"/>
-    <addaction name="eye_delta"/>
+    <widget class="QMenu" name="menu_post_process">
+     <property name="title">
+      <string>后期处理</string>
+     </property>
+     <addaction name="action_pp_normal"/>
+     <addaction name="action_pp_gray"/>
+     <addaction name="action_pp_invers"/>
+     <addaction name="action_pp_blur"/>
+     <addaction name="action_pp_sharpen"/>
+     <addaction name="action_pp_edge_det"/>
+    </widget>
+    <addaction name="action_color_bg"/>
+    <addaction name="action_color_border"/>
     <addaction name="separator"/>
+    <addaction name="action_rb_3d"/>
+    <addaction name="action_eye_delta"/>
+    <addaction name="separator"/>
+    <addaction name="menu_post_process"/>
    </widget>
    <addaction name="menu_start"/>
    <addaction name="menu_shading"/>
@@ -50,11 +65,11 @@
     <enum>TopToolBarArea</enum>
    </attribute>
    <attribute name="toolBarBreak">
-    <bool>true</bool>
+    <bool>false</bool>
    </attribute>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
-  <action name="red_blue_3d">
+  <action name="action_rb_3d">
    <property name="checkable">
     <bool>true</bool>
    </property>
@@ -65,9 +80,85 @@
     <string>Ctrl+V</string>
    </property>
   </action>
-  <action name="eye_delta">
+  <action name="action_eye_delta">
    <property name="text">
     <string>双眼视距</string>
+   </property>
+  </action>
+  <action name="action_pp_gray">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>灰度</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+S, Ctrl+Q</string>
+   </property>
+  </action>
+  <action name="action_pp_normal">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>原色</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+S, Ctrl+S</string>
+   </property>
+  </action>
+  <action name="action_color_bg">
+   <property name="text">
+    <string>背景颜色</string>
+   </property>
+  </action>
+  <action name="action_color_border">
+   <property name="text">
+    <string>边框颜色</string>
+   </property>
+  </action>
+  <action name="action_pp_invers">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>反相</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+S, Ctrl+W</string>
+   </property>
+  </action>
+  <action name="action_pp_blur">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>模糊</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+S, Ctrl+E</string>
+   </property>
+  </action>
+  <action name="action_pp_sharpen">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>锐化</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+S, Ctrl+R</string>
+   </property>
+  </action>
+  <action name="action_pp_edge_det">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>边缘检测</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+S, Ctrl+T</string>
    </property>
   </action>
  </widget>

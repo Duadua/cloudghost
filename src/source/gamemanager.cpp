@@ -59,13 +59,17 @@ void GameManager::init(QOpenGLWidget* gl) {
 		main_bind_input();
 	}
 
-	// gl 状态初始化
+	// ui setting init
 	{
 		background_color = CColor(205, 220, 232);
 		border_color = CColor(221, 161, 18);
-		b_use_vr = true;
+		b_use_vr = false;
 		vr_delta = 0.1f;
+		pp_type = PostProcessType::NOPE;
+	}
 
+	// gl state init
+	{
 		set_depth_test(true);
 		set_stencil_test(true, GL_NOTEQUAL, 1, 0xff, GL_KEEP, GL_REPLACE, GL_REPLACE);
 		set_blend(true, GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -112,7 +116,7 @@ void GameManager::draw(QOpenGLWidget* gl) {
 		else { base_pass(); }
 
 		// pass 3
-		post_process_pass();
+		if(pp_type != PostProcessType::NOPE) post_process_pass();
 
 	}
 }
@@ -221,6 +225,7 @@ void GameManager::post_process_pass() {
 		p_shader->use();
 		if (scene_texture != nullptr) { scene_texture->bind(0); }
 		p_shader->set_int("u_texture", 0);
+		p_shader->set_uint("u_pp_type", pp_type);
 	}
 
 	draw_scene(p_shader->get_name());

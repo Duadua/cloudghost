@@ -5,13 +5,30 @@
 
 CPBR::CPBR(QWidget *parent) : QMainWindow(parent) {
 	// init ui
-	{
-		ui.setupUi(this);
-		connect(ui.menu_shading, SIGNAL(triggered(QAction*)), this, SLOT(trigger_menu_shading(QAction*)));
-	}
+	{ init_ui(); }
 
 	init_gl_view(geometry().top() + 50, geometry().left() + 50, geometry().width() - 100, geometry().height() -100);
 }
+
+void CPBR::init_ui() {
+	ui.setupUi(this);
+
+	// init shading menu
+	{
+		connect(ui.action_rb_3d, SIGNAL(triggered()), this, SLOT(trigger_rb_3d()));
+
+		auto ag = new QActionGroup(this);
+		ag->addAction(ui.action_pp_normal);
+		ag->addAction(ui.action_pp_gray);
+		ag->addAction(ui.action_pp_invers);
+		ag->addAction(ui.action_pp_blur);
+		ag->addAction(ui.action_pp_sharpen);
+		ag->addAction(ui.action_pp_edge_det);
+		ui.action_pp_normal->setChecked(true);
+		connect(ag, SIGNAL(triggered(QAction*)), this, SLOT(select_pp(QAction*)));
+	}
+}
+
 CPBR::~CPBR() { delete gl_view; }
 
 void CPBR::init_gl_view(int a, int b, int w, int h) {
@@ -24,10 +41,26 @@ void CPBR::resizeEvent(QResizeEvent *event) {
 	gl_view->resize( geometry().width() - 100, geometry().height() - 100);
 }
 
-void CPBR::trigger_menu_shading(QAction* action) {
-	// toggle use red_blue_3d
-	if (action->objectName().compare("red_blue_3d") == 0) {
-		GameManager::get_instance()->set_b_use_vr(!GameManager::get_instance()->get_b_use_vr());
+void CPBR::trigger_rb_3d() { GameManager::get_instance()->set_b_use_vr(!GameManager::get_instance()->get_b_use_vr()); }
+
+void CPBR::select_pp(QAction* act) {
+	if (act->objectName().compare("action_pp_normal") == 0) {
+		GameManager::get_instance()->set_pp_type(PostProcessType::NOPE);
+	}
+	else if (act->objectName().compare("action_pp_gray") == 0) {
+		GameManager::get_instance()->set_pp_type(PostProcessType::GRAY);
+	}
+	else if (act->objectName().compare("action_pp_invers") == 0) {
+		GameManager::get_instance()->set_pp_type(PostProcessType::INVERS);
+	}
+	else if (act->objectName().compare("action_pp_blur") == 0) {
+		GameManager::get_instance()->set_pp_type(PostProcessType::BLUR);
+	}
+	else if (act->objectName().compare("action_pp_sharpen") == 0) {
+		GameManager::get_instance()->set_pp_type(PostProcessType::SHARPEN);
+	}
+	else if (act->objectName().compare("action_pp_edge_det") == 0) {
+		GameManager::get_instance()->set_pp_type(PostProcessType::EDGE_DET);
 	}
 }
 
