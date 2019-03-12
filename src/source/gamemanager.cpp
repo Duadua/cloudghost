@@ -50,6 +50,7 @@ void GameManager::init(QOpenGLWidget* gl) {
 
 		// material
 		AssetManager::load_materials("resources/materials/txt/default_material.txt");
+		AssetManager::load_materials("resources/materials/txt/single_material.txt");
 		AssetManager::load_texture("resources/textures/txt/texture_default.txt");
 		AssetManager::load_texture("resources/textures/txt/texture_default.png");
 
@@ -95,12 +96,11 @@ void GameManager::init(QOpenGLWidget* gl) {
 	// begin play
 	{
 		begin_play(gl);						// 设置模型等
-		main_begin_play();		
+		main_begin_play();					 
 	}
 
 }
 void GameManager::draw(QOpenGLWidget* gl) {
-
 	// exec input
 	{
 		InputManager::exec_action();
@@ -130,7 +130,9 @@ void GameManager::draw(QOpenGLWidget* gl) {
 		}
 		
 		// pass 3
-		if(pp_type != PostProcessType::NOPE) post_process_pass();
+		if (pp_type != PostProcessType::NOPE && !(pp_type == PostProcessType::GRAY && b_use_vr)) {
+			post_process_pass();
+		}
 
 	}
 }
@@ -355,7 +357,7 @@ void GameManager::shader_toy_pass() {
 		auto stbr = shader_toy_buffer_rts[i];
 		stbr->use();
 		draw_init();
-		std::string t_name = "shader_toy_buffer_"; t_name.push_back(i + 'a');
+		std::string t_name = "shader_toy_buffer_" + char_to_string(i + 'a');
 		auto t_shader = AssetManager::get_shader(t_name);
 		if (t_shader != nullptr) {
 			t_shader->set_vec3("iResolution", CVector3D(gl->width(), gl->height(), 0.0f));
@@ -395,25 +397,25 @@ void GameManager::draw_scene(const std::string& shader) {
 }
 void GameManager::draw_all_objs(const std::string& shader) {
 	for (auto go : game_objects) {
-		if (go->get_id() != cur_pick_object_id) { 
+		if (go.second->get_id() != cur_pick_object_id) { 
 			core->glStencilFunc(GL_ALWAYS, 0, 0xff); 
-			go->draw(shader);
+			go.second->draw(shader);
 		} // 总是通过测试 -- 且通过后置0
 	} // 先画没被选中的 -- 保证最后写入的 1 不被 0 覆盖
 	for (auto go : game_objects) {
-		if (go->get_id() == cur_pick_object_id) { 
+		if (go.second->get_id() == cur_pick_object_id) { 
 			core->glStencilFunc(GL_ALWAYS, 1, 0xff); 
-			go->draw(shader);
+			go.second->draw(shader);
 		} // 总是通过测试 -- 且通过后置1
 	}
 
 }
 void GameManager::draw_border(const std::string& shader) {
 	for (auto go : game_objects) {
-		if (go->get_id() == cur_pick_object_id) {
-			go->get_root_component()->set_all_border(true);
-			go->draw(shader);
-			go->get_root_component()->set_all_border(false);
+		if (go.second->get_id() == cur_pick_object_id) {
+			go.second->get_root_component()->set_all_border(true);
+			go.second->draw(shader);
+			go.second->get_root_component()->set_all_border(false);
 		}	// 拾取 -- 绘制边框
 	}
 
@@ -588,29 +590,29 @@ GameManager* GameManager::get_instance() {
 
 }
 
-void GameManager::add_game_object(const QString& key, SPTR_GameObject value) {
+void GameManager::add_game_object(const std::string& key, SPTR_GameObject value) {
 	if (game_objects.count(key)) return;
-	game_objects.insert(key, value);
+	game_objects.insert(std::make_pair(key, value));
 }
 
 void GameManager::main_bind_input() {
 	for (auto it = game_objects.begin(); it != game_objects.end(); ++it) {
-		(*it)->bind_input();
+		(*it).second->bind_input();
 	}
 }
 void GameManager::main_begin_play() {
 	for (auto it = game_objects.begin(); it != game_objects.end(); ++it) {
-		(*it)->begin_play();
+		(*it).second->begin_play();
 	}
 }
 void GameManager::main_tick() {
 	for (auto it = game_objects.begin(); it != game_objects.end(); ++it) {
-		(*it)->tick();
+		(*it).second->tick();
 	}
 }
 void GameManager::main_draw(const std::string& shader) {
 	for (auto it = game_objects.begin(); it != game_objects.end(); ++it) {
-		(*it)->draw(shader);
+		(*it).second->draw(shader);
 	}
 }
 
@@ -646,4 +648,18 @@ void GameManager::mouse_pressed_over() { InputManager::mouse_pressed_over(); }
 void GameManager::exec_key_pressed_event(QKeyEvent* event, QOpenGLWidget* gl)	{ InputManager::exec_key_pressed_event(event, gl); }
 void GameManager::exec_key_release_event(QKeyEvent* event, QOpenGLWidget* gl)	{ InputManager::exec_key_release_event(event, gl); }
 void GameManager::key_pressed_over()											{ InputManager::key_pressed_over(); }
+
+// ==========================================================================================
+
+std::string GameManager::uint_to_string(uint ui) { return std::to_string(ui); }
+
+std::string GameManager::char_to_string(char c) {
+	std::string res("");
+	res.push_back(c);
+	return res;
+}
+
+
+
+
 

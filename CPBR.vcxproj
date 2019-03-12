@@ -134,6 +134,7 @@
     <ClCompile Include="src\source\cglwidget.cpp" />
     <ClCompile Include="src\source\component.cpp" />
     <ClCompile Include="src\source\cpbr.cpp" />
+    <ClCompile Include="src\source\cubeobject.cpp" />
     <ClCompile Include="src\source\delegate.cpp" />
     <ClCompile Include="src\source\freecamera.cpp" />
     <ClCompile Include="src\source\gamemanager.cpp" />
@@ -177,6 +178,7 @@
     <ClInclude Include="src\include\cameradata.h" />
     <ClInclude Include="src\include\cameraobject.h" />
     <ClInclude Include="src\include\component.h" />
+    <ClInclude Include="src\include\cubeobject.h" />
     <ClInclude Include="src\include\delegate.h" />
     <ClInclude Include="src\include\freecamera.h" />
     <ClInclude Include="src\include\gamemanager.h" />

@@ -4,7 +4,8 @@
 #include "gameobject.h"
 #include "rendertarget.h"
 #include "cameraobject.h"
-#include <QMap>
+#include <map>
+#include <string>
 #include <memory>
 #include <QOpenGLFunctions_3_3_core>
 
@@ -60,7 +61,7 @@ public:
 	virtual ~GameManager();
 	static GameManager* get_instance();
 
-	void add_game_object(const QString& key, SPTR_GameObject value);
+	void add_game_object(const std::string& key, SPTR_GameObject value);
 
 	// gl state
 	void set_depth_test(bool enable = true, uint depth_func = GL_LESS, uint depth_mask = GL_TRUE);
@@ -135,7 +136,7 @@ private:
 	QOpenGLFunctions_3_3_Core * core;
 	QOpenGLWidget* gl;
 
-	QMap<QString, SPTR_GameObject> game_objects;
+	std::map<std::string, SPTR_GameObject> game_objects;
 
 public:
 	void exec_mouse_wheeeel_event(QWheelEvent* event, QOpenGLWidget* gl);
@@ -160,5 +161,11 @@ private:
 // time
 private:
 		
+// string helper function
+
+public:
+	
+	static std::string uint_to_string(uint ui);
+	static std::string char_to_string(char c);
 
 };

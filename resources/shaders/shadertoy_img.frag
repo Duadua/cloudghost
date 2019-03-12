@@ -24,8 +24,7 @@ uniform float     iSampleRate;				// sound sample rate (i.e., 44100)
 
 #define AA 1
 
-float hash1( float n )
-{
+float hash1( float n ) {
     return fract(sin(n)*43758.5453123);
 }
 
@@ -33,16 +32,14 @@ float hash1( float n )
 const float PI = 3.1415926535897932384626433832795;
 const float PHI = 1.6180339887498948482045868343656;
 
-vec3 forwardSF( float i, float n) 
-{
+vec3 forwardSF( float i, float n) {
     float phi = 2.0*PI*fract(i/PHI);
     float zi = 1.0 - (2.0*i+1.0)/n;
     float sinTheta = sqrt( 1.0 - zi*zi);
     return vec3( cos(phi)*sinTheta, sin(phi)*sinTheta, zi);
 }
 
-float almostIdentity( float x, float m, float n )
-{
+float almostIdentity( float x, float m, float n ) {
     if( x>m ) return x;
     float a = 2.0*n - m;
     float b = 2.0*m - 3.0*n;
@@ -51,8 +48,7 @@ float almostIdentity( float x, float m, float n )
 }
 
 
-vec2 map( vec3 q )
-{
+vec2 map( vec3 q ) {
     q *= 100.0;
 
     vec2 res = vec2( q.y, 2.0 );
@@ -65,8 +61,6 @@ vec2 map( vec3 q )
     q.y -= 1.5*ani;
     float x = abs(q.x);
     
-    // x = almostIdentity( x, 1.0, 0.5 ); // remove discontinuity (http://www.iquilezles.org/www/articles/functions/functions.htm)
-
         
     float y = q.y;
     float z = q.z;
@@ -80,8 +74,7 @@ vec2 map( vec3 q )
     return res;
 }
 
-vec2 intersect( in vec3 ro, in vec3 rd )
-{
+vec2 intersect( in vec3 ro, in vec3 rd ) {
 	const float maxd = 1.0;
 
     vec2 res = vec2(0.0);
@@ -98,8 +91,7 @@ vec2 intersect( in vec3 ro, in vec3 rd )
 	return res;
 }
 
-vec3 calcNormal( in vec3 pos )
-{
+vec3 calcNormal( in vec3 pos ) {
     vec3 eps = vec3(0.005,0.0,0.0);
 	return normalize( vec3(
            map(pos+eps.xyy).x - map(pos-eps.xyy).x,
@@ -107,8 +99,7 @@ vec3 calcNormal( in vec3 pos )
            map(pos+eps.yyx).x - map(pos-eps.yyx).x ) );
 }
 
-float calcAO( in vec3 pos, in vec3 nor )
-{
+float calcAO( in vec3 pos, in vec3 nor ) {
 	float ao = 0.0;
     for( int i=0; i<64; i++ )
     {
@@ -122,8 +113,7 @@ float calcAO( in vec3 pos, in vec3 nor )
     return clamp( ao, 0.0, 1.0 );
 }
 
-vec3 render( in vec2 p )
-{
+vec3 render( in vec2 p ) {
     //-----------------------------------------------------
     // camera
     //-----------------------------------------------------
@@ -151,8 +141,7 @@ vec3 render( in vec2 p )
     vec2 res = intersect(ro,rd);
     float t = res.x;
 
-    if( t>0.0 )
-    {
+    if( t>0.0 ) {
         vec3 pos = ro + t*rd;
         vec3 nor = calcNormal(pos);
 		vec3 ref = reflect( rd, nor );

@@ -31,6 +31,8 @@ public:
 	GET_SET(bool, is_border);
 	void set_all_border(bool border);			// 设置 此 MC 和 其子MC 都为 border
 
+	GET(std::vector<SPTR_SceneComponent>, child_components);
+
 protected:
 	WPTR_SceneComponent parent_component;
 	std::vector<SPTR_SceneComponent> child_components;

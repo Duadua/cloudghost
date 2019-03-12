@@ -175,6 +175,9 @@
     <ClCompile Include="src\source\rendertarget.cpp">
       <Filter>src\source</Filter>
     </ClCompile>
+    <ClCompile Include="src\source\cubeobject.cpp">
+      <Filter>src\source</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <QtUic Include="resources\ui\cpbr.ui">
@@ -290,6 +293,9 @@
       <Filter>math\include</Filter>
     </ClInclude>
     <ClInclude Include="src\include\rendertarget.h">
+      <Filter>src\include</Filter>
+    </ClInclude>
+    <ClInclude Include="src\include\cubeobject.h">
       <Filter>src\include</Filter>
     </ClInclude>
   </ItemGroup>
