@@ -32,11 +32,11 @@ int main(int argc, char *argv[]) {
 	*/
 
 	// gen mesh txt
-	/*QString path = "cone.txt";
+	/*QString path = "hhh.txt";
 	if (!MeshTxtGen::gen_mesh_txt(path.toStdString(), MeshTxtGenType::CONE)) {
 		qDebug() << "cannot gen mesh txt" << endl;
-	}
-	*/
+	}*/
+	
 	
 	// gen material txt
 	/*QString path = "default_material.txt";
@@ -93,6 +93,7 @@ int main(int argc, char *argv[]) {
 	MyGameManager gm;
 	CPBR w;
 	w.show();
+
 	return a.exec();
 
 }

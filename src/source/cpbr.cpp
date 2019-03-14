@@ -3,11 +3,12 @@
 #include "gamemanager.h"
 #include <QDebug>
 
-CPBR::CPBR(QWidget *parent) : QMainWindow(parent) {
+CPBR::CPBR(QWidget *parent) : QMainWindow(parent), gl_view(nullptr) {
 	// init ui
 	{ init_ui(); }
 
 	init_gl_view(geometry().top() + 50, geometry().left() + 50, geometry().width() - 100, geometry().height() -100);
+
 }
 
 void CPBR::init_ui() {
@@ -32,9 +33,13 @@ void CPBR::init_ui() {
 	{
 		connect(ui.action_st_show, SIGNAL(triggered()), this, SLOT(trigger_shader_toy()));
 	}
+	
 }
 
-CPBR::~CPBR() { delete gl_view; }
+CPBR::~CPBR() { 
+	delete gl_view; 
+	
+}
 
 void CPBR::init_gl_view(int a, int b, int w, int h) {
 	gl_view = new CGLWidget(this);

@@ -4,7 +4,6 @@
 #include "mygamemanager.h"
 #include "meshcomponent.h"
 #include "lightobject.h"
-#include <QOpenGLWidget>
 
 #include "plane.h"
 #include "cubeobject.h"
@@ -25,7 +24,7 @@ void MyGameManager::load_asset() {
 
 }
 
-void MyGameManager::begin_play(QOpenGLWidget* gl) {
+void MyGameManager::begin_play() {
 	// 生成 plan
 	{
 		auto plane = CREATE_CLASS(PlaneObject);
@@ -42,6 +41,8 @@ void MyGameManager::begin_play(QOpenGLWidget* gl) {
 				add_game_object(t_name , t_cube);
 				t_cube->get_root_component()->set_location(j * 2.0f, 0.0f, 2.0f * ((float)i-3));
 				t_cube->get_root_component()->set_scale(0.5f, 3.0f, 1.0f);
+				if(j == 0) t_cube->set_material("emerald");
+				else t_cube->set_material("jade");
 
 			}
 		}
@@ -79,7 +80,7 @@ void MyGameManager::begin_play(QOpenGLWidget* gl) {
 
 	// shader 静态参数赋值
 	CMatrix4x4 projection;
-	projection.perspective(45.0f, (GLfloat)gl->width() / gl->height(), 0.1f, 100.0f);
+	projection.perspective(45.0f, (GLfloat)get_viewport_info().heigh / get_viewport_info().width, 0.1f, 100.0f);
 	if (main_shader != nullptr) {
 		main_shader->use();
 		main_shader->set_mat4("u_projection", projection);

@@ -7,7 +7,6 @@
 #include <map>
 #include <string>
 #include <memory>
-#include <QOpenGLFunctions_3_3_core>
 
 class QKeyEvent;
 class QMouseEvent;
@@ -24,12 +23,18 @@ enum PostProcessType {
 	
 };
 
+struct ViewportInfo {		// 视口信息
+	uint width;
+	uint heigh;
+	ViewportInfo(uint w = 800, uint h = 600) : width(w), heigh(h){}
+};
+
 class GameManagerImpl {
 public:
 	virtual ~GameManagerImpl() {}
 
 	virtual void load_asset() = 0;							// 加载资源
-	virtual void begin_play(QOpenGLWidget* gl) = 0;			// 设置模型等
+	virtual void begin_play() = 0;							// 设置模型等
 	virtual void tick() = 0;								// 每帧变化的参数
 	virtual void map_input() = 0;							// 绑定输入
 
@@ -40,16 +45,16 @@ public:
 class GameManager : public GameManagerImpl {
 
 public:
-	void init(QOpenGLWidget* gl);
-	void draw(QOpenGLWidget* gl);
+	void init();
+	void draw();
 
-	void pre_init(QOpenGLWidget* gl);
-	void resize(QOpenGLWidget* gl, int w, int h);
-	void exit(QOpenGLWidget* gl);
+	void pre_init(uint w = 800, uint h = 600);
+	void resize(uint w, uint h);
+	void exit();
 
 public:
 	virtual void load_asset() override {}
-	virtual void begin_play(QOpenGLWidget* gl) override {}
+	virtual void begin_play() override {}
 	virtual void tick() override {}
 	virtual void map_input() override {}
 
@@ -81,6 +86,8 @@ public:									// used for qt ui
 protected:
 	static GameManager* instance;
 	
+	GET(ViewportInfo, viewport_info);
+
 	SPTR_CameraObject main_camera;
 	SPTR_Shader main_shader;
 
@@ -133,21 +140,9 @@ private:
 	void draw_init();
 
 private:
-	QOpenGLFunctions_3_3_Core * core;
-	QOpenGLWidget* gl;
+	ViewportInfo viewport_info;
 
 	std::map<std::string, SPTR_GameObject> game_objects;
-
-public:
-	void exec_mouse_wheeeel_event(QWheelEvent* event, QOpenGLWidget* gl);
-	void exec_mouse_moveeee_event(QMouseEvent* event, QOpenGLWidget* gl);
-	void exec_mouse_pressed_event(QMouseEvent* event, QOpenGLWidget* gl);
-	void exec_mouse_release_event(QMouseEvent* event, QOpenGLWidget* gl);
-	void mouse_pressed_over();
-
-	void exec_key_pressed_event(QKeyEvent* event, QOpenGLWidget* gl);
-	void exec_key_release_event(QKeyEvent* event, QOpenGLWidget* gl);
-	void key_pressed_over();
 
 private:
 	// 鼠标事件 --拾取用
@@ -162,7 +157,6 @@ private:
 private:
 		
 // string helper function
-
 public:
 	
 	static std::string uint_to_string(uint ui);

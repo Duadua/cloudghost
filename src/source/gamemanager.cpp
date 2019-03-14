@@ -5,18 +5,13 @@
 #include "inputmanager.h"
 #include <chrono>					// get time
 #include <assert.h>
-#include <QKeyEvent>
-#include <QMouseEvent>
-#include <QWheelEvent>
-#include <QOpenGLWidget>
 
 const auto t_time_begin_s = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch());
 
-void GameManager::init(QOpenGLWidget* gl) {
+void GameManager::init() {
 
 	// init gl_core
-	core = QOpenGLContext::currentContext()->versionFunctions<QOpenGLFunctions_3_3_Core>();
-	this->gl = gl;
+	
 	b_mouse_clicked = false;
 
 	// load asset
@@ -55,6 +50,7 @@ void GameManager::init(QOpenGLWidget* gl) {
 		AssetManager::load_texture("resources/textures/txt/texture_default.png");
 
 		load_asset();						// 加载资源
+		
 	}
 
 	main_camera = set_main_camera();	// 绑定主相机
@@ -95,18 +91,13 @@ void GameManager::init(QOpenGLWidget* gl) {
 	
 	// begin play
 	{
-		begin_play(gl);						// 设置模型等
+		begin_play();						// 设置模型等
 		main_begin_play();					 
 	}
+	
 
 }
-void GameManager::draw(QOpenGLWidget* gl) {
-	// exec input
-	{
-		InputManager::exec_action();
-		InputManager::exec_axis_key_pressing();
-	}
-
+void GameManager::draw() {
 	// update
 	{
 		tick();
@@ -165,14 +156,14 @@ void GameManager::pick_pass() {
 		p_shader->set_uint("u_component_id", 0);
 	}
 
-	core->glStencilMask(0x00);
+	glStencilMask(0x00);
 	draw_all_objs(p_shader->get_name());
-	core->glStencilMask(0xff);
+	glStencilMask(0xff);
 
 	if (b_mouse_clicked) {
 		b_mouse_clicked = false;
 		uint data[3] = { 0 };
-		core->glReadPixels(mouse_clicked_x, mouse_clicked_y, 1, 1, GL_RGB_INTEGER, GL_UNSIGNED_INT, &data);
+		glReadPixels(mouse_clicked_x, mouse_clicked_y, 1, 1, GL_RGB_INTEGER, GL_UNSIGNED_INT, &data);
 		cur_pick_object_id = data[0];
 		cur_pick_component_id = data[1];
 	}
@@ -199,18 +190,18 @@ void GameManager::base_pass() {
 
 	// draw all objects
 	{
-		core->glStencilMask(0xff);							// 允许写入模板缓冲
+		glStencilMask(0xff);							// 允许写入模板缓冲
 		draw_all_objs(main_shader->get_name());
 	}
 
 	// draw border
 	{
-		core->glStencilFunc(GL_NOTEQUAL, 1, 0xff);			// 之前置 1 了的 不通过
-		core->glStencilMask(0x00);							// 不允许写入模板缓冲
-		//core->glDisable(GL_DEPTH_TEST);
+		glStencilFunc(GL_NOTEQUAL, 1, 0xff);			// 之前置 1 了的 不通过
+		glStencilMask(0x00);							// 不允许写入模板缓冲
+		//glDisable(GL_DEPTH_TEST);
 		draw_border(t_shader->get_name());
-		//core->glEnable(GL_DEPTH_TEST);
-		core->glStencilMask(0xff);							// 重新允许写入模板缓冲
+		//glEnable(GL_DEPTH_TEST);
+		glStencilMask(0xff);							// 重新允许写入模板缓冲
 	}
 
 	scene_rt->un_use();
@@ -249,7 +240,7 @@ void GameManager::vr_pass() {
 
 		// left eyes scene
 		{
-			core->glDrawBuffer(GL_COLOR_ATTACHMENT0);
+			glDrawBuffer(GL_COLOR_ATTACHMENT0);
 			draw_init();
 
 			auto t_old_location = main_camera->get_root_component()->get_location();
@@ -268,23 +259,23 @@ void GameManager::vr_pass() {
 			}
 
 			// draw all objects
-			core->glStencilMask(0xff);							// 允许写入模板缓冲
+			glStencilMask(0xff);							// 允许写入模板缓冲
 			draw_all_objs(main_shader->get_name());
 
 			// draw border
-			core->glStencilFunc(GL_NOTEQUAL, 1, 0xff);			// 之前置 1 了的 不通过
-			core->glStencilMask(0x00);							// 不允许写入模板缓冲
-																//core->glDisable(GL_DEPTH_TEST);
+			glStencilFunc(GL_NOTEQUAL, 1, 0xff);			// 之前置 1 了的 不通过
+			glStencilMask(0x00);							// 不允许写入模板缓冲
+																//glDisable(GL_DEPTH_TEST);
 			draw_border(t_shader->get_name());
-			//core->glEnable(GL_DEPTH_TEST);
-			core->glStencilMask(0xff);							// 重新允许写入模板缓冲
+			//glEnable(GL_DEPTH_TEST);
+			glStencilMask(0xff);							// 重新允许写入模板缓冲
 
 			main_camera->get_root_component()->set_location(t_old_location);
 		}
 
 		// right eyes scene
 		{
-			core->glDrawBuffer(GL_COLOR_ATTACHMENT1);
+			glDrawBuffer(GL_COLOR_ATTACHMENT1);
 			draw_init();
 
 			auto t_old_location = main_camera->get_root_component()->get_location();
@@ -304,16 +295,16 @@ void GameManager::vr_pass() {
 			}
 
 			// draw all objects
-			core->glStencilMask(0xff);							// 允许写入模板缓冲
+			glStencilMask(0xff);							// 允许写入模板缓冲
 			draw_all_objs(main_shader->get_name());
 
 			// draw border
-			core->glStencilFunc(GL_NOTEQUAL, 1, 0xff);			// 之前置 1 了的 不通过
-			core->glStencilMask(0x00);							// 不允许写入模板缓冲
-																//core->glDisable(GL_DEPTH_TEST);
+			glStencilFunc(GL_NOTEQUAL, 1, 0xff);			// 之前置 1 了的 不通过
+			glStencilMask(0x00);							// 不允许写入模板缓冲
+																//glDisable(GL_DEPTH_TEST);
 			draw_border(t_shader->get_name());
-			//core->glEnable(GL_DEPTH_TEST);
-			core->glStencilMask(0xff);							// 重新允许写入模板缓冲
+			//glEnable(GL_DEPTH_TEST);
+			glStencilMask(0xff);							// 重新允许写入模板缓冲
 
 			main_camera->get_root_component()->set_location(t_old_location);
 
@@ -360,7 +351,7 @@ void GameManager::shader_toy_pass() {
 		std::string t_name = "shader_toy_buffer_" + char_to_string(i + 'a');
 		auto t_shader = AssetManager::get_shader(t_name);
 		if (t_shader != nullptr) {
-			t_shader->set_vec3("iResolution", CVector3D(gl->width(), gl->height(), 0.0f));
+			t_shader->set_vec3("iResolution", CVector3D(viewport_info.width, viewport_info.heigh, 0.0f));
 
 		}
 		draw_scene(t_shader->get_name());
@@ -373,7 +364,7 @@ void GameManager::shader_toy_pass() {
 	auto t_shader = AssetManager::get_shader("shader_toy_img");
 	if (t_shader != nullptr) {
 		t_shader->use();
-		t_shader->set_vec3("iResolution", CVector3D(gl->width(), gl->height(), 0.0f));
+		t_shader->set_vec3("iResolution", CVector3D(viewport_info.width, viewport_info.heigh, 0.0f));
 		t_shader->set_float("iTime", t_time);
 	}
 	draw_scene(t_shader->get_name());
@@ -386,25 +377,25 @@ void GameManager::shader_toy_pass() {
 }
 
 void GameManager::draw_scene(const std::string& shader) {
-	core->glDisable(GL_DEPTH_TEST);
+	glDisable(GL_DEPTH_TEST);
 	auto s_mesh = AssetManager::get_mesh("rect");
 	if (s_mesh != nullptr) {
 		s_mesh->set_use_default_mt(false);
 		s_mesh->draw(shader);
 		s_mesh->set_use_default_mt(true);
 	}
-	core->glEnable(GL_DEPTH_TEST);
+	glEnable(GL_DEPTH_TEST);
 }
 void GameManager::draw_all_objs(const std::string& shader) {
 	for (auto go : game_objects) {
 		if (go.second->get_id() != cur_pick_object_id) { 
-			core->glStencilFunc(GL_ALWAYS, 0, 0xff); 
+			glStencilFunc(GL_ALWAYS, 0, 0xff); 
 			go.second->draw(shader);
 		} // 总是通过测试 -- 且通过后置0
 	} // 先画没被选中的 -- 保证最后写入的 1 不被 0 覆盖
 	for (auto go : game_objects) {
 		if (go.second->get_id() == cur_pick_object_id) { 
-			core->glStencilFunc(GL_ALWAYS, 1, 0xff); 
+			glStencilFunc(GL_ALWAYS, 1, 0xff); 
 			go.second->draw(shader);
 		} // 总是通过测试 -- 且通过后置1
 	}
@@ -421,17 +412,17 @@ void GameManager::draw_border(const std::string& shader) {
 
 }
 void GameManager::draw_init() {
-	core->glClearColor(background_color.r_f(), background_color.g_f(), background_color.b_f(), background_color.a_f());
-	core->glClear(GL_COLOR_BUFFER_BIT);
-	if (core->glIsEnabled(GL_DEPTH_TEST)) { core->glClear(GL_DEPTH_BUFFER_BIT); }
-	if (core->glIsEnabled(GL_STENCIL_TEST)) { core->glClear(GL_STENCIL_BUFFER_BIT); }
+	glClearColor(background_color.r_f(), background_color.g_f(), background_color.b_f(), background_color.a_f());
+	glClear(GL_COLOR_BUFFER_BIT);
+	if (glIsEnabled(GL_DEPTH_TEST)) { glClear(GL_DEPTH_BUFFER_BIT); }
+	if (glIsEnabled(GL_STENCIL_TEST)) { glClear(GL_STENCIL_BUFFER_BIT); }
 }
 
 void GameManager::init_rt() {
 	if (scene_rt != nullptr) scene_rt.reset();
 	scene_rt = CREATE_CLASS(RenderTarget);
 	if (scene_rt != nullptr) {
-		if (!scene_rt->init_normal(gl->width(), gl->height())) {
+		if (!scene_rt->init_normal(viewport_info.width, viewport_info.heigh)) {
 			qDebug() << "create rt fail";
 		}
 	}
@@ -439,7 +430,7 @@ void GameManager::init_rt() {
 	if (pp_rt != nullptr) pp_rt.reset();
 	pp_rt = CREATE_CLASS(RenderTarget);
 	if (pp_rt != nullptr) {
-		if (!pp_rt->init_normal(gl->width(), gl->height())) {
+		if (!pp_rt->init_normal(viewport_info.width, viewport_info.heigh)) {
 			qDebug() << "create rt fail";
 		}
 	}
@@ -452,8 +443,8 @@ void GameManager::init_pick_rt() {
 	if(pick_rt != nullptr) pick_rt.reset();
 	pick_rt = CREATE_CLASS(RenderTarget);
 	if (pick_rt != nullptr) {
-		pick_rt->add_attach_texture(GL_COLOR_ATTACHMENT0, gl->width(), gl->height(), GL_RGB32UI, GL_RGB_INTEGER, GL_UNSIGNED_INT)
-			->add_attach_renderbuffer(gl->width(), gl->height())
+		pick_rt->add_attach_texture(GL_COLOR_ATTACHMENT0, viewport_info.width, viewport_info.heigh, GL_RGB32UI, GL_RGB_INTEGER, GL_UNSIGNED_INT)
+			->add_attach_renderbuffer(viewport_info.width, viewport_info.heigh)
 			->init();
 	}
 }
@@ -461,46 +452,43 @@ void GameManager::init_vr_rt() {
 	if (vr_rt != nullptr) vr_rt.reset();
 	vr_rt = CREATE_CLASS(RenderTarget);
 	if (vr_rt != nullptr) {
-		vr_rt->add_attach_texture(GL_COLOR_ATTACHMENT0, gl->width(), gl->height())
-			->add_attach_texture(GL_COLOR_ATTACHMENT1, gl->width(), gl->height())
-			->add_attach_renderbuffer(gl->width(), gl->height())
+		vr_rt->add_attach_texture(GL_COLOR_ATTACHMENT0, viewport_info.width, viewport_info.heigh)
+			->add_attach_texture(GL_COLOR_ATTACHMENT1, viewport_info.width, viewport_info.heigh)
+			->add_attach_renderbuffer(viewport_info.width, viewport_info.heigh)
 			->init();
 	}
 
 	if (vr_rt_mix != nullptr) vr_rt_mix.reset();
 	vr_rt_mix = CREATE_CLASS(RenderTarget);
 	if (vr_rt_mix != nullptr) {
-		vr_rt_mix->init_normal(gl->width(), gl->height());
+		vr_rt_mix->init_normal(viewport_info.width, viewport_info.heigh);
 	}
 }
 void GameManager::init_shader_toy_rt() {
 	if (shader_toy_rt != nullptr) shader_toy_rt.reset();
 	shader_toy_rt = CREATE_CLASS(RenderTarget);
-	if (shader_toy_rt != nullptr) { shader_toy_rt->init_simple(gl->width(), gl->height()); }
+	if (shader_toy_rt != nullptr) { shader_toy_rt->init_simple(viewport_info.width, viewport_info.heigh); }
 
 	for (auto& stbr : shader_toy_buffer_rts) {
 		if (stbr != nullptr) stbr.reset();
 		stbr = CREATE_CLASS(RenderTarget);
-		if (stbr != nullptr) { stbr->init_simple(gl->width(), gl->height()); }
+		if (stbr != nullptr) { stbr->init_simple(viewport_info.width, viewport_info.heigh); }
 	}
 }
 
 // ===========================================================================
 
-void GameManager::pre_init(QOpenGLWidget* gl) {
+void GameManager::pre_init(uint w, uint h) {
 
-	// init gl mouse cursor
-	gl->setCursor(Qt::CrossCursor);
-	gl->setFocusPolicy(Qt::StrongFocus);
-
-	// init input manager
-	InputManager::init(gl);
+	
 }
-void GameManager::resize(QOpenGLWidget* gl, int w, int h) {
-	core->glViewport(0, 0, w, h);
+void GameManager::resize(uint w, uint h) {
+	viewport_info.width = w;
+	viewport_info.heigh = h;
+	glViewport(0, 0, w, h);
 
 	CMatrix4x4 projection;
-	float t_ratio = (float) gl->width() / gl->height();
+	float t_ratio = (float)w / (h == 0 ? 1 : h);
 	projection.perspective(45.0f, t_ratio, 0.1f, 100.0f);
 	//projection.frustum(-0.1f, 0.1f, -0.1f / t, 0.1f / t, 0.1f, 100.0f);
 	//projection.ortho(-10.0f, 10.0f, -10.0f / t, 10.0f / t, 0.01f, 1000.0f);
@@ -525,7 +513,7 @@ void GameManager::resize(QOpenGLWidget* gl, int w, int h) {
 	init_rt();
 	
 }
-void GameManager::exit(QOpenGLWidget* gl) {
+void GameManager::exit() {
 	InputManager::exit();
 }
 
@@ -540,36 +528,36 @@ SPTR_CameraObject GameManager::set_main_camera() {
 SPTR_Shader	GameManager::set_main_shader() { return AssetManager::get_shader("default"); }
 
 void GameManager::set_depth_test(bool enable, uint depth_func, uint depth_mask) {
-	if (enable) { core->glEnable(GL_DEPTH_TEST); }
-	else { core->glDisable(GL_DEPTH_TEST); }
+	if (enable) { glEnable(GL_DEPTH_TEST); }
+	else { glDisable(GL_DEPTH_TEST); }
 
-	core->glDepthMask(depth_mask);
-	core->glDepthFunc(depth_func);
+	glDepthMask(depth_mask);
+	glDepthFunc(depth_func);
 }
 void GameManager::set_stencil_test(bool enable, uint func, uint ref, uint mask, uint fail, uint zfail, uint zpass) {
-	if (enable) { core->glEnable(GL_STENCIL_TEST); }
-	else { core->glDisable(GL_STENCIL_TEST); }
+	if (enable) { glEnable(GL_STENCIL_TEST); }
+	else { glDisable(GL_STENCIL_TEST); }
 	
-	core->glStencilFunc(func, ref, mask);
-	core->glStencilOp(fail, zfail, zpass);
+	glStencilFunc(func, ref, mask);
+	glStencilOp(fail, zfail, zpass);
 	
 }
 void GameManager::set_blend(bool enable, uint sfactor, uint dfactor) {
-	if (enable) { core->glEnable(GL_BLEND); }
-	else { core->glDisable(GL_BLEND); }
+	if (enable) { glEnable(GL_BLEND); }
+	else { glDisable(GL_BLEND); }
 
-	core->glBlendFunc(sfactor, dfactor);
+	glBlendFunc(sfactor, dfactor);
 }
 void GameManager::set_polygon_mode(uint front_mode, uint back_mode) {
-	core->glPolygonMode(GL_FRONT, front_mode);
-	core->glPolygonMode(GL_BACK, back_mode);
+	glPolygonMode(GL_FRONT, front_mode);
+	glPolygonMode(GL_BACK, back_mode);
 }
 void GameManager::set_cull_face(bool enable, uint mode, uint front_face) {
-	if (enable) { core->glEnable(GL_CULL_FACE); }
-	else { core->glDisable(GL_CULL_FACE); }
+	if (enable) { glEnable(GL_CULL_FACE); }
+	else { glDisable(GL_CULL_FACE); }
 
-	core->glCullFace(mode);
-	core->glFrontFace(front_face);			// 默认逆时针 -- CCW -- 此状态同时也影响 polygon_mode
+	glCullFace(mode);
+	glFrontFace(front_face);			// 默认逆时针 -- CCW -- 此状态同时也影响 polygon_mode
 }
 
 // ===========================================================================
@@ -635,19 +623,9 @@ void GameManager::mouse_released() {
 	if (delta < CMath::eps) {
 		b_mouse_clicked = true;
 		mouse_clicked_x = InputManager::get_input_data().mouse_cur_pos.x();
-		mouse_clicked_y = gl->height() - InputManager::get_input_data().mouse_cur_pos.y() - 1;
+		mouse_clicked_y = viewport_info.heigh - InputManager::get_input_data().mouse_cur_pos.y() - 1;
 	}
 }
-
-void GameManager::exec_mouse_wheeeel_event(QWheelEvent* event, QOpenGLWidget* gl) { InputManager::exec_mouse_wheeeel_event(event, gl); }
-void GameManager::exec_mouse_moveeee_event(QMouseEvent* event, QOpenGLWidget* gl) { InputManager::exec_mouse_moveeee_event(event, gl); }
-void GameManager::exec_mouse_pressed_event(QMouseEvent* event, QOpenGLWidget* gl) { InputManager::exec_mouse_pressed_event(event, gl); }
-void GameManager::exec_mouse_release_event(QMouseEvent* event, QOpenGLWidget* gl) { InputManager::exec_mouse_release_event(event, gl); }
-void GameManager::mouse_pressed_over() { InputManager::mouse_pressed_over(); }
-
-void GameManager::exec_key_pressed_event(QKeyEvent* event, QOpenGLWidget* gl)	{ InputManager::exec_key_pressed_event(event, gl); }
-void GameManager::exec_key_release_event(QKeyEvent* event, QOpenGLWidget* gl)	{ InputManager::exec_key_release_event(event, gl); }
-void GameManager::key_pressed_over()											{ InputManager::key_pressed_over(); }
 
 // ==========================================================================================
 

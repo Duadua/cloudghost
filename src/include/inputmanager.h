@@ -58,6 +58,8 @@ public:
 
 	static const InputData& get_input_data();							
 
+	static QOpenGLWidget*	gl;
+
 private:
 	// mouse
 	static QTimer timer_mouse_pressed_over;					// 清空鼠标单击 flag 用
@@ -75,7 +77,6 @@ private:
 	static InputData	cur_input_data;
 	static InputState	cur_input_state;
 
-	static QOpenGLWidget*	gl;
 
 	InputManager(){}
 

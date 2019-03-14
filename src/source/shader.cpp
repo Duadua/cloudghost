@@ -13,8 +13,9 @@ SPTR_Shader Shader::use() {
 void Shader::compile(const std::string& v_code, const std::string& f_code, const std::string& g_code) {
 	uint v_id, f_id, g_id;
 	core = QOpenGLContext::currentContext()->versionFunctions<QOpenGLFunctions_3_3_Core>();
-	shader_id = core->glCreateProgram();
-
+	//core = QOpenGLContext::currentContext()->functions();
+	if(core != nullptr) shader_id = core->glCreateProgram();
+	
 	// compile vertex shader
 	v_id = compile_shader(v_code, GL_VERTEX_SHADER);
 
@@ -29,6 +30,8 @@ void Shader::compile(const std::string& v_code, const std::string& f_code, const
 	core->glDeleteShader(v_id);
 	core->glDeleteShader(f_id);
 	if(g_code.compare("") != 0) core->glDeleteShader(g_id);
+	
+	
 }
 
 uint Shader::compile_shader(const std::string& code, uint type) {

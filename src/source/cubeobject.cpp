@@ -11,7 +11,6 @@ CubeObject::CubeObject() {
 	auto mc = CREATE_CLASS(MeshComponent);
 	mc->attach_to(rt);
 	mc->set_mesh("cube");
-	set_material("default");
 }
 
 void CubeObject::begin_play() {
@@ -24,5 +23,5 @@ void CubeObject::tick() {
 
 void CubeObject::set_material(std::string name) {
 	auto t_mesh = AssetManager::get_mesh("cube");
-	t_mesh->get_render_datas()[0]->set_material_name(name);
+	t_mesh->render_data(0).material = name;
 }

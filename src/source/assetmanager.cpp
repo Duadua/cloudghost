@@ -29,6 +29,7 @@ SPTR_Shader AssetManager::load_shader(const std::string& key, const std::string&
 	map_shaders[key]->set_name(key);
 	map_shaders[key]->compile(v_code, f_code, g_code);
 	return map_shaders[key];
+	
 }
 SPTR_Shader AssetManager::get_shader(const std::string& key) {
 	if (!map_shaders.count(key)) {
