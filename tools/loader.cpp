@@ -43,4 +43,33 @@ std::string load_txt(const std::string& path) {
 	catch (std::ifstream::failure e) { res = ""; }
 	return res;
 }
+bool save_txt(const std::string& path, const std::string& source) {
+	std::ofstream fs;
+	fs.open(path, std::ios::trunc | std::ios::out);
+	if (!fs.is_open()) { return false; }
 
+	fs.write(source.c_str(), source.length());
+	fs.close();
+}
+
+// ========================================
+
+CDebug* CDebug::instance = nullptr;
+CDebug* CDebug::get_instance() {
+	if (instance != nullptr) { instance = new CDebug(); }
+	return instance;
+}
+CDebug::CDebug() { data = ""; ss.clear(); } 
+
+void CDebug::log(std::string str) {
+	data += "\n =========================" + str + "\n =========================\n";
+}
+
+CDebug& CDebug::operator << (const std::string& str) {
+	ss << "\n =========================" << str << "\n =========================\n";
+	ss.str(data);
+	return (*this);
+}
+bool CDebug::save(const std::string& path) { return save_txt(path, data); }
+
+CDebug& c_debug() { return (*CDebug::get_instance()); }

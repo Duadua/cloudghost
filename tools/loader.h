@@ -23,3 +23,29 @@ std::string get_name_of_file(const std::string& path);
 void get_all_files_from_dir(std::string& path, std::vector<std::string>& res);
 
 std::string load_txt(const std::string& path);
+bool		save_txt(const std::string& path, const std::string& source);
+
+// ===========================================================================
+
+class CDebug {
+public:
+	static CDebug* get_instance();
+	~CDebug() {}
+
+	void log(std::string str);
+
+	CDebug& operator << (const std::string& str);
+
+	std::string get_data() const { return data; }
+	bool save(const std::string& path);
+
+private:
+	std::string data;
+	std::ostringstream ss;
+
+	CDebug();
+	static CDebug* instance;
+};
+
+CDebug& c_debug();
+

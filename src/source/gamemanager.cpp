@@ -131,11 +131,11 @@ void GameManager::draw() {
 	
 		if(!b_use_shader_toy) {
 			// pass 1
-			pick_pass();			// 得到拾取贴图 -- 用来判断哪个物体被拾取
+			//pick_pass();			// 得到拾取贴图 -- 用来判断哪个物体被拾取
 			// pass 2
-			if (b_use_vr) { vr_pass(); }
-			else { base_pass(); }
-			//base_pass();
+			//if (b_use_vr) { vr_pass(); }
+			//else { base_pass(); }
+			base_pass();
 		}
 		else {
 			shader_toy_pass();		// render_shader_toy
@@ -202,6 +202,7 @@ void GameManager::base_pass() {
 		main_shader->set_mat4("u_view", main_camera->get_camera_component()->get_view_mat());
 		main_shader->set_vec3("u_view_pos", main_camera->get_root_component()->get_location());
 	}
+	
 	auto t_shader = AssetManager::get_shader("solid_color");
 	if (t_shader != nullptr) {
 		t_shader->use();
@@ -215,18 +216,18 @@ void GameManager::base_pass() {
 
 	// draw all objects
 	{
-		glStencilMask(0xff);							// 允许写入模板缓冲
+		//glStencilMask(0xff);							// 允许写入模板缓冲
 		draw_all_objs(main_shader->get_name());
 	}
 
 	// draw border
 	{
-		glStencilFunc(GL_NOTEQUAL, 1, 0xff);			// 之前置 1 了的 不通过
-		glStencilMask(0x00);							// 不允许写入模板缓冲
+		//glStencilFunc(GL_NOTEQUAL, 1, 0xff);			// 之前置 1 了的 不通过
+		//glStencilMask(0x00);							// 不允许写入模板缓冲
 		//glDisable(GL_DEPTH_TEST);
-		draw_border(t_shader->get_name());
+		//draw_border(t_shader->get_name());
 		//glEnable(GL_DEPTH_TEST);
-		glStencilMask(0xff);							// 重新允许写入模板缓冲
+		//glStencilMask(0xff);							// 重新允许写入模板缓冲
 	}
 	scene_rt->un_use();
 	
@@ -414,13 +415,13 @@ void GameManager::draw_all_objs(const std::string& shader) {
 	set_polygon_mode(front_polygon_mode, back_polygon_mode);
 	for (auto go : game_objects) {
 		if (go.second->get_id() != cur_pick_object_id) { 
-			glStencilFunc(GL_ALWAYS, 0, 0xff); 
+			//glStencilFunc(GL_ALWAYS, 0, 0xff); 
 			go.second->draw(shader);
 		} // 总是通过测试 -- 且通过后置0
 	} // 先画没被选中的 -- 保证最后写入的 1 不被 0 覆盖
 	for (auto go : game_objects) {
 		if (go.second->get_id() == cur_pick_object_id) { 
-			glStencilFunc(GL_ALWAYS, 1, 0xff); 
+			//glStencilFunc(GL_ALWAYS, 1, 0xff); 
 			go.second->draw(shader);
 		} // 总是通过测试 -- 且通过后置1
 	}
@@ -505,8 +506,8 @@ void GameManager::init_shader_toy_rt() {
 // ===========================================================================
 
 void GameManager::pre_init(uint w, uint h) {
-	
-	
+	viewport_info.width = w;
+	viewport_info.heigh = h;
 }
 void GameManager::resize(uint w, uint h) {
 	viewport_info.width = w;

@@ -13,6 +13,7 @@
 #include "tools/qtimagehelper.h"
 
 #include "plane.h"
+#include "loader.h"
 
 int main(int argc, char *argv[]) {
 	QApplication a(argc, argv);
@@ -89,6 +90,9 @@ int main(int argc, char *argv[]) {
 		//qDebug() << v[0] << " " << v[1] << " " << v[2];
 	}
 	
+	{
+		c_debug() << "test debug";
+	}
 
 	MyGameManager gm;
 	CPBR w;
