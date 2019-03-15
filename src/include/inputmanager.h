@@ -4,6 +4,7 @@
 #include "delegate.h"
 #include <QSet>
 #include <QFlag>
+#include <QPoint>
 
 class QTimer;
 DECLARE_AUTO_PTR(QTimer)

@@ -1,6 +1,5 @@
 #include "assetmanager.h"
 #include <QImage>
-#include <QDebug>
 
 std::map<std::string, SPTR_Shader> AssetManager::map_shaders;
 std::map<std::string, SPTR_Mesh> AssetManager::map_meshs;
@@ -21,7 +20,7 @@ SPTR_Shader AssetManager::load_shader(const std::string& key, const std::string&
 	}
 
 	if (v_code.compare("") == 0 || f_code.compare("") == 0) {
-		qDebug() << "【error】【asset】【shader】cannot load shader " << QString::fromStdString(key);
+		c_debug() << "【warning】【asset】【shader】cannot load shader \"" + key + "\"";
 		return nullptr;
 	}
 
@@ -33,7 +32,7 @@ SPTR_Shader AssetManager::load_shader(const std::string& key, const std::string&
 }
 SPTR_Shader AssetManager::get_shader(const std::string& key) {
 	if (!map_shaders.count(key)) {
-		qDebug() << "【error】【asset】【shader】no shader calls " << QString::fromStdString(key) << endl;
+		c_debug() << "【warning】【asset】【shader】no shader calls \"" + key + "\"";
 		return map_shaders[key] = nullptr;
 	}
 	return map_shaders[key];
@@ -88,7 +87,7 @@ SPTR_Mesh AssetManager::load_mesh(const std::string& key, const std::string& src
 }
 SPTR_Mesh AssetManager::get_mesh(const std::string& key) {
 	if (!map_meshs.count(key)) {
-		qDebug() << "【error】【asset】【mesh】no mesh calls " << QString::fromStdString(key) << endl;
+		c_debug() << "【warning】【asset】【mesh】no mesh calls \"" + key + "\"";
 		return map_meshs[key] = nullptr;
 	}
 	return map_meshs[key];
@@ -125,7 +124,7 @@ bool AssetManager::load_materials(const std::string& src, SourceType source_type
 }
 SPTR_Material AssetManager::get_material(const std::string& key) {
 	if (!map_materials.count(key)) {
-		qDebug() << "【warning】【asset】【material】no material calls " << QString::fromStdString(key) << endl;
+		c_debug() << "【warning】【asset】【material】no material calls \"" + key + "\"";
 		return map_materials[key] = nullptr;
 	}
 	return map_materials[key];
@@ -178,7 +177,7 @@ bool AssetManager::load_texture(const std::string& path, SourceType source_type)
 }
 SPTR_Texture2D AssetManager::get_texture(const std::string& key) {
 	if (!map_textures.count(key)) {
-		qDebug() << "【error】【asset】【texture】no texture calls " << QString::fromStdString(key) << endl;
+		c_debug() << "【warning】【asset】【texture】no texture calls \"" + key + "\"";
 		return map_textures[key] = nullptr;
 	}
 	return map_textures[key];

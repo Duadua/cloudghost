@@ -24,8 +24,8 @@ void GameManager::init() {
 		glewExperimental = true;
 		uint flag = glewInit();
 		if (flag != GLEW_OK) {
-			qDebug() << "【error】【glew】init fail";
-			qDebug("%s\n", glewGetErrorString(flag));
+			c_debug() << "【error】【glew】init fail";
+			c_debug() << (char*)glewGetErrorString(flag);
 		}
 		else { }
 	}
@@ -450,7 +450,7 @@ void GameManager::init_rt() {
 	scene_rt = CREATE_CLASS(RenderTarget);
 	if (scene_rt != nullptr) {
 		if (!scene_rt->init_normal(viewport_info.width, viewport_info.heigh)) {
-			qDebug() << "create rt fail";
+			c_debug() << "create rt fail";
 		}
 	}
 
@@ -458,7 +458,7 @@ void GameManager::init_rt() {
 	pp_rt = CREATE_CLASS(RenderTarget);
 	if (pp_rt != nullptr) {
 		if (!pp_rt->init_normal(viewport_info.width, viewport_info.heigh)) {
-			qDebug() << "create rt fail";
+			c_debug() << "create rt fail";
 		}
 	}
 

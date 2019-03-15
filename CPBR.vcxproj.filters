@@ -59,6 +59,9 @@
     <Filter Include="resources\textures\txt">
       <UniqueIdentifier>{a918e3d4-485e-42fe-8652-017d8cf682f1}</UniqueIdentifier>
     </Filter>
+    <Filter Include="resources\logs">
+      <UniqueIdentifier>{5fa81130-129b-45bc-a992-ad1cb506a503}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="demo\main.cpp">
@@ -405,6 +408,9 @@
     </Text>
     <Text Include="resources\materials\txt\default_material.txt">
       <Filter>resources\materials\txt</Filter>
+    </Text>
+    <Text Include="resources\logs\log.txt">
+      <Filter>resources\logs</Filter>
     </Text>
   </ItemGroup>
   <ItemGroup>

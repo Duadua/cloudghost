@@ -3,7 +3,6 @@
 #include "gameobject.h"
 #include "mygamemanager.h"
 #include <QtWidgets/QApplication>
-#include <QDebug>
 #include <QMatrix4x4>
 
 #include "tools/meshloader.h"
@@ -20,30 +19,23 @@ int main(int argc, char *argv[]) {
 	
 	/* test reflex
 	CObject* obj = ClassFactory::create_object("CObject");
-	qDebug() << QString::fromStdString(obj->get_class_info()->get_class_name()) << endl;
+	c_debug() << obj->get_class_info()->get_class_name();
 	
 	CObject* gobj = ClassFactory::create_object("GameObject");
-	qDebug() << QString::fromStdString(gobj->get_class_info()->get_class_name()) << endl;
-
-	auto com = ClassFactory::create_object("Component");
-	qDebug() << QString::fromStdString(com->get_class_info()->get_class_name()) << endl;
-
-	auto tmp = ClassFactory::create_object("CameraComponent");
-	qDebug() << QString::fromStdString(tmp->get_class_info()->get_class_name()) << endl;
+	c_debug() << gobj->get_class_info()->get_class_name();
 	*/
 
 	// gen mesh txt
 	/*QString path = "hhh.txt";
 	if (!MeshTxtGen::gen_mesh_txt(path.toStdString(), MeshTxtGenType::CONE)) {
-		qDebug() << "cannot gen mesh txt" << endl;
+		c_debug() << "cannot gen mesh txt";
 	}*/
-	
 	
 	// gen material txt
 	/*QString path = "default_material.txt";
 	MaterialData md("default", CVector3D(0.1f), CVector3D(0.7f), CVector3D(0.2f), 32.0f, "texture_default.txt", "texture_default.txt");
 	if (!MaterialGen::gen_material_txt(path.toStdString(), md)) {
-		qDebug() << "cannot gen material txt" << endl;
+		c_debug() << "cannot gen material txt";
 	}
 	*/
 
@@ -68,9 +60,9 @@ int main(int argc, char *argv[]) {
 		CMatrix4x4 t;
 		t.rotate(20.0f, 30.0f, 40.0f, 50.0f);
 		v = t * v;
-		qDebug() << QMatrix4x4(t.get_transpose().data());
-		qDebug() << v[0] << " " << v[1] << " " << v[2];
-		qDebug() << v.length();
+		//qDebug() << QMatrix4x4(t.get_transpose().data());
+		//qDebug() << v[0] << " " << v[1] << " " << v[2];
+		//qDebug() << v.length();
 
 	}
 	{
@@ -81,20 +73,17 @@ int main(int argc, char *argv[]) {
 		t.rotate_quaternion(t_r);
 		v = t * v;
 
-		qDebug() << QMatrix4x4(t.get_transpose().data());
-		qDebug() << v[0] << " " << v[1] << " " << v[2];
-		qDebug() << v.length();
+		//qDebug() << QMatrix4x4(t.get_transpose().data());
+		//qDebug() << v[0] << " " << v[1] << " " << v[2];
+		//qDebug() << v.length();
 
 		//qDebug() << ax[0] << " " << ax[1] << " " << ax[2];
 		//qDebug() << aa[0] << " " << aa[1] << " " << aa[2] << " " << aa[3];
 		//qDebug() << v[0] << " " << v[1] << " " << v[2];
 	}
 	
-	{
-		c_debug() << "test debug";
-		qDebug() << QString::fromStdString(c_debug().get_data());
-		c_debug().save("log.txt");
-	}
+	// test c_debug()
+	{ c_debug() << "【debug】start"; }
 
 	MyGameManager gm;
 	CPBR w;

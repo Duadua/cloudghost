@@ -6,7 +6,12 @@
 #include <vector>
 #include <sstream>
 #include <fstream>
-#include <QDebug>
+
+#ifndef NDEBUG
+#define C_DEBUG
+#endif
+
+#define C_DEBUG				// 临时
 
 enum SourceType {
 	BY_FILE,
@@ -37,11 +42,11 @@ public:
 	CDebug& operator << (const std::string& str);
 
 	std::string get_data() const { return data; }
-	bool save(const std::string& path);
 
 private:
 	std::string data;
 	std::ostringstream ss;
+	bool save(const std::string& path);
 
 	CDebug();
 	static CDebug* instance;

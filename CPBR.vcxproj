@@ -228,6 +228,7 @@
     <None Include="resources\shaders\vr_mix.frag" />
   </ItemGroup>
   <ItemGroup>
+    <Text Include="resources\logs\log.txt" />
     <Text Include="resources\materials\txt\cube_material.txt" />
     <Text Include="resources\materials\txt\default_material.txt" />
     <Text Include="resources\materials\txt\single_material.txt" />

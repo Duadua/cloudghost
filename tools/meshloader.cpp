@@ -1,7 +1,7 @@
 #include "meshloader.h"
 #include <map>
 #include <memory>
-#include <QDebug>
+#include <algorithm>
 
 std::vector<MVertex> MeshTxtGen::vertices;
 std::vector<MeshData> MeshTxtGen::mesh_datas;

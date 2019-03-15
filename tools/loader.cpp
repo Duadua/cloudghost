@@ -63,12 +63,18 @@ CDebug* CDebug::get_instance() {
 CDebug::CDebug() { data = ""; ss.clear(); } 
 
 void CDebug::log(std::string str) {
-	data += "# =========================\n\t" + str + "\n# =========================\n";
+#ifdef C_DEBUG
+	data += "# =========================\n\t" + str + "\n";
+	save("resources/logs/log.txt");
+#endif // C_DEBUG
 }
 
 CDebug& CDebug::operator << (const std::string& str) {
-	ss << "# =========================\n\t" << str << "\n# =========================\n";
+#ifdef C_DEBUG
+	ss << "# =========================\n\t" << str << "\n";
 	data = ss.str();
+	save("resources/logs/log.txt");
+#endif // C_DEBUG
 	return (*this);
 }
 bool CDebug::save(const std::string& path) { return save_txt(path, data); }

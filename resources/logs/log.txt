@@ -1,0 +1,6 @@
+# =========================
+	【debug】start
+# =========================
+	【warning】【asset】【shader】no shader calls ""
+# =========================
+	【warning】【asset】【material】no material calls ""

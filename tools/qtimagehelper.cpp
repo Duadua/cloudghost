@@ -1,7 +1,7 @@
 #include "qtimagehelper.h"
+#include "loader.h"
 #include <io.h>
 #include <fstream>
-#include <QDebug>
 #include <QImage>
 #include <QPainter>
 
@@ -17,7 +17,7 @@ bool QtImageHelper::data_to_png(const std::string& path, const SPTR_uchar data, 
 		}
 	}
 	if (img.save(QString::fromStdString(path), "png")) {
-		qDebug() << "save png : " << QString::fromStdString(path);
+		c_debug() << "save png : " << path;
 	}
 	
 	return true;
@@ -44,7 +44,6 @@ bool QtImageHelper::text_to_png(const std::string& path) {
 	memcpy(t_res.get(), t_data.get() + sizeof(uint) * 2, data_size);
 
 	auto t_pref = get_pref_of_file(path);
-	qDebug() << QString::fromStdString(t_pref);
 
 	return data_to_png(t_pref.append(".png"), t_res, width, heigh);
 }
@@ -65,7 +64,7 @@ bool QtImageHelper::repair_png(std::string& path) {
 // ===========================================================================
 
 bool QtImageHelper::repair_one_png(std::string& path) {
-	qDebug() << "repair : " << QString::fromStdString(path);
+	c_debug() << "repair : " << path;
 
 	std::ifstream fs;
 	fs.open(path, std::ios::binary);

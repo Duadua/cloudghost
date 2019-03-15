@@ -2,7 +2,7 @@
 #include <GL/glew.h>
 
 #include "shader.h"
-#include <QDebug>
+#include "loader.h"
 
 #include <GLFW/glfw3.h>
 
@@ -67,8 +67,7 @@ void Shader::check_compile_errors(uint id) {
 		glGetShaderInfoLog(id, 1024, NULL, res);
 		std::string info = "【error】【shader】【compile】\n";
 		info.append(res);
-		info.append("\n -- ----------------------------------------");
-		qDebug() << QString::fromStdString(info);
+		c_debug() << info;
 	}
 }
 void Shader::check_link_errors(uint id) {
@@ -79,8 +78,7 @@ void Shader::check_link_errors(uint id) {
 		glGetProgramInfoLog(id, 1024, NULL, res);
 		std::string info = "【error】【shader】【link】\n";
 		info.append(res);
-		info.append("\n -- ----------------------------------------");
-		qDebug() << QString::fromStdString(info);
+		c_debug() << info;
 	}
 }
 

@@ -1,7 +1,6 @@
 #include "cpbr.h"
 #include "cglwidget.h"
 #include "gamemanager.h"
-#include <QDebug>
 
 CPBR::CPBR(QWidget *parent) : QMainWindow(parent), gl_view(nullptr) {
 	// init ui

@@ -1,6 +1,5 @@
 #include "mesh.h"
 #include "assetmanager.h"
-#include <QDebug>
 
 IMPLEMENT_CLASS(Mesh)
 
