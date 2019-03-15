@@ -10,6 +10,10 @@
 #include <map>
 #include <string>
 
+#define GL_RGB				0x1907
+#define GL_BGRA				0x80E1
+#define GL_UNSIGNED_BYTE	0x1401
+
 class AssetManager {
 public:
 	static std::map<std::string, SPTR_Shader> map_shaders;

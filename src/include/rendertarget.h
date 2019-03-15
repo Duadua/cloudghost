@@ -5,7 +5,12 @@
 #include "cmath.h"
 #include "reflex.h"
 #include "texture2d.h"
-#include <QOpenGLFunctions_3_3_core>
+
+#define GL_DEPTH_STENCIL_ATTACHMENT 0x821A
+#define GL_DEPTH24_STENCIL8			0x88F0
+#define GL_RGB						0x1907
+#define GL_UNSIGNED_BYTE			0x1401
+#define GL_FRAMEBUFFER				0x8D40
 
 struct TextureBuffer {
 	SPTR_Texture2D texture;
@@ -35,8 +40,6 @@ private:
 	uint width;
 	uint heigh;
 
-private:
-	QOpenGLFunctions_3_3_Core * core;
 };
 
 // =====================================================================================
@@ -68,9 +71,6 @@ private:
 
 	std::vector<TextureBuffer> attach_textures;
 	std::vector<SPTR_RenderBuffer>  attach_renderbuffers;
-
-private:
-	QOpenGLFunctions_3_3_Core * core;
 
 };
 

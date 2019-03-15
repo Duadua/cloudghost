@@ -3,13 +3,12 @@
 #include "cmath.h"
 #include "reflex.h"
 #include <string>
-#include <QOpenGLFunctions_3_3_Core>
 
 DECLARE_AUTO_PTR(Shader)
 class Shader : public CObject, public std::enable_shared_from_this<Shader> {
 	DECLARE_CLASS(Shader)
 public:
-	Shader() {}
+	Shader();
 	virtual ~Shader();
 
 	GET_SET(std::string, name);
@@ -42,8 +41,6 @@ private:
 	std::string name;
 
 	uint shader_id;
-
-	QOpenGLFunctions_3_3_Core* core;
 
 	void check_compile_errors(uint id);
 	void check_link_errors(uint id);

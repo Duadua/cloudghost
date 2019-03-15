@@ -2,7 +2,6 @@
 
 #include "reflex.h"
 #include "tools/meshloader.h"
-#include <QOpenGLFunctions_3_3_Core>
 
 class RenderData : public CObject{
 	DECLARE_CLASS(RenderData)
@@ -25,7 +24,6 @@ private:
 
 	std::string material_name;
 
-	QOpenGLFunctions_3_3_Core * core;
 };
 DECLARE_AUTO_PTR(RenderData)
 

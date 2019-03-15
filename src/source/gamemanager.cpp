@@ -1,3 +1,6 @@
+#define GLEW_STATIC
+#include <GL/glew.h>
+
 #include "gameobject.h"
 #include "freecamera.h"
 #include "gamemanager.h"
@@ -6,12 +9,23 @@
 #include <chrono>					// get time
 #include <assert.h>
 
+#include <GLFW/glfw3.h>
+
 const auto t_time_begin_s = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch());
 
 void GameManager::init() {
 
-	// init gl_core
-	
+	// init glew
+	{
+		glewExperimental = true;
+		uint flag = glewInit();
+		if (flag != GLEW_OK) {
+			qDebug() << "【error】【glew】init fail";
+			qDebug("%s\n", glewGetErrorString(flag));
+		}
+		else { }
+	}
+		
 	b_mouse_clicked = false;
 
 	// load asset
@@ -479,7 +493,7 @@ void GameManager::init_shader_toy_rt() {
 // ===========================================================================
 
 void GameManager::pre_init(uint w, uint h) {
-
+	
 	
 }
 void GameManager::resize(uint w, uint h) {

@@ -80,7 +80,7 @@ void MyGameManager::begin_play() {
 
 	// shader 静态参数赋值
 	CMatrix4x4 projection;
-	projection.perspective(45.0f, (GLfloat)get_viewport_info().heigh / get_viewport_info().width, 0.1f, 100.0f);
+	projection.perspective(45.0f, (float)get_viewport_info().heigh / get_viewport_info().width, 0.1f, 100.0f);
 	if (main_shader != nullptr) {
 		main_shader->use();
 		main_shader->set_mat4("u_projection", projection);

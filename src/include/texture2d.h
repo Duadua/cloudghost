@@ -2,7 +2,6 @@
 
 #include "cmath.h"
 #include "reflex.h"
-#include <QOpenGLFunctions_3_3_Core>
 
 class Texture2D : public CObject {
 	DECLARE_CLASS(Texture2D)
@@ -32,7 +31,6 @@ public:
 	GET_SET(uint, filter_min);
 	GET_SET(uint, filter_max);
 
-
 private:
 	std::string name;
 
@@ -49,8 +47,5 @@ private:
 	uint filter_min;
 	uint filter_max;
 	
-private:
-	QOpenGLFunctions_3_3_Core * core;
-
 };
 DECLARE_AUTO_PTR(Texture2D)
