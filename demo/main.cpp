@@ -92,6 +92,8 @@ int main(int argc, char *argv[]) {
 	
 	{
 		c_debug() << "test debug";
+		qDebug() << QString::fromStdString(c_debug().get_data());
+		c_debug().save("log.txt");
 	}
 
 	MyGameManager gm;

@@ -50,24 +50,25 @@ bool save_txt(const std::string& path, const std::string& source) {
 
 	fs.write(source.c_str(), source.length());
 	fs.close();
+	return true;
 }
 
 // ========================================
 
 CDebug* CDebug::instance = nullptr;
 CDebug* CDebug::get_instance() {
-	if (instance != nullptr) { instance = new CDebug(); }
+	if (instance == nullptr) { instance = new CDebug(); }
 	return instance;
 }
 CDebug::CDebug() { data = ""; ss.clear(); } 
 
 void CDebug::log(std::string str) {
-	data += "\n =========================" + str + "\n =========================\n";
+	data += "# =========================\n\t" + str + "\n# =========================\n";
 }
 
 CDebug& CDebug::operator << (const std::string& str) {
-	ss << "\n =========================" << str << "\n =========================\n";
-	ss.str(data);
+	ss << "# =========================\n\t" << str << "\n# =========================\n";
+	data = ss.str();
 	return (*this);
 }
 bool CDebug::save(const std::string& path) { return save_txt(path, data); }
