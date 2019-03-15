@@ -3,6 +3,7 @@
 #include "cvector4d.h"
 #include "cquaternion.h"
 #include <memory>
+#include <string>
 
 class CMatrix4x4 {
 public:
@@ -27,6 +28,8 @@ public:
 	friend CMatrix4x4 operator * (const CMatrix4x4& a, const CMatrix4x4& b);
 	friend CVector4D operator * (const CMatrix4x4& a, const CVector4D& b);
 	friend CVector3D operator * (const CMatrix4x4& a, const CVector3D& b);
+	friend std::ostream& operator << (std::ostream& out, const CMatrix4x4& b);
+	std::string to_string() const;
 
 	// transform
 	CMatrix4x4& translate(const CVector3D& v);

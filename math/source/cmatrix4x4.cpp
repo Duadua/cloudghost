@@ -1,5 +1,6 @@
 #include "cmath.h"
 #include "cmatrix4x4.h"
+#include <sstream>
 
 CMatrix4x4::CMatrix4x4(const float* d, int cols, int rows) : scaled(1.0f) {
 	for (int i = 0; i < cols && i < 4; ++i) { for (int j = 0; j < rows && j < 4; ++j) {
@@ -44,6 +45,24 @@ CVector4D operator * (const CMatrix4x4& a, const CVector4D& b) {
 	return res;
 }
 CVector3D operator * (const CMatrix4x4& a, const CVector3D& b) { return (a*CVector4D(b)).xyz(); }
+
+std::ostream& operator << (std::ostream& out, const CMatrix4x4& b) {
+	out << "CMatrix4x4 (\n";
+	for (uint i = 0; i < 4; ++i) {
+		out << "\t\t";
+		for (uint j = 0; j < 4; ++j) {
+			out << std::to_string(b(i, j)) << " ";
+		}
+		out << "\n";
+	}
+	out << "\t)";
+	return out;
+}
+std::string CMatrix4x4::to_string() const {
+	std::ostringstream oss;
+	oss << (*this);
+	return oss.str();
+}
 
 CMatrix4x4& CMatrix4x4::translate(const CVector3D& v) {
 	CMatrix4x4 tmp((*this));

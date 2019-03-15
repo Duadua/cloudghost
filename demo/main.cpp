@@ -63,7 +63,7 @@ int main(int argc, char *argv[]) {
 		CMatrix4x4 t;
 		t.rotate(20.0f, 30.0f, 40.0f, 50.0f);
 		v = t * v;
-		//qDebug() << QMatrix4x4(t.get_transpose().data());
+		c_debug() << t.to_string();
 		//qDebug() << v[0] << " " << v[1] << " " << v[2];
 		//qDebug() << v.length();
 
