@@ -51,7 +51,10 @@ void CPBR::init_ui() {
 
 CPBR::~CPBR() { 
 	delete gl_view; 
-	
+}
+void CPBR::closeEvent(QCloseEvent *event) {
+	QApplication* app;
+	app->quit();
 }
 
 void CPBR::init_gl_view(int a, int b, int w, int h) {

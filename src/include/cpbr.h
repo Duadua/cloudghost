@@ -15,6 +15,7 @@ public:
 
 protected:
 	virtual void resizeEvent(QResizeEvent *event) override;
+	virtual void closeEvent(QCloseEvent *event) override;
 
 private:
 	void init_gl_view(int a, int b, int w, int h);
@@ -30,6 +31,5 @@ public slots:
 	void trigger_select_pp(QAction* act);
 
 	void trigger_shader_toy();
-
 
 };
