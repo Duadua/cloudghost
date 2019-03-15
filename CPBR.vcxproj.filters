@@ -178,9 +178,15 @@
     <ClCompile Include="src\source\cubeobject.cpp">
       <Filter>src\source</Filter>
     </ClCompile>
+    <ClCompile Include="tools\qtdebugwidget.cpp">
+      <Filter>tools</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <QtUic Include="resources\ui\cpbr.ui">
+      <Filter>resources\ui</Filter>
+    </QtUic>
+    <QtUic Include="tools\qtdebugwidget.ui">
       <Filter>resources\ui</Filter>
     </QtUic>
   </ItemGroup>
@@ -305,6 +311,9 @@
     </QtMoc>
     <QtMoc Include="src\include\cglwidget.h">
       <Filter>src\include</Filter>
+    </QtMoc>
+    <QtMoc Include="tools\qtdebugwidget.h">
+      <Filter>tools</Filter>
     </QtMoc>
   </ItemGroup>
   <ItemGroup>

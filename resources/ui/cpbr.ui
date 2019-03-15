@@ -50,8 +50,17 @@
      <addaction name="action_pp_sharpen"/>
      <addaction name="action_pp_edge_det"/>
     </widget>
+    <widget class="QMenu" name="menu_polygon_mode">
+     <property name="title">
+      <string>图元模式</string>
+     </property>
+     <addaction name="action_pm_fill"/>
+     <addaction name="action_pm_line"/>
+    </widget>
     <addaction name="action_color_bg"/>
     <addaction name="action_color_border"/>
+    <addaction name="separator"/>
+    <addaction name="menu_polygon_mode"/>
     <addaction name="separator"/>
     <addaction name="action_rb_3d"/>
     <addaction name="action_eye_delta"/>
@@ -217,6 +226,35 @@
   <action name="action_st_img">
    <property name="text">
     <string>Image</string>
+   </property>
+  </action>
+  <action name="action_polygon_line">
+   <property name="text">
+    <string>_polygon_line</string>
+   </property>
+  </action>
+  <action name="action_polygon_mode">
+   <property name="text">
+    <string>_polygon_mode</string>
+   </property>
+  </action>
+  <action name="action_pm_fill">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>填充模式</string>
+   </property>
+  </action>
+  <action name="action_pm_line">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>线框模式</string>
    </property>
   </action>
  </widget>

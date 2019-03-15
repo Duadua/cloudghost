@@ -16,17 +16,31 @@ void CPBR::init_ui() {
 
 	// init shading menu
 	{
+		// red_blue_3d
 		connect(ui.action_rb_3d, SIGNAL(triggered()), this, SLOT(trigger_rb_3d()));
 
-		auto ag = new QActionGroup(this);
-		ag->addAction(ui.action_pp_normal);
-		ag->addAction(ui.action_pp_gray);
-		ag->addAction(ui.action_pp_invers);
-		ag->addAction(ui.action_pp_blur);
-		ag->addAction(ui.action_pp_sharpen);
-		ag->addAction(ui.action_pp_edge_det);
-		ui.action_pp_normal->setChecked(true);
-		connect(ag, SIGNAL(triggered(QAction*)), this, SLOT(trigger_select_pp(QAction*)));
+		// polygon_mode 
+		{
+			auto ag = new QActionGroup(this);
+			ag->addAction(ui.action_pm_fill);
+			ag->addAction(ui.action_pm_line);
+			connect(ag, SIGNAL(triggered(QAction*)), this, SLOT(trigger_polygon_mode(QAction*)));
+		}
+
+		// post process
+		{
+			auto ag = new QActionGroup(this);
+			ag->addAction(ui.action_pp_normal);
+			ag->addAction(ui.action_pp_gray);
+			ag->addAction(ui.action_pp_invers);
+			ag->addAction(ui.action_pp_blur);
+			ag->addAction(ui.action_pp_sharpen);
+			ag->addAction(ui.action_pp_edge_det);
+			ui.action_pp_normal->setChecked(true);
+			connect(ag, SIGNAL(triggered(QAction*)), this, SLOT(trigger_select_pp(QAction*)));
+		}
+
+		
 	}
 
 	// init shader_toy menu
@@ -52,7 +66,16 @@ void CPBR::resizeEvent(QResizeEvent *event) {
 }
 
 void CPBR::trigger_rb_3d() { GameManager::get_instance()->set_b_use_vr(!GameManager::get_instance()->get_b_use_vr()); }
-
+void CPBR::trigger_polygon_mode(QAction* act) {
+	if (act->objectName().compare("action_pm_fill") == 0) {
+		GameManager::get_instance()->set_front_polygon_mode(GL_FILL);
+		GameManager::get_instance()->set_back_polygon_mode(GL_LINE);
+	}
+	else if (act->objectName().compare("action_pm_line") == 0) {
+		GameManager::get_instance()->set_front_polygon_mode(GL_LINE);
+		GameManager::get_instance()->set_back_polygon_mode(GL_FILL);
+	}
+}
 void CPBR::trigger_select_pp(QAction* act) {
 	if (act->objectName().compare("action_pp_normal") == 0) {
 		GameManager::get_instance()->set_pp_type(PostProcessType::NOPE);
@@ -74,6 +97,9 @@ void CPBR::trigger_select_pp(QAction* act) {
 	}
 }
 
+
+
 void CPBR::trigger_shader_toy() {
 	GameManager::get_instance()->set_b_use_shader_toy(!GameManager::get_instance()->get_b_use_shader_toy());
 }
+

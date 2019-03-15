@@ -15,6 +15,10 @@ const auto t_time_begin_s = std::chrono::duration_cast<std::chrono::milliseconds
 
 void GameManager::init() {
 
+	// init glfw
+	/*{
+		glfwInit();
+	}*/
 	// init glew
 	{
 		glewExperimental = true;
@@ -83,6 +87,8 @@ void GameManager::init() {
 	{
 		background_color = CColor(205, 220, 232);
 		border_color = CColor(221, 161, 18);
+		front_polygon_mode = GL_FILL;
+		back_polygon_mode = GL_LINE;
 		b_use_vr = false;
 		vr_delta = 0.1f;
 		pp_type = PostProcessType::NOPE;
@@ -94,7 +100,7 @@ void GameManager::init() {
 		set_depth_test(true);
 		set_stencil_test(true, GL_NOTEQUAL, 1, 0xff, GL_KEEP, GL_REPLACE, GL_REPLACE);
 		set_blend(true, GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-		set_polygon_mode();
+		set_polygon_mode(front_polygon_mode, back_polygon_mode);
 		set_cull_face();
 	}
 	
@@ -129,6 +135,7 @@ void GameManager::draw() {
 			// pass 2
 			if (b_use_vr) { vr_pass(); }
 			else { base_pass(); }
+			//base_pass();
 		}
 		else {
 			shader_toy_pass();		// render_shader_toy
@@ -138,6 +145,7 @@ void GameManager::draw() {
 		if (pp_type != PostProcessType::NOPE && !(pp_type == PostProcessType::GRAY && b_use_vr)) {
 			post_process_pass();
 		}
+		
 
 	}
 }
@@ -159,6 +167,8 @@ void GameManager::scene_pass() {
 }
 void GameManager::pick_pass() {
 	pick_rt->use();
+	uint t_fpm = front_polygon_mode;
+	front_polygon_mode = GL_FILL;
 	draw_init();
 
 	auto p_shader = AssetManager::get_shader("pick");
@@ -181,6 +191,7 @@ void GameManager::pick_pass() {
 		cur_pick_object_id = data[0];
 		cur_pick_component_id = data[1];
 	}
+	front_polygon_mode = t_fpm;
 	pick_rt->un_use();
 
 }
@@ -217,7 +228,6 @@ void GameManager::base_pass() {
 		//glEnable(GL_DEPTH_TEST);
 		glStencilMask(0xff);							// 重新允许写入模板缓冲
 	}
-
 	scene_rt->un_use();
 	
 	// update scene texture
@@ -401,6 +411,7 @@ void GameManager::draw_scene(const std::string& shader) {
 	glEnable(GL_DEPTH_TEST);
 }
 void GameManager::draw_all_objs(const std::string& shader) {
+	set_polygon_mode(front_polygon_mode, back_polygon_mode);
 	for (auto go : game_objects) {
 		if (go.second->get_id() != cur_pick_object_id) { 
 			glStencilFunc(GL_ALWAYS, 0, 0xff); 
@@ -413,9 +424,10 @@ void GameManager::draw_all_objs(const std::string& shader) {
 			go.second->draw(shader);
 		} // 总是通过测试 -- 且通过后置1
 	}
-
+	set_polygon_mode();
 }
 void GameManager::draw_border(const std::string& shader) {
+	set_polygon_mode(front_polygon_mode, back_polygon_mode);
 	for (auto go : game_objects) {
 		if (go.second->get_id() == cur_pick_object_id) {
 			go.second->get_root_component()->set_all_border(true);
@@ -423,7 +435,7 @@ void GameManager::draw_border(const std::string& shader) {
 			go.second->get_root_component()->set_all_border(false);
 		}	// 拾取 -- 绘制边框
 	}
-
+	set_polygon_mode();
 }
 void GameManager::draw_init() {
 	glClearColor(background_color.r_f(), background_color.g_f(), background_color.b_f(), background_color.a_f());
@@ -563,8 +575,9 @@ void GameManager::set_blend(bool enable, uint sfactor, uint dfactor) {
 	glBlendFunc(sfactor, dfactor);
 }
 void GameManager::set_polygon_mode(uint front_mode, uint back_mode) {
-	glPolygonMode(GL_FRONT, front_mode);
-	glPolygonMode(GL_BACK, back_mode);
+	//glPolygonMode(GL_FRONT, front_mode);
+	//glPolygonMode(GL_BACK, back_mode);
+	glPolygonMode(GL_FRONT_AND_BACK, front_mode);
 }
 void GameManager::set_cull_face(bool enable, uint mode, uint front_face) {
 	if (enable) { glEnable(GL_CULL_FACE); }

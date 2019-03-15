@@ -14,7 +14,11 @@ CGLWidget::CGLWidget(QWidget *parent) : QOpenGLWidget(parent) {
 }
 CGLWidget::~CGLWidget()					{ GameManager::get_instance()->exit(); }
 
-void CGLWidget::initializeGL()			{ GameManager::get_instance()->init(); }
+// =====================================================================================
+
+void CGLWidget::initializeGL() { 
+	GameManager::get_instance()->init(); 
+}
 void CGLWidget::resizeGL(int w, int h)	{ GameManager::get_instance()->resize(w, h); }
 void CGLWidget::paintGL() { 
 	// exec input

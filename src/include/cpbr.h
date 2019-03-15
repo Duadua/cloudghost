@@ -26,8 +26,10 @@ private:
 
 public slots:
 	void trigger_rb_3d();
+	void trigger_polygon_mode(QAction* act);
 	void trigger_select_pp(QAction* act);
 
 	void trigger_shader_toy();
+
 
 };

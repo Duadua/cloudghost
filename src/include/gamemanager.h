@@ -79,16 +79,13 @@ public:
 
 	void add_game_object(const std::string& key, SPTR_GameObject value);
 
-	// gl state
-	void set_depth_test(bool enable = true, uint depth_func = GL_LESS, uint depth_mask = GL_TRUE);
-	void set_stencil_test(bool enable = false, uint func = GL_EQUAL, uint ref = 1, uint mask = 0xff, uint fail = GL_KEEP, uint zfail = GL_KEEP, uint zpass = GL_KEEP);
-	void set_blend(bool enable, uint sfactor = GL_SRC_ALPHA, uint dfactor = GL_ONE_MINUS_SRC_ALPHA);
-	void set_polygon_mode(uint front_mode = GL_FILL, uint back_mode = GL_LINE);
-	void set_cull_face(bool enable = false, uint mode = GL_BACK, uint front_face = GL_CCW);
+	
 
 public:									// used for qt ui
 	GET_SET(CColor, background_color);
 	GET_SET(CColor, border_color);
+	GET_SET(uint, front_polygon_mode);
+	GET_SET(uint, back_polygon_mode);
 	GET_SET(bool, b_use_vr);
 	GET_SET(float, vr_delta);
 	GET_SET(PostProcessType, pp_type);
@@ -106,12 +103,22 @@ protected:
 	CColor background_color;
 	CColor border_color;			// 物体边框颜色
 
+	uint front_polygon_mode;
+	uint back_polygon_mode;
+
 	bool b_use_vr;
 	float vr_delta;
 
 	PostProcessType pp_type;		// 当前后处理效果
 
 	bool b_use_shader_toy;
+
+	// gl state
+	void set_depth_test(bool enable = true, uint depth_func = GL_LESS, uint depth_mask = GL_TRUE);
+	void set_stencil_test(bool enable = false, uint func = GL_EQUAL, uint ref = 1, uint mask = 0xff, uint fail = GL_KEEP, uint zfail = GL_KEEP, uint zpass = GL_KEEP);
+	void set_blend(bool enable, uint sfactor = GL_SRC_ALPHA, uint dfactor = GL_ONE_MINUS_SRC_ALPHA);
+	void set_polygon_mode(uint front_mode = GL_FILL, uint back_mode = GL_LINE);
+	void set_cull_face(bool enable = false, uint mode = GL_BACK, uint front_face = GL_CCW);
 
 private:
 	void main_bind_input();
