@@ -13,13 +13,22 @@
 
 #include "plane.h"
 
+#include <assimp/Importer.hpp>
+#include <assimp/scene.h>
+#include <assimp/postprocess.h>
+
 #ifdef C_DEBUG
 #include "loader.h"
 #endif // C_DEBUG
 
 int main(int argc, char *argv[]) {
 	QApplication a(argc, argv);
-	
+		
+#ifdef C_DEBUG
+	// test c_debug()
+	{ c_debug() << "【debug】start"; }
+#endif // C_DEBUG
+
 	/* test reflex
 	CObject* obj = ClassFactory::create_object("CObject");
 	c_debug() << obj->get_class_info()->get_class_name();
@@ -84,11 +93,19 @@ int main(int argc, char *argv[]) {
 		//qDebug() << aa[0] << " " << aa[1] << " " << aa[2] << " " << aa[3];
 		//qDebug() << v[0] << " " << v[1] << " " << v[2];
 	}
-	
-#ifdef C_DEBUG
-	// test c_debug()
-	{ c_debug() << "【debug】start"; }
-#endif // C_DEBUG
+
+	{
+		Assimp::Importer importer;
+		std::string path = "resources/models/obj/Elf_Mansion/Elf_Mansion.obj";
+		const aiScene *scene = importer.ReadFile(path, aiProcess_Triangulate | aiProcess_FlipUVs);
+		if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode) {
+			c_debug() << "load obj by assimp fail"; 
+			c_debug() << importer.GetErrorString();
+		}
+		else {
+			c_debug() << "load obj success";
+		}
+	}
 
 	MyGameManager gm;
 	CPBR w;

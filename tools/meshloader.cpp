@@ -551,5 +551,82 @@ bool MeshLoader::load_mesh_txt(const std::string& src, std::vector<MVertex>& ver
 }
 
 bool MeshLoader::load_mesh_obj(const std::string& src, std::vector<MVertex>& vertices, std::vector<MeshData>& mds, std::vector<std::string>& mt_files, SourceType source_type) {
+	// 打开文件
+	std::istream* in;
+	std::ifstream fs;
+	std::istringstream ss;
+	if (source_type == SourceType::BY_FILE) {
+		fs.open(src, std::ios::in);
+		if (!fs.is_open()) { return false; }
+		in = &fs;
+	}
+	else if (source_type == SourceType::BY_STRING) { ss.clear(); ss.str(src); in = &ss; }
+
+	vertices.clear();
+	mds.clear();
+	mt_files.clear();
+
+	std::vector<CVector3D> t_vertices;
+	std::vector<CVector2D> t_texcoords;
+	std::vector<CVector3D> t_normals;
+
+	// 按行读取 -- 获得 vertices 和 indices
+	while ((*in)) {
+		std::string t_line;
+		std::getline((*in), t_line);
+		std::replace(t_line.begin(), t_line.end(), ',', ' ');
+		std::istringstream t_iss(t_line);
+
+		std::string head; t_iss >> head;
+
+		if (head.compare("v") == 0) {
+			std::vector<float> list; float t_f;
+			while (t_iss >> t_f) list.push_back(t_f);
+
+			if (list.size() >= 3) t_vertices.push_back(CVector3D(list[0], list[1], list[2]));
+		}
+		else if (head.compare("vt") == 0) {
+			std::vector<float> list; float t_f;
+			while (t_iss >> t_f) list.push_back(t_f);
+			if (list.size() >= 2) t_texcoords.push_back(CVector2D(list[0], list[1]));
+		}
+		else if (head.compare("vn") == 0) {
+			std::vector<float> list; float t_f;
+			while (t_iss >> t_f) list.push_back(t_f);
+			if (list.size() >= 3) t_normals.push_back(CVector2D(list[0], list[1]));
+		}
+		else if (head.compare("f") == 0) {
+			if (mds.size() == 0) mds.push_back(MeshData());
+			std::vector<std::string> list; std::string t_s; 
+			while (t_iss >> t_s) {
+				std::replace(t_s.begin(), t_s.end(), '/', ' ');
+				std::istringstream t_iss_f(t_s); 
+				std::vector<uint> t_us; uint t_u;
+				while (t_iss_f >> t_u) t_us.push_back(t_u-1);
+
+				MVertex t_v;
+				if (t_us.size() >= 1) t_v.position = t_vertices[t_us[0]];
+				if (t_us.size() >= 2) t_v.tex_coord = t_texcoords[t_us[1]];
+				if (t_us.size() >= 3) t_v.normal = t_normals[t_us[2]];
+				vertices.push_back(t_v);
+
+				mds.back().indices.push_back(vertices.size() - 1);
+			}
+
+		}
+		else if (head.compare("mtllib") == 0) {
+			std::string t_path; t_iss >> t_path;
+			mt_files.push_back(t_path);
+		}
+		else if (head.compare("usemtl") == 0) {
+			std::string t_mt; t_iss >> t_mt;
+			mds.push_back(MeshData());
+			mds[mds.size() - 1].material = t_mt;
+		}
+
+	}
+
+	if (source_type == SourceType::BY_FILE) { fs.close(); }
+
 	return true;
 }

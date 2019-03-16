@@ -244,7 +244,7 @@ void GameManager::post_process_pass() {
 		p_shader->use();
 		if (scene_texture != nullptr) { scene_texture->bind(0); }
 		p_shader->set_int("u_texture", 0);
-		p_shader->set_uint("u_pp_type", pp_type);
+		p_shader->set_int("u_pp_type", pp_type);
 	}
 
 	draw_scene(p_shader->get_name());

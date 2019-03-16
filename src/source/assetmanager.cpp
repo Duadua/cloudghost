@@ -83,6 +83,9 @@ SPTR_Mesh AssetManager::load_mesh(const std::string& key, const std::string& src
 			map_meshs[key]->add_render_data(t_rd);
 		} // no indices -- by draw_array()
 	}
+	else {
+		c_debug() << "【warning】【asset】【mesh】load mesh failed called \"" + key + "\"";
+	}
 	return map_meshs[key];
 }
 SPTR_Mesh AssetManager::get_mesh(const std::string& key) {

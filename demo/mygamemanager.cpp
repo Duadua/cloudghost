@@ -12,6 +12,7 @@ void MyGameManager::load_asset() {
 	// shader
 
 	// mesh
+	//AssetManager::load_mesh("old_palace", "resources/models/obj/old_palace/old_palace.obj");
 
 	// material
 	AssetManager::load_materials("resources/materials/txt/cube_material.txt"); 
