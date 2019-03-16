@@ -94,7 +94,7 @@ int main(int argc, char *argv[]) {
 		//qDebug() << v[0] << " " << v[1] << " " << v[2];
 	}
 
-	{
+	/*{
 		Assimp::Importer importer;
 		std::string path = "resources/models/obj/Elf_Mansion/Elf_Mansion.obj";
 		const aiScene *scene = importer.ReadFile(path, aiProcess_Triangulate | aiProcess_FlipUVs);
@@ -105,7 +105,7 @@ int main(int argc, char *argv[]) {
 		else {
 			c_debug() << "load obj success";
 		}
-	}
+	}*/
 
 	MyGameManager gm;
 	CMainWindow cmw;
