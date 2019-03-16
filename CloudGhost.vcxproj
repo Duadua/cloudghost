@@ -33,13 +33,14 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <OutDir>$(SolutionDir)$(Platform)\$(Configuration)\</OutDir>
-    <IncludePath>$(ProjectDir)\src\include;$(ProjectDir)\math\include;$(ProjectDir)\third_part\glfw\include;$(ProjectDir)\third_part\glew\include;$(ProjectDir)\third_part\assimp\include;$(IncludePath)</IncludePath>
-    <LibraryPath>$(ProjectDir)\third_part\glfw\libs;$(ProjectDir)\third_part\glew\libs;$(ProjectDir)\third_part\assimp\libs;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(ProjectDir)src\include;$(ProjectDir)math\include;$(ProjectDir)third_part\glfw\include;$(ProjectDir)third_part\glew\include;$(ProjectDir)third_part\assimp\include;$(ProjectDir)tools;$(IncludePath)</IncludePath>
+    <LibraryPath>$(ProjectDir)third_part\glfw\libs;$(ProjectDir)third_part\glew\libs;$(ProjectDir)third_part\assimp\libs;$(LibraryPath)</LibraryPath>
+    <ReferencePath>$(ReferencePath)</ReferencePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <OutDir>$(SolutionDir)$(Platform)\$(Configuration)\</OutDir>
-    <IncludePath>$(ProjectDir)\src\include;$(ProjectDir)\math\include;$(ProjectDir)\third_part\glfw\include;$(ProjectDir)\third_part\glew\include;$(ProjectDir)\third_part\assimp\include;$(IncludePath)</IncludePath>
-    <LibraryPath>$(ProjectDir)\third_part\glfw\libs;$(ProjectDir)\third_part\glew\libs;$(ProjectDir)\third_part\assimp\libs;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(ProjectDir)src\include;$(ProjectDir)math\include;$(ProjectDir)third_part\glfw\include;$(ProjectDir)third_part\glew\include;$(ProjectDir)third_part\assimp\include;$(ProjectDir)tools;$(IncludePath)</IncludePath>
+    <LibraryPath>$(ProjectDir)third_part\glfw\libs;$(ProjectDir)third_part\glew\libs;$(ProjectDir)third_part\assimp\libs;$(LibraryPath)</LibraryPath>
     <ReferencePath>$(ReferencePath)</ReferencePath>
   </PropertyGroup>
   <Target Name="QtMsBuildNotFound" BeforeTargets="CustomBuild;ClCompile" Condition="!Exists('$(QtMsBuild)\qt.targets') or !Exists('$(QtMsBuild)\qt.props')">
@@ -61,7 +62,7 @@
     <ClCompile>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <PreprocessorDefinitions>QT_QML_DEBUG;UNICODE;_UNICODE;WIN32;_ENABLE_EXTENDED_ALIGNED_STORAGE;WIN64;QT_DLL;QT_CORE_LIB;QT_GUI_LIB;QT_OPENGL_LIB;QT_WIDGETS_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>.\generated;.;$(QTDIR)\include;.\generated\$(ConfigurationName);$(QTDIR)\include\QtCore;$(QTDIR)\include\QtGui;$(QTDIR)\include\QtANGLE;$(QTDIR)\include\QtOpenGL;$(QTDIR)\include\QtWidgets;.\tools;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.\generated;.;$(QTDIR)\include;.\generated\$(ConfigurationName);$(QTDIR)\include\QtCore;$(QTDIR)\include\QtGui;$(QTDIR)\include\QtANGLE;$(QTDIR)\include\QtOpenGL;$(QTDIR)\include\QtWidgets;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <Optimization>Disabled</Optimization>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
@@ -78,7 +79,7 @@
     <QtMoc>
       <OutputFile>.\generated\$(ConfigurationName)\moc_%(Filename).cpp</OutputFile>
       <ExecutionDescription>Moc'ing %(Identity)...</ExecutionDescription>
-      <IncludePath>.\generated;.;$(QTDIR)\include;.\generated\$(ConfigurationName);$(QTDIR)\include\QtCore;$(QTDIR)\include\QtGui;$(QTDIR)\include\QtANGLE;$(QTDIR)\include\QtOpenGL;$(QTDIR)\include\QtWidgets;.\tools;%(AdditionalIncludeDirectories)</IncludePath>
+      <IncludePath>.\generated;.;$(QTDIR)\include;.\generated\$(ConfigurationName);$(QTDIR)\include\QtCore;$(QTDIR)\include\QtGui;$(QTDIR)\include\QtANGLE;$(QTDIR)\include\QtOpenGL;$(QTDIR)\include\QtWidgets;%(AdditionalIncludeDirectories)</IncludePath>
       <Define>QT_QML_DEBUG;UNICODE;_UNICODE;WIN32;_ENABLE_EXTENDED_ALIGNED_STORAGE;WIN64;QT_DLL;QT_CORE_LIB;QT_GUI_LIB;QT_OPENGL_LIB;QT_WIDGETS_LIB</Define>
     </QtMoc>
     <QtUic>
@@ -94,7 +95,7 @@
     <ClCompile>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <PreprocessorDefinitions>UNICODE;_UNICODE;WIN32;_ENABLE_EXTENDED_ALIGNED_STORAGE;WIN64;QT_DLL;QT_NO_DEBUG;NDEBUG;QT_CORE_LIB;QT_GUI_LIB;QT_OPENGL_LIB;QT_WIDGETS_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>.\generated;.;$(QTDIR)\include;.\generated\$(ConfigurationName);$(QTDIR)\include\QtCore;$(QTDIR)\include\QtGui;$(QTDIR)\include\QtANGLE;$(QTDIR)\include\QtOpenGL;$(QTDIR)\include\QtWidgets;.\tools;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.\generated;.;$(QTDIR)\include;.\generated\$(ConfigurationName);$(QTDIR)\include\QtCore;$(QTDIR)\include\QtGui;$(QTDIR)\include\QtANGLE;$(QTDIR)\include\QtOpenGL;$(QTDIR)\include\QtWidgets;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DebugInformationFormat />
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
@@ -112,7 +113,7 @@
     <QtMoc>
       <OutputFile>.\generated\$(ConfigurationName)\moc_%(Filename).cpp</OutputFile>
       <ExecutionDescription>Moc'ing %(Identity)...</ExecutionDescription>
-      <IncludePath>.\generated;.;$(QTDIR)\include;.\generated\$(ConfigurationName);$(QTDIR)\include\QtCore;$(QTDIR)\include\QtGui;$(QTDIR)\include\QtANGLE;$(QTDIR)\include\QtOpenGL;$(QTDIR)\include\QtWidgets;.\tools;%(AdditionalIncludeDirectories)</IncludePath>
+      <IncludePath>.\generated;.;$(QTDIR)\include;.\generated\$(ConfigurationName);$(QTDIR)\include\QtCore;$(QTDIR)\include\QtGui;$(QTDIR)\include\QtANGLE;$(QTDIR)\include\QtOpenGL;$(QTDIR)\include\QtWidgets;%(AdditionalIncludeDirectories)</IncludePath>
       <Define>UNICODE;_UNICODE;WIN32;_ENABLE_EXTENDED_ALIGNED_STORAGE;WIN64;QT_DLL;QT_NO_DEBUG;NDEBUG;QT_CORE_LIB;QT_GUI_LIB;QT_OPENGL_LIB;QT_WIDGETS_LIB</Define>
     </QtMoc>
     <QtUic>
@@ -167,11 +168,11 @@
     <ClCompile Include="tools\textureloader.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <QtUic Include="resources\ui\cpbr.ui" />
+    <QtUic Include="resources\ui\cloudghost.ui" />
     <QtUic Include="resources\ui\qtdebugwidget.ui" />
   </ItemGroup>
   <ItemGroup>
-    <QtRcc Include="resources\cpbr.qrc" />
+    <QtRcc Include="resources\cloudghost.qrc" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="demo\mygamemanager.h" />
@@ -257,6 +258,8 @@
     <Image Include="resources\textures\texture_solide_gray.png" />
     <Image Include="resources\textures\texture_solide_white.png" />
     <Image Include="resources\textures\wood.png" />
+    <Image Include="resources\ui\debug.ico" />
+    <Image Include="resources\ui\icon.ico" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Condition="Exists('$(QtMsBuild)\qt.targets')">

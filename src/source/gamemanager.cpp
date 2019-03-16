@@ -24,7 +24,7 @@ void GameManager::init() {
 		glewExperimental = true;
 		uint flag = glewInit();
 		if (flag != GLEW_OK) {
-			c_debug() << "【error】【glew】init fail";
+			c_debug() << "[error][glew]init fail";
 			c_debug() << (char*)glewGetErrorString(flag);
 		}
 		else { }

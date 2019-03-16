@@ -12,7 +12,7 @@ Texture2D::Texture2D() : name(""), width(0), heigh(0), internal_format(GL_RGBA),
 		glewExperimental = true;
 		int flag = glewInit();
 		if (flag != GLEW_OK) {
-			c_debug() << "【error】【glew】init fail";
+			c_debug() << "[error][glew]init fail";
 			c_debug() << (char*)glewGetErrorString(flag);
 		}
 	}

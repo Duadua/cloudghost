@@ -1,5 +1,5 @@
 # =========================
-	【debug】start
+	[debug]start
 # =========================
 	CMatrix4x4 (
 		0.950548 -0.227371 0.211568 0.000000 
@@ -10,6 +10,6 @@
 # =========================
 	load obj success
 # =========================
-	【warning】【asset】【shader】no shader calls ""
+	[warning][asset][shader]no shader calls ""
 # =========================
-	【warning】【asset】【material】no material calls ""
+	[warning][asset][material]no material calls ""

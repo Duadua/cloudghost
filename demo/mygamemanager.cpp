@@ -105,7 +105,7 @@ void MyGameManager::begin_play() {
 	// use direct light
 	{
 		auto d_light = CREATE_CLASS(DirectLightObject);
-		d_light->use(main_shader->get_name());
+        d_light->use(main_shader->get_name());
 	}
 
 	// use point light

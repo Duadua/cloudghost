@@ -12,6 +12,7 @@ CMainWindow::CMainWindow(QWidget *parent) : QMainWindow(parent), gl_view(nullptr
 
 void CMainWindow::init_ui() {
 	ui.setupUi(this);
+	setWindowIcon(QIcon(":/cloudghost/icon/ui/icon.ico"));
 
 	// init shading menu
 	{

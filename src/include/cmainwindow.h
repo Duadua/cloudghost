@@ -1,7 +1,7 @@
 #pragma once
 
 #include <QtWidgets/QMainWindow>
-#include "ui_cpbr.h"
+#include "ui_cloudghost.h"
 
 class CGLWidget;
 class QResizeEvent;
@@ -22,7 +22,7 @@ private:
 	CGLWidget* gl_view;
 
 private:
-	Ui::CPBRClass ui;
+	Ui::CloudGhostClass ui;
 	void init_ui();
 
 public slots:

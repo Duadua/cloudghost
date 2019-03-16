@@ -11,8 +11,8 @@ Shader::Shader() {
 		glewExperimental = true;
 		int flag = glewInit();
 		if (flag != GLEW_OK) {
-			c_debug() << "【error】【glew】init fail";
-			c_debug() << (char*)glewGetErrorString(flag);
+			c_debug() << "[error][glew]init fail";
+            c_debug() << (const char*)glewGetErrorString(flag);
 		}
 	}
 }
@@ -67,9 +67,9 @@ void Shader::check_compile_errors(uint id) {
 	char res[1024];
 	glGetShaderiv(id, GL_COMPILE_STATUS, &flag);
 	if (!flag) {
-		glGetShaderInfoLog(id, 1024, NULL, res);
-		std::string info = "【error】【shader】【compile】" + name + "\n";
-		info.append(res);
+		glGetShaderInfoLog(id, 1024, nullptr, res);
+        std::string info = "[error][shader][compile]" + name + "\n";
+        info.append(res);
 		c_debug() << info;
 	}
 }
@@ -78,8 +78,8 @@ void Shader::check_link_errors(uint id) {
 	char res[1024];
 	glGetProgramiv(id, GL_LINK_STATUS, &flag);
 	if (!flag) {
-		glGetProgramInfoLog(id, 1024, NULL, res);
-		std::string info = "【error】【shader】【link】" + name + "\n";
+		glGetProgramInfoLog(id, 1024, nullptr, res);
+		std::string info = "[error][shader][link]" + name + "\n";
 		info.append(res);
 		c_debug() << info;
 	}

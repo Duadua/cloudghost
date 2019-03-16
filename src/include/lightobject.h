@@ -17,7 +17,7 @@ public:
 
 	LightType get_light_type() { return light_type; }
 
-	bool use(std::string& shader);
+    bool use(const std::string& shader);
 
 protected:
 

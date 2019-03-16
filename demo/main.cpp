@@ -26,7 +26,7 @@ int main(int argc, char *argv[]) {
 		
 #ifdef C_DEBUG
 	// test c_debug()
-	{ c_debug() << "【debug】start"; }
+	{ c_debug() << "[debug]start"; }
 #endif // C_DEBUG
 
 	/* test reflex

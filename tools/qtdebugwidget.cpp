@@ -1,8 +1,10 @@
 #include "qtdebugwidget.h"
+#include <QIcon>
 
 QtDebugWidget::QtDebugWidget(QWidget *parent) : QWidget(parent) {
 
 	ui.setupUi(this);
+	setWindowIcon(QIcon(":/cloudghost/icon/ui/debug.ico"));
 	move(100, 0);
 	connect(ui.tedit_debug, SIGNAL(textChanged()), this, SLOT(tedit_changed()));
 	setWindowFlags(Qt::WindowMinimizeButtonHint);

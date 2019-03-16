@@ -7,22 +7,23 @@
 #include <unordered_map>
 
 using ulong = unsigned long;
+using uchar = unsigned char;
 
 class ClassInfo;
 class ClassFactory;
 
 #define DECLARE_AUTO_PTR(name)											\
 class name;																\
-using SPTR_##name = std::shared_ptr<##name##>;							\
-using WPTR_##name = std::weak_ptr<##name##>;							\
-using UPTR_##name = std::unique_ptr<##name##>;
+using SPTR_##name = std::shared_ptr<name>;							\
+using WPTR_##name = std::weak_ptr<name>;							\
+using UPTR_##name = std::unique_ptr<name>;
 
 #define DECLARE_CLASS(name)												\
 	private:															\
-		static ClassInfo class_info_##name##;							\
+        static ClassInfo class_info_##name;							\
 	public:																\
 		static ClassInfo* get_class_info();								\
-		static SPTR_CObject create_object_##name##();					
+        static SPTR_CObject create_object_##name();
 
 #define ATTR_OFFSET(class_name, attr_key)								\
 	((unsigned long)(&((class_name*)0)->attr_key))									// 黑科技 
@@ -31,17 +32,17 @@ using UPTR_##name = std::unique_ptr<##name##>;
 access:																	\
 	attr_type attr_key;													\
 private:																\
-	class ClassAttrRegister_##attr_key##{								\
+    class ClassAttrRegister_##attr_key{								\
 	public:																\
-		ClassAttrRegister_##attr_key##() {								\
-			static ClassAttrRegister reg_##attr_key##(					\
+        ClassAttrRegister_##attr_key() {								\
+            static ClassAttrRegister reg_##attr_key(					\
 				class_name::get_class_info(),							\
 				ATTR_OFFSET(class_name, attr_key),						\
 				#attr_type,												\
 				#attr_key												\
 			);															\
 		}																\
-	}##attr_key##_register
+    }attr_key##_register
 
 // ===========================================================================
 
@@ -59,14 +60,14 @@ public:
 DELEGATE0(CObjectConstructor, SPTR_CObject);
 
 #define IMPLEMENT_CINFO(name, func)										\
-DELEGATE_BIND_VOID(CObjectConstructor, con_##name##, func);				\
-ClassInfo name::class_info_##name((#name), con_##name##);				\
-ClassInfo* name::get_class_info() { return &class_info_##name##; }
+DELEGATE_BIND_VOID(CObjectConstructor, con_##name, func);				\
+ClassInfo name::class_info_##name((#name), con_##name);					\
+ClassInfo* name::get_class_info() { return &class_info_##name; }
 
 #define IMPLEMENT_CLASS(name)											\
-IMPLEMENT_CINFO(name, name::create_object_##name##);					\
-SPTR_CObject name::create_object_##name##() {							\
-	return SPTR_##name##(new name());									\
+IMPLEMENT_CINFO(name, name::create_object_##name);						\
+SPTR_CObject name::create_object_##name() {								\
+    return SPTR_##name(new name());										\
 }																		
 
 // ===========================================================================

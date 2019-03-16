@@ -186,17 +186,12 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <QtUic Include="resources\ui\cpbr.ui">
-      <Filter>resources\ui</Filter>
-    </QtUic>
     <QtUic Include="resources\ui\qtdebugwidget.ui">
       <Filter>resources\ui</Filter>
     </QtUic>
-  </ItemGroup>
-  <ItemGroup>
-    <QtRcc Include="resources\cpbr.qrc">
-      <Filter>resources</Filter>
-    </QtRcc>
+    <QtUic Include="resources\ui\cloudghost.ui">
+      <Filter>resources\ui</Filter>
+    </QtUic>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\include\assetmanager.h">
@@ -429,5 +424,16 @@
     <Image Include="resources\textures\texture_solide_white.png">
       <Filter>resources\textures</Filter>
     </Image>
+    <Image Include="resources\ui\icon.ico">
+      <Filter>resources\ui</Filter>
+    </Image>
+    <Image Include="resources\ui\debug.ico">
+      <Filter>resources\ui</Filter>
+    </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <QtRcc Include="resources\cloudghost.qrc">
+      <Filter>resources</Filter>
+    </QtRcc>
   </ItemGroup>
 </Project>

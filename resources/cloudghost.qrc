@@ -1,0 +1,7 @@
+<RCC>
+    <qresource prefix="/cloudghost"/>
+    <qresource prefix="/cloudghost/icon">
+        <file>ui/icon.ico</file>
+        <file>ui/debug.ico</file>
+    </qresource>
+</RCC>
