@@ -1,14 +1,21 @@
 #define GLEW_STATIC
 #include <GL/glew.h>
 
+#include "loader.h"
 #include "texture2d.h"
-
-#include <GLFW/glfw3.h>
 
 IMPLEMENT_CLASS(Texture2D)
 
 Texture2D::Texture2D() : name(""), width(0), heigh(0), internal_format(GL_RGBA), image_format(GL_BGRA), data_type(GL_UNSIGNED_BYTE),
 	wrap_s(GL_REPEAT), wrap_t(GL_REPEAT), filter_min(GL_LINEAR_MIPMAP_LINEAR), filter_max(GL_LINEAR) { 
+	if (glewExperimental == false) {
+		glewExperimental = true;
+		int flag = glewInit();
+		if (flag != GLEW_OK) {
+			c_debug() << "【error】【glew】init fail";
+			c_debug() << (char*)glewGetErrorString(flag);
+		}
+	}
 }
 
 void Texture2D::init(uint w, uint h, SPTR_uchar data) {

@@ -122,16 +122,16 @@ void pre_cac() {
 }
  
  // blinn_phong lighting
-vec3 cac_ambient() { return vec3(1.0); }
-vec3 cac_diffuse(vec3 normal, vec3 light_dir) { return max(0.0, dot(light_dir, normal)); }
-vec3 cac_spcular(vec3 normal, vec3 light_dir, vec3 view_dir, float shininess) {
+float cac_ambient() { return 1.0; }
+float cac_diffuse(vec3 normal, vec3 light_dir) { return max(0.0, dot(light_dir, normal)); }
+float cac_spcular(vec3 normal, vec3 light_dir, vec3 view_dir, float shininess) {
     vec3 t_halfway = normalize(light_dir + view_dir);
     return pow(max(0.0, dot(normal, t_halfway)), shininess);
 }
 vec3 blinn_phong(vec3 normal, vec3 light_dir, vec3 view_dir, material_helper mh, vec3 k) {
-    vec3 i_ambient = mh.ka * mh.map_ka_color * cac_ambient();    
-    vec3 i_diffuse = mh.kd * mh.map_kd_color * cac_diffuse(normal, light_dir);
-    vec3 i_spcular = mh.ks * mh.map_ks_color * cac_spcular(normal, light_dir, view_dir, mh.shininess);
+    vec3 i_ambient = mh.ka * mh.map_ka_color.rgb * cac_ambient();    
+    vec3 i_diffuse = mh.kd * mh.map_kd_color.rgb * cac_diffuse(normal, light_dir);
+    vec3 i_spcular = mh.ks * mh.map_ks_color.rgb * cac_spcular(normal, light_dir, view_dir, mh.shininess);
 
     return k.x * i_ambient + k.y * i_diffuse + k.z * i_spcular;
 }

@@ -189,7 +189,7 @@
     <QtUic Include="resources\ui\cpbr.ui">
       <Filter>resources\ui</Filter>
     </QtUic>
-    <QtUic Include="tools\qtdebugwidget.ui">
+    <QtUic Include="resources\ui\qtdebugwidget.ui">
       <Filter>resources\ui</Filter>
     </QtUic>
   </ItemGroup>
