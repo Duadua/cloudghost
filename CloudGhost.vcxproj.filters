@@ -70,9 +70,6 @@
     <ClCompile Include="src\source\assetmanager.cpp">
       <Filter>src\source</Filter>
     </ClCompile>
-    <ClCompile Include="src\source\cpbr.cpp">
-      <Filter>src\source</Filter>
-    </ClCompile>
     <ClCompile Include="src\source\shader.cpp">
       <Filter>src\source</Filter>
     </ClCompile>
@@ -183,6 +180,9 @@
     </ClCompile>
     <ClCompile Include="tools\qtdebugwidget.cpp">
       <Filter>tools</Filter>
+    </ClCompile>
+    <ClCompile Include="src\source\cmainwindow.cpp">
+      <Filter>src\source</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -309,14 +309,14 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <QtMoc Include="src\include\cpbr.h">
-      <Filter>src\include</Filter>
-    </QtMoc>
     <QtMoc Include="src\include\cglwidget.h">
       <Filter>src\include</Filter>
     </QtMoc>
     <QtMoc Include="tools\qtdebugwidget.h">
       <Filter>tools</Filter>
+    </QtMoc>
+    <QtMoc Include="src\include\cmainwindow.h">
+      <Filter>src\include</Filter>
     </QtMoc>
   </ItemGroup>
   <ItemGroup>

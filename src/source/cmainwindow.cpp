@@ -1,8 +1,8 @@
-#include "cpbr.h"
+#include "cmainwindow.h"
 #include "cglwidget.h"
 #include "gamemanager.h"
 
-CPBR::CPBR(QWidget *parent) : QMainWindow(parent), gl_view(nullptr) {
+CMainWindow::CMainWindow(QWidget *parent) : QMainWindow(parent), gl_view(nullptr) {
 	// init ui
 	{ init_ui(); }
 
@@ -10,7 +10,7 @@ CPBR::CPBR(QWidget *parent) : QMainWindow(parent), gl_view(nullptr) {
 
 }
 
-void CPBR::init_ui() {
+void CMainWindow::init_ui() {
 	ui.setupUi(this);
 
 	// init shading menu
@@ -49,26 +49,26 @@ void CPBR::init_ui() {
 	
 }
 
-CPBR::~CPBR() { 
+CMainWindow::~CMainWindow() {
 	delete gl_view; 
 }
-void CPBR::closeEvent(QCloseEvent *event) {
+void CMainWindow::closeEvent(QCloseEvent *event) {
 	QApplication* app;
 	app->quit();
 }
 
-void CPBR::init_gl_view(int a, int b, int w, int h) {
+void CMainWindow::init_gl_view(int a, int b, int w, int h) {
 	gl_view = new CGLWidget(this);
 	gl_view->setGeometry(a, b, w, h);
 }
 
-void CPBR::resizeEvent(QResizeEvent *event) {
+void CMainWindow::resizeEvent(QResizeEvent *event) {
 	if (gl_view == nullptr) return;
 	gl_view->resize( geometry().width() - 100, geometry().height() - 100);
 }
 
-void CPBR::trigger_rb_3d() { GameManager::get_instance()->set_b_use_vr(!GameManager::get_instance()->get_b_use_vr()); }
-void CPBR::trigger_polygon_mode(QAction* act) {
+void CMainWindow::trigger_rb_3d() { GameManager::get_instance()->set_b_use_vr(!GameManager::get_instance()->get_b_use_vr()); }
+void CMainWindow::trigger_polygon_mode(QAction* act) {
 	if (act->objectName().compare("action_pm_fill") == 0) {
 		GameManager::get_instance()->set_front_polygon_mode(GL_FILL);
 		GameManager::get_instance()->set_back_polygon_mode(GL_LINE);
@@ -78,7 +78,7 @@ void CPBR::trigger_polygon_mode(QAction* act) {
 		GameManager::get_instance()->set_back_polygon_mode(GL_FILL);
 	}
 }
-void CPBR::trigger_select_pp(QAction* act) {
+void CMainWindow::trigger_select_pp(QAction* act) {
 	if (act->objectName().compare("action_pp_normal") == 0) {
 		GameManager::get_instance()->set_pp_type(PostProcessType::NOPE);
 	}
@@ -101,7 +101,7 @@ void CPBR::trigger_select_pp(QAction* act) {
 
 
 
-void CPBR::trigger_shader_toy() {
+void CMainWindow::trigger_shader_toy() {
 	GameManager::get_instance()->set_b_use_shader_toy(!GameManager::get_instance()->get_b_use_shader_toy());
 }
 

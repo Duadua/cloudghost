@@ -6,12 +6,12 @@
 class CGLWidget;
 class QResizeEvent;
 
-class CPBR : public QMainWindow {
+class CMainWindow : public QMainWindow {
 	Q_OBJECT
 
 public:
-	CPBR(QWidget *parent = Q_NULLPTR);
-	~CPBR();
+	CMainWindow(QWidget *parent = Q_NULLPTR);
+	~CMainWindow();
 
 protected:
 	virtual void resizeEvent(QResizeEvent *event) override;

@@ -14,6 +14,7 @@
     <ProjectGuid>{B12702AD-ABFB-343A-A199-8E24837244A3}</ProjectGuid>
     <Keyword>Qt4VSv1.0</Keyword>
     <WindowsTargetPlatformVersion>10.0.17134.0</WindowsTargetPlatformVersion>
+    <ProjectName>CloudGhost</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
@@ -140,7 +141,7 @@
     <ClCompile Include="src\source\cameraobject.cpp" />
     <ClCompile Include="src\source\cglwidget.cpp" />
     <ClCompile Include="src\source\component.cpp" />
-    <ClCompile Include="src\source\cpbr.cpp" />
+    <ClCompile Include="src\source\cmainwindow.cpp" />
     <ClCompile Include="src\source\cubeobject.cpp" />
     <ClCompile Include="src\source\delegate.cpp" />
     <ClCompile Include="src\source\freecamera.cpp" />
@@ -210,7 +211,10 @@
     <QtMoc Include="tools\qtdebugwidget.h" />
     <ClInclude Include="tools\qtimagehelper.h" />
     <ClInclude Include="tools\textureloader.h" />
-    <QtMoc Include="src\include\cpbr.h" />
+    <QtMoc Include="src\include\cmainwindow.h">
+      <IncludePath Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">.\generated;.;$(QTDIR)\include;.\generated\$(ConfigurationName)\.;$(QTDIR)\include\QtCore;$(QTDIR)\include\QtGui;$(QTDIR)\include\QtANGLE;$(QTDIR)\include\QtOpenGL;$(QTDIR)\include\QtWidgets;.\tools</IncludePath>
+      <IncludePath Condition="'$(Configuration)|$(Platform)'=='Release|x64'">.\generated;.;$(QTDIR)\include;.\generated\$(ConfigurationName)\.;$(QTDIR)\include\QtCore;$(QTDIR)\include\QtGui;$(QTDIR)\include\QtANGLE;$(QTDIR)\include\QtOpenGL;$(QTDIR)\include\QtWidgets;.\tools</IncludePath>
+    </QtMoc>
     <QtMoc Include="src\include\cglwidget.h" />
   </ItemGroup>
   <ItemGroup>

@@ -1,6 +1,6 @@
-#include "cpbr.h"
 #include "reflex.h"
 #include "gameobject.h"
+#include "cmainwindow.h"
 #include "mygamemanager.h"
 #include <QtWidgets/QApplication>
 #include <QMatrix4x4>
@@ -108,8 +108,8 @@ int main(int argc, char *argv[]) {
 	}
 
 	MyGameManager gm;
-	CPBR w;
-	w.show();
+	CMainWindow cmw;
+	cmw.show();
 
 	return a.exec();
 
