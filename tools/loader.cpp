@@ -6,11 +6,11 @@
 #endif // C_DEBUG_QT
 
 std::string get_suff_of_file(const std::string& path) {
-	uint t_idx = path.find_last_of('.');
+    uint t_idx = static_cast<uint>(path.find_last_of('.'));
 	return path.substr(t_idx);
 }
 std::string get_name_of_file(const std::string& path) {
-	uint t_f = path.find_last_of('/');
+    uint t_f = static_cast<uint>(path.find_last_of('/'));
 	return path.substr(t_f + 1);
 }
 void get_all_files_from_dir(std::string& path, std::vector<std::string>& res) {
@@ -52,7 +52,7 @@ bool save_txt(const std::string& path, const std::string& source) {
 	fs.open(path, std::ios::trunc | std::ios::out);
 	if (!fs.is_open()) { return false; }
 
-	fs.write(source.c_str(), source.length());
+    fs.write(source.c_str(), static_cast<long long>(source.length()));
 	fs.close();
 	return true;
 }

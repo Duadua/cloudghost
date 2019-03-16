@@ -21,10 +21,10 @@ public:
 
 	void add_render_data(SPTR_RenderData rd);
 
-	GET_SET(bool, use_default_mt);
+    GET_SET(bool, use_default_mt)
 
 	RenderDataInstance& render_data(uint id) {
-		id = CMath::clamp<uint>(id, 0, render_datas.size() - 1);
+        id = CMath::clamp<uint>(id, 0, static_cast<uint>(render_datas.size() - 1));
 		return render_datas[id];
 	}
 

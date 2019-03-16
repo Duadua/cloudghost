@@ -55,7 +55,7 @@ void RenderData::init(const std::vector<MVertex>& v, const std::vector<uint>& i)
 
 void RenderData::draw() {
 	glBindVertexArray(vao);
-	if(indices.size() <= 0) glDrawArrays(GL_TRIANGLES, 0, vertices.size());
-	else glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
+    if(indices.size() <= 0) glDrawArrays(GL_TRIANGLES, 0, static_cast<GLsizei>(vertices.size()));
+    else glDrawElements(GL_TRIANGLES, static_cast<GLsizei>(indices.size()), GL_UNSIGNED_INT, nullptr);
 	glBindVertexArray(0);
 }

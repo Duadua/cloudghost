@@ -10,11 +10,11 @@ public:
 	LightComponent();
 	virtual ~LightComponent() {}
 
-	virtual bool use(const std::string& shader) { return false; }
+    virtual bool use(const std::string& shader) { if(shader.size() > 0) {} return false; }
 
-	GET_SET(CVector3D, color);
-	GET_SET(float, intensity);
-	GET_SET(CVector3D, k);
+    GET_SET(CVector3D, color)
+    GET_SET(float, intensity)
+    GET_SET(CVector3D, k)
 
 	CVector3D get_dirction();					// from rotation  -- 初始方向 (0.0, 0.0, 1.0)
 
@@ -35,7 +35,7 @@ class DirectLightComponent : public LightComponent{
 	DECLARE_CLASS(DirectLightComponent)
 public:
 	DirectLightComponent();
-	virtual ~DirectLightComponent() {}
+    virtual ~DirectLightComponent() {}
 
 	virtual bool use(const std::string& shader) override;
 
@@ -53,11 +53,11 @@ class PointLightComponent : public LightComponent{
 	DECLARE_CLASS(PointLightComponent)
 public:
 	PointLightComponent ();
-	virtual ~PointLightComponent() {}
+    virtual ~PointLightComponent() override {}
 
 	virtual bool use(const std::string& shader) override;
 	
-	GET(float, att_raduis);
+    GET(float, att_raduis)
 	void set_att_radius(float t_att_radius);
 	void update_att();			// 由衰减半径更新 参数
 
@@ -83,16 +83,16 @@ class SpotLightComponent : public LightComponent{
 	DECLARE_CLASS(SpotLightComponent)
 public:
 	SpotLightComponent ();
-	virtual ~SpotLightComponent() {}
+    virtual ~SpotLightComponent() override {}
 
 	virtual bool use(const std::string& shader) override;
 	
-	GET(float, att_raduis);
+    GET(float, att_raduis)
 	void set_att_radius(float t_att_radius);
 	void update_att();			// 由衰减半径更新 参数
 
-	GET_SET(float, inner);
-	GET_SET(float, outer);
+    GET_SET(float, inner)
+    GET_SET(float, outer)
 
 private:
 

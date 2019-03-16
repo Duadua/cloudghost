@@ -37,9 +37,9 @@ CONFIG(debug, debug|release){
         -lglu32 \
         -lQt5Widgetsd \
         -luser32 \
-        -LD:/cpbr/cloudghost/third_part/glfw/libs/ -lglfw3d \
-        -LD:/cpbr/cloudghost/third_part/glew/libs/ -llibglew32d \
-        -LD:/cpbr/cloudghost/third_part/assimp/libs/ -lassimp-vc140-mt \
+        -L../third_part/glfw/libs/ -lglfw3d \
+        -L../third_part/glew/libs/ -llibglew32d \
+        -L../third_part/assimp/libs/ -lassimp-vc140-mt \
 
     MOC_DIR += ./generated/Debug
     OBJECTS_DIR += release
@@ -80,9 +80,9 @@ else {
         -lglu32 \
         -lQt5Widgets \
         -luser32 \
-        -LD:/cpbr/cloudghost/third_part/glfw/libs/ -lglfw3 \
-        -LD:/cpbr/cloudghost/third_part/glew/libs/ -llibglew32 \
-        -LD:/cpbr/cloudghost/third_part/assimp/libs/ -lassimp-vc140-mt
+        -L../third_part/glfw/libs/ -lglfw3 \
+        -L../third_part/glew/libs/ -llibglew32 \
+        -L../third_part/assimp/libs/ -lassimp-vc140-mt
 
     MOC_DIR += ./generated/Release
     OBJECTS_DIR += release

@@ -24,10 +24,10 @@ class InputManager {
 
 public:
 	// mouse
-	static void exec_mouse_pressed_event(QMouseEvent* event, QOpenGLWidget* gl);
-	static void exec_mouse_release_event(QMouseEvent* event, QOpenGLWidget* gl);
-	static void exec_mouse_moveeee_event(QMouseEvent* event, QOpenGLWidget* gl);
-	static void exec_mouse_wheeeel_event(QWheelEvent* event, QOpenGLWidget* gl);
+    static void exec_mouse_pressed_event(class QMouseEvent* event);
+    static void exec_mouse_release_event(class QMouseEvent* event);
+    static void exec_mouse_moveeee_event(class QMouseEvent* event);
+    static void exec_mouse_wheeeel_event(class QWheelEvent* event);
 	static void mouse_pressed_over(); // 鼠标单击结束
 	
 	// cursor
@@ -38,8 +38,8 @@ public:
 	static bool cursor_in_edge();
 
 	// key
-	static void exec_key_pressed_event(QKeyEvent* event, QOpenGLWidget* gl);
-	static void exec_key_release_event(QKeyEvent* event, QOpenGLWidget* gl);
+    static void exec_key_pressed_event(QKeyEvent* event);
+    static void exec_key_release_event(QKeyEvent* event);
 	static void key_pressed_over();
 
 	// binders

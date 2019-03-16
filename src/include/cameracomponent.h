@@ -8,13 +8,13 @@ class CameraComponent : public SceneComponent {
 	DECLARE_CLASS(CameraComponent)
 public:
 	CameraComponent();
-	~CameraComponent();
+    ~CameraComponent() override;
 	
-	virtual void draw(const std::string& shader) override;
+    virtual void draw(const std::string& shader) override;
  
 	CMatrix4x4 get_view_mat();
 
-	GET_SET(float, camera_speed);
+    GET_SET(float, camera_speed)
 
 	CVector3D get_right_axis();
 

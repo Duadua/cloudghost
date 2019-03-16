@@ -10,7 +10,9 @@ CameraComponent::CameraComponent() : camera_mesh(""), camera_speed(0.05f){
 CameraComponent::~CameraComponent() {}
 
 void CameraComponent::draw(const std::string& shader) {
+    if(shader.size() > 0) {
 
+    }
 }
 
 CMatrix4x4 CameraComponent::get_view_mat() {

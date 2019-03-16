@@ -27,7 +27,7 @@ InputState InputManager::cur_input_state;
 QOpenGLWidget* InputManager::gl;
 
 // mouse
-void InputManager::exec_mouse_pressed_event(QMouseEvent* event, QOpenGLWidget* gl) {
+void InputManager::exec_mouse_pressed_event(QMouseEvent* event) {
 
 	cur_input_state.mouse_pressing = event->buttons();
 	cur_input_state.modifiers = event->modifiers();
@@ -46,7 +46,7 @@ void InputManager::exec_mouse_pressed_event(QMouseEvent* event, QOpenGLWidget* g
 	
 	exec_axis_mouse_move();
 }
-void InputManager::exec_mouse_release_event(QMouseEvent* event, QOpenGLWidget* gl) {
+void InputManager::exec_mouse_release_event(QMouseEvent* event) {
 
 	cur_input_state.mouse_released = event->button();
 	cur_input_state.mouse_pressing ^= event->button();
@@ -55,7 +55,7 @@ void InputManager::exec_mouse_release_event(QMouseEvent* event, QOpenGLWidget* g
 
 	exec_axis_mouse_move();
 }
-void InputManager::exec_mouse_moveeee_event(QMouseEvent* event, QOpenGLWidget* gl) {
+void InputManager::exec_mouse_moveeee_event(QMouseEvent* event) {
 
 	if (cur_input_data.mouse_move_ignore_count > 0) {
 		--cur_input_data.mouse_move_ignore_count;
@@ -69,7 +69,7 @@ void InputManager::exec_mouse_moveeee_event(QMouseEvent* event, QOpenGLWidget* g
 	
 	exec_axis_mouse_move();
 }
-void InputManager::exec_mouse_wheeeel_event(QWheelEvent* event, QOpenGLWidget* gl) {
+void InputManager::exec_mouse_wheeeel_event(QWheelEvent* event) {
 	cur_input_data.mouse_wheel_delta = event->delta();
 	exec_axis_mouse_wheel();
 }
@@ -79,7 +79,7 @@ void InputManager::mouse_pressed_over() {
 }
 
 // key
-void InputManager::exec_key_pressed_event(QKeyEvent* event, QOpenGLWidget* gl) {
+void InputManager::exec_key_pressed_event(QKeyEvent* event) {
 
 	if (!event->isAutoRepeat()) {
 		cur_input_state.key_pressing.insert(event->key());
@@ -94,7 +94,7 @@ void InputManager::exec_key_pressed_event(QKeyEvent* event, QOpenGLWidget* gl) {
 	} // 第一次按下
 	else { }
 }
-void InputManager::exec_key_release_event(QKeyEvent* event, QOpenGLWidget* gl) {
+void InputManager::exec_key_release_event(QKeyEvent* event) {
 
 	if (!event->isAutoRepeat()) {
 		cur_input_state.key_pressing.remove(event->key());
