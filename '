@@ -1,0 +1,1 @@
+    void set(class_type* t, const attr_type& v) { *(static_cast<attr_type*>(static_cast<uchar>(t + offset))) = v; }

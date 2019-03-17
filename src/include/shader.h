@@ -11,7 +11,7 @@ public:
 	Shader();
 	virtual ~Shader();
 
-	GET_SET(std::string, name);
+    GET_SET(std::string, name)
 
 	SPTR_Shader use(); 
 	void compile(const std::string& v_code, const std::string& f_code, const std::string& g_code = "");

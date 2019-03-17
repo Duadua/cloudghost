@@ -11,7 +11,7 @@ class CMainWindow : public QMainWindow {
 
 public:
 	CMainWindow(QWidget *parent = Q_NULLPTR);
-	~CMainWindow();
+    ~CMainWindow() override;
 
 protected:
 	virtual void resizeEvent(QResizeEvent *event) override;

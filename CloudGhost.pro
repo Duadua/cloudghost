@@ -1,8 +1,15 @@
+# ================================================================================
+# dua 亲手打造 -- 好累
+# ================================================================================
+
 TEMPLATE = app
 TARGET = CloudGhost
 QT += core opengl gui widgets
 CONFIG += debug_and_release
 DEFINES += _UNICODE _ENABLE_EXTENDED_ALIGNED_STORAGE WIN64 QT_DLL QT_OPENGL_LIB QT_WIDGETS_LIB
+
+# disable C4819 warning
+QMAKE_CXXFLAGS_WARN_ON += -wd4819
 
 CONFIG(debug, debug|release){
     DESTDIR = ./x64/Debug

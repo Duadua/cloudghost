@@ -79,10 +79,10 @@ public:
 	ClassAttr(ulong o, std::string t, std::string k) : offset(o), type(t), key(k) {}
 
 	template<class class_type, class attr_type>
-	void get(class_type* t, attr_type& v) { v = *((attr_type*)((uchar*)t + offset)); }
+    void get(class_type* t, attr_type& v) { v = *(static_cast<attr_type*>(static_cast<uchar>(t + offset))); }
 
 	template<class class_type, class attr_type>
-	void set(class_type* t, const attr_type& v) { *((attr_type*)((uchar*)t + offset)) = v; }
+    void set(class_type* t, const attr_type& v) { *(static_cast<attr_type*>(static_cast<uchar>(t + offset))) = v; }
 
 	std::string get_key() const { return key; }
 	std::string get_type() const { return type; }

@@ -13,7 +13,7 @@ public:
 
 	void update(CVector3D location, CVector3D rotation);
 	
-	GET(CVector3D, right);
+    GET(CVector3D, right)
 
 private:
 

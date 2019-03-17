@@ -8,7 +8,7 @@ class CGLWidget : public QOpenGLWidget {
 
 public:
 	CGLWidget(QWidget *parent = Q_NULLPTR);
-	~CGLWidget();
+    ~CGLWidget() override;
 
 protected:
 	virtual void initializeGL() override;

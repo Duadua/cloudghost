@@ -40,7 +40,7 @@ void MyGameManager::begin_play() {
 				auto t_cube = CREATE_CLASS(CubeObject);
 				std::string t_name = "cube_" + uint_to_string(j) + "_" + uint_to_string(i);
 				add_game_object(t_name , t_cube);
-				t_cube->get_root_component()->set_location(j * 2.0f, 0.0f, 2.0f * ((float)i-3));
+                t_cube->get_root_component()->set_location(j * 2.0f, 0.0f, 2.0f * (static_cast<float>(i)-3));
 				t_cube->get_root_component()->set_scale(0.5f, 3.0f, 1.0f);
 				if(j == 0) t_cube->set_material("emerald");
 				else t_cube->set_material("jade");
@@ -80,8 +80,9 @@ void MyGameManager::begin_play() {
 	}*/
 
 	// shader 静态参数赋值
-	CMatrix4x4 projection;
-	projection.perspective(45.0f, (float)get_viewport_info().heigh / get_viewport_info().width, 0.1f, 100.0f);
+    CMatrix4x4 projection;
+    float ratio  = 1.0f * get_viewport_info().heigh / get_viewport_info().width;
+    projection.perspective(45.0f, ratio, 0.1f, 100.0f);
 	if (main_shader != nullptr) {
 		main_shader->use();
 		main_shader->set_mat4("u_projection", projection);

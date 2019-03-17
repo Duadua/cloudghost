@@ -35,6 +35,8 @@ public:
 
 	static float interp_linear(float v, float min, float max);		// 线性插值 v ~ [0.0 ,, 1.0]
 
+    static int fcmp(float a, float b);                            // -1 -- < ; 0 -- = ; 1 -- >
+
 private:
 	CMath() {}
 

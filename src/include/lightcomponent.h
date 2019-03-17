@@ -35,13 +35,13 @@ class DirectLightComponent : public LightComponent{
 	DECLARE_CLASS(DirectLightComponent)
 public:
 	DirectLightComponent();
-    virtual ~DirectLightComponent() {}
+    virtual ~DirectLightComponent() override {}
 
 	virtual bool use(const std::string& shader) override;
 
 private:
 
-	static uint direct_light_num;
+    static int direct_light_num;
 
 };
 DECLARE_AUTO_PTR(DirectLightComponent)
@@ -70,7 +70,7 @@ private:
 	float att_kb;
 	float att_kc;
 	
-	static uint point_light_num;
+    static int point_light_num;
 
 
 };
@@ -107,7 +107,7 @@ private:
 	float inner;
 	float outer;
 	
-	static uint spot_light_num;
+    static int spot_light_num;
 
 };
 DECLARE_AUTO_PTR(SpotLightComponent)

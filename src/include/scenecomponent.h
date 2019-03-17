@@ -16,9 +16,9 @@ public:
 	
 	CMatrix4x4 get_transform();
 
-	SET(CVector3D, location);
-	SET(CVector3D, rotation);
-	SET(CVector3D, scale);
+    SET(CVector3D, location)
+    SET(CVector3D, rotation)
+    SET(CVector3D, scale)
 
 	void set_location(float x, float y, float z);
 	void set_rotation(float x, float y, float z);
@@ -28,10 +28,10 @@ public:
 	CVector3D get_rotation();
 	CVector3D get_scale();
 
-	GET_SET(bool, is_border);
+    GET_SET(bool, is_border)
 	void set_all_border(bool border);			// 设置 此 MC 和 其子MC 都为 border
 
-	GET(std::vector<SPTR_SceneComponent>, child_components);
+    GET(std::vector<SPTR_SceneComponent>, child_components)
 
 protected:
 	WPTR_SceneComponent parent_component;

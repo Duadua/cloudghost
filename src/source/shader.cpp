@@ -9,10 +9,10 @@ IMPLEMENT_CLASS(Shader)
 Shader::Shader() {
 	if (glewExperimental == false) {
 		glewExperimental = true;
-		int flag = glewInit();
+        GLenum flag = glewInit();
 		if (flag != GLEW_OK) {
 			c_debug() << "[error][glew]init fail";
-            c_debug() << (const char*)glewGetErrorString(flag);
+            c_debug() << reinterpret_cast<const char*>(glewGetErrorString(flag));
 		}
 	}
 }
@@ -24,7 +24,7 @@ SPTR_Shader Shader::use() {
 }
 
 void Shader::compile(const std::string& v_code, const std::string& f_code, const std::string& g_code) {
-	uint v_id, f_id, g_id;
+    uint v_id = 0, f_id = 0, g_id = 0;
 	shader_id = glCreateProgram();
 	
 	// compile vertex shader
@@ -47,7 +47,7 @@ void Shader::compile(const std::string& v_code, const std::string& f_code, const
 uint Shader::compile_shader(const std::string& code, uint type) {
 	const char* t_code = code.c_str();
 	uint id = glCreateShader(type);
-	glShaderSource(id, 1, &t_code, NULL);
+    glShaderSource(id, 1, &t_code, nullptr);
 
 	glCompileShader(id);
 	check_compile_errors(id);
@@ -86,50 +86,50 @@ void Shader::check_link_errors(uint id) {
 }
 
 void Shader::set_bool(const std::string& name, const bool& value) {
-	uint location = glGetUniformLocation(shader_id, name.c_str());
-	glUniform1i(location, (int)value);
+    GLint location = glGetUniformLocation(shader_id, name.c_str());
+    glUniform1i(location, value);
 }
 void Shader::set_int(const std::string& name, const int& value) {
-	uint location = glGetUniformLocation(shader_id, name.c_str());
+    GLint location = glGetUniformLocation(shader_id, name.c_str());
 	glUniform1i(location, value);
 }
 void Shader::set_uint(const std::string& name, const uint& value) {
-	uint location = glGetUniformLocation(shader_id, name.c_str());
+    GLint location = glGetUniformLocation(shader_id, name.c_str());
 	glUniform1ui(location, value);
 }
 
 void Shader::set_float(const std::string& name, const float& value) {
-	uint location = glGetUniformLocation(shader_id, name.c_str());
+    GLint location = glGetUniformLocation(shader_id, name.c_str());
 	glUniform1f(location, value);
 }
 
 void Shader::set_vec2(const std::string& name, const CVector2D& value) {
-	uint location = glGetUniformLocation(shader_id, name.c_str());
+    GLint location = glGetUniformLocation(shader_id, name.c_str());
 	glUniform2fv(location, 1, value.data());
 }
 void Shader::set_vec3(const std::string& name, const CVector3D& value) {
-	uint location = glGetUniformLocation(shader_id, name.c_str());
+    GLint location = glGetUniformLocation(shader_id, name.c_str());
 	glUniform3fv(location, 1, value.data());
 }
 void Shader::set_vec4(const std::string& name, const CVector4D& value) {
-	uint location = glGetUniformLocation(shader_id, name.c_str());
+    GLint location = glGetUniformLocation(shader_id, name.c_str());
 	glUniform4fv(location, 1, value.data());
 }
 
 void Shader::set_vec2(const std::string& name, float x, float y) {
-	uint location = glGetUniformLocation(shader_id, name.c_str());
+    GLint location = glGetUniformLocation(shader_id, name.c_str());
 	glUniform2f(location, x, y);
 }
 void Shader::set_vec3(const std::string& name, float x, float y, float z) {
-	uint location = glGetUniformLocation(shader_id, name.c_str());
+    GLint location = glGetUniformLocation(shader_id, name.c_str());
 	glUniform3f(location, x, y, z);
 }
 void Shader::set_vec4(const std::string& name, float x, float y, float z, float w) {
-	uint location = glGetUniformLocation(shader_id, name.c_str());
+    GLint location = glGetUniformLocation(shader_id, name.c_str());
 	glUniform4f(location, x, y, z, w);
 }
 
 void Shader::set_mat4(const std::string& name, const CMatrix4x4& value) {
-	uint location = glGetUniformLocation(shader_id, name.c_str());
+    GLint location = glGetUniformLocation(shader_id, name.c_str());
 	glUniformMatrix4fv(location, 1, GL_FALSE, value.data());
 }

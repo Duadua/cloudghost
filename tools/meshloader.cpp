@@ -17,6 +17,8 @@ bool MeshTxtGen::gen_mesh_txt(std::string& res, MeshTxtGenType type, uint depth,
 		out = &fs;
 	}
 	else if (source_type == SourceType::BY_STRING) { ss.clear(); out = &ss; }
+    else { return false; }
+
 	out->fill('0');
 	out->precision(6);
 	out->setf(std::ios::fixed, std::ios::floatfield);
@@ -35,7 +37,6 @@ bool MeshTxtGen::gen_mesh_txt(std::string& res, MeshTxtGenType type, uint depth,
 	case CONE:				gen_cone(depth); break;
 	case SPHERE:			gen_sphere(depth); has_normal = true; break;
 	case CYLINDER:			gen_cylinder(depth); break;
-	default:				break;
 	}
 
 	if(!has_normal) cac_normal();
@@ -290,7 +291,7 @@ void MeshTxtGen::gen_sphere(uint depth) {
 		while (depth--) {
 			for (auto& md : mesh_datas) {
 				auto& indices = md.indices;
-				uint len = indices.size();
+                uint len = static_cast<uint>(indices.size());
 				for (uint i = 0; i < len; i += 3) {
 					uint i_a = indices[i + 0];
 					uint i_b = indices[i + 1];
@@ -307,8 +308,12 @@ void MeshTxtGen::gen_sphere(uint depth) {
 
 					if (!v_mid.count(puu_ab)) {
 						MVertex d = MVertex((a.position + b.position).normalize());
-						if (a.position.y() == 1.0f || a.position.y() == -1.0f) a.tex_coord.set_x(b.tex_coord.x());
-						if (b.position.y() == 1.0f || b.position.y() == -1.0f) b.tex_coord.set_x(a.tex_coord.x());
+                        if (CMath::fcmp(a.position.y(), 1.0f) == 0 || CMath::fcmp(a.position.y(), -1.0f) == 0) {
+                            a.tex_coord.set_x(b.tex_coord.x());
+                        }
+                        if (CMath::fcmp(b.position.y(), 1.0f) == 0 || CMath::fcmp(b.position.y(), -1.0f) == 0) {
+                            b.tex_coord.set_x(a.tex_coord.x());
+                        }
 						d.tex_coord = (a.tex_coord + b.tex_coord) * 0.5f;
 						add_one_vertex(d);
 						i_d = cur_id++; v_mid[puu_ab] = i_d;
@@ -317,8 +322,12 @@ void MeshTxtGen::gen_sphere(uint depth) {
 
 					if (!v_mid.count(puu_bc)) {
 						MVertex e = MVertex((b.position + c.position).normalize());
-						if (b.position.y() == 1.0f || b.position.y() == -1.0f) b.tex_coord.set_x(c.tex_coord.x());
-						if (c.position.y() == 1.0f || c.position.y() == -1.0f) c.tex_coord.set_x(b.tex_coord.x());
+                        if (CMath::fcmp(b.position.y(), 1.0f) == 0 || CMath::fcmp(b.position.y(), -1.0f)) {
+                            b.tex_coord.set_x(c.tex_coord.x());
+                        }
+                        if (CMath::fcmp(c.position.y(), 1.0f) == 0 || CMath::fcmp(c.position.y(), -1.0f)) {
+                            c.tex_coord.set_x(b.tex_coord.x());
+                        }
 						e.tex_coord = (b.tex_coord + c.tex_coord) * 0.5f;
 						add_one_vertex(e);
 						i_e = cur_id++; v_mid[puu_bc] = i_e;
@@ -327,8 +336,12 @@ void MeshTxtGen::gen_sphere(uint depth) {
 
 					if (!v_mid.count(puu_ca)) {
 						MVertex f = MVertex((c.position + a.position).normalize());
-						if (c.position.y() == 1.0f || c.position.y() == -1.0f) c.tex_coord.set_x(a.tex_coord.x());
-						if (a.position.y() == 1.0f || a.position.y() == -1.0f) a.tex_coord.set_x(c.tex_coord.x());
+                        if (CMath::fcmp(c.position.y(), 1.0f) == 0 || CMath::fcmp(c.position.y(), -1.0f)) {
+                            c.tex_coord.set_x(a.tex_coord.x());
+                        }
+                        if (CMath::fcmp(a.position.y(), 1.0f) == 0 || CMath::fcmp(a.position.y(), -1.0f)) {
+                            a.tex_coord.set_x(c.tex_coord.x());
+                        }
 						f.tex_coord = (c.tex_coord + a.tex_coord) * 0.5f;
 						add_one_vertex(f);
 						i_f = cur_id++; v_mid[puu_ca] = i_f;
@@ -389,10 +402,10 @@ void MeshTxtGen::gen_cylinder(uint depth) {
 		float rad = 2.0f*CMath::pi / depth;
 		for (uint i = 0; i <= depth; ++i) {
 			MVertex t(CVector3D(0.5f*std::cos(i*rad), -0.5f, 0.5f*std::sin(i*rad)));
-			t.tex_coord = CVector2D((float)i / depth, 0.0f);
+            t.tex_coord = CVector2D(1.0f * i / depth, 0.0f);
 			add_one_vertex(t);
 			MVertex tt(CVector3D(0.5f*std::cos(i*rad), 0.5f, 0.5f*std::sin(i*rad)));
-			tt.tex_coord = CVector2D((float)i / depth, 1.0f);
+            tt.tex_coord = CVector2D(1.0f * i / depth, 1.0f);
 			add_one_vertex(tt);
 		}
 
@@ -453,7 +466,7 @@ void MeshTxtGen::add_one_vertex(const MVertex& x) { vertices.push_back(x); }
 void MeshTxtGen::add_one_face(uint a, uint b, uint c) {
 	// 利用混合积保持三角面片的一致性顺序 -- 逆时针
 	float det = vertices[a].position.mix(vertices[b].position, vertices[c].position);
-	if (det > 1e-3) { std::swap(b, c); }		
+    if (CMath::fcmp(det, 0.0f) > 0) { std::swap(b, c); }
 
 	if (mesh_datas.size() == 0) mesh_datas.push_back(MeshData());
 	mesh_datas[mesh_datas.size()-1].indices.push_back(a); 
@@ -505,6 +518,7 @@ bool MeshLoader::load_mesh_txt(const std::string& src, std::vector<MVertex>& ver
 		in = &fs;
 	}
 	else if (source_type == SourceType::BY_STRING) { ss.clear(); ss.str(src); in = &ss; }
+    else { return false; }
 
 	vertices.clear();
 	mds.clear();
@@ -561,6 +575,7 @@ bool MeshLoader::load_mesh_obj(const std::string& src, std::vector<MVertex>& ver
 		in = &fs;
 	}
 	else if (source_type == SourceType::BY_STRING) { ss.clear(); ss.str(src); in = &ss; }
+    else { return false; }
 
 	vertices.clear();
 	mds.clear();
@@ -610,7 +625,7 @@ bool MeshLoader::load_mesh_obj(const std::string& src, std::vector<MVertex>& ver
 				if (t_us.size() >= 3) t_v.normal = t_normals[t_us[2]];
 				vertices.push_back(t_v);
 
-				mds.back().indices.push_back(vertices.size() - 1);
+                mds.back().indices.push_back(static_cast<uint>(vertices.size() - 1));
 			}
 
 		}

@@ -17,7 +17,7 @@ void RenderBuffer::init(uint w, uint h, uint at_type, uint fmt) {
 	glGenRenderbuffers(1, &id);
 
 	glBindRenderbuffer(GL_RENDERBUFFER, id);
-	glRenderbufferStorage(GL_RENDERBUFFER, format, width, heigh);
+    glRenderbufferStorage(GL_RENDERBUFFER, format, static_cast<GLsizei>(width), static_cast<GLsizei>(heigh));
 	glBindRenderbuffer(GL_RENDERBUFFER, 0);
 }
 

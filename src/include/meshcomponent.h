@@ -7,11 +7,11 @@ class MeshComponent : public SceneComponent {
 	DECLARE_CLASS(MeshComponent)
 public:
 	MeshComponent(const std::string& m = "");
-	virtual ~MeshComponent();
+    virtual ~MeshComponent() override;
 
 	virtual void draw(const std::string& shader) override;
 
-	GET_SET(std::string, mesh);
+    GET_SET(std::string, mesh)
 
 private:
 	std::string mesh;

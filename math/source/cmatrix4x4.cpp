@@ -48,9 +48,9 @@ CVector3D operator * (const CMatrix4x4& a, const CVector3D& b) { return (a*CVect
 
 std::ostream& operator << (std::ostream& out, const CMatrix4x4& b) {
 	out << "CMatrix4x4 (\n";
-	for (uint i = 0; i < 4; ++i) {
+    for (int i = 0; i < 4; ++i) {
 		out << "\t\t";
-		for (uint j = 0; j < 4; ++j) {
+        for (int j = 0; j < 4; ++j) {
 			out << std::to_string(b(i, j)) << " ";
 		}
 		out << "\n";
@@ -201,9 +201,9 @@ CMatrix4x4& CMatrix4x4::rotate_quaternion(const CQuaternion& quaternion) {
 CVector3D	CMatrix4x4::get_rotate_euler() const {
 	float sy = std::sqrt(m[0][0]*m[0][0] + m[0][1] * m[0][1]);
 
-	float x = (float)std::atan2(m[1][2], m[2][2]);
-	float y = (float)std::atan2(-m[0][2], sy);
-	float z = (float)std::atan2(m[0][1], m[0][0]);
+    float x = static_cast<float>(std::atan2(m[1][2], m[2][2]));
+    float y = static_cast<float>(std::atan2(-m[0][2], sy));
+    float z = static_cast<float>(std::atan2(m[0][1], m[0][0]));
 
 	/*if (sy < CMath::eps) {
 		x = (float)std::atan2(-m[2][1], m[1][1]);

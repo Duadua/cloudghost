@@ -29,8 +29,8 @@ public:
 	SPTR_RenderBuffer use();
 	SPTR_RenderBuffer un_use();
 
-	GET(uint, id);
-	GET(uint, attach_type);
+    GET(uint, id)
+    GET(uint, attach_type)
 
 private:
 	uint id;
@@ -62,8 +62,8 @@ public:
 	SPTR_RenderTarget use();
 	SPTR_RenderTarget un_use();
 
-	GET(std::vector<TextureBuffer>, attach_textures);
-	GET(std::vector<SPTR_RenderBuffer>, attach_renderbuffers);
+    GET(std::vector<TextureBuffer>, attach_textures)
+    GET(std::vector<SPTR_RenderBuffer>, attach_renderbuffers)
 
 private:
 	uint id;

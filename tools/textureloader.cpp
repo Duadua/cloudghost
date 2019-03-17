@@ -15,6 +15,7 @@ bool TextureGen::gen_texture_txt(const std::string& res, TextureGenType type, CC
 		out = &fs;
 	}
 	else if (source_type == SourceType::BY_STRING) { ss.clear(); out = &ss; }
+    else { return false; }
 
 	// 生成数据
 	SPTR_uchar t_data;
@@ -23,10 +24,9 @@ bool TextureGen::gen_texture_txt(const std::string& res, TextureGenType type, CC
 	case TextureGenType::SOLIDE: t_data = gen_solide(t_size, width, heigh, color); break;
 	case TextureGenType::GRADUA: t_data = gen_gradua(t_size, width, heigh, color); break;
 	case TextureGenType::THE_TWO: t_data = gen_thetwo(t_size, width, heigh, color); break;
-	default:break;
 	}
 
-	if(t_data != nullptr) out->write((char*)t_data.get(), t_size);
+    if(t_data != nullptr) out->write(reinterpret_cast<char*>(t_data.get()), t_size);
 
 	return true;
 }
@@ -55,10 +55,10 @@ SPTR_uchar TextureGen::gen_gradua(uint& data_size, uint width, uint heigh, CColo
 
 	for (uint i = 0; i < heigh; ++i) {
 		for (uint j = 0; j < width; ++j) {
-			float t_v = (float)j / width;
-			uint t_r = CMath::interp_linear(t_v, color.r(), 255.0f);
-			uint t_g = CMath::interp_linear(t_v, color.g(), 255.0f);
-			uint t_b = CMath::interp_linear(t_v, color.b(), 255.0f);
+            float t_v = 1.0f * j / width;
+            uint t_r = static_cast<uint>(CMath::interp_linear(t_v, 1.0f*color.r(), 255.0f));
+            uint t_g = static_cast<uint>(CMath::interp_linear(t_v, 1.0f*color.g(), 255.0f));
+            uint t_b = static_cast<uint>(CMath::interp_linear(t_v, 1.0f*color.b(), 255.0f));
 			//uint t_a = CMath::interp_linear(t_v, color.a(), 0.0f);
 			CColor t_color(t_r, t_g, t_b);
 			uint t_c = t_color.get_uint();
@@ -101,14 +101,15 @@ SPTR_uchar TextureLoader::load_texture_txt(const std::string& path, uint& width,
 		in = &fs;
 	}
 	else if (source_type == SourceType::BY_STRING) { ss.clear(); ss.str(path); in = &ss; }
+    else { return nullptr; }
 
 	uint t_size;
 	in->seekg(0, std::ios::end);										// 跳到文件尾
-	t_size = in->tellg();												// 以获得内容大小
+    t_size = static_cast<uint>(in->tellg());												// 以获得内容大小
 	auto t_data = make_shared_array<uchar>(t_size + 1);					// 以开辟相应容量的存储空间
 
 	in->seekg(0, std::ios::beg);										// 跳到文件头
-	in->read((char*)t_data.get(), t_size);
+    in->read(reinterpret_cast<char*>(t_data.get()), t_size);
 	
 	memcpy(&width, t_data.get(), sizeof(uint));
 	memcpy(&heigh, t_data.get()+sizeof(uint), sizeof(uint));
@@ -124,11 +125,11 @@ SPTR_uchar TextureLoader::load_texture_png(const std::string& path, uint& data_s
 	if (!fs.is_open()) { return nullptr; }
 	
 	fs.seekg(0, std::ios::end);										// 跳到文件尾
-	data_size = fs.tellg();											// 以获得内容大小
+    data_size = static_cast<uint>(fs.tellg());											// 以获得内容大小
 	auto t_data = make_shared_array<uchar>(data_size + 1);			// 以开辟相应容量的存储空间
 
 	fs.seekg(0, std::ios::beg);										// 跳到文件头
-	fs.read((char*)t_data.get(), data_size);
+    fs.read(reinterpret_cast<char*>(t_data.get()), data_size);
 	
 	return t_data;
 }

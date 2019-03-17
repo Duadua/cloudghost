@@ -10,9 +10,9 @@ public:
 	GameObject(SPTR_SceneComponent root = nullptr);
 	virtual ~GameObject();
 
-	GET_SET(SPTR_SceneComponent, root_component);
+    GET_SET(SPTR_SceneComponent, root_component)
 
-	GET(uint, id);
+    GET(uint, id)
 	static uint get_num() { return num; }
 
 	virtual void bind_input();

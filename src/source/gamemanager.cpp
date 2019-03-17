@@ -25,7 +25,7 @@ void GameManager::init() {
 		uint flag = glewInit();
 		if (flag != GLEW_OK) {
 			c_debug() << "[error][glew]init fail";
-			c_debug() << (char*)glewGetErrorString(flag);
+            c_debug() << reinterpret_cast<const char*>(glewGetErrorString(flag));
 		}
 		else { }
 	}
@@ -186,7 +186,7 @@ void GameManager::pick_pass() {
 	if (b_mouse_clicked) {
 		b_mouse_clicked = false;
 		uint data[3] = { 0 };
-		glReadPixels(mouse_clicked_x, mouse_clicked_y, 1, 1, GL_RGB_INTEGER, GL_UNSIGNED_INT, &data);
+        glReadPixels(static_cast<int>(mouse_clicked_x), static_cast<int>(mouse_clicked_y), 1, 1, GL_RGB_INTEGER, GL_UNSIGNED_INT, &data);
 		cur_pick_object_id = data[0];
 		cur_pick_component_id = data[1];
 	}
@@ -372,7 +372,7 @@ void GameManager::shader_toy_pass() {
 		auto stbr = shader_toy_buffer_rts[i];
 		stbr->use();
 		draw_init();
-		std::string t_name = "shader_toy_buffer_" + char_to_string(i + 'a');
+        std::string t_name = "shader_toy_buffer_" + char_to_string(static_cast<char>(i + 'a'));
 		auto t_shader = AssetManager::get_shader(t_name);
 		if (t_shader != nullptr) {
 			t_shader->set_vec3("iResolution", CVector3D(viewport_info.width, viewport_info.heigh, 0.0f));
@@ -512,10 +512,10 @@ void GameManager::pre_init(uint w, uint h) {
 void GameManager::resize(uint w, uint h) {
 	viewport_info.width = w;
 	viewport_info.heigh = h;
-	glViewport(0, 0, w, h);
+    glViewport(0, 0, static_cast<GLsizei>(w), static_cast<GLsizei>(h));
 
 	CMatrix4x4 projection;
-	float t_ratio = (float)w / (h == 0 ? 1 : h);
+    float t_ratio = static_cast<float>(w) / (h == 0 ? 1 : h);
 	projection.perspective(45.0f, t_ratio, 0.1f, 100.0f);
 	//projection.frustum(-0.1f, 0.1f, -0.1f / t, 0.1f / t, 0.1f, 100.0f);
 	//projection.ortho(-10.0f, 10.0f, -10.0f / t, 10.0f / t, 0.01f, 1000.0f);
@@ -550,7 +550,7 @@ SPTR_CameraObject GameManager::set_main_camera() {
 	free_camera->get_root_component()->set_location(0.0f, 1.5f, -10.0f);
 	free_camera->get_root_component()->set_rotation(0.0f, 0.0f, 0.0f);
 
-	return free_camera;
+    return std::dynamic_pointer_cast<CameraObject>(free_camera);
 }
 SPTR_Shader	GameManager::set_main_shader() { return AssetManager::get_shader("default"); }
 
@@ -558,14 +558,14 @@ void GameManager::set_depth_test(bool enable, uint depth_func, uint depth_mask) 
 	if (enable) { glEnable(GL_DEPTH_TEST); }
 	else { glDisable(GL_DEPTH_TEST); }
 
-	glDepthMask(depth_mask);
+    glDepthMask(static_cast<GLboolean>(depth_mask));
 	glDepthFunc(depth_func);
 }
 void GameManager::set_stencil_test(bool enable, uint func, uint ref, uint mask, uint fail, uint zfail, uint zpass) {
 	if (enable) { glEnable(GL_STENCIL_TEST); }
 	else { glDisable(GL_STENCIL_TEST); }
 	
-	glStencilFunc(func, ref, mask);
+    glStencilFunc(func, static_cast<GLint>(ref), mask);
 	glStencilOp(fail, zfail, zpass);
 	
 }
@@ -578,6 +578,7 @@ void GameManager::set_blend(bool enable, uint sfactor, uint dfactor) {
 void GameManager::set_polygon_mode(uint front_mode, uint back_mode) {
 	//glPolygonMode(GL_FRONT, front_mode);
 	//glPolygonMode(GL_BACK, back_mode);
+    if(back_mode == 0) {}
 	glPolygonMode(GL_FRONT_AND_BACK, front_mode);
 }
 void GameManager::set_cull_face(bool enable, uint mode, uint front_face) {
@@ -650,8 +651,8 @@ void GameManager::mouse_released() {
 	float delta = (InputManager::get_input_data().mouse_pressed_pos - InputManager::get_input_data().mouse_cur_pos).manhattanLength();
 	if (delta < CMath::eps) {
 		b_mouse_clicked = true;
-		mouse_clicked_x = InputManager::get_input_data().mouse_cur_pos.x();
-		mouse_clicked_y = viewport_info.heigh - InputManager::get_input_data().mouse_cur_pos.y() - 1;
+        mouse_clicked_x = static_cast<uint>(InputManager::get_input_data().mouse_cur_pos.x());
+        mouse_clicked_y = viewport_info.heigh - static_cast<uint>(InputManager::get_input_data().mouse_cur_pos.y() - 1);
 	}
 }
 

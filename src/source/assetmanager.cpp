@@ -136,7 +136,7 @@ SPTR_Material AssetManager::get_material(const std::string& key) {
 bool AssetManager::load_texture(const std::string& path, SourceType source_type) {
 	std::string t_name = get_name_of_file(path);			// 获得文件名
 	std::string t_suf = get_suff_of_file(path);				// 获得文件路径后缀
-	uint width, heigh;
+    uint width = 0, heigh = 0;
 	SPTR_uchar t_res;
 
 	if (source_type == SourceType::BY_FILE) {
@@ -147,16 +147,16 @@ bool AssetManager::load_texture(const std::string& path, SourceType source_type)
 			if (t_data == nullptr) return false;
 
 			// 暂时使用 QImage 解析 png 数据 --也是使用了 libpng 库
-			QByteArray t_ba((char*)t_data.get(), t_size);
+            QByteArray t_ba(reinterpret_cast<char*>(t_data.get()), static_cast<int>(t_size));
 			QImage t_img;
 			t_img.loadFromData(t_ba, "png");
 			t_img = t_img.mirrored();
 
 			// 从 QImage 提取出像素数据，以传给 texture
-			width = t_img.width(); 
-			heigh = t_img.height();
-			t_res = make_shared_array<uchar>(t_img.byteCount() + 1);
-			memcpy(t_res.get(), t_img.bits(), t_img.byteCount());
+            width = static_cast<uint>(t_img.width());
+            heigh = static_cast<uint>(t_img.height());
+            t_res = make_shared_array<uchar>(static_cast<size_t>(t_img.byteCount() + 1));
+            memcpy(t_res.get(), t_img.bits(), static_cast<size_t>(t_img.byteCount()));
 			
 		}
 		else if (t_suf.compare(".txt") == 0) { t_res = TextureLoader::load_texture_txt(path, width, heigh, SourceType::BY_FILE); }

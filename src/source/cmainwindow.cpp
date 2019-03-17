@@ -54,8 +54,9 @@ CMainWindow::~CMainWindow() {
 	delete gl_view; 
 }
 void CMainWindow::closeEvent(QCloseEvent *event) {
-	QApplication* app;
-	app->quit();
+    if(event != nullptr) {}
+    QApplication::quit();
+    //app->quit();
 }
 
 void CMainWindow::init_gl_view(int a, int b, int w, int h) {
@@ -64,6 +65,7 @@ void CMainWindow::init_gl_view(int a, int b, int w, int h) {
 }
 
 void CMainWindow::resizeEvent(QResizeEvent *event) {
+    if(event != nullptr) {}
 	if (gl_view == nullptr) return;
 	gl_view->resize( geometry().width() - 100, geometry().height() - 100);
 }

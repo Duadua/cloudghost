@@ -16,7 +16,7 @@ CVector3D LightComponent::get_dirction() {
 
 	float yaw = CMath::deg_to_rad(rotation.y());
 	float pitch = CMath::deg_to_rad(rotation.x());
-	float roll = CMath::deg_to_rad(rotation.z());
+    //float roll = CMath::deg_to_rad(rotation.z());
 
 	res.set_x(std::sin(yaw) * std::cos(pitch));
 	res.set_z(std::cos(yaw) * std::cos(pitch));
@@ -30,7 +30,7 @@ CVector3D LightComponent::get_dirction() {
 
 IMPLEMENT_CLASS(DirectLightComponent)
 
-uint DirectLightComponent::direct_light_num = 0;
+int DirectLightComponent::direct_light_num = 0;
 
 DirectLightComponent::DirectLightComponent() {
 	rotation = CVector3D(-46.0f, 0.0f, 0.0f);		// 初始方向
@@ -54,7 +54,7 @@ bool DirectLightComponent::use(const std::string& shader) {
 	t_shader->set_vec3(t_name + ".k", k);
 	t_shader->set_vec3(t_name + ".dirction", get_dirction());
 	
-	t_shader->set_int("u_direct_light_num", ++direct_light_num);
+    t_shader->set_int("u_direct_light_num", ++direct_light_num);
 
 	return true;
 
@@ -65,7 +65,7 @@ bool DirectLightComponent::use(const std::string& shader) {
 
 IMPLEMENT_CLASS(PointLightComponent)
 
-uint PointLightComponent::point_light_num = 0;
+int PointLightComponent::point_light_num = 0;
 
 PointLightComponent::PointLightComponent() { 
 	location = CVector3D(0.0f, 1.0f, 0.0f); 
@@ -112,7 +112,7 @@ void PointLightComponent::update_att() {
 
 IMPLEMENT_CLASS(SpotLightComponent)
 
-uint SpotLightComponent::spot_light_num = 0;
+int SpotLightComponent::spot_light_num = 0;
 
 SpotLightComponent::SpotLightComponent() {
 	location = CVector3D(0.0f, 1.0f, 0.0f);			// init location

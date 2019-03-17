@@ -16,6 +16,7 @@ CVector4D CVector4D::operator - () const { return CVector4D(-v[0], -v[1], -v[2],
 
 float CVector4D::dot(const CVector4D& b) const { return v[0] * b[0] + v[1] * b[1] + v[2] * b[2] + v[3] * b[3]; }
 CVector4D CVector4D::cross(const CVector4D& b, const CVector4D& c) const {
+    if(b.x() == 0.0f && c.x() == 0.0f) {}
 	return CVector4D();
 } // not complete
 float CVector4D::mix(const CVector4D& b, const CVector4D& c, const CVector4D& d) const { return dot(b.cross(c, d)); }

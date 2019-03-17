@@ -13,17 +13,17 @@ public:
 	void use(const std::string& shader);
 	static void un_use(const std::string& shader);
 
-	GET_SET(std::string, name);
+    GET_SET(std::string, name)
 
-	GET_SET(CVector3D, ka);
-	GET_SET(CVector3D, kd);
-	GET_SET(CVector3D, ks);
+    GET_SET(CVector3D, ka)
+    GET_SET(CVector3D, kd)
+    GET_SET(CVector3D, ks)
 
-	GET_SET(std::string, map_ka);
-	GET_SET(std::string, map_kd);
-	GET_SET(std::string, map_ks);
+    GET_SET(std::string, map_ka)
+    GET_SET(std::string, map_kd)
+    GET_SET(std::string, map_ks)
 
-	GET_SET(float, shininess);
+    GET_SET(float, shininess)
 
 	static std::string default_material_name;
 

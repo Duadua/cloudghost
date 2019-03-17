@@ -2,7 +2,7 @@
 #include "cmath.h"
 
 CQuaternion::CQuaternion(const CVector3D& euler_angle) {
-
+    if(euler_angle.x() != 0.0f) {}
 }
 CQuaternion::CQuaternion(const CVector4D& angle_axis) {
 	CVector3D t_r = angle_axis.yzw().normalize();
@@ -50,8 +50,10 @@ void CQuaternion::rotate(CVector3D& v) const {
 }
 
 CQuaternion CQuaternion::llerp(const CQuaternion& a, const CQuaternion& b) {
+    if(a.x == 0.0f && b.x == 0.0f) {}
 	return CQuaternion();
 }
 CQuaternion CQuaternion::slerp(const CQuaternion& a, const CQuaternion& b) {
-	return CQuaternion();
+    if(a.x == 0.0f && b.x == 0.0f) {}
+    return CQuaternion();
 }

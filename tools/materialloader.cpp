@@ -11,6 +11,8 @@ bool MaterialGen::gen_material_txt(std::string& res, const MaterialData& md, Sou
 		out = &fs;
 	}
 	else if (source_type == SourceType::BY_STRING) { ss.clear(); out = &ss; }
+    else { return false; }
+
 	out->fill('0');
 	out->precision(6);
 	out->setf(std::ios::fixed, std::ios::floatfield);
@@ -54,6 +56,7 @@ bool MaterialLoader::load_material_txt(const std::string& src, std::vector<Mater
 		in = &fs;
 	}
 	else if (source_type == SourceType::BY_STRING) { ss.clear(); ss.str(src); in = &ss; }
+    else { return false; }
 
 	MaterialData t_md;
 
@@ -113,6 +116,7 @@ bool MaterialLoader::load_material_txt(const std::string& src, std::vector<Mater
 }
 
 bool MaterialLoader::load_material_mtl(const std::string& src, std::vector<MaterialData>& md, SourceType source_type) {
+    if(src.compare("") == 0 && md.size() == 0 && source_type == SourceType::BY_FILE) {}
 	return true;
 }
 

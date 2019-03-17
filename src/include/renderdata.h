@@ -12,7 +12,7 @@ public:
 	void init(const std::vector<MVertex>& v, const std::vector<uint>& i);
 	void draw();
 
-	GET_SET(std::string, material_name);
+    GET_SET(std::string, material_name)
 
 private:
 	uint vao;

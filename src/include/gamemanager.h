@@ -74,7 +74,7 @@ public:
 
 public:
 	GameManager();
-	virtual ~GameManager();
+    virtual ~GameManager() override;
 	static GameManager* get_instance();
 
 	void add_game_object(const std::string& key, SPTR_GameObject value);
@@ -82,19 +82,19 @@ public:
 	
 
 public:									// used for qt ui
-	GET_SET(CColor, background_color);
-	GET_SET(CColor, border_color);
-	GET_SET(uint, front_polygon_mode);
-	GET_SET(uint, back_polygon_mode);
-	GET_SET(bool, b_use_vr);
-	GET_SET(float, vr_delta);
-	GET_SET(PostProcessType, pp_type);
-	GET_SET(bool, b_use_shader_toy);
+    GET_SET(CColor, background_color)
+    GET_SET(CColor, border_color)
+    GET_SET(uint, front_polygon_mode)
+    GET_SET(uint, back_polygon_mode)
+    GET_SET(bool, b_use_vr)
+    GET_SET(float, vr_delta)
+    GET_SET(PostProcessType, pp_type)
+    GET_SET(bool, b_use_shader_toy)
 
 protected:
 	static GameManager* instance;
 	
-	GET(ViewportInfo, viewport_info);
+    GET(ViewportInfo, viewport_info)
 
 	SPTR_CameraObject main_camera;
 	SPTR_Shader main_shader;

@@ -6,14 +6,13 @@
 #include <QPainter>
 
 bool QtImageHelper::data_to_png(const std::string& path, const SPTR_uchar data, const uint width, const uint heigh) {
-	uint t_size = width * 4 * heigh;
-	QImage img(width, heigh, QImage::Format_ARGB32);
+    QImage img(static_cast<int>(width), static_cast<int>(heigh), QImage::Format_ARGB32);
 
-	for (uint i = 0; i < heigh; ++i) {
-		for (uint j = 0; j < width; ++j) {
+    for (uint i = 0; i < heigh; ++i) {
+        for (uint j = 0; j < width; ++j) {
 			uint t_c;
 			memcpy(&t_c, data.get() + i * width * 4 + j * 4, sizeof(uint));
-			img.setPixel(j, i, t_c);
+            img.setPixel(static_cast<int>(j), static_cast<int>(i), t_c);
 		}
 	}
 	if (img.save(QString::fromStdString(path), "png")) {
@@ -29,11 +28,11 @@ bool QtImageHelper::text_to_png(const std::string& path) {
 
 	uint t_size;
 	fs.seekg(0, std::ios::end);										
-	t_size = fs.tellg();												// 以获得内容大小
+    t_size = static_cast<uint>(fs.tellg());								// 以获得内容大小
 	auto t_data = make_shared_array<uchar>(t_size + 1);					// 以开辟相应容量的存储空间
 
 	fs.seekg(0, std::ios::beg);											// 跳到文件头
-	fs.read((char*)t_data.get(), t_size);
+    fs.read(reinterpret_cast<char*>(t_data.get()), t_size);
 
 	uint width, heigh, data_size;
 	memcpy(&width, t_data.get(), sizeof(uint));
@@ -71,13 +70,13 @@ bool QtImageHelper::repair_one_png(std::string& path) {
 	if (!fs.is_open()) { return false; }
 
 	fs.seekg(0, std::ios::end);								
-	uint t_size = fs.tellg();									
+    uint t_size = static_cast<uint>(fs.tellg());
 	auto t_data = make_shared_array<uchar>(t_size + 1);
 
 	fs.seekg(0, std::ios::beg);			// 跳到文件头
-	fs.read((char*)t_data.get(), t_size);
+    fs.read(reinterpret_cast<char*>(t_data.get()), t_size);
 
-	QByteArray t_ba((char*)t_data.get(), t_size);
+    QByteArray t_ba(reinterpret_cast<const char*>(t_data.get()), static_cast<int>(t_size));
 	QImage img;
 	img.loadFromData(t_ba, "png");
 	img.save(QString::fromStdString(path), "png");
@@ -86,15 +85,15 @@ bool QtImageHelper::repair_one_png(std::string& path) {
 }
 
 std::string QtImageHelper::get_suff_of_file(const std::string& path) {
-	int t_idx = path.find_last_of('.');
+    auto t_idx = path.find_last_of('.');
 	return path.substr(t_idx);
 }
 std::string QtImageHelper::get_pref_of_file(const std::string& path) {
-	int t_idx = path.find_last_of('.');
+    auto t_idx = path.find_last_of('.');
 	return path.substr(0, t_idx);
 }
 std::string QtImageHelper::get_name_of_file(const std::string& path) {
-	int t_f = path.find_last_of('/');
+    auto t_f = path.find_last_of('/');
 	return path.substr(t_f + 1);
 }
 void QtImageHelper::get_all_files_from_dir(const std::string& path, std::vector<std::string>& res) {

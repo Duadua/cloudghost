@@ -11,6 +11,7 @@ public:
 	CQuaternion(const CVector3D& euler_angle);
 	CQuaternion(const CVector4D& angle_axis);
 	CQuaternion(float angle, const CVector3D& axis);
+    CQuaternion(const CQuaternion& q) { x = q.x; y = q.y; z = q.z; w = q.w; }
 	~CQuaternion(){}
 
 	CVector3D get_euler_angle() const;				// (pitch, yaw, roll) -- (x, y, z)

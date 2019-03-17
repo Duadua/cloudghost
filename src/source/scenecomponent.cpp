@@ -3,7 +3,7 @@
 
 IMPLEMENT_CLASS(SceneComponent)
 
-SceneComponent::SceneComponent() : scale(CVector3D(1.0f, 1.0f, 1.0f)), is_border(false) {}
+SceneComponent::SceneComponent() : is_border(false), scale(CVector3D(1.0f, 1.0f, 1.0f)) {}
 SceneComponent::~SceneComponent() {}
 
 void SceneComponent::draw(const std::string& shader) {

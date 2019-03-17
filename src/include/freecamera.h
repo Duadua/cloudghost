@@ -10,7 +10,7 @@ class FreeCamera : public CameraObject {
 	DECLARE_CLASS(FreeCamera)
 public:
 	FreeCamera();
-	~FreeCamera();
+    ~FreeCamera() override;
 
 	virtual void bind_input() override;
 
