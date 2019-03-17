@@ -28,6 +28,7 @@ public:
 	static bool clear_shaders();
 
 	static SPTR_Mesh load_mesh(const std::string& key, const std::string& src, SourceType source_type = SourceType::BY_FILE);
+	static SPTR_Mesh load_mesh_x(const std::string& key, const std::string& path);	// load mesh by assimp
 	static SPTR_Mesh get_mesh(const std::string& key);
 
 	static bool load_materials(const std::string& src, SourceType source_type = SourceType::BY_FILE);

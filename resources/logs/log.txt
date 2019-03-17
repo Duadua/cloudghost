@@ -8,8 +8,6 @@
 		0.000000 0.000000 0.000000 1.000000 
 	)
 # =========================
-	load obj success
-# =========================
 	[warning][asset][shader]no shader calls ""
 # =========================
 	[warning][asset][material]no material calls ""

@@ -506,7 +506,7 @@ void MeshTxtGen::cac_normal() {
 
 // ===============================================================================================
 
-bool MeshLoader::load_mesh_txt(const std::string& src, std::vector<MVertex>& vertices, std::vector<MeshData>& mds, std::vector<std::string>& mt_files, SourceType source_type) {
+bool MeshLoader::load_mesh_txt(const std::string& src, std::vector<MeshData>& mds, std::vector<std::string>& mt_files, SourceType source_type) {
 
 	// 打开文件
 	std::istream* in;
@@ -520,6 +520,7 @@ bool MeshLoader::load_mesh_txt(const std::string& src, std::vector<MVertex>& ver
 	else if (source_type == SourceType::BY_STRING) { ss.clear(); ss.str(src); in = &ss; }
     else { return false; }
 
+	std::vector<MVertex> vertices;
 	vertices.clear();
 	mds.clear();
 	mt_files.clear();
@@ -544,8 +545,11 @@ bool MeshLoader::load_mesh_txt(const std::string& src, std::vector<MVertex>& ver
 			vertices.push_back(v);
 		}
 		else if (head.compare("f") == 0) { 
-			if (mds.size() == 0) mds.push_back(MeshData());
-			uint t_u; while (t_iss >> t_u) mds[mds.size()-1].indices.push_back(t_u); 
+			if (mds.size() == 0) {
+				mds.push_back(MeshData());
+				mds.back().vertices.assign(vertices.begin(), vertices.end());
+			}
+			uint t_u; while (t_iss >> t_u) mds.back().indices.push_back(t_u); 
 		}
 		else if (head.compare("mt_file") == 0) {
 			std::string t_path; t_iss >> t_path;
@@ -554,7 +558,8 @@ bool MeshLoader::load_mesh_txt(const std::string& src, std::vector<MVertex>& ver
 		else if (head.compare("use_mt") == 0) {
 			std::string t_mt; t_iss >> t_mt;
 			mds.push_back(MeshData());
-			mds[mds.size() - 1].material = t_mt;
+			mds.back().material = t_mt;
+			mds.back().vertices.assign(vertices.begin(), vertices.end());
 		}
 
 	}
@@ -564,7 +569,7 @@ bool MeshLoader::load_mesh_txt(const std::string& src, std::vector<MVertex>& ver
 	return true;
 }
 
-bool MeshLoader::load_mesh_obj(const std::string& src, std::vector<MVertex>& vertices, std::vector<MeshData>& mds, std::vector<std::string>& mt_files, SourceType source_type) {
+bool MeshLoader::load_mesh_obj(const std::string& src, std::vector<MeshData>& mds, std::vector<std::string>& mt_files, SourceType source_type) {
 	// 打开文件
 	std::istream* in;
 	std::ifstream fs;
@@ -577,6 +582,7 @@ bool MeshLoader::load_mesh_obj(const std::string& src, std::vector<MVertex>& ver
 	else if (source_type == SourceType::BY_STRING) { ss.clear(); ss.str(src); in = &ss; }
     else { return false; }
 
+	std::vector<MVertex> vertices;
 	vertices.clear();
 	mds.clear();
 	mt_files.clear();
@@ -611,7 +617,9 @@ bool MeshLoader::load_mesh_obj(const std::string& src, std::vector<MVertex>& ver
 			if (list.size() >= 3) t_normals.push_back(CVector2D(list[0], list[1]));
 		}
 		else if (head.compare("f") == 0) {
-			if (mds.size() == 0) mds.push_back(MeshData());
+			if (mds.size() == 0) {
+				mds.push_back(MeshData());
+			}
 			std::vector<std::string> list; std::string t_s; 
 			while (t_iss >> t_s) {
 				std::replace(t_s.begin(), t_s.end(), '/', ' ');
@@ -636,12 +644,19 @@ bool MeshLoader::load_mesh_obj(const std::string& src, std::vector<MVertex>& ver
 		else if (head.compare("usemtl") == 0) {
 			std::string t_mt; t_iss >> t_mt;
 			mds.push_back(MeshData());
-			mds[mds.size() - 1].material = t_mt;
+			mds.back().material = t_mt;
 		}
 
 	}
 
+	if (mds.size() == 0) { mds.push_back(MeshData()); }
+	for(auto& md : mds) { md.vertices.assign(vertices.begin(), vertices.end()); }
+
 	if (source_type == SourceType::BY_FILE) { fs.close(); }
 
 	return true;
+}
+
+bool MeshLoader::load_mesh_x(const std::string& path, std::vector<MeshData>& mds) {
+	return false;
 }

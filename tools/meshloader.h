@@ -25,6 +25,7 @@ struct MVertex {
 };
 
 struct MeshData {
+	std::vector<MVertex> vertices;
 	std::vector<uint> indices;
 	std::string material;
 };
@@ -76,8 +77,11 @@ class MeshLoader {
 
 public:
 
-	static bool load_mesh_txt(const std::string& src, std::vector<MVertex>& vertices, std::vector<MeshData>& mds, std::vector<std::string>& mt_files, SourceType source_type = SourceType::BY_FILE);
-	static bool load_mesh_obj(const std::string& src, std::vector<MVertex>& vertices, std::vector<MeshData>& mds, std::vector<std::string>& mt_files, SourceType source_type = SourceType::BY_FILE);
+	static bool load_mesh_txt(const std::string& src, std::vector<MeshData>& mds, std::vector<std::string>& mt_files, SourceType source_type = SourceType::BY_FILE);
+	static bool load_mesh_obj(const std::string& src, std::vector<MeshData>& mds, std::vector<std::string>& mt_files, SourceType source_type = SourceType::BY_FILE);
+
+	// load mesh by assimp
+	static bool load_mesh_x(const std::string& path, std::vector<MeshData>& mds);
 
 	~MeshLoader(){}
 
