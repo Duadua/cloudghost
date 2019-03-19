@@ -247,6 +247,9 @@
     <ClCompile Include="demo\flowsphere.cpp">
       <Filter>demo</Filter>
     </ClCompile>
+    <ClCompile Include="src\source\timemanager.cpp">
+      <Filter>src\source\managers</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <QtUic Include="resources\ui\qtdebugwidget.ui">
@@ -376,6 +379,9 @@
     </ClInclude>
     <ClInclude Include="demo\flowsphere.h">
       <Filter>demo</Filter>
+    </ClInclude>
+    <ClInclude Include="src\include\timemanager.h">
+      <Filter>src\include\managers</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -167,6 +167,7 @@
     <ClCompile Include="src\source\shader.cpp" />
     <ClCompile Include="src\source\sphereobject.cpp" />
     <ClCompile Include="src\source\texture2d.cpp" />
+    <ClCompile Include="src\source\timemanager.cpp" />
     <ClCompile Include="tools\loader.cpp" />
     <ClCompile Include="tools\materialloader.cpp" />
     <ClCompile Include="tools\meshloader.cpp" />
@@ -217,6 +218,7 @@
     <ClInclude Include="src\include\shader.h" />
     <ClInclude Include="src\include\sphereobject.h" />
     <ClInclude Include="src\include\texture2d.h" />
+    <ClInclude Include="src\include\timemanager.h" />
     <ClInclude Include="tools\loader.h" />
     <ClInclude Include="tools\materialloader.h" />
     <ClInclude Include="tools\meshloader.h" />

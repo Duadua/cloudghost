@@ -3,15 +3,16 @@
 
 #include "gameobject.h"
 #include "freecamera.h"
+
+#include "timemanager.h"
 #include "gamemanager.h"
 #include "assetmanager.h"
 #include "inputmanager.h"
+
 #include <chrono>					// get time
 #include <assert.h>
 
 #include <GLFW/glfw3.h>
-
-const auto t_time_begin_s = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch());
 
 void GameManager::init() {
 
@@ -118,6 +119,10 @@ void GameManager::init() {
 
 }
 void GameManager::draw() {
+	// update time
+	{
+		time_manager().update_tick();
+	}
 	// update
 	{
 		tick();
@@ -364,9 +369,7 @@ void GameManager::vr_pass() {
 void GameManager::shader_toy_pass() {
 
 	// get time
-	auto t_time_cur = std::chrono::system_clock::now();
-	auto t_time_cur_s = std::chrono::duration_cast<std::chrono::milliseconds>(t_time_cur.time_since_epoch());
-	float t_time = (t_time_cur_s - t_time_begin_s).count() / 1000.0f;
+	float t_time = time_manager().cur_runtime_msconds() / 1000.0f;
 
 	for (uint i = 0; i < 4; ++i) {
 		auto stbr = shader_toy_buffer_rts[i];

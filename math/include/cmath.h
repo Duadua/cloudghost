@@ -10,6 +10,7 @@
 
 using uint = unsigned int;
 using uchar = unsigned char;
+using ll = long long;
 
 using UPTR_char = std::unique_ptr<char>;
 using SPTR_char = std::shared_ptr<char>;

@@ -1,17 +1,13 @@
-#include "reflex.h"
-#include "gameobject.h"
 #include "cmainwindow.h"
 #include "mygamemanager.h"
 #include <QtWidgets/QApplication>
-#include <QMatrix4x4>
 
 #include "tools/meshloader.h"
 #include "tools/materialloader.h"
 #include "tools/textureloader.h"
-
 #include "tools/qtimagehelper.h"
 
-#include "plane.h"
+#include "timemanager.h"
 
 #ifdef C_DEBUG
 #include "loader.h"
@@ -76,6 +72,13 @@ int main(int argc, char *argv[]) {
 		c_debug() << "use euler " + t.to_string();
 	}
 	*/
+
+	// test timemanager
+	/*{
+		c_debug() << time_manager().cur_time_data().to_string();
+		c_debug() << std::to_string(time_manager().cur_time_msconds());
+		c_debug() << std::to_string(time_manager().cur_runtime_msconds());
+	}*/
 
 	MyGameManager gm;
 	CMainWindow cmw;
