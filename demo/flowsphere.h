@@ -4,12 +4,15 @@
 class FlowSphere : public SphereObject {
 	DECLARE_CLASS(FlowSphere)
 public:
-	FlowSphere() {}
+	FlowSphere() : o_location(CVector3D(0.0f)){}
 
 	virtual void begin_play();
 	virtual void tick();
 
-	// DECLARE_ATTR(public, double, width, FlowSphere);
+	void update_origin_location();
+
+private:
+	CVector3D o_location;
 
 };
 DECLARE_AUTO_PTR(FlowSphere)

@@ -2,6 +2,7 @@
 
 #include "cvector2d.h"
 #include <memory>
+#include <string>
 
 class CVector4D;
 
@@ -30,6 +31,8 @@ public:
 	friend CVector3D operator - (const CVector3D& a, const CVector3D& b);
 	friend CVector3D operator * (const CVector3D& a, const CVector3D& b);
 	friend CVector3D operator / (const CVector3D& a, const CVector3D& b);
+	friend std::ostream& operator << (std::ostream& out, const CVector3D& b);
+	std::string to_string() const;
 
 	CVector3D operator +=(const CVector3D& b);
 	CVector3D operator *=(const CVector3D& b);

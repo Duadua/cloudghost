@@ -43,6 +43,13 @@ void SceneComponent::set_location(float x, float y, float z) { location = CVecto
 void SceneComponent::set_rotation(float x, float y, float z) { rotation = CVector3D(x, y, z); }
 void SceneComponent::set_scale(float x, float y, float z) { scale = CVector3D(x, y, z); }
 
+void SceneComponent::add_location(CVector3D l) { location += l; }
+void SceneComponent::add_rotation(CVector3D	r) { rotation += r; }
+void SceneComponent::add_scale(CVector3D s) { scale += s; }
+void SceneComponent::add_location(float x, float y, float z) { location += CVector3D(x, y, z); }
+void SceneComponent::add_rotation(float x, float y, float z) { rotation += CVector3D(x, y, z); }
+void SceneComponent::add_scale(float x, float y, float z) { scale += CVector3D(x, y, z); }
+
 CVector3D SceneComponent::get_location() { 
 	CVector3D t_location = location;
 	if (!parent_component.expired()) {

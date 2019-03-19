@@ -23,7 +23,7 @@ struct DateTime {
 		: year(y), month(m), day(d), hour(h), minute(mi), seconds(s) {}
 
 	friend std::ostream& operator << (std::ostream& out, const DateTime& b);
-	std::string to_string();
+	std::string to_string() const;
 
 };
 

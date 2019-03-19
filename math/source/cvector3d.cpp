@@ -1,5 +1,6 @@
 #include "cvector3d.h"
 #include <cmath>
+#include <sstream>
 
 CVector3D operator + (const CVector3D& a, const CVector3D& b) { return CVector3D(a[0] + b[0], a[1] + b[1], a[2] + b[2]); }
 CVector3D operator - (const CVector3D& a, const CVector3D& b) { return CVector3D(a[0] - b[0], a[1] - b[1], a[2] - b[2]); }
@@ -7,6 +8,15 @@ CVector3D operator * (const CVector3D& a, const CVector3D& b) { return CVector3D
 CVector3D operator / (const CVector3D& a, const CVector3D& b) {
 	if (b[0] == 0.0f || b[1] == 0.0f || b[2] == 0.0f) { return CVector3D(); }
 	return CVector3D(a[0] / b[0], a[1] / b[1], a[2] / b[2]);
+}
+std::ostream& operator << (std::ostream& out, const CVector3D& b) {
+	out << "CVector3D ( " << b.x() << ", " << b.y() << ", " << b.z() << " )";
+	return out;
+}
+std::string CVector3D::to_string() const {
+	std::ostringstream oss;
+	oss << (*this);
+	return oss.str();
 }
 
 CVector3D CVector3D::operator +=(const CVector3D& b) { v[0] += b[0]; v[1] += b[1]; v[2] += b[2]; return (*this); }

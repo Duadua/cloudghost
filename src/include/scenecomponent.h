@@ -24,6 +24,13 @@ public:
 	void set_rotation(float x, float y, float z);
 	void set_scale(float x, float y, float z);
 
+	void add_location(CVector3D l);
+	void add_rotation(CVector3D	r);
+	void add_scale(CVector3D s);
+	void add_location(float x, float y, float z);
+	void add_rotation(float x, float y, float z);
+	void add_scale(float x, float y, float z);
+
 	CVector3D get_location();
 	CVector3D get_rotation();
 	CVector3D get_scale();

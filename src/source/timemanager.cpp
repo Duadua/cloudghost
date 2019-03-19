@@ -7,7 +7,7 @@ std::ostream& operator << (std::ostream& out, const DateTime& b) {
 		<< b.hour << ":" << b.minute << ":" << b.seconds << " )";
 	return out;
 }
-std::string DateTime::to_string() {
+std::string DateTime::to_string() const {
 	std::ostringstream oss;
 	oss << (*this);
 	return oss.str();

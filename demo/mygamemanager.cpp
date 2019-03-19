@@ -11,6 +11,8 @@
 #include "sphereobject.h"
 #include "cylinderobject.h"
 
+#include "flowsphere.h"
+
 void MyGameManager::load_asset() {
 	// shader
 
@@ -60,10 +62,11 @@ void MyGameManager::begin_play() {
 					else t_mo->set_material("emerald");
 				}
 				{
-					auto t_mo = CREATE_CLASS(SphereObject);
+					auto t_mo = CREATE_CLASS(FlowSphere);
 					std::string t_name = "sphere" + int_to_string(j) + "_" + int_to_string(i);
 					add_game_object(t_name, t_mo);
 					t_mo->get_root_component()->set_location(2.0f*(j - 0.5f), 2.35f, 2.0f * (i - 3));
+					t_mo->update_origin_location();
 					t_mo->get_root_component()->set_scale(0.3f);
 					t_mo->set_material("jade");
 					//if (j == 0) t_mo->set_material("emerald");
