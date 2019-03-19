@@ -177,6 +177,7 @@ private:
 // string helper function
 public:
 	
+	static std::string int_to_string(int ui);
 	static std::string uint_to_string(uint ui);
 	static std::string char_to_string(char c);
 

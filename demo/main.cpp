@@ -13,10 +13,6 @@
 
 #include "plane.h"
 
-#include <assimp/Importer.hpp>
-#include <assimp/scene.h>
-#include <assimp/postprocess.h>
-
 #ifdef C_DEBUG
 #include "loader.h"
 #endif // C_DEBUG
@@ -67,45 +63,19 @@ int main(int argc, char *argv[]) {
 	QtImageHelper::text_to_png(path);
 	*/
 
+	/*
 	{
-		CVector3D v(10.0, 20.0, 30.0);
 		CMatrix4x4 t;
-		t.rotate(20.0f, 30.0f, 40.0f, 50.0f);
-		v = t * v;
-		c_debug() << t.to_string();
-		//qDebug() << v[0] << " " << v[1] << " " << v[2];
-		//qDebug() << v.length();
+		t.rotate(45.0f, 1.0f, 0.0f, 0.0f);
+		c_debug() << "use zhoujiao " + t.to_string();
 
 	}
 	{
-		CVector3D v(10.0, 20.0, 30.0);
-		CVector3D ax(30.0f, 40.0f, 50.0f);
-		CQuaternion t_r(20.0f, ax);
 		CMatrix4x4 t;
-		t.rotate_quaternion(t_r);
-		v = t * v;
-
-		//qDebug() << QMatrix4x4(t.get_transpose().data());
-		//qDebug() << v[0] << " " << v[1] << " " << v[2];
-		//qDebug() << v.length();
-
-		//qDebug() << ax[0] << " " << ax[1] << " " << ax[2];
-		//qDebug() << aa[0] << " " << aa[1] << " " << aa[2] << " " << aa[3];
-		//qDebug() << v[0] << " " << v[1] << " " << v[2];
+		t.rotate_euler(45.0f, 0.0f, 0.0f);
+		c_debug() << "use euler " + t.to_string();
 	}
-
-	/*{
-		Assimp::Importer importer;
-		std::string path = "resources/models/obj/Elf_Mansion/Elf_Mansion.obj";
-		const aiScene *scene = importer.ReadFile(path, aiProcess_Triangulate | aiProcess_FlipUVs);
-		if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode) {
-			c_debug() << "load obj by assimp fail"; 
-			c_debug() << importer.GetErrorString();
-		}
-		else {
-			c_debug() << "load obj success";
-		}
-	}*/
+	*/
 
 	MyGameManager gm;
 	CMainWindow cmw;

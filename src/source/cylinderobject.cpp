@@ -1,25 +1,25 @@
-#include "cubeobject.h"
+#include "cylinderobject.h"
 #include "assetmanager.h"
 #include "meshcomponent.h"
 
-IMPLEMENT_CLASS(CubeObject)
+IMPLEMENT_CLASS(CylinderObject)
 
-CubeObject::CubeObject() {
+CylinderObject::CylinderObject() {
 
 	auto mc = CREATE_CLASS(MeshComponent);
 	set_root_component(mc);
-	mc->set_mesh("cube");
+	mc->set_mesh("cylinder");
 }
 
-void CubeObject::begin_play() {
-	
-}
-
-void CubeObject::tick() {
+void CylinderObject::begin_play() {
 
 }
 
-void CubeObject::set_material(std::string name) {
+void CylinderObject::tick() {
+
+}
+
+void CylinderObject::set_material(std::string name) {
 	auto t_mo = std::dynamic_pointer_cast<MeshComponent>(get_root_component());
 	if (t_mo != nullptr) {
 		auto t_m = AssetManager::get_mesh(t_mo->get_mesh());

@@ -25,6 +25,10 @@ CMatrix4x4 SceneComponent::get_transform() {
 	// 通过 lrs 计算 transform
 	t_transform.translate(location);
 	t_transform.rotate_euler(rotation);
+	/*t_transform.rotate(rotation.z(), 0.0f, 0.0f, 1.0f);
+	t_transform.rotate(rotation.y(), 0.0f, 1.0f, 0.0f);
+	t_transform.rotate(rotation.x(), 1.0f, 0.0f, 0.0f);
+	*/
 	t_transform.scale(scale);
 
 	// 乘以 parent 的 transform

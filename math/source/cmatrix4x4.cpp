@@ -153,7 +153,7 @@ CMatrix4x4& CMatrix4x4::rotate_euler(const CVector3D& euler_angle) {
 	rotate(2, 1) = c[1] * s[0];
 
 	rotate(0, 2) = c[0] * c[2] * s[1] + s[0] * s[2];
-	rotate(1, 2) = c[0] * s[1] * s[2] - c[2] * s[2];
+	rotate(1, 2) = c[0] * s[1] * s[2] - c[2] * s[0];
 	rotate(2, 2) = c[0] * c[1];
 
 	CMatrix4x4 res(*this);

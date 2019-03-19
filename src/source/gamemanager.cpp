@@ -516,7 +516,7 @@ void GameManager::resize(uint w, uint h) {
 
 	CMatrix4x4 projection;
     float t_ratio = static_cast<float>(w) / (h == 0 ? 1 : h);
-	projection.perspective(45.0f, t_ratio, 0.1f, 100.0f);
+	projection.perspective(45.0f, t_ratio, 0.1f, 1000.0f);
 	//projection.frustum(-0.1f, 0.1f, -0.1f / t, 0.1f / t, 0.1f, 100.0f);
 	//projection.ortho(-10.0f, 10.0f, -10.0f / t, 10.0f / t, 0.01f, 1000.0f);
 	//projection.ortho(20.0f, t, 0.01f, 100.0f);
@@ -658,6 +658,7 @@ void GameManager::mouse_released() {
 
 // ==========================================================================================
 
+std::string GameManager::int_to_string(int i) { return std::to_string(i); }
 std::string GameManager::uint_to_string(uint ui) { return std::to_string(ui); }
 
 std::string GameManager::char_to_string(char c) {

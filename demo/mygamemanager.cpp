@@ -6,13 +6,17 @@
 #include "lightobject.h"
 
 #include "plane.h"
+#include "mansion.h"
 #include "cubeobject.h"
+#include "sphereobject.h"
+#include "cylinderobject.h"
 
 void MyGameManager::load_asset() {
 	// shader
 
 	// mesh
-	//AssetManager::load_mesh("old_palace", "resources/models/obj/old_palace/old_palace.obj");
+	AssetManager::load_mesh_x("elf_mansion", "resources/models/obj/Elf_Mansion/Elf_Mansion.obj");
+	//std::string path = "resources/models/obj/Elf_Mansion/Elf_Mansion.obj";
 
 	// material
 	AssetManager::load_materials("resources/materials/txt/cube_material.txt"); 
@@ -30,21 +34,42 @@ void MyGameManager::begin_play() {
 	{
 		auto plane = CREATE_CLASS(PlaneObject);
 		add_game_object("plane", plane);
-		plane->get_root_component()->set_location(0.0f, -0.5f, 0.0f);
+		//plane->get_root_component()->set_scale(2.0f);
+	}
+
+	// 添加 城堡 mesh
+	{
+		auto mansion = CREATE_CLASS(Mansion);
+		add_game_object("mansion", mansion);
+		mansion->get_root_component()->set_location(3.0f, 5.0f, 15.0f);
+		mansion->get_root_component()->set_rotation(0.0f, 180.0f, 0.0f);
+
 	}
 
 	// 生成 cube -- test rb3d
 	{
-		for (uint j = 0; j < 2; ++j) {
-			for (uint i = 0; i < 6; ++i) {
-				auto t_cube = CREATE_CLASS(CubeObject);
-				std::string t_name = "cube_" + uint_to_string(j) + "_" + uint_to_string(i);
-				add_game_object(t_name , t_cube);
-                t_cube->get_root_component()->set_location(j * 2.0f, 0.0f, 2.0f * (static_cast<float>(i)-3));
-				t_cube->get_root_component()->set_scale(0.5f, 3.0f, 1.0f);
-				if(j == 0) t_cube->set_material("emerald");
-				else t_cube->set_material("jade");
-
+		for (int j = 0; j < 2; ++j) {
+			for (int i = 0; i < 6; ++i) {
+				{
+					auto t_mo = CREATE_CLASS(CylinderObject);
+					std::string t_name = "cylinder" + int_to_string(j) + "_" + int_to_string(i);
+					add_game_object(t_name, t_mo);
+					t_mo->get_root_component()->set_location(2.0f*(j - 0.5f), 1.001f, 2.0f * (i - 3));
+					t_mo->get_root_component()->set_scale(0.5f, 2.0f, 0.5f);
+					if (j == 0) t_mo->set_material("jade");
+					else t_mo->set_material("emerald");
+				}
+				{
+					auto t_mo = CREATE_CLASS(SphereObject);
+					std::string t_name = "sphere" + int_to_string(j) + "_" + int_to_string(i);
+					add_game_object(t_name, t_mo);
+					t_mo->get_root_component()->set_location(2.0f*(j - 0.5f), 2.35f, 2.0f * (i - 3));
+					t_mo->get_root_component()->set_scale(0.3f);
+					t_mo->set_material("jade");
+					//if (j == 0) t_mo->set_material("emerald");
+					//else t_mo->set_material("jade");
+				}
+	
 			}
 		}
 	}
@@ -82,7 +107,7 @@ void MyGameManager::begin_play() {
 	// shader 静态参数赋值
     CMatrix4x4 projection;
     float ratio  = 1.0f * get_viewport_info().heigh / get_viewport_info().width;
-    projection.perspective(45.0f, ratio, 0.1f, 100.0f);
+    projection.perspective(45.0f, ratio, 0.1f, 1000.0f);
 	if (main_shader != nullptr) {
 		main_shader->use();
 		main_shader->set_mat4("u_projection", projection);
@@ -117,8 +142,8 @@ void MyGameManager::begin_play() {
 	}
 	{
 		auto p_light = CREATE_CLASS(PointLightObject);
-		p_light->get_root_component()->set_location(3.0f, 1.0f, 0.0f);
-		p_light->get_light_component()->set_att_radius(10.0f);
+		p_light->get_root_component()->set_location(3.0f, 6.0f, 15.0f);
+		p_light->get_light_component()->set_att_radius(50.0f);
 		p_light->get_light_component()->set_color(CVector3D(1.0f, 0.0f, 0.0f));
 		p_light->use(main_shader->get_name());
 	}
@@ -126,7 +151,7 @@ void MyGameManager::begin_play() {
 	// use spot light
 	{
 		auto s_light = CREATE_CLASS(SpotLightObject);
-		s_light->get_root_component()->set_location(2.0f, 3.0f, 0.0f);
+		s_light->get_root_component()->set_location(2.0f, 8.0f, 15.0f);
 		s_light->get_root_component()->set_rotation(-45.0f, -90.0f, 0.0f);
 		s_light->get_light_component()->set_color(CVector3D(0.0f, 0.0f, 1.0f));
 		s_light->get_light_component()->set_intensity(10.0f);

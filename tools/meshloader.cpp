@@ -1,7 +1,12 @@
 #include "meshloader.h"
 #include <map>
+#include <queue>
 #include <memory>
 #include <algorithm>
+
+#include <assimp/scene.h>
+#include <assimp/Importer.hpp>
+#include <assimp/postprocess.h>
 
 std::vector<MVertex> MeshTxtGen::vertices;
 std::vector<MeshData> MeshTxtGen::mesh_datas;
@@ -658,5 +663,70 @@ bool MeshLoader::load_mesh_obj(const std::string& src, std::vector<MeshData>& md
 }
 
 bool MeshLoader::load_mesh_x(const std::string& path, std::vector<MeshData>& mds) {
-	return false;
+	Assimp::Importer import;
+	auto scene = import.ReadFile(path, aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_CalcTangentSpace);
+
+	if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode) {
+		c_debug() << "[error][mesh]load mesh fail by assimp\n\t" + std::string(import.GetErrorString());
+		return false;
+	}
+	else { c_debug() << "[yep][mesh]load mesh success by assimp\n\t" + path; }
+
+	// load mesh
+	std::queue<aiNode*> nodes;
+	nodes.push(scene->mRootNode);
+	while (!nodes.empty()) {
+		auto t_node = nodes.front(); nodes.pop();
+
+		// load cur node's md
+		for (uint i = 0; i < t_node->mNumMeshes; ++i) {
+			auto t_mesh = scene->mMeshes[t_node->mMeshes[i]];
+			// load one md;
+			{
+				MeshData md;
+
+				// load vertice
+				for (uint j = 0; j < t_mesh->mNumVertices; ++j) {
+					MVertex t_v;
+
+					auto t_mv = t_mesh->mVertices[j];
+					t_v.position = CVector3D(t_mv.x, t_mv.y, t_mv.z);
+
+					if (t_mesh->mTextureCoords[0] != nullptr) {
+						auto t_mt = t_mesh->mTextureCoords[0][j];
+						t_v.tex_coord = CVector2D(t_mt.x, t_mt.y);
+					}
+
+					if (t_mesh->mNormals != nullptr) {
+						auto t_mn = t_mesh->mNormals[j];
+						t_v.normal = CVector3D(t_mn.x, t_mn.y, t_mn.z);
+					}
+
+					md.vertices.push_back(t_v);
+				}
+
+				// load indices
+				for (uint j = 0; j < t_mesh->mNumFaces; ++j) {
+					auto t_face = t_mesh->mFaces[j];
+					for (uint k = 0; k < t_face.mNumIndices; ++k) {
+						md.indices.push_back(t_face.mIndices[k]);
+					}
+				}
+
+				// load materials
+				if (t_mesh->mMaterialIndex >= 0) {
+					auto t_mmt = scene->mMaterials[t_mesh->mMaterialIndex];
+					
+					
+				}
+				mds.push_back(md);
+			}
+		}
+
+		// push child node to queue
+		for (int i = 0; i < t_node->mNumChildren; ++i) { nodes.push(t_node->mChildren[i]); }
+
+	}
+
+	return true;
 }

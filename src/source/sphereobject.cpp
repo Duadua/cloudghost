@@ -1,25 +1,25 @@
-#include "cubeobject.h"
+#include "sphereobject.h"
 #include "assetmanager.h"
 #include "meshcomponent.h"
 
-IMPLEMENT_CLASS(CubeObject)
+IMPLEMENT_CLASS(SphereObject)
 
-CubeObject::CubeObject() {
+SphereObject::SphereObject() {
 
 	auto mc = CREATE_CLASS(MeshComponent);
 	set_root_component(mc);
-	mc->set_mesh("cube");
+	mc->set_mesh("sphere");
 }
 
-void CubeObject::begin_play() {
-	
-}
-
-void CubeObject::tick() {
+void SphereObject::begin_play() {
 
 }
 
-void CubeObject::set_material(std::string name) {
+void SphereObject::tick() {
+
+}
+
+void SphereObject::set_material(std::string name) {
 	auto t_mo = std::dynamic_pointer_cast<MeshComponent>(get_root_component());
 	if (t_mo != nullptr) {
 		auto t_m = AssetManager::get_mesh(t_mo->get_mesh());

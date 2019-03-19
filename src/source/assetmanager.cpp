@@ -79,8 +79,21 @@ SPTR_Mesh AssetManager::load_mesh(const std::string& key, const std::string& src
 	return map_meshs[key];
 }
 SPTR_Mesh AssetManager::load_mesh_x(const std::string& key, const std::string& path) {
-	if (key.compare("") == 0 && path.compare("") == 0) {}
-	return nullptr;
+	std::vector<MeshData> t_mds;
+	bool res = MeshLoader::load_mesh_x(path, t_mds);
+
+	map_meshs[key] = CREATE_CLASS(Mesh);
+	if (res) {
+		for (auto md : t_mds) {
+			auto t_rd = CREATE_CLASS(RenderData);
+			t_rd->init(md.vertices, md.indices);
+			//t_rd->set_material_name(md.material);
+			map_meshs[key]->add_render_data(t_rd);
+		}
+	}
+	else { c_debug() << "[warning][asset][mesh]load mesh failed called \"" + key + "\""; }
+
+	return map_meshs[key];
 }
 SPTR_Mesh AssetManager::get_mesh(const std::string& key) {
 	if (!map_meshs.count(key)) {

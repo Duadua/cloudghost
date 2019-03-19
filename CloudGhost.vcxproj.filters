@@ -62,64 +62,64 @@
     <Filter Include="resources\logs">
       <UniqueIdentifier>{5fa81130-129b-45bc-a992-ad1cb506a503}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\include\cameras">
+      <UniqueIdentifier>{91b85cd2-c143-4748-9379-b2427d3ddfa1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\include\lights">
+      <UniqueIdentifier>{7a1ac122-8d49-4bad-b220-a3a9ebb6948f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\include\core">
+      <UniqueIdentifier>{fd93f3e0-2ab5-4cbe-8591-a044d2033dfb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\include\managers">
+      <UniqueIdentifier>{89b52223-9554-45c4-9e3d-25b0e9919dd0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\include\ui">
+      <UniqueIdentifier>{e16f2926-39a3-4155-928d-6a22ba6fa62d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\include\core\renders">
+      <UniqueIdentifier>{03bf95da-f124-4f14-8535-65a0a6e9fee5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\include\core\components">
+      <UniqueIdentifier>{76b9e08f-5900-48ca-b07c-6800cb55cc31}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\include\core\objects">
+      <UniqueIdentifier>{1dc4d5a2-1871-418c-a27a-c4f9896e4ee5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\source\core">
+      <UniqueIdentifier>{99fd7e06-f2dc-45e5-89a4-0ecc63f0d5cc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\source\core\renders">
+      <UniqueIdentifier>{905cce63-331d-464f-8a04-104241be51e2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\source\core\objects">
+      <UniqueIdentifier>{02696e93-5699-42b2-9b93-39d42b6c5b31}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\source\core\components">
+      <UniqueIdentifier>{2d684c91-8983-41b4-827d-b8b5fd9eb5fb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\source\managers">
+      <UniqueIdentifier>{a52d27be-debe-4f42-98ec-25f05a204bd3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\source\ui">
+      <UniqueIdentifier>{f10b1ad3-fabc-4cf7-b18a-c30725187e50}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\source\cameras">
+      <UniqueIdentifier>{d74b32ae-ec9c-4953-9f08-beb7fe340d3c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\source\shapes">
+      <UniqueIdentifier>{7acf4846-966f-4a4e-8dd1-9cf873c6a00a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\include\shapes">
+      <UniqueIdentifier>{1e2315e2-e5e5-400b-9036-6542d90ec8a4}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="demo\main.cpp">
       <Filter>demo</Filter>
     </ClCompile>
-    <ClCompile Include="src\source\assetmanager.cpp">
-      <Filter>src\source</Filter>
-    </ClCompile>
-    <ClCompile Include="src\source\shader.cpp">
-      <Filter>src\source</Filter>
-    </ClCompile>
-    <ClCompile Include="src\source\gameobject.cpp">
-      <Filter>src\source</Filter>
-    </ClCompile>
-    <ClCompile Include="src\source\component.cpp">
-      <Filter>src\source</Filter>
-    </ClCompile>
-    <ClCompile Include="src\source\scenecomponent.cpp">
-      <Filter>src\source</Filter>
-    </ClCompile>
-    <ClCompile Include="src\source\meshcomponent.cpp">
-      <Filter>src\source</Filter>
-    </ClCompile>
-    <ClCompile Include="src\source\mesh.cpp">
-      <Filter>src\source</Filter>
-    </ClCompile>
-    <ClCompile Include="src\source\renderdata.cpp">
-      <Filter>src\source</Filter>
-    </ClCompile>
-    <ClCompile Include="src\source\cameraobject.cpp">
-      <Filter>src\source</Filter>
-    </ClCompile>
-    <ClCompile Include="src\source\cameracomponent.cpp">
-      <Filter>src\source</Filter>
-    </ClCompile>
-    <ClCompile Include="src\source\cameradata.cpp">
-      <Filter>src\source</Filter>
-    </ClCompile>
-    <ClCompile Include="src\source\inputmanager.cpp">
-      <Filter>src\source</Filter>
-    </ClCompile>
-    <ClCompile Include="src\source\delegate.cpp">
-      <Filter>src\source</Filter>
-    </ClCompile>
-    <ClCompile Include="src\source\freecamera.cpp">
-      <Filter>src\source</Filter>
-    </ClCompile>
-    <ClCompile Include="src\source\reflex.cpp">
-      <Filter>src\source</Filter>
-    </ClCompile>
-    <ClCompile Include="src\source\gamemanager.cpp">
-      <Filter>src\source</Filter>
-    </ClCompile>
     <ClCompile Include="demo\mygamemanager.cpp">
       <Filter>demo</Filter>
-    </ClCompile>
-    <ClCompile Include="src\source\cglwidget.cpp">
-      <Filter>src\source</Filter>
     </ClCompile>
     <ClCompile Include="math\source\cvector2d.cpp">
       <Filter>math\source</Filter>
@@ -133,9 +133,6 @@
     <ClCompile Include="tools\meshloader.cpp">
       <Filter>tools</Filter>
     </ClCompile>
-    <ClCompile Include="src\source\material.cpp">
-      <Filter>src\source</Filter>
-    </ClCompile>
     <ClCompile Include="tools\textureloader.cpp">
       <Filter>tools</Filter>
     </ClCompile>
@@ -144,9 +141,6 @@
     </ClCompile>
     <ClCompile Include="tools\loader.cpp">
       <Filter>tools</Filter>
-    </ClCompile>
-    <ClCompile Include="src\source\texture2d.cpp">
-      <Filter>src\source</Filter>
     </ClCompile>
     <ClCompile Include="tools\qtimagehelper.cpp">
       <Filter>tools</Filter>
@@ -157,12 +151,6 @@
     <ClCompile Include="demo\plane.cpp">
       <Filter>demo</Filter>
     </ClCompile>
-    <ClCompile Include="src\source\lightcomponent.cpp">
-      <Filter>src\source</Filter>
-    </ClCompile>
-    <ClCompile Include="src\source\lightobject.cpp">
-      <Filter>src\source</Filter>
-    </ClCompile>
     <ClCompile Include="math\source\cmatrix4x4.cpp">
       <Filter>math\source</Filter>
     </ClCompile>
@@ -172,17 +160,89 @@
     <ClCompile Include="math\source\cquaternion.cpp">
       <Filter>math\source</Filter>
     </ClCompile>
-    <ClCompile Include="src\source\rendertarget.cpp">
-      <Filter>src\source</Filter>
-    </ClCompile>
-    <ClCompile Include="src\source\cubeobject.cpp">
-      <Filter>src\source</Filter>
-    </ClCompile>
     <ClCompile Include="tools\qtdebugwidget.cpp">
       <Filter>tools</Filter>
     </ClCompile>
+    <ClCompile Include="demo\mansion.cpp">
+      <Filter>demo</Filter>
+    </ClCompile>
+    <ClCompile Include="src\source\cameracomponent.cpp">
+      <Filter>src\source\core\components</Filter>
+    </ClCompile>
+    <ClCompile Include="src\source\cameradata.cpp">
+      <Filter>src\source\core\renders</Filter>
+    </ClCompile>
+    <ClCompile Include="src\source\cameraobject.cpp">
+      <Filter>src\source\core\objects</Filter>
+    </ClCompile>
+    <ClCompile Include="src\source\component.cpp">
+      <Filter>src\source\core\components</Filter>
+    </ClCompile>
+    <ClCompile Include="src\source\delegate.cpp">
+      <Filter>src\source\core</Filter>
+    </ClCompile>
+    <ClCompile Include="src\source\gameobject.cpp">
+      <Filter>src\source\core\objects</Filter>
+    </ClCompile>
+    <ClCompile Include="src\source\lightcomponent.cpp">
+      <Filter>src\source\core\components</Filter>
+    </ClCompile>
+    <ClCompile Include="src\source\lightobject.cpp">
+      <Filter>src\source\core\objects</Filter>
+    </ClCompile>
+    <ClCompile Include="src\source\material.cpp">
+      <Filter>src\source\core\renders</Filter>
+    </ClCompile>
+    <ClCompile Include="src\source\mesh.cpp">
+      <Filter>src\source\core\renders</Filter>
+    </ClCompile>
+    <ClCompile Include="src\source\reflex.cpp">
+      <Filter>src\source\core</Filter>
+    </ClCompile>
+    <ClCompile Include="src\source\renderdata.cpp">
+      <Filter>src\source\core\renders</Filter>
+    </ClCompile>
+    <ClCompile Include="src\source\rendertarget.cpp">
+      <Filter>src\source\core\renders</Filter>
+    </ClCompile>
+    <ClCompile Include="src\source\meshcomponent.cpp">
+      <Filter>src\source\core\components</Filter>
+    </ClCompile>
+    <ClCompile Include="src\source\scenecomponent.cpp">
+      <Filter>src\source\core\components</Filter>
+    </ClCompile>
+    <ClCompile Include="src\source\shader.cpp">
+      <Filter>src\source\core\renders</Filter>
+    </ClCompile>
+    <ClCompile Include="src\source\texture2d.cpp">
+      <Filter>src\source\core\renders</Filter>
+    </ClCompile>
+    <ClCompile Include="src\source\assetmanager.cpp">
+      <Filter>src\source\managers</Filter>
+    </ClCompile>
+    <ClCompile Include="src\source\gamemanager.cpp">
+      <Filter>src\source\managers</Filter>
+    </ClCompile>
+    <ClCompile Include="src\source\inputmanager.cpp">
+      <Filter>src\source\managers</Filter>
+    </ClCompile>
+    <ClCompile Include="src\source\cglwidget.cpp">
+      <Filter>src\source\ui</Filter>
+    </ClCompile>
     <ClCompile Include="src\source\cmainwindow.cpp">
-      <Filter>src\source</Filter>
+      <Filter>src\source\ui</Filter>
+    </ClCompile>
+    <ClCompile Include="src\source\freecamera.cpp">
+      <Filter>src\source\cameras</Filter>
+    </ClCompile>
+    <ClCompile Include="src\source\cubeobject.cpp">
+      <Filter>src\source\shapes</Filter>
+    </ClCompile>
+    <ClCompile Include="src\source\cylinderobject.cpp">
+      <Filter>src\source\shapes</Filter>
+    </ClCompile>
+    <ClCompile Include="src\source\sphereobject.cpp">
+      <Filter>src\source\shapes</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -194,54 +254,6 @@
     </QtUic>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\include\assetmanager.h">
-      <Filter>src\include</Filter>
-    </ClInclude>
-    <ClInclude Include="src\include\shader.h">
-      <Filter>src\include</Filter>
-    </ClInclude>
-    <ClInclude Include="src\include\gameobject.h">
-      <Filter>src\include</Filter>
-    </ClInclude>
-    <ClInclude Include="src\include\component.h">
-      <Filter>src\include</Filter>
-    </ClInclude>
-    <ClInclude Include="src\include\scenecomponent.h">
-      <Filter>src\include</Filter>
-    </ClInclude>
-    <ClInclude Include="src\include\meshcomponent.h">
-      <Filter>src\include</Filter>
-    </ClInclude>
-    <ClInclude Include="src\include\mesh.h">
-      <Filter>src\include</Filter>
-    </ClInclude>
-    <ClInclude Include="src\include\renderdata.h">
-      <Filter>src\include</Filter>
-    </ClInclude>
-    <ClInclude Include="src\include\cameraobject.h">
-      <Filter>src\include</Filter>
-    </ClInclude>
-    <ClInclude Include="src\include\cameracomponent.h">
-      <Filter>src\include</Filter>
-    </ClInclude>
-    <ClInclude Include="src\include\cameradata.h">
-      <Filter>src\include</Filter>
-    </ClInclude>
-    <ClInclude Include="src\include\inputmanager.h">
-      <Filter>src\include</Filter>
-    </ClInclude>
-    <ClInclude Include="src\include\delegate.h">
-      <Filter>src\include</Filter>
-    </ClInclude>
-    <ClInclude Include="src\include\freecamera.h">
-      <Filter>src\include</Filter>
-    </ClInclude>
-    <ClInclude Include="src\include\reflex.h">
-      <Filter>src\include</Filter>
-    </ClInclude>
-    <ClInclude Include="src\include\gamemanager.h">
-      <Filter>src\include</Filter>
-    </ClInclude>
     <ClInclude Include="demo\mygamemanager.h">
       <Filter>demo</Filter>
     </ClInclude>
@@ -257,9 +269,6 @@
     <ClInclude Include="tools\meshloader.h">
       <Filter>tools</Filter>
     </ClInclude>
-    <ClInclude Include="src\include\material.h">
-      <Filter>src\include</Filter>
-    </ClInclude>
     <ClInclude Include="tools\textureloader.h">
       <Filter>tools</Filter>
     </ClInclude>
@@ -268,9 +277,6 @@
     </ClInclude>
     <ClInclude Include="tools\loader.h">
       <Filter>tools</Filter>
-    </ClInclude>
-    <ClInclude Include="src\include\texture2d.h">
-      <Filter>src\include</Filter>
     </ClInclude>
     <ClInclude Include="tools\qtimagehelper.h">
       <Filter>tools</Filter>
@@ -281,12 +287,6 @@
     <ClInclude Include="demo\plane.h">
       <Filter>demo</Filter>
     </ClInclude>
-    <ClInclude Include="src\include\lightobject.h">
-      <Filter>src\include</Filter>
-    </ClInclude>
-    <ClInclude Include="src\include\lightcomponent.h">
-      <Filter>src\include</Filter>
-    </ClInclude>
     <ClInclude Include="math\include\cmatrix4x4.h">
       <Filter>math\include</Filter>
     </ClInclude>
@@ -296,22 +296,91 @@
     <ClInclude Include="math\include\cquaternion.h">
       <Filter>math\include</Filter>
     </ClInclude>
-    <ClInclude Include="src\include\rendertarget.h">
-      <Filter>src\include</Filter>
+    <ClInclude Include="demo\mansion.h">
+      <Filter>demo</Filter>
     </ClInclude>
     <ClInclude Include="src\include\cubeobject.h">
-      <Filter>src\include</Filter>
+      <Filter>src\include\shapes</Filter>
+    </ClInclude>
+    <ClInclude Include="src\include\freecamera.h">
+      <Filter>src\include\cameras</Filter>
+    </ClInclude>
+    <ClInclude Include="src\include\delegate.h">
+      <Filter>src\include\core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\include\reflex.h">
+      <Filter>src\include\core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\include\assetmanager.h">
+      <Filter>src\include\managers</Filter>
+    </ClInclude>
+    <ClInclude Include="src\include\gamemanager.h">
+      <Filter>src\include\managers</Filter>
+    </ClInclude>
+    <ClInclude Include="src\include\inputmanager.h">
+      <Filter>src\include\managers</Filter>
+    </ClInclude>
+    <ClInclude Include="src\include\mesh.h">
+      <Filter>src\include\core\renders</Filter>
+    </ClInclude>
+    <ClInclude Include="src\include\renderdata.h">
+      <Filter>src\include\core\renders</Filter>
+    </ClInclude>
+    <ClInclude Include="src\include\material.h">
+      <Filter>src\include\core\renders</Filter>
+    </ClInclude>
+    <ClInclude Include="src\include\rendertarget.h">
+      <Filter>src\include\core\renders</Filter>
+    </ClInclude>
+    <ClInclude Include="src\include\shader.h">
+      <Filter>src\include\core\renders</Filter>
+    </ClInclude>
+    <ClInclude Include="src\include\texture2d.h">
+      <Filter>src\include\core\renders</Filter>
+    </ClInclude>
+    <ClInclude Include="src\include\cameradata.h">
+      <Filter>src\include\core\renders</Filter>
+    </ClInclude>
+    <ClInclude Include="src\include\cameracomponent.h">
+      <Filter>src\include\core\components</Filter>
+    </ClInclude>
+    <ClInclude Include="src\include\meshcomponent.h">
+      <Filter>src\include\core\components</Filter>
+    </ClInclude>
+    <ClInclude Include="src\include\scenecomponent.h">
+      <Filter>src\include\core\components</Filter>
+    </ClInclude>
+    <ClInclude Include="src\include\gameobject.h">
+      <Filter>src\include\core\objects</Filter>
+    </ClInclude>
+    <ClInclude Include="src\include\component.h">
+      <Filter>src\include\core\components</Filter>
+    </ClInclude>
+    <ClInclude Include="src\include\cameraobject.h">
+      <Filter>src\include\core\objects</Filter>
+    </ClInclude>
+    <ClInclude Include="src\include\lightobject.h">
+      <Filter>src\include\core\objects</Filter>
+    </ClInclude>
+    <ClInclude Include="src\include\lightcomponent.h">
+      <Filter>src\include\core\components</Filter>
+    </ClInclude>
+    <ClInclude Include="src\include\cylinderobject.h">
+      <Filter>src\include\shapes</Filter>
+    </ClInclude>
+    <ClInclude Include="src\include\sphereobject.h">
+      <Filter>src\include\shapes</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <QtMoc Include="src\include\cglwidget.h">
-      <Filter>src\include</Filter>
-    </QtMoc>
     <QtMoc Include="tools\qtdebugwidget.h">
       <Filter>tools</Filter>
     </QtMoc>
+    <QtMoc Include="src\include\cglwidget.h">
+      <Filter>src\include\ui</Filter>
+    </QtMoc>
     <QtMoc Include="src\include\cmainwindow.h">
-      <Filter>src\include</Filter>
+      <Filter>src\include\ui</Filter>
     </QtMoc>
   </ItemGroup>
   <ItemGroup>
