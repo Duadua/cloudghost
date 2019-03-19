@@ -244,6 +244,9 @@
     <ClCompile Include="src\source\sphereobject.cpp">
       <Filter>src\source\shapes</Filter>
     </ClCompile>
+    <ClCompile Include="demo\flowsphere.cpp">
+      <Filter>demo</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <QtUic Include="resources\ui\qtdebugwidget.ui">
@@ -370,6 +373,9 @@
     </ClInclude>
     <ClInclude Include="src\include\sphereobject.h">
       <Filter>src\include\shapes</Filter>
+    </ClInclude>
+    <ClInclude Include="demo\flowsphere.h">
+      <Filter>demo</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

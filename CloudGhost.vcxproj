@@ -129,6 +129,7 @@
     </QtRcc>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="demo\flowsphere.cpp" />
     <ClCompile Include="demo\main.cpp" />
     <ClCompile Include="demo\mansion.cpp" />
     <ClCompile Include="demo\mygamemanager.cpp" />
@@ -181,6 +182,7 @@
     <QtRcc Include="resources\cloudghost.qrc" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="demo\flowsphere.h" />
     <ClInclude Include="demo\mansion.h" />
     <ClInclude Include="demo\mygamemanager.h" />
     <ClInclude Include="demo\plane.h" />
