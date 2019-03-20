@@ -50,7 +50,7 @@ void MyGameManager::begin_play() {
 
 	}
 
-	// 生成 cube -- test rb3d
+	// 生成 cylinder -- test rb3d
 	{
 		for (int j = 0; j < 2; ++j) {
 			for (int i = 0; i < 6; ++i) {
@@ -74,6 +74,7 @@ void MyGameManager::begin_play() {
 					t_mo->update_origin_location();
 					if ((i+j)&1) t_mo->set_material("jade");
 					else t_mo->set_material("emerald");
+				
 				}
 	
 			}
