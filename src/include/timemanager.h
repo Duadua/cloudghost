@@ -1,15 +1,6 @@
 #pragma once
 
 #include "cmath.h"
-#include <chrono>					// c++11 time 库
-
-using hour_type = std::chrono::duration<ll, std::ratio<60 * 60, 1>>;
-using minute_type = std::chrono::duration<ll, std::ratio<60, 1>>;
-using second_type = std::chrono::duration<ll, std::ratio<1, 1>>;
-using msecnd_type = std::chrono::duration<ll, std::ratio<1, 1000>>;
-
-using system_time_point = std::chrono::system_clock::time_point;
-using highrs_time_point = std::chrono::high_resolution_clock::time_point;
 
 struct DateTime {
 	int year;

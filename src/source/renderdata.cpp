@@ -69,12 +69,19 @@ RenderDataReprocess* RenderDataReprocess::get_instance() {
 }
 RenderDataReprocess& renderdata_reprocess() { return (*RenderDataReprocess::get_instance()); }
 
-void bump(const std::vector<MVertex>& res_v, std::vector<uint>& res_i,
+void RenderDataReprocess::bump(std::vector<MVertex>& res_v, std::vector<uint>& res_i,
 	const std::vector<MVertex>& v, const std::vector<uint>& i) {
+	res_v.clear(); res_v.assign(v.begin(), v.end());
+	res_i.clear(); res_i.assign(i.begin(), i.end());
+	
+		
+
+
+
 
 }
 
-void smooth(const std::vector<MVertex>& res_v, std::vector<uint>& res_i,
+void RenderDataReprocess::smooth(std::vector<MVertex>& res_v, std::vector<uint>& res_i,
 	const std::vector<MVertex>& v, const std::vector<uint>& i) {
 
 }

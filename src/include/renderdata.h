@@ -34,10 +34,10 @@ class RenderDataReprocess {
 public:
 	~RenderDataReprocess() {}
 	
-	void bump(	const std::vector<MVertex>& res_v, std::vector<uint>& res_i, 
+	void bump(	std::vector<MVertex>& res_v, std::vector<uint>& res_i, 
 				const std::vector<MVertex>& v, const std::vector<uint>& i);
 
-	void smooth(const std::vector<MVertex>& res_v, std::vector<uint>& res_i, 
+	void smooth(std::vector<MVertex>& res_v, std::vector<uint>& res_i, 
 				const std::vector<MVertex>& v, const std::vector<uint>& i);
 	
 

@@ -19,7 +19,7 @@ bool TextureGen::gen_texture_txt(const std::string& res, TextureGenType type, CC
 
 	// 生成数据
 	SPTR_uchar t_data;
-	uint t_size;
+	uint t_size = 0;
 	switch (type) {
 	case TextureGenType::SOLIDE: t_data = gen_solide(t_size, width, heigh, color); break;
 	case TextureGenType::GRADUA: t_data = gen_gradua(t_size, width, heigh, color); break;

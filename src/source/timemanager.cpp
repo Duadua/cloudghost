@@ -18,7 +18,6 @@ std::string DateTime::to_string() const {
 system_time_point TimeManager::time_start_s = std::chrono::time_point_cast<msecnd_type>(std::chrono::system_clock::now());
 highrs_time_point TimeManager::time_start_h = std::chrono::time_point_cast<msecnd_type>(std::chrono::high_resolution_clock::now());
 ll				  TimeManager::time_start_m = (std::chrono::time_point_cast<msecnd_type>(std::chrono::system_clock::now())).time_since_epoch().count();
-;	
 
 TimeManager* TimeManager::instance = nullptr;
 TimeManager* TimeManager::get_instance() {
