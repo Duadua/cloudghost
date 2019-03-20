@@ -2,6 +2,7 @@
 #include <GL/glew.h>
 
 #include "renderdata.h"
+#include <set>
 
 #include <GLFW/glfw3.h>
 
@@ -76,8 +77,43 @@ void RenderDataReprocess::bump(std::vector<MVertex>& res_v, const std::vector<MV
 	for (auto& mv : res_v) { if (i%step == 0) mv.position += mv.normal * CMath::random(-in_scope, out_scope); ++i; }
 }
 
-void RenderDataReprocess::smooth(std::vector<MVertex>& res_v, std::vector<uint>& res_i,
-	const std::vector<MVertex>& v, const std::vector<uint>& i) {
+void RenderDataReprocess::smooth(std::vector<MVertex>& res_v, const std::vector<MVertex>& v, const std::vector<uint>& v_i) {
+
+	std::vector<std::set<uint> > t_adj(v.size());
+
+	// gen adj
+	{
+		uint len = static_cast<uint>(v_i.size());
+		for (uint i = 0; i < len; i += 3) {
+			uint ai = v_i[i + 0]; uint bi = v_i[i + 1]; uint ci = v_i[i + 2];
+
+			t_adj[ai].insert(bi); t_adj[ai].insert(ci);
+			t_adj[bi].insert(ai); t_adj[bi].insert(ci);
+			t_adj[ci].insert(ai); t_adj[ci].insert(bi);
+		}
+
+	}
+
+	// gen new vertex position
+	{
+		uint len = static_cast<uint>(t_adj.size());
+		for (uint i = 0; i < len; ++i) {
+			MVertex t_v;
+			for (auto tt : t_adj[i]) { t_v.position += 0.8f * v[tt].position; }
+			t_v.position = t_v.position / (static_cast<float>(t_adj[i].size()));
+			t_v.position += 0.2f * v[i].position;
+			res_v.push_back(t_v);
+		}
+
+	}
+
+	// recac normal (and texcoord)
+	{
+		for (auto& t_v : res_v) {
+			t_v.normal = t_v.position.get_normalize();
+		}
+	}
+
 
 }
 

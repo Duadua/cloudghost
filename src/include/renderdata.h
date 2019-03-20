@@ -38,8 +38,7 @@ public:
 	
 	void bump(std::vector<MVertex>& res_v, const std::vector<MVertex>& v, int step = 5, float out_scope = 0.1f, float in_scope = 0.01f);
 
-	void smooth(std::vector<MVertex>& res_v, std::vector<uint>& res_i, 
-				const std::vector<MVertex>& v, const std::vector<uint>& i);
+	void smooth(std::vector<MVertex>& res_v, const std::vector<MVertex>& v, const std::vector<uint>& v_i);
 	
 
 	static RenderDataReprocess* get_instance();

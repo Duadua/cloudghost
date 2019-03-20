@@ -22,6 +22,9 @@ struct MVertex {
 	CVector2D tex_coord;
 	MVertex(CVector3D pos = CVector3D(), CVector3D norm = CVector3D(), CVector2D coord = CVector2D()) 
 	: position(pos), normal(norm), tex_coord(coord) {}
+
+	bool operator < (const MVertex& b) const { return position.x() < b.position.x(); }
+	bool operator ==(const MVertex& b) const { return (!((*this) < b) && !(b < (*this))); }
 };
 
 struct MeshData {

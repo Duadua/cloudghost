@@ -4,6 +4,9 @@
 	[yep][mesh]load mesh success by assimp
 	resources/models/obj/Elf_Mansion/Elf_Mansion.obj
 # =========================
+	[yep][mesh]load mesh success by assimp
+	resources/models/obj/Street/Street_environment_V01.obj
+# =========================
 	[warning][asset][shader]no shader calls ""
 # =========================
 	[warning][asset][material]no material calls ""

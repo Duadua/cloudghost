@@ -5,12 +5,13 @@
 #include "meshcomponent.h"
 #include "lightobject.h"
 
-#include "plane.h"
-#include "mansion.h"
 #include "cubeobject.h"
 #include "sphereobject.h"
 #include "cylinderobject.h"
 
+#include "plane.h"
+#include "street.h"
+#include "mansion.h"
 #include "flowsphere.h"
 #include "rotatecylinder.h"
 
@@ -19,6 +20,7 @@ void MyGameManager::load_asset() {
 
 	// mesh
 	AssetManager::load_mesh_x("elf_mansion", "resources/models/obj/Elf_Mansion/Elf_Mansion.obj");
+	AssetManager::load_mesh_x("street", "resources/models/obj/Street/Street_environment_V01.obj");
 	//std::string path = "resources/models/obj/Elf_Mansion/Elf_Mansion.obj";
 
 	// material
@@ -47,7 +49,11 @@ void MyGameManager::begin_play() {
 		add_game_object("mansion", mansion);
 		mansion->get_root_component()->set_location(3.0f, 5.0f, 15.0f);
 		mansion->get_root_component()->set_rotation(0.0f, 180.0f, 0.0f);
-
+	}
+	{
+		auto street = CREATE_CLASS(Street);
+		add_game_object("street", street);
+		street->get_root_component()->set_location(0.0f, 0.0f, -58.0f);
 	}
 
 	// 生成 cylinder -- test rb3d

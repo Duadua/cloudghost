@@ -90,7 +90,7 @@ void GameManager::init() {
 		background_color = CColor(205, 220, 232);
 		border_color = CColor(221, 161, 18);
 		front_polygon_mode = GL_FILL;
-		back_polygon_mode = GL_LINE;
+		back_polygon_mode = GL_FILL;
 		b_use_vr = false;
 		vr_delta = 0.1f;
 		pp_type = PostProcessType::NOPE;
@@ -581,10 +581,9 @@ void GameManager::set_blend(bool enable, uint sfactor, uint dfactor) {
 	glBlendFunc(sfactor, dfactor);
 }
 void GameManager::set_polygon_mode(uint front_mode, uint back_mode) {
-	//glPolygonMode(GL_FRONT, front_mode);
-	//glPolygonMode(GL_BACK, back_mode);
     if(back_mode == 0) {}
-	glPolygonMode(GL_FRONT_AND_BACK, front_mode);
+	glPolygonMode(GL_FRONT, front_mode);
+	glPolygonMode(GL_BACK, back_mode);
 }
 void GameManager::set_cull_face(bool enable, uint mode, uint front_face) {
 	if (enable) { glEnable(GL_CULL_FACE); }

@@ -74,11 +74,11 @@ void CMainWindow::trigger_rb_3d() { GameManager::get_instance()->set_b_use_vr(!G
 void CMainWindow::trigger_polygon_mode(QAction* act) {
 	if (act->objectName().compare("action_pm_fill") == 0) {
 		GameManager::get_instance()->set_front_polygon_mode(GL_FILL);
-		GameManager::get_instance()->set_back_polygon_mode(GL_LINE);
+		GameManager::get_instance()->set_back_polygon_mode(GL_FILL);
 	}
 	else if (act->objectName().compare("action_pm_line") == 0) {
 		GameManager::get_instance()->set_front_polygon_mode(GL_LINE);
-		GameManager::get_instance()->set_back_polygon_mode(GL_FILL);
+		GameManager::get_instance()->set_back_polygon_mode(GL_LINE);
 	}
 }
 void CMainWindow::trigger_select_pp(QAction* act) {

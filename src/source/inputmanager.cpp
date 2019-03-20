@@ -5,7 +5,9 @@
 #include <QWheelEvent>
 #include <QOpenGLShader>	// 为了使用 wind32 的 ClipCursor
 #include <QOpenGLWidget>
+#include "timemanager.h"
 #include "inputmanager.h"
+#include "loader.h"
 
 // mouse
 QTimer InputManager::timer_mouse_pressed_over;
@@ -44,7 +46,7 @@ void InputManager::exec_mouse_pressed_event(QMouseEvent* event) {
 		cur_input_data.mouse_cur_pos = event->pos();
 	} // 只有一个键按下
 	
-	exec_axis_mouse_move();
+	exec_axis_mouse_move(static_cast<float>(time_manager().get_delta_tick_msconds()));
 }
 void InputManager::exec_mouse_release_event(QMouseEvent* event) {
 
@@ -53,7 +55,7 @@ void InputManager::exec_mouse_release_event(QMouseEvent* event) {
 	
 	cur_input_state.modifiers = event->modifiers();
 
-	exec_axis_mouse_move();
+	exec_axis_mouse_move(static_cast<float>(time_manager().get_delta_tick_msconds()));
 }
 void InputManager::exec_mouse_moveeee_event(QMouseEvent* event) {
 
@@ -67,11 +69,11 @@ void InputManager::exec_mouse_moveeee_event(QMouseEvent* event) {
 	cur_input_data.mouse_last_pos = event->pos();
 	cur_input_data.mouse_cur_pos = event->pos();
 	
-	exec_axis_mouse_move();
+	exec_axis_mouse_move(static_cast<float>(time_manager().get_delta_tick_msconds()));
 }
 void InputManager::exec_mouse_wheeeel_event(QWheelEvent* event) {
 	cur_input_data.mouse_wheel_delta = event->delta();
-	exec_axis_mouse_wheel();
+	exec_axis_mouse_wheel(static_cast<float>(time_manager().get_delta_tick_msconds()));
 }
 void InputManager::mouse_pressed_over() {
 	cur_input_data.mouse_pressed_count = 0;
@@ -134,7 +136,8 @@ void InputManager::exec_action() {
 
 void InputManager::map_axis(const QString& key, InputState is) { axis_maps[key].append(is); }
 void InputManager::bind_axis(const QString& key, DELEGATE_ICLASS(InputAxis) ia) { input_axis[key] = ia; }
-void InputManager::exec_axis() {
+void InputManager::exec_axis(float delta) {
+	delta = 1.0f;
 	for (auto it = input_axis.cbegin(); it != input_axis.cend(); ++it) {	// 对每一个绑定的动作
 		if (!axis_maps.count(it.key())) continue;							// map 里没有相应的键位绑定
 		for (auto itt = axis_maps[it.key()].begin(); itt != axis_maps[it.key()].end(); ++itt) {
@@ -170,7 +173,8 @@ void InputManager::exec_axis() {
 	}
 	
 }
-void InputManager::exec_axis_mouse_move() {
+void InputManager::exec_axis_mouse_move(float delta) {
+	delta = 1.0f;
 	for (auto it = input_axis.cbegin(); it != input_axis.cend(); ++it) {	// 对每一个绑定的动作
 		if (!axis_maps.count(it.key())) continue;							// map 里没有相应的键位绑定
 		for (auto itt = axis_maps[it.key()].begin(); itt != axis_maps[it.key()].end(); ++itt) {
@@ -189,7 +193,7 @@ void InputManager::exec_axis_mouse_move() {
 					break;
 				default: flag = false; break;
 				}
-				if(flag) (*it)->invoke(offset);
+				if (flag) (*it)->invoke(offset);
 			} // 如果与当前的键位状态相同， 则执行
 		} // 遍历所有的键位绑定
 	}
@@ -198,7 +202,8 @@ void InputManager::exec_axis_mouse_move() {
 	cur_input_data.mouse_move_delta_y = 0.0f;
 
 }
-void InputManager::exec_axis_mouse_wheel() {
+void InputManager::exec_axis_mouse_wheel(float delta) {
+	delta = 1.0f;
 	for (auto it = input_axis.cbegin(); it != input_axis.cend(); ++it) {	// 对每一个绑定的动作
 		if (!axis_maps.count(it.key())) continue;							// map 里没有相应的键位绑定
 		for (auto itt = axis_maps[it.key()].begin(); itt != axis_maps[it.key()].end(); ++itt) {
@@ -219,7 +224,7 @@ void InputManager::exec_axis_mouse_wheel() {
 		} // 遍历所有的键位绑定
 	}
 }
-void InputManager::exec_axis_key_pressing() {
+void InputManager::exec_axis_key_pressing(float delta) {
 	for (auto it = input_axis.cbegin(); it != input_axis.cend(); ++it) {	// 对每一个绑定的动作
 		if (!axis_maps.count(it.key())) continue;							// map 里没有相应的键位绑定
 		for (auto itt = axis_maps[it.key()].begin(); itt != axis_maps[it.key()].end(); ++itt) {
@@ -233,7 +238,7 @@ void InputManager::exec_axis_key_pressing() {
 					break;
 				default: flag = false; break;
 				}
-				if(flag) (*it)->invoke(offset);
+				if(flag) (*it)->invoke(offset * delta*0.1f);
 			} // 如果与当前的键位状态相同， 则执行
 		} // 遍历所有的键位绑定
 	}

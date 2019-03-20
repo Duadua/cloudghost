@@ -1,4 +1,5 @@
 #include "cglwidget.h"
+#include "timemanager.h"
 #include "gamemanager.h"
 #include "inputmanager.h"
 
@@ -24,7 +25,7 @@ void CGLWidget::paintGL() {
 	// exec input
 	{
 		InputManager::exec_action();
-		InputManager::exec_axis_key_pressing();
+		InputManager::exec_axis_key_pressing(static_cast<float>(time_manager().get_delta_tick_msconds()));
 	}
 
 	GameManager::get_instance()->draw(); 

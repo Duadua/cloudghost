@@ -716,7 +716,7 @@ bool MeshLoader::load_mesh_x(const std::string& path, std::vector<MeshData>& mds
 				// load materials
 				if (t_mesh->mMaterialIndex >= 0) {
 					auto t_mmt = scene->mMaterials[t_mesh->mMaterialIndex];
-					
+											
 					
 				}
 				mds.push_back(md);

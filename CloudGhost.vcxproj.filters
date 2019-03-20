@@ -253,6 +253,9 @@
     <ClCompile Include="demo\rotatecylinder.cpp">
       <Filter>demo</Filter>
     </ClCompile>
+    <ClCompile Include="demo\street.cpp">
+      <Filter>demo</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <QtUic Include="resources\ui\qtdebugwidget.ui">
@@ -387,6 +390,9 @@
       <Filter>src\include\managers</Filter>
     </ClInclude>
     <ClInclude Include="demo\rotatecylinder.h">
+      <Filter>demo</Filter>
+    </ClInclude>
+    <ClInclude Include="demo\street.h">
       <Filter>demo</Filter>
     </ClInclude>
   </ItemGroup>

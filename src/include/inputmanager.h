@@ -49,10 +49,10 @@ public:
 
 	static void map_axis(const QString& key, InputState is);
 	static void bind_axis(const QString& key, DELEGATE_ICLASS(InputAxis) ia);
-	static void exec_axis();
-	static void exec_axis_mouse_move();
-	static void exec_axis_mouse_wheel();
-	static void exec_axis_key_pressing();
+	static void exec_axis(float delta);
+	static void exec_axis_mouse_move(float delta);
+	static void exec_axis_mouse_wheel(float delta);
+	static void exec_axis_key_pressing(float delta);
 
 	static void init(QOpenGLWidget* gl);
 	static void exit();
