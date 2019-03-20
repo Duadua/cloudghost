@@ -33,9 +33,10 @@ public:
 
 	static TimeManager* get_instance();
 
-	DateTime cur_time_data();				// 当前系统时间  -- 输出用
-	ll cur_time_msconds();					// 当前系统时间  -- 毫秒
-	ll cur_runtime_msconds();				// 当前程序运行时间 -- 毫秒
+	DateTime	cur_time_data();					// 当前系统时间  -- 输出用
+	ll			cur_time_msconds();					// 当前系统时间  -- 毫秒
+	ll			cur_runtime_msconds();				// 当前程序运行时间 -- 毫秒
+	float		cur_runtime_seconds();				// 当前程序运行时间 -- 秒
 
 	void update_tick();
 	ll get_delta_tick_msconds() { return delta_tick_msconds; }

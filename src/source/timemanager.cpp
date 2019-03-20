@@ -43,6 +43,10 @@ ll TimeManager::cur_time_msconds() {
 
 ll TimeManager::cur_runtime_msconds() { return cur_time_msconds() - time_start_m; }
 
+float TimeManager::cur_runtime_seconds() {
+	return cur_runtime_msconds() / 1000.0f;
+}
+
 void TimeManager::update_tick() {
 	if (pre_tick_msconds == 0) { pre_tick_msconds = cur_runtime_msconds(); }
 	delta_tick_msconds = cur_runtime_msconds() - pre_tick_msconds;
