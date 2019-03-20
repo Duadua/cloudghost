@@ -15,23 +15,24 @@ std::string DateTime::to_string() const {
 
 // ================================================================================
 
-TimeManager* TimeManager::instance = nullptr;
-
 system_time_point TimeManager::time_start_s = std::chrono::time_point_cast<msecnd_type>(std::chrono::system_clock::now());
 highrs_time_point TimeManager::time_start_h = std::chrono::time_point_cast<msecnd_type>(std::chrono::high_resolution_clock::now());
 ll				  TimeManager::time_start_m = (std::chrono::time_point_cast<msecnd_type>(std::chrono::system_clock::now())).time_since_epoch().count();
 ;	
 
+TimeManager* TimeManager::instance = nullptr;
 TimeManager* TimeManager::get_instance() {
 	if (instance == nullptr) { instance = new TimeManager(); }
 	return instance;
 }
+TimeManager& time_manager() { return (*TimeManager::get_instance()); }
 
 DateTime TimeManager::cur_time_data() {
 	auto c_h = std::chrono::time_point_cast<msecnd_type>(std::chrono::high_resolution_clock::now());
 	auto c_t = std::chrono::time_point_cast<msecnd_type>(time_start_s + (c_h - time_start_h));
 	auto tt = std::chrono::system_clock::to_time_t(c_t);
-	struct tm* t_tm = localtime(&tt);
+	struct tm* t_tm = nullptr;
+	localtime_s(t_tm, &tt);
 	return DateTime(t_tm->tm_year + 1900, t_tm->tm_mon + 1, t_tm->tm_mday,
 		t_tm->tm_hour, t_tm->tm_min, t_tm->tm_sec);
 }
@@ -44,7 +45,7 @@ ll TimeManager::cur_time_msconds() {
 ll TimeManager::cur_runtime_msconds() { return cur_time_msconds() - time_start_m; }
 
 float TimeManager::cur_runtime_seconds() {
-	return cur_runtime_msconds() / 1000.0f;
+	return 0.001f * cur_runtime_msconds();
 }
 
 void TimeManager::update_tick() {
@@ -53,4 +54,3 @@ void TimeManager::update_tick() {
 	pre_tick_msconds = cur_runtime_msconds();
 }
 
-TimeManager& time_manager() { return (*TimeManager::get_instance()); }

@@ -12,6 +12,7 @@
 #include "cylinderobject.h"
 
 #include "flowsphere.h"
+#include "rotatecylinder.h"
 
 void MyGameManager::load_asset() {
 	// shader
@@ -54,11 +55,12 @@ void MyGameManager::begin_play() {
 		for (int j = 0; j < 2; ++j) {
 			for (int i = 0; i < 6; ++i) {
 				{
-					auto t_mo = CREATE_CLASS(CylinderObject);
+					auto t_mo = CREATE_CLASS(RotateCylinder);
 					std::string t_name = "cylinder" + int_to_string(j) + "_" + int_to_string(i);
 					add_game_object(t_name, t_mo);
 					t_mo->get_root_component()->set_location(2.0f*(j - 0.5f), 1.001f, 2.0f * (i - 3));
 					t_mo->get_root_component()->set_scale(0.5f, 2.0f, 0.5f);
+					t_mo->update_origin_rotation();
 					if ((i+j)&1) t_mo->set_material("emerald");
 					else t_mo->set_material("jade");
 					t_mo->set_material("default", 2);
@@ -68,9 +70,8 @@ void MyGameManager::begin_play() {
 					std::string t_name = "sphere" + int_to_string(j) + "_" + int_to_string(i);
 					add_game_object(t_name, t_mo);
 					t_mo->get_root_component()->set_location(2.0f*(j - 0.5f), 2.35f, 2.0f * (i - 3));
-					t_mo->update_origin_location();
 					t_mo->get_root_component()->set_scale(0.3f);
-					//t_mo->set_material("jade");
+					t_mo->update_origin_location();
 					if ((i+j)&1) t_mo->set_material("jade");
 					else t_mo->set_material("emerald");
 				}

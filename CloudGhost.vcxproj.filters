@@ -250,6 +250,9 @@
     <ClCompile Include="src\source\timemanager.cpp">
       <Filter>src\source\managers</Filter>
     </ClCompile>
+    <ClCompile Include="demo\rotatecylinder.cpp">
+      <Filter>demo</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <QtUic Include="resources\ui\qtdebugwidget.ui">
@@ -382,6 +385,9 @@
     </ClInclude>
     <ClInclude Include="src\include\timemanager.h">
       <Filter>src\include\managers</Filter>
+    </ClInclude>
+    <ClInclude Include="demo\rotatecylinder.h">
+      <Filter>demo</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

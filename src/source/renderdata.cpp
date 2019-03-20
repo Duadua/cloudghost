@@ -59,3 +59,25 @@ void RenderData::draw() {
     else glDrawElements(GL_TRIANGLES, static_cast<GLsizei>(indices.size()), GL_UNSIGNED_INT, nullptr);
 	glBindVertexArray(0);
 }
+
+// ===========================================================================
+
+RenderDataReprocess* RenderDataReprocess::instance = nullptr;
+RenderDataReprocess* RenderDataReprocess::get_instance() {
+	if (instance == nullptr) { instance = new RenderDataReprocess(); }
+	return instance;
+}
+RenderDataReprocess& renderdata_reprocess() { return (*RenderDataReprocess::get_instance()); }
+
+void bump(const std::vector<MVertex>& res_v, std::vector<uint>& res_i,
+	const std::vector<MVertex>& v, const std::vector<uint>& i) {
+
+}
+
+void smooth(const std::vector<MVertex>& res_v, std::vector<uint>& res_i,
+	const std::vector<MVertex>& v, const std::vector<uint>& i) {
+
+}
+
+
+

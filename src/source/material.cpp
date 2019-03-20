@@ -33,6 +33,9 @@ void Material::use(const std::string& shader) {
 		t_shader->set_int("u_material.has_map_ka", true);
 		auto t_tex = AssetManager::get_texture(map_ka);
 		if(t_tex != nullptr) { t_tex->bind(0); }
+		else {
+			c_debug() << "cannot get_texture " + map_ka;
+		}
 	}
 	else { 
 		if (map_kd.compare("") != 0) {
@@ -40,6 +43,9 @@ void Material::use(const std::string& shader) {
 			t_shader->set_int("u_material.has_map_ka", true);
 			auto t_tex = AssetManager::get_texture(map_kd);
 			if(t_tex != nullptr) { t_tex->bind(0); }
+			else {
+				c_debug() << "cannot get_texture " + map_kd;
+			}
 
 		}
 		else { t_shader->set_int("u_material.has_map_ka", false); }
@@ -51,6 +57,9 @@ void Material::use(const std::string& shader) {
 		t_shader->set_int("u_material.has_map_kd", true);
 		auto t_tex = AssetManager::get_texture(map_kd);
 		if(t_tex != nullptr) { t_tex->bind(1); }
+		else {
+			c_debug() << "cannot get_texture " + map_kd;
+		}
 	}
 	else {
 		if (map_ka.compare("") != 0) {
@@ -58,6 +67,9 @@ void Material::use(const std::string& shader) {
 			t_shader->set_int("u_material.has_map_kd", true);
 			auto t_tex = AssetManager::get_texture(map_ka);
 			if(t_tex != nullptr) { t_tex->bind(1); }
+			else {
+				c_debug() << "cannot get_texture " + map_ka;
+			}
 		}
 		else { t_shader->set_int("u_material.has_map_kd", false); }
 	}
@@ -68,6 +80,9 @@ void Material::use(const std::string& shader) {
 		t_shader->set_int("u_material.has_map_ks", true);
 		auto t_tex = AssetManager::get_texture(map_ks);
 		if(t_tex != nullptr) { t_tex->bind(2); }
+		else {
+			c_debug() << "cannot get_texture " + map_ks;
+		}
 	}
 	else { t_shader->set_int("u_material.has_map_ks", false); }
 	

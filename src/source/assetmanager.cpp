@@ -185,7 +185,7 @@ bool AssetManager::load_texture(const std::string& path, SourceType source_type)
 	} 
 
 	if (t_res == nullptr) {
-		c_debug() << "[warning][asset][mesh]load mesh failed called \"" + path + "\"";
+		c_debug() << "[warning][asset][texture]load texture failed called \"" + path + "\"";
 		return false;
 	}
 

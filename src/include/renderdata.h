@@ -27,4 +27,29 @@ private:
 };
 DECLARE_AUTO_PTR(RenderData)
 
- 
+// ===================================
+// 用于对获得 rd 再加工 -- 随机凹凸, 平滑等
+
+class RenderDataReprocess {
+public:
+	~RenderDataReprocess() {}
+	
+	void bump(	const std::vector<MVertex>& res_v, std::vector<uint>& res_i, 
+				const std::vector<MVertex>& v, const std::vector<uint>& i);
+
+	void smooth(const std::vector<MVertex>& res_v, std::vector<uint>& res_i, 
+				const std::vector<MVertex>& v, const std::vector<uint>& i);
+	
+
+	static RenderDataReprocess* get_instance();
+
+
+
+private:
+	RenderDataReprocess() {}
+
+	static RenderDataReprocess* instance;
+
+};
+RenderDataReprocess& renderdata_reprocess();
+

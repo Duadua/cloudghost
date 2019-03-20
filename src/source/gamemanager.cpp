@@ -370,6 +370,7 @@ void GameManager::vr_pass() {
 void GameManager::shader_toy_pass() {
 
 	// get time
+	//float t_time = 0.001f * time_manager().cur_runtime_msconds();
 	float t_time = time_manager().cur_runtime_seconds();
 
 	for (uint i = 0; i < 4; ++i) {

@@ -64,6 +64,8 @@ CDebug* CDebug::get_instance() {
 	if (instance == nullptr) { instance = new CDebug(); }
 	return instance;
 }
+CDebug& c_debug() { return (*CDebug::get_instance()); }
+
 CDebug::CDebug() { 
 	data = ""; ss.clear(); 
 #ifdef C_DEBUG_QT
@@ -104,4 +106,3 @@ CDebug& CDebug::operator << (const std::string& str) {
 }
 bool CDebug::save(const std::string& path) { return save_txt(path, data); }
 
-CDebug& c_debug() { return (*CDebug::get_instance()); }

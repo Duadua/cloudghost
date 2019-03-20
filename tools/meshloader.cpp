@@ -724,7 +724,7 @@ bool MeshLoader::load_mesh_x(const std::string& path, std::vector<MeshData>& mds
 		}
 
 		// push child node to queue
-		for (int i = 0; i < t_node->mNumChildren; ++i) { nodes.push(t_node->mChildren[i]); }
+		for (uint i = 0; i < t_node->mNumChildren; ++i) { nodes.push(t_node->mChildren[i]); }
 
 	}
 
