@@ -3,20 +3,19 @@
 
 IMPLEMENT_CLASS(MeshComponent)
 
-MeshComponent::MeshComponent(const std::string& m) { mesh = m; }
+MeshComponent::MeshComponent() { mesh = nullptr; }
 MeshComponent::~MeshComponent() { }
 
 void MeshComponent::draw(const std::string& shader) {
-	if (mesh.compare("") != 0) {
+	if (mesh != nullptr) {
 		auto t_shader = AssetManager::get_shader(shader);
 		if (t_shader != nullptr) {
 			if(is_border) t_shader->set_mat4("u_model", get_transform().scale(1.1f));
 			else t_shader->set_mat4("u_model", get_transform());
 		}
-
-		auto t_mesh = AssetManager::get_mesh(mesh);
-		if(t_mesh != nullptr) t_mesh->draw(shader);
+		mesh->draw(shader);
 	}
 
 	for (auto cc : child_components) { cc->draw(shader); }
 }
+void MeshComponent::set_mesh(const std::string& name) { mesh = AssetManager::get_mesh(name); }

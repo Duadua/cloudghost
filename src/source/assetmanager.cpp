@@ -95,12 +95,23 @@ SPTR_Mesh AssetManager::load_mesh_x(const std::string& key, const std::string& p
 
 	return map_meshs[key];
 }
-SPTR_Mesh AssetManager::get_mesh(const std::string& key) {
+SPTR_Mesh AssetManager::get_mesh_o(const std::string& key) {
 	if (!map_meshs.count(key)) {
 		c_debug() << "[warning][asset][mesh]no mesh calls \"" + key + "\"";
 		return map_meshs[key] = nullptr;
 	}
 	return map_meshs[key];
+}
+SPTR_Mesh AssetManager::get_mesh(const std::string& key) {
+	if (!map_meshs.count(key)) {
+		c_debug() << "[warning][asset][mesh]no mesh calls \"" + key + "\"";
+		return nullptr;
+	}
+	auto t_mi = CREATE_CLASS(Mesh);
+	if (t_mi) {
+		t_mi->copy_from(map_meshs[key]);
+	}
+	return t_mi;
 }
 
 bool AssetManager::load_materials(const std::string& src, SourceType source_type) {
@@ -173,7 +184,10 @@ bool AssetManager::load_texture(const std::string& path, SourceType source_type)
 		t_res = TextureLoader::load_texture_txt(path, width, heigh, SourceType::BY_STRING); 
 	} 
 
-	if (t_res == nullptr) return false;
+	if (t_res == nullptr) {
+		c_debug() << "[warning][asset][mesh]load mesh failed called \"" + path + "\"";
+		return false;
+	}
 
 	// 传给 texture
 	auto t_texture = CREATE_CLASS(Texture2D);

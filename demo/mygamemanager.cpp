@@ -37,6 +37,7 @@ void MyGameManager::begin_play() {
 		auto plane = CREATE_CLASS(PlaneObject);
 		add_game_object("plane", plane);
 		//plane->get_root_component()->set_scale(2.0f);
+		plane->set_material("brickwall");
 	}
 
 	// 添加 城堡 mesh
@@ -58,8 +59,9 @@ void MyGameManager::begin_play() {
 					add_game_object(t_name, t_mo);
 					t_mo->get_root_component()->set_location(2.0f*(j - 0.5f), 1.001f, 2.0f * (i - 3));
 					t_mo->get_root_component()->set_scale(0.5f, 2.0f, 0.5f);
-					if (j == 0) t_mo->set_material("jade");
-					else t_mo->set_material("emerald");
+					if ((i+j)&1) t_mo->set_material("emerald");
+					else t_mo->set_material("jade");
+					t_mo->set_material("default", 2);
 				}
 				{
 					auto t_mo = CREATE_CLASS(FlowSphere);
@@ -68,9 +70,9 @@ void MyGameManager::begin_play() {
 					t_mo->get_root_component()->set_location(2.0f*(j - 0.5f), 2.35f, 2.0f * (i - 3));
 					t_mo->update_origin_location();
 					t_mo->get_root_component()->set_scale(0.3f);
-					t_mo->set_material("jade");
-					//if (j == 0) t_mo->set_material("emerald");
-					//else t_mo->set_material("jade");
+					//t_mo->set_material("jade");
+					if ((i+j)&1) t_mo->set_material("jade");
+					else t_mo->set_material("emerald");
 				}
 	
 			}

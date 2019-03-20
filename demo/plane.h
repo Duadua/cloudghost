@@ -10,6 +10,8 @@ public:
 	virtual void begin_play();
 	virtual void tick();
 
+	void set_material(std::string name, uint id = 0);
+
 	// DECLARE_ATTR(public, double, width, PlaneObject);
 
 };

@@ -29,7 +29,8 @@ public:
 
 	static SPTR_Mesh load_mesh(const std::string& key, const std::string& src, SourceType source_type = SourceType::BY_FILE);
 	static SPTR_Mesh load_mesh_x(const std::string& key, const std::string& path);	// load mesh by assimp
-	static SPTR_Mesh get_mesh(const std::string& key);
+	static SPTR_Mesh get_mesh_o(const std::string& key);			// 获得原始 mesh
+	static SPTR_Mesh get_mesh(const std::string& key);				// 获得 mesh 实例 -- 深度复制
 
 	static bool load_materials(const std::string& src, SourceType source_type = SourceType::BY_FILE);
 	static SPTR_Material get_material(const std::string& key);

@@ -4,6 +4,13 @@
 IMPLEMENT_CLASS(Mesh)
 
 Mesh::Mesh() : use_default_mt(true) {}
+Mesh::Mesh(const Mesh& b) : use_default_mt(b.use_default_mt) {
+	render_datas.assign(b.render_datas.begin(), b.render_datas.end());
+}
+void Mesh::copy_from(const SPTR_Mesh b) {
+	use_default_mt = b->use_default_mt;
+	render_datas.assign(b->render_datas.begin(), b->render_datas.end());
+}
 Mesh::~Mesh() {}
 
 void Mesh::draw(const std::string& shader) {
@@ -20,4 +27,8 @@ void Mesh::draw(const std::string& shader) {
 
 void Mesh::add_render_data(SPTR_RenderData rd) { 
 	if (rd != nullptr) render_datas.push_back(RenderDataInstance(rd)); 
+}
+RenderDataInstance& Mesh::render_data(uint id) {
+	id = CMath::clamp<uint>(id, 0, static_cast<uint>(render_datas.size() - 1));
+	return render_datas[id];
 }

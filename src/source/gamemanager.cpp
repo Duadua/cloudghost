@@ -67,6 +67,7 @@ void GameManager::init() {
 		AssetManager::load_materials("resources/materials/txt/single_material.txt");
 		AssetManager::load_texture("resources/textures/txt/texture_default.txt");
 		AssetManager::load_texture("resources/textures/txt/texture_default.png");
+		AssetManager::load_texture("resources/textures/brickwall_d.png");
 
 		load_asset();						// 加载资源
 		
@@ -405,7 +406,7 @@ void GameManager::shader_toy_pass() {
 
 void GameManager::draw_scene(const std::string& shader) {
 	glDisable(GL_DEPTH_TEST);
-	auto s_mesh = AssetManager::get_mesh("rect");
+	static auto s_mesh = AssetManager::get_mesh("rect");
 	if (s_mesh != nullptr) {
 		s_mesh->set_use_default_mt(false);
 		s_mesh->draw(shader);

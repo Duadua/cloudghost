@@ -45,3 +45,17 @@ void PlaneObject::begin_play() {
 void PlaneObject::tick() {
 
 }
+
+void PlaneObject::set_material(std::string name, uint id) {
+	auto t_mo = get_root_component()->get_child_components()[0];
+	if (t_mo != nullptr) {
+		for (uint i = 0; i < 4; ++i) {
+			auto t_mc = std::dynamic_pointer_cast<MeshComponent>(t_mo->get_child_components()[i]);
+			if (t_mc == nullptr) continue;
+			auto t_m = t_mc->get_mesh();
+			if (t_m != nullptr) {
+				t_m->render_data(id).material = name;
+			}
+		}
+	}
+}
