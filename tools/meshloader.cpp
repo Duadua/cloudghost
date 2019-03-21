@@ -742,14 +742,16 @@ bool MeshLoader::load_mesh_x(const std::string& path, std::vector<MeshData>& mds
 					// load texture
 					{
 						int len = t_mt->GetTextureCount(aiTextureType_AMBIENT);
+						if (len > 1) len = 1;		// 临时
 						for (int j = 0; j < len; ++j) {
 							aiString t_txname;
 							t_mt->GetTexture(aiTextureType_AMBIENT, j, &t_txname);
-							md.material.map_ka = get_name_of_file(t_txname.C_Str());
+							md.material.map_ka = s_path + "/" + get_name_of_file(t_txname.C_Str());
 						}
 					}
 					{
 						int len = t_mt->GetTextureCount(aiTextureType_DIFFUSE);
+						if (len > 1) len = 1;		// 临时
 						for (int j = 0; j < len; ++j) {
 							aiString t_txname;
 							t_mt->GetTexture(aiTextureType_DIFFUSE, j, &t_txname);
@@ -758,6 +760,7 @@ bool MeshLoader::load_mesh_x(const std::string& path, std::vector<MeshData>& mds
 					}
 					{
 						int len = t_mt->GetTextureCount(aiTextureType_SPECULAR);
+						if (len > 1) len = 1;		// 临时
 						for (int j = 0; j < len; ++j) {
 							aiString t_txname;
 							t_mt->GetTexture(aiTextureType_SPECULAR, j, &t_txname);

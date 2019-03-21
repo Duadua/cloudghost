@@ -9,6 +9,7 @@
 
 #ifndef NDEBUG
 #define C_DEBUG
+#define C_DEBUG_QT
 #endif // !NDEBUG -- 没有定义 no_debug -- 定义 c_debug
 
 #ifndef C_DEBUG

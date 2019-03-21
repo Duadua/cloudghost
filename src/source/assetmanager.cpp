@@ -10,7 +10,8 @@ std::map<std::string, SPTR_Material> AssetManager::map_materials;
 std::map<std::string, SPTR_Texture2D> AssetManager::map_textures;
 
 SPTR_Shader AssetManager::load_shader(const std::string& key, const std::string& v_path, const std::string& f_path, const std::string& g_path, SourceType source_type) {
-	if (map_shaders.count(key)) { c_debug() << "[asset][shader][load] already loaded shader " + key; return nullptr; }
+	//if (map_shaders.count(key)) { c_debug() << "[asset][shader][load] already loaded shader " + key; return nullptr; }
+	if (map_shaders.count(key)) { return nullptr; }
 
 	std::string v_code, f_code, g_code;
 	if (source_type == SourceType::BY_FILE) {
@@ -55,7 +56,8 @@ bool AssetManager::clear_shaders() {
 }
 
 SPTR_Mesh AssetManager::load_mesh(const std::string& key, const std::string& src, SourceType source_type) {
-	if (map_meshs.count(key)) { c_debug() << "[asset][mesh][load] already loaded mesh " + key; return nullptr; }
+	// if (map_meshs.count(key)) { c_debug() << "[asset][mesh][load] already loaded mesh " + key; return nullptr; }
+	if (map_meshs.count(key)) { return nullptr; }
 
 	std::vector<MeshData> t_md;
 	std::vector<std::string> t_mt_files;
@@ -86,7 +88,8 @@ SPTR_Mesh AssetManager::load_mesh(const std::string& key, const std::string& src
 	return map_meshs[key];
 }
 SPTR_Mesh AssetManager::load_mesh_x(const std::string& key, const std::string& path) {
-	if (map_meshs.count(key)) { c_debug() << "[asset][mesh][load] already loaded mesh " + key; return nullptr; }
+	// if (map_meshs.count(key)) { c_debug() << "[asset][mesh][load] already loaded mesh " + key; return nullptr; }
+	if (map_meshs.count(key)) { return nullptr; }
 
 	std::vector<MeshData> t_mds;
 	bool res = MeshLoader::load_mesh_x(path, t_mds);
@@ -154,7 +157,8 @@ bool AssetManager::load_materials(const std::string& src, SourceType source_type
 	}
 
 	for (auto i : t_mds) {
-		if (map_materials.count(i.name)) { c_debug() << "[asset][materials][load] already loaded material " + i.name; continue; }
+		// if (map_materials.count(i.name)) { c_debug() << "[asset][materials][load] already loaded material " + i.name; continue; }
+		if (map_materials.count(i.name)) { continue; }
 
 		auto t_md = CREATE_CLASS(Material);
 		t_md->set_name(i.name);
@@ -180,7 +184,8 @@ SPTR_Material AssetManager::get_material(const std::string& key) {
 
 bool AssetManager::load_texture(const std::string& path, SourceType source_type) {
 	std::string t_name = get_name_of_file(path);			// 获得文件名
-	if (map_textures.count(t_name)) { c_debug() << "[asset][texture][load] already loaded texture " + t_name; return false; }
+	// if (map_textures.count(t_name)) { c_debug() << "[asset][texture][load] already loaded texture " + t_name; return false; }
+	if (map_textures.count(t_name)) { return false; }
 
 	std::string t_suf = get_suff_of_file(path);				// 获得文件路径后缀
     uint width = 0, heigh = 0;
@@ -231,7 +236,8 @@ bool AssetManager::load_texture(const std::string& path, SourceType source_type)
 }
 bool AssetManager::load_texture_x(const std::string& path) {
 	std::string t_name = get_name_of_file(path);			// 获得文件名
-	if (map_textures.count(t_name)) { c_debug() << "[asset][texture][load] already loaded texture " + t_name; return false; }
+	// if (map_textures.count(t_name)) { c_debug() << "[asset][texture][load] already loaded texture " + t_name; return false; }
+	if (map_textures.count(t_name)) { return false; }
 
 	std::string t_suf = get_suff_of_file(path);				// 获得文件路径后缀
     int width = 0, heigh = 0, channel = 0;

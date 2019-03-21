@@ -19,8 +19,8 @@ void MyGameManager::load_asset() {
 	// shader
 
 	// mesh
-	AssetManager::load_mesh_x("elf_mansion", "resources/models/obj/Elf_Mansion/Elf_Mansion.fbx");
-	AssetManager::load_mesh_x("street", "resources/models/obj/Street/Street_environment_V01.obj");
+	AssetManager::load_mesh_x("elf_mansion", "resources/models/static/Elf_Mansion/Elf_Mansion.fbx");
+	AssetManager::load_mesh_x("street", "resources/models/static/Street/Street_environment_V01.obj");
 
 	// material
 	AssetManager::load_materials("resources/materials/txt/cube_material.txt"); 
