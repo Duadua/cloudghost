@@ -114,7 +114,6 @@ void RenderDataReprocess::smooth(std::vector<MVertex>& res_v, const std::vector<
 		}
 	}
 
-
 }
 
 

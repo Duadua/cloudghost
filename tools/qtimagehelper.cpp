@@ -16,7 +16,7 @@ bool QtImageHelper::data_to_png(const std::string& path, const SPTR_uchar data, 
 		}
 	}
 	if (img.save(QString::fromStdString(path), "png")) {
-		c_debug() << "save png : " << path;
+		c_debug() << "save png : " + path;
 	}
 	
 	return true;

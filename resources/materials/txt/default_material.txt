@@ -5,8 +5,8 @@ name default
 
 	shininess 32.000000
 
-	map_ka texture_default.txt
-	map_kd texture_default.txt
+	map_ka texture_default.png
+	map_kd texture_default.png
 
 
 name brickwall
@@ -16,5 +16,5 @@ name brickwall
 
 	shininess 32.000000
 
-	map_ka brickwall_d.png
-	map_kd brickwall_d.png
+	map_ka brickwall_d.jpg
+	map_kd brickwall_d.jpg

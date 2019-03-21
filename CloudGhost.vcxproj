@@ -33,13 +33,13 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <OutDir>$(SolutionDir)$(Platform)\$(Configuration)\</OutDir>
-    <IncludePath>$(ProjectDir)src\include;$(ProjectDir)math\include;$(ProjectDir)third_part\glfw\include;$(ProjectDir)third_part\glew\include;$(ProjectDir)third_part\assimp\include;$(ProjectDir)tools;$(IncludePath)</IncludePath>
+    <IncludePath>$(ProjectDir)src\include;$(ProjectDir)math\include;$(ProjectDir)third_part\glfw\include;$(ProjectDir)third_part\glew\include;$(ProjectDir)third_part\assimp\include;$(ProjectDir)\third_part\stb\include;$(ProjectDir)tools;$(IncludePath)</IncludePath>
     <LibraryPath>$(ProjectDir)third_part\glfw\libs;$(ProjectDir)third_part\glew\libs;$(ProjectDir)third_part\assimp\libs;$(LibraryPath)</LibraryPath>
     <ReferencePath>$(ReferencePath)</ReferencePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <OutDir>$(SolutionDir)$(Platform)\$(Configuration)\</OutDir>
-    <IncludePath>$(ProjectDir)src\include;$(ProjectDir)math\include;$(ProjectDir)third_part\glfw\include;$(ProjectDir)third_part\glew\include;$(ProjectDir)third_part\assimp\include;$(ProjectDir)tools;$(IncludePath)</IncludePath>
+    <IncludePath>$(ProjectDir)src\include;$(ProjectDir)math\include;$(ProjectDir)third_part\glfw\include;$(ProjectDir)third_part\glew\include;$(ProjectDir)third_part\assimp\include;$(ProjectDir)\third_part\stb\include;$(ProjectDir)tools;$(IncludePath)</IncludePath>
     <LibraryPath>$(ProjectDir)third_part\glfw\libs;$(ProjectDir)third_part\glew\libs;$(ProjectDir)third_part\assimp\libs;$(LibraryPath)</LibraryPath>
     <ReferencePath>$(ReferencePath)</ReferencePath>
   </PropertyGroup>

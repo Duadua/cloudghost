@@ -1,5 +1,8 @@
+#define GLEW_STATIC
+#include <GL/glew.h>
+
 #include "assetmanager.h"
-#include <QImage>
+// #include <QImage>
 
 std::map<std::string, SPTR_Shader> AssetManager::map_shaders;
 std::map<std::string, SPTR_Mesh> AssetManager::map_meshs;
@@ -155,11 +158,11 @@ bool AssetManager::load_texture(const std::string& path, SourceType source_type)
 	std::string t_name = get_name_of_file(path);			// 获得文件名
 	std::string t_suf = get_suff_of_file(path);				// 获得文件路径后缀
     uint width = 0, heigh = 0;
-	SPTR_uchar t_res;
+	SPTR_uchar t_res = nullptr;
 
 	if (source_type == SourceType::BY_FILE) {
 
-		if (t_suf.compare(".png") == 0) { 
+		/*if (t_suf.compare(".png") == 0) { 
 			uint t_size;
 			auto t_data = TextureLoader::load_texture_png(path, t_size); 
 			if (t_data == nullptr) return false;
@@ -177,7 +180,8 @@ bool AssetManager::load_texture(const std::string& path, SourceType source_type)
             memcpy(t_res.get(), t_img.bits(), static_cast<size_t>(t_img.byteCount()));
 			
 		}
-		else if (t_suf.compare(".txt") == 0) { t_res = TextureLoader::load_texture_txt(path, width, heigh, SourceType::BY_FILE); }
+		else*/
+		if (t_suf.compare(".txt") == 0) { t_res = TextureLoader::load_texture_txt(path, width, heigh, SourceType::BY_FILE); }
 
 	}
 	else if (source_type == SourceType::BY_STRING) { 
@@ -194,6 +198,34 @@ bool AssetManager::load_texture(const std::string& path, SourceType source_type)
 	t_texture->set_name(t_name);
 	t_texture->set_internal_format(GL_BGRA);
 	t_texture->set_image_format(GL_BGRA);
+	t_texture->init(width, heigh, t_res);
+	map_textures[t_name] = t_texture;
+
+	return true;
+}
+bool AssetManager::load_texture_x(const std::string& path) {
+	std::string t_name = get_name_of_file(path);			// 获得文件名
+	std::string t_suf = get_suff_of_file(path);				// 获得文件路径后缀
+    int width = 0, heigh = 0, channel = 0;
+	SPTR_uchar t_res = nullptr;
+
+	if (t_suf.compare("dds") == 0) { c_debug() << "cannot load texture dds by stbi " + path; return false; }
+	
+	t_res = TextureLoader::load_texture_x(path, width, heigh, channel);
+	if (t_res == nullptr) {
+		c_debug() << "[warning][asset][texture]load texture failed called \"" + path + "\"";
+		return false;
+	}
+
+	// 传给 texture
+	auto t_texture = CREATE_CLASS(Texture2D);
+	t_texture->set_name(t_name);
+	if (channel == 1) { t_texture->set_internal_format(GL_RED); t_texture->set_image_format(GL_RED); }
+	else if (channel == 3) { t_texture->set_internal_format(GL_RGB); t_texture->set_image_format(GL_RGB); }
+	else if (channel == 4) {
+		t_texture->set_internal_format(GL_RGBA); t_texture->set_image_format(GL_RGBA);
+		t_texture->set_wrap_s(GL_CLAMP_TO_EDGE); t_texture->set_wrap_t(GL_CLAMP_TO_EDGE);
+	}
 	t_texture->init(width, heigh, t_res);
 	map_textures[t_name] = t_texture;
 

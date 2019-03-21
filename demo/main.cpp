@@ -49,11 +49,17 @@ int main(int argc, char *argv[]) {
 
 	// texture load test
 	/*{
-		std::string path = "texture_default.txt";
-		TextureGen::gen_texture_txt(path, TextureGenType::THE_TWO, CColor(80, 80, 80, 255));
+		std::string path = "resources/textures/wood.png";
+		std::string path2 = "resources/textures/wood2.png";
+		//TextureGen::gen_texture_txt(path, TextureGenType::THE_TWO, CColor(80, 80, 80, 255));
+		int w, h, n;
+		auto t_data = TextureLoader::load_texture_x(path, w, h, n);
+		QtImageHelper::data_to_png(path2, t_data, w, h);
 	}
+	*/
 
 	// change txt to png
+	/*
 	uint width, heigh;
 	std::string path = "resources/textures/txt/texture_default.txt";
 	QtImageHelper::text_to_png(path);

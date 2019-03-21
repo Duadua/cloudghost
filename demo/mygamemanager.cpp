@@ -27,7 +27,7 @@ void MyGameManager::load_asset() {
 	AssetManager::load_materials("resources/materials/txt/cube_material.txt"); 
 
 	// texture
-	AssetManager::load_texture("resources/textures/wood.png");
+	AssetManager::load_texture_x("resources/textures/wood.png");
 	AssetManager::load_texture("resources/textures/txt/texture_solide_white.txt");
 	AssetManager::load_texture("resources/textures/txt/texture_solide_gray.txt");
 	AssetManager::load_texture("resources/textures/txt/texture_gradua_red.txt");

@@ -1,4 +1,5 @@
 #include "textureloader.h"
+#include "stb_head.h"
 
 bool TextureGen::gen_texture_txt(const std::string& res, TextureGenType type, CColor color, uint depth, SourceType source_type) {
 	depth = CMath::clamp(depth, 1u, 10u);
@@ -133,3 +134,15 @@ SPTR_uchar TextureLoader::load_texture_png(const std::string& path, uint& data_s
 	
 	return t_data;
 }
+SPTR_uchar TextureLoader::load_texture_x(const std::string& path, int& width, int& heigh, int& channel) {
+	auto data = stbi_load(path.c_str(), &width, &heigh, &channel, 0);
+	auto data_size = width * heigh * channel;
+	if (data == nullptr || data_size == 0) { return nullptr; }
+	auto t_data = make_shared_array<uchar>(data_size + 1);
+	memcpy(t_data.get(), data, data_size);
+	stbi_image_free(data);
+	return t_data;
+}
+
+
+

@@ -65,9 +65,9 @@ void GameManager::init() {
 		// material
 		AssetManager::load_materials("resources/materials/txt/default_material.txt");
 		AssetManager::load_materials("resources/materials/txt/single_material.txt");
-		AssetManager::load_texture("resources/textures/txt/texture_default.txt");
-		AssetManager::load_texture("resources/textures/txt/texture_default.png");
-		AssetManager::load_texture("resources/textures/brickwall_d.png");
+		//AssetManager::load_texture("resources/textures/txt/texture_default.txt");
+		AssetManager::load_texture_x("resources/textures/texture_default.png");
+		AssetManager::load_texture_x("resources/textures/brickwall_d.jpg");
 
 		load_asset();						// 加载资源
 		
