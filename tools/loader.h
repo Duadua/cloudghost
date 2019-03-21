@@ -16,7 +16,7 @@
 #endif // !C_DEBUG -- 如果没有定义 c_debug 则 取消定义 c_debug_qt
 
 // custom set
-#define C_DEBUG_QT			// 是否使用 c_debug_qt 窗口
+//#define C_DEBUG_QT			// 是否使用 c_debug_qt 窗口
 
 #ifdef C_DEBUG_QT
 #define C_DEBUG
@@ -33,6 +33,7 @@ inline std::shared_ptr<T> make_shared_array(size_t size) { return std::shared_pt
 
 // files helper
 std::string get_suff_of_file(const std::string& path);
+std::string get_path_of_file(const std::string& path);
 std::string get_name_of_file(const std::string& path);
 void get_all_files_from_dir(std::string& path, std::vector<std::string>& res);
 

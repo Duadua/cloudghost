@@ -1,6 +1,7 @@
 #pragma once
 
 #include "loader.h"
+#include "materialloader.h"
 #include <string>
 #include <vector>
 
@@ -23,14 +24,14 @@ struct MVertex {
 	MVertex(CVector3D pos = CVector3D(), CVector3D norm = CVector3D(), CVector2D coord = CVector2D()) 
 	: position(pos), normal(norm), tex_coord(coord) {}
 
-	bool operator < (const MVertex& b) const { return position.x() < b.position.x(); }
-	bool operator ==(const MVertex& b) const { return (!((*this) < b) && !(b < (*this))); }
+	//bool operator < (const MVertex& b) const { return position.x() < b.position.x(); }
+	//bool operator ==(const MVertex& b) const { return (!((*this) < b) && !(b < (*this))); }
 };
 
 struct MeshData {
 	std::vector<MVertex> vertices;
 	std::vector<uint> indices;
-	std::string material;
+	MaterialData material;
 };
 
 class MeshTxtGen {

@@ -7,11 +7,23 @@
 
 std::string get_suff_of_file(const std::string& path) {
     uint t_idx = static_cast<uint>(path.find_last_of('.'));
+	if (t_idx >= path.size()) { return "nope"; }
 	return path.substr(t_idx);
 }
+std::string get_path_of_file(const std::string& path) {
+	std::string t_s; t_s.assign(path);
+	std::replace(t_s.begin(), t_s.end(), '\\', '/');
+    uint t_f = static_cast<uint>(t_s.find_last_of('/'));
+	if (t_f >= t_s.size()) { return ""; }
+	return t_s.substr(0, t_f);
+
+}
 std::string get_name_of_file(const std::string& path) {
-    uint t_f = static_cast<uint>(path.find_last_of('/'));
-	return path.substr(t_f + 1);
+	std::string t_s; t_s.assign(path);
+	std::replace(t_s.begin(), t_s.end(), '\\', '/');
+    uint t_f = static_cast<uint>(t_s.find_last_of('/'));
+	if (t_f >= t_s.size()) { return t_s; }
+	return t_s.substr(t_f + 1);
 }
 void get_all_files_from_dir(std::string& path, std::vector<std::string>& res) {
 	intptr_t h_file;

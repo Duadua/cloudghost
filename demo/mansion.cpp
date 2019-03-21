@@ -10,7 +10,7 @@ Mansion::Mansion() {
 	auto mc = CREATE_CLASS(MeshComponent);
 	mc->attach_to(rt);
 	mc->set_mesh("elf_mansion");
-	mc->set_rotation(-90.0f, 0.0f, 0.0f);
+	//mc->set_rotation(-90.0f, 0.0f, 0.0f);
 
 }
 

@@ -19,9 +19,8 @@ void MyGameManager::load_asset() {
 	// shader
 
 	// mesh
-	AssetManager::load_mesh_x("elf_mansion", "resources/models/obj/Elf_Mansion/Elf_Mansion.obj");
+	AssetManager::load_mesh_x("elf_mansion", "resources/models/obj/Elf_Mansion/Elf_Mansion.fbx");
 	AssetManager::load_mesh_x("street", "resources/models/obj/Street/Street_environment_V01.obj");
-	//std::string path = "resources/models/obj/Elf_Mansion/Elf_Mansion.obj";
 
 	// material
 	AssetManager::load_materials("resources/materials/txt/cube_material.txt"); 
@@ -53,7 +52,7 @@ void MyGameManager::begin_play() {
 	{
 		auto street = CREATE_CLASS(Street);
 		add_game_object("street", street);
-		street->get_root_component()->set_location(0.0f, 0.0f, -58.0f);
+		street->get_root_component()->set_location(0.0f, 0.0f, -60.0f);
 	}
 
 	// 生成 cylinder -- test rb3d

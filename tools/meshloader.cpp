@@ -433,7 +433,7 @@ void MeshTxtGen::write(std::ostream& out) {
 
 	// materials and indices
 	for (auto i : mesh_datas) {
-		if (i.material.compare("") != 0) { write_one_material(out, i.material); }
+		if (i.material.name.compare("") != 0) { write_one_material(out, i.material.name); }
 		for (uint j = 0; j < i.indices.size(); j += 3) {
 			write_one_face(out, i.indices[j + 0], i.indices[j + 1], i.indices[j + 2]);
 		}
@@ -563,7 +563,7 @@ bool MeshLoader::load_mesh_txt(const std::string& src, std::vector<MeshData>& md
 		else if (head.compare("use_mt") == 0) {
 			std::string t_mt; t_iss >> t_mt;
 			mds.push_back(MeshData());
-			mds.back().material = t_mt;
+			mds.back().material.name = t_mt;
 			mds.back().vertices.assign(vertices.begin(), vertices.end());
 		}
 
@@ -672,6 +672,8 @@ bool MeshLoader::load_mesh_x(const std::string& path, std::vector<MeshData>& mds
 	}
 	else { c_debug() << "[yep][mesh]load mesh success by assimp\n\t" + path; }
 
+	std::string s_path = get_path_of_file(path);			
+
 	// load mesh
 	std::queue<aiNode*> nodes;
 	nodes.push(scene->mRootNode);
@@ -715,8 +717,53 @@ bool MeshLoader::load_mesh_x(const std::string& path, std::vector<MeshData>& mds
 
 				// load materials
 				if (t_mesh->mMaterialIndex >= 0) {
-					auto t_mmt = scene->mMaterials[t_mesh->mMaterialIndex];
-											
+					auto t_mt = scene->mMaterials[t_mesh->mMaterialIndex];
+
+					aiString t_name;
+					aiGetMaterialString(t_mt, AI_MATKEY_NAME, &t_name);
+					md.material.name = t_name.C_Str();
+
+					aiColor4D t_ka(1.0f, 1.0f, 1.0f, 1.0f);
+					aiGetMaterialColor(t_mt, AI_MATKEY_COLOR_AMBIENT, &t_ka);
+					md.material.ka = CVector3D(static_cast<float>(t_ka.r), static_cast<float>(t_ka.g), static_cast<float>(t_ka.b));
+
+					aiColor4D t_kd(1.0f, 1.0f, 1.0f, 1.0f);
+					aiGetMaterialColor(t_mt, AI_MATKEY_COLOR_DIFFUSE, &t_kd);
+					md.material.kd = CVector3D(static_cast<float>(t_kd.r), static_cast<float>(t_kd.g), static_cast<float>(t_kd.b));
+
+					aiColor4D t_ks(1.0f, 1.0f, 1.0f, 1.0f);
+					aiGetMaterialColor(t_mt, AI_MATKEY_COLOR_SPECULAR, &t_ks);
+					md.material.ks = CVector3D(static_cast<float>(t_ks.r), static_cast<float>(t_ks.g), static_cast<float>(t_ks.b));
+
+					float t_sh;
+					aiGetMaterialFloat(t_mt, AI_MATKEY_SHININESS, &t_sh);
+					md.material.shininess = t_sh;
+
+					// load texture
+					{
+						int len = t_mt->GetTextureCount(aiTextureType_AMBIENT);
+						for (int j = 0; j < len; ++j) {
+							aiString t_txname;
+							t_mt->GetTexture(aiTextureType_AMBIENT, j, &t_txname);
+							md.material.map_ka = get_name_of_file(t_txname.C_Str());
+						}
+					}
+					{
+						int len = t_mt->GetTextureCount(aiTextureType_DIFFUSE);
+						for (int j = 0; j < len; ++j) {
+							aiString t_txname;
+							t_mt->GetTexture(aiTextureType_DIFFUSE, j, &t_txname);
+							md.material.map_kd = s_path + "/" + get_name_of_file(t_txname.C_Str());
+						}
+					}
+					{
+						int len = t_mt->GetTextureCount(aiTextureType_SPECULAR);
+						for (int j = 0; j < len; ++j) {
+							aiString t_txname;
+							t_mt->GetTexture(aiTextureType_SPECULAR, j, &t_txname);
+							md.material.map_ks = s_path + "/" + get_name_of_file(t_txname.C_Str());
+						}
+					}
 					
 				}
 				mds.push_back(md);

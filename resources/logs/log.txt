@@ -1,11 +1,201 @@
 # =========================
 	[debug]start
 # =========================
+	[asset][materials][load] already loaded material emerald
+# =========================
+	[asset][materials][load] already loaded material red_plastic
+# =========================
+	[asset][materials][load] already loaded material cyan_plastic
+# =========================
+	[asset][materials][load] already loaded material jade
+# =========================
 	[yep][mesh]load mesh success by assimp
-	resources/models/obj/Elf_Mansion/Elf_Mansion.obj
+	resources/models/obj/Elf_Mansion/Elf_Mansion.fbx
+# =========================
+	[asset][texture][load] already loaded texture mat10_c.jpg
+# =========================
+	[asset][texture][load] already loaded texture mat4_c.jpg
+# =========================
+	[asset][texture][load] already loaded texture mat4_c.jpg
+# =========================
+	[asset][texture][load] already loaded texture mat4_c.jpg
+# =========================
+	[asset][texture][load] already loaded texture mat10_c.jpg
+# =========================
+	[asset][texture][load] already loaded texture mat4_c.jpg
+# =========================
+	[asset][texture][load] already loaded texture mat4_c.jpg
+# =========================
+	[asset][texture][load] already loaded texture mat2_c.jpg
+# =========================
+	[asset][texture][load] already loaded texture mat13_c.jpg
+# =========================
+	[asset][texture][load] already loaded texture mat18_c.jpg
+# =========================
+	[asset][texture][load] already loaded texture mat26_c.jpg
+# =========================
+	[asset][texture][load] already loaded texture mat27_c.jpg
+# =========================
+	[asset][texture][load] already loaded texture mat31_c.jpg
+# =========================
+	[asset][texture][load] already loaded texture mat28_c.jpg
+# =========================
+	[asset][texture][load] already loaded texture mat28_c.jpg
+# =========================
+	[asset][texture][load] already loaded texture mat28_c.jpg
+# =========================
+	[asset][texture][load] already loaded texture mat28_c.jpg
+# =========================
+	[asset][texture][load] already loaded texture mat28_c.jpg
+# =========================
+	[asset][texture][load] already loaded texture mat28_c.jpg
+# =========================
+	[asset][texture][load] already loaded texture mat28_c.jpg
+# =========================
+	[asset][texture][load] already loaded texture mat3_c.jpg
+# =========================
+	[asset][texture][load] already loaded texture mat0_r.jpg
+# =========================
+	[asset][texture][load] already loaded texture mat3_c.jpg
+# =========================
+	[asset][texture][load] already loaded texture mat0_r.jpg
+# =========================
+	[asset][texture][load] already loaded texture mat3_c.jpg
+# =========================
+	[asset][texture][load] already loaded texture mat0_r.jpg
+# =========================
+	[asset][texture][load] already loaded texture mat16_c.jpg
+# =========================
+	[asset][texture][load] already loaded texture mat0_r.jpg
+# =========================
+	[asset][texture][load] already loaded texture mat16_c.jpg
+# =========================
+	[asset][texture][load] already loaded texture mat0_r.jpg
+# =========================
+	[asset][texture][load] already loaded texture mat16_c.jpg
+# =========================
+	[asset][texture][load] already loaded texture mat0_r.jpg
+# =========================
+	[asset][texture][load] already loaded texture mat3_c.jpg
+# =========================
+	[asset][texture][load] already loaded texture mat3_c.jpg
+# =========================
+	[asset][texture][load] already loaded texture mat3_c.jpg
+# =========================
+	[asset][texture][load] already loaded texture mat16_c.jpg
+# =========================
+	[asset][texture][load] already loaded texture mat0_r.jpg
+# =========================
+	[asset][texture][load] already loaded texture mat23_c.jpg
+# =========================
+	[asset][texture][load] already loaded texture mat20_c.jpg
+# =========================
+	[asset][texture][load] already loaded texture mat20_c.jpg
+# =========================
+	[asset][texture][load] already loaded texture mat22_c.jpg
+# =========================
+	[asset][texture][load] already loaded texture mat4_c.jpg
+# =========================
+	[asset][texture][load] already loaded texture mat0_r.jpg
+# =========================
+	[asset][texture][load] already loaded texture mat10_c.jpg
+# =========================
+	[asset][texture][load] already loaded texture mat10_c.jpg
 # =========================
 	[yep][mesh]load mesh success by assimp
 	resources/models/obj/Street/Street_environment_V01.obj
+# =========================
+	[warning][asset][texture]load texture failed called "building03_c.tga"
+# =========================
+	[warning][asset][texture]load texture failed called "Building_V02_C.png"
+# =========================
+	[warning][asset][texture]load texture failed called "building_016_c.tga"
+# =========================
+	[warning][asset][texture]load texture failed called "building_025_c.tga"
+# =========================
+	[warning][asset][texture]load texture failed called "building 01_c.tga"
+# =========================
+	[asset][texture][load] already loaded texture building_016_c.tga
+# =========================
+	[asset][texture][load] already loaded texture building_016_c.tga
+# =========================
+	[warning][asset][texture]load texture failed called "building 06_ c.tga"
+# =========================
+	[asset][texture][load] already loaded texture building03_c.tga
+# =========================
+	[asset][texture][load] already loaded texture building03_c.tga
+# =========================
+	[asset][texture][load] already loaded texture building 01_c.tga
+# =========================
+	[asset][texture][load] already loaded texture building 01_c.tga
+# =========================
+	[asset][texture][load] already loaded texture building 01_c.tga
+# =========================
+	[asset][texture][load] already loaded texture building 01_c.tga
+# =========================
+	[warning][asset][texture]load texture failed called "building05 _c.tga"
+# =========================
+	[asset][texture][load] already loaded texture building_016_c.tga
+# =========================
+	[asset][texture][load] already loaded texture building_016_c.tga
+# =========================
+	[asset][texture][load] already loaded texture building_025_c.tga
+# =========================
+	[asset][texture][load] already loaded texture building_025_c.tga
+# =========================
+	[asset][texture][load] already loaded texture building05 _c.tga
+# =========================
+	[asset][texture][load] already loaded texture building05 _c.tga
+# =========================
+	[warning][asset][texture]load texture failed called "Building_V01_C.png"
+# =========================
+	[asset][texture][load] already loaded texture Building_V01_C.png
+# =========================
+	[asset][texture][load] already loaded texture Building_V01_C.png
+# =========================
+	[asset][texture][load] already loaded texture Building_V01_C.png
+# =========================
+	[asset][texture][load] already loaded texture Building_V01_C.png
+# =========================
+	[asset][texture][load] already loaded texture building03_c.tga
+# =========================
+	[asset][texture][load] already loaded texture building03_c.tga
+# =========================
+	[asset][texture][load] already loaded texture building 06_ c.tga
+# =========================
+	[asset][texture][load] already loaded texture building 06_ c.tga
+# =========================
+	[asset][texture][load] already loaded texture building05 _c.tga
+# =========================
+	[asset][texture][load] already loaded texture building05 _c.tga
+# =========================
+	[asset][texture][load] already loaded texture Building_V01_C.png
+# =========================
+	[asset][texture][load] already loaded texture Building_V01_C.png
+# =========================
+	[asset][texture][load] already loaded texture building 06_ c.tga
+# =========================
+	[asset][texture][load] already loaded texture building 06_ c.tga
+# =========================
+	[asset][texture][load] already loaded texture building05 _c.tga
+# =========================
+	[asset][texture][load] already loaded texture building05 _c.tga
+# =========================
+	[asset][texture][load] already loaded texture building05 _c.tga
+# =========================
+	[asset][texture][load] already loaded texture building05 _c.tga
+# =========================
+	[asset][texture][load] already loaded texture Building_V01_C.png
+# =========================
+	[asset][texture][load] already loaded texture Building_V01_C.png
+# =========================
+	[asset][texture][load] already loaded texture Building_V01_C.png
+# =========================
+	[asset][texture][load] already loaded texture Building_V01_C.png
+# =========================
+	[asset][texture][load] already loaded texture Building_V02_C.png
+# =========================
+	[asset][texture][load] already loaded texture Building_V02_C.png
 # =========================
 	[warning][asset][shader]no shader calls ""
 # =========================

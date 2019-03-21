@@ -10,6 +10,8 @@ std::map<std::string, SPTR_Material> AssetManager::map_materials;
 std::map<std::string, SPTR_Texture2D> AssetManager::map_textures;
 
 SPTR_Shader AssetManager::load_shader(const std::string& key, const std::string& v_path, const std::string& f_path, const std::string& g_path, SourceType source_type) {
+	if (map_shaders.count(key)) { c_debug() << "[asset][shader][load] already loaded shader " + key; return nullptr; }
+
 	std::string v_code, f_code, g_code;
 	if (source_type == SourceType::BY_FILE) {
 		v_code = load_txt(v_path); 
@@ -53,6 +55,8 @@ bool AssetManager::clear_shaders() {
 }
 
 SPTR_Mesh AssetManager::load_mesh(const std::string& key, const std::string& src, SourceType source_type) {
+	if (map_meshs.count(key)) { c_debug() << "[asset][mesh][load] already loaded mesh " + key; return nullptr; }
+
 	std::vector<MeshData> t_md;
 	std::vector<std::string> t_mt_files;
 	bool res = false;
@@ -73,7 +77,7 @@ SPTR_Mesh AssetManager::load_mesh(const std::string& key, const std::string& src
 		for (auto i : t_md) {
 			auto t_rd = CREATE_CLASS(RenderData);
 			t_rd->init(i.vertices, i.indices);
-			t_rd->set_material_name(i.material);
+			t_rd->set_material_name(i.material.name);
 			map_meshs[key]->add_render_data(t_rd);
 		}
 	}
@@ -82,6 +86,8 @@ SPTR_Mesh AssetManager::load_mesh(const std::string& key, const std::string& src
 	return map_meshs[key];
 }
 SPTR_Mesh AssetManager::load_mesh_x(const std::string& key, const std::string& path) {
+	if (map_meshs.count(key)) { c_debug() << "[asset][mesh][load] already loaded mesh " + key; return nullptr; }
+
 	std::vector<MeshData> t_mds;
 	bool res = MeshLoader::load_mesh_x(path, t_mds);
 
@@ -90,7 +96,23 @@ SPTR_Mesh AssetManager::load_mesh_x(const std::string& key, const std::string& p
 		for (auto md : t_mds) {
 			auto t_rd = CREATE_CLASS(RenderData);
 			t_rd->init(md.vertices, md.indices);
-			//t_rd->set_material_name(md.material);
+			if (md.material.name.compare("") != 0) {
+				if (md.material.map_ka.compare("") != 0) { load_texture_x(md.material.map_ka); }
+				if (md.material.map_kd.compare("") != 0) { load_texture_x(md.material.map_kd); }
+				if (md.material.map_ks.compare("") != 0) { load_texture_x(md.material.map_ks); }
+
+				auto t_mt = CREATE_CLASS(Material);
+				t_mt->set_name(md.material.name);
+				t_mt->set_ka(md.material.ka);
+				t_mt->set_kd(md.material.kd);
+				t_mt->set_ks(md.material.ks);
+				t_mt->set_shininess(md.material.shininess);
+				t_mt->set_map_ka(get_name_of_file(md.material.map_ka));
+				t_mt->set_map_kd(get_name_of_file(md.material.map_kd));
+				t_mt->set_map_ks(get_name_of_file(md.material.map_ks));
+				map_materials[t_mt->get_name()] = t_mt;
+				t_rd->set_material_name(t_mt->get_name());
+			}
 			map_meshs[key]->add_render_data(t_rd);
 		}
 	}
@@ -132,6 +154,8 @@ bool AssetManager::load_materials(const std::string& src, SourceType source_type
 	}
 
 	for (auto i : t_mds) {
+		if (map_materials.count(i.name)) { c_debug() << "[asset][materials][load] already loaded material " + i.name; continue; }
+
 		auto t_md = CREATE_CLASS(Material);
 		t_md->set_name(i.name);
 		t_md->set_ka(i.ka);
@@ -156,6 +180,8 @@ SPTR_Material AssetManager::get_material(const std::string& key) {
 
 bool AssetManager::load_texture(const std::string& path, SourceType source_type) {
 	std::string t_name = get_name_of_file(path);			// 获得文件名
+	if (map_textures.count(t_name)) { c_debug() << "[asset][texture][load] already loaded texture " + t_name; return false; }
+
 	std::string t_suf = get_suff_of_file(path);				// 获得文件路径后缀
     uint width = 0, heigh = 0;
 	SPTR_uchar t_res = nullptr;
@@ -205,6 +231,8 @@ bool AssetManager::load_texture(const std::string& path, SourceType source_type)
 }
 bool AssetManager::load_texture_x(const std::string& path) {
 	std::string t_name = get_name_of_file(path);			// 获得文件名
+	if (map_textures.count(t_name)) { c_debug() << "[asset][texture][load] already loaded texture " + t_name; return false; }
+
 	std::string t_suf = get_suff_of_file(path);				// 获得文件路径后缀
     int width = 0, heigh = 0, channel = 0;
 	SPTR_uchar t_res = nullptr;
@@ -240,6 +268,7 @@ SPTR_Texture2D AssetManager::get_texture(const std::string& key) {
 		
 }
 SPTR_Texture2D AssetManager::gen_blank_texture(const std::string& key, uint width, uint heigh, uint internal_format, uint format, uint data_type) {
+	if (map_textures.count(key)) { c_debug() << "[asset][texture][gen] already gen texture " + key; return false; }
 	auto t_texture = CREATE_CLASS(Texture2D);
 	t_texture->set_name(key);
 	t_texture->gen(width, heigh, internal_format, format, data_type);
