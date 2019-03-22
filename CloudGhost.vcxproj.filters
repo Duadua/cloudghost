@@ -265,6 +265,9 @@
     <ClCompile Include="src\source\skeleton.cpp">
       <Filter>src\source\core\renders</Filter>
     </ClCompile>
+    <ClCompile Include="src\source\animsequence.cpp">
+      <Filter>src\source\core\renders</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <QtUic Include="resources\ui\qtdebugwidget.ui">
@@ -411,6 +414,9 @@
       <Filter>src\include\core\renders</Filter>
     </ClInclude>
     <ClInclude Include="src\include\skeleton.h">
+      <Filter>src\include\core\renders</Filter>
+    </ClInclude>
+    <ClInclude Include="src\include\animsequence.h">
       <Filter>src\include\core\renders</Filter>
     </ClInclude>
   </ItemGroup>
