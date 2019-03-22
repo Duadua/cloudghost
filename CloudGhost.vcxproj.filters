@@ -256,6 +256,9 @@
     <ClCompile Include="demo\street.cpp">
       <Filter>demo</Filter>
     </ClCompile>
+    <ClCompile Include="demo\riven.cpp">
+      <Filter>demo</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <QtUic Include="resources\ui\qtdebugwidget.ui">
@@ -393,6 +396,9 @@
       <Filter>demo</Filter>
     </ClInclude>
     <ClInclude Include="demo\street.h">
+      <Filter>demo</Filter>
+    </ClInclude>
+    <ClInclude Include="demo\riven.h">
       <Filter>demo</Filter>
     </ClInclude>
   </ItemGroup>

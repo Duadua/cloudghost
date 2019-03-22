@@ -30,6 +30,7 @@ public:
 	static SPTR_uchar load_texture_txt(const std::string& path, uint& width, uint& heigh, SourceType source_type = SourceType::BY_FILE);
 	static SPTR_uchar load_texture_png(const std::string& path, uint& data_size);
 	static SPTR_uchar load_texture_x(const std::string& path, int& width, int& heigh, int& channel);	// load by stb_img
+	static SPTR_uchar load_texture_dds(const std::string& path, int& width, int& heigh, int& channel);	// load dds file
 
 	~TextureLoader() {}
 private:

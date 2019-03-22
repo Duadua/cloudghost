@@ -251,9 +251,9 @@ bool AssetManager::load_texture_x(const std::string& path) {
     int width = 0, heigh = 0, channel = 0;
 	SPTR_uchar t_res = nullptr;
 
-	if (t_suf.compare("dds") == 0) { c_debug() << "cannot load texture dds by stbi " + path; return false; }
+	if (t_suf.compare(".dds") == 0) { t_res = TextureLoader::load_texture_dds(path, width, heigh, channel); }
+	else { t_res = TextureLoader::load_texture_x(path, width, heigh, channel); }
 	
-	t_res = TextureLoader::load_texture_x(path, width, heigh, channel);
 	if (t_res == nullptr) {
 		c_debug() << "[warning][asset][texture]load texture failed called \"" + path + "\"";
 		return false;

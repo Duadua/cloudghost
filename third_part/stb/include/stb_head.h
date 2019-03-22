@@ -5,6 +5,6 @@
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
 
-
-
+#include "stbi_DDS_aug.h"
+#include "stbi_DDS_aug_c.h"
 

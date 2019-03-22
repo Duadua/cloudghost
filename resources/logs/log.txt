@@ -7,6 +7,9 @@
 	[yep][mesh]load mesh success by assimp
 	resources/models/static/Street/Street_environment_V01.obj
 # =========================
+	[yep][mesh]load mesh success by assimp
+	resources/models/animation/Riven/Riven_idle.FBX
+# =========================
 	[warning][asset][shader]no shader calls ""
 # =========================
 	[warning][asset][material]no material calls ""

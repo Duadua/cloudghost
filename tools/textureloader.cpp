@@ -143,6 +143,14 @@ SPTR_uchar TextureLoader::load_texture_x(const std::string& path, int& width, in
 	stbi_image_free(data);
 	return t_data;
 }
-
+SPTR_uchar TextureLoader::load_texture_dds(const std::string& path, int& width, int& heigh, int& channel) {
+	auto data = stbi_dds_load(path.c_str(), &width, &heigh, &channel, 0);
+	auto data_size = width * heigh * channel;
+	if (data == nullptr || data_size == 0) { return nullptr; }
+	auto t_data = make_shared_array<uchar>(data_size + 1);
+	memcpy(t_data.get(), data, data_size);
+	stbi_image_free(data);
+	return t_data;
+}
 
 

@@ -9,6 +9,7 @@
 #include "sphereobject.h"
 #include "cylinderobject.h"
 
+#include "riven.h"
 #include "plane.h"
 #include "street.h"
 #include "mansion.h"
@@ -21,6 +22,7 @@ void MyGameManager::load_asset() {
 	// mesh
 	AssetManager::load_mesh_x("elf_mansion", "resources/models/static/Elf_Mansion/Elf_Mansion.fbx");
 	AssetManager::load_mesh_x("street", "resources/models/static/Street/Street_environment_V01.obj");
+	AssetManager::load_mesh_x("riven", "resources/models/animation/Riven/Riven_idle.FBX");
 
 	// material
 	AssetManager::load_materials("resources/materials/txt/cube_material.txt"); 
@@ -40,6 +42,15 @@ void MyGameManager::begin_play() {
 		add_game_object("plane", plane);
 		//plane->get_root_component()->set_scale(2.0f);
 		plane->set_material("brickwall");
+	}
+	
+	// add Riven
+	{
+		auto riven = CREATE_CLASS(Riven);
+		add_game_object("riven", riven);
+		riven->get_root_component()->set_location(5.0f, 0.0f, 0.0f);
+		riven->get_root_component()->set_rotation(0.0f, -90.0f, 0.0f);
+
 	}
 
 	// 添加 城堡 mesh

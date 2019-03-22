@@ -86,6 +86,7 @@ int main(int argc, char *argv[]) {
 		c_debug() << std::to_string(time_manager().cur_runtime_msconds());
 	}*/
 
+
 	MyGameManager gm;
 	CMainWindow cmw;
 	cmw.show();

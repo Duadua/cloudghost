@@ -135,6 +135,7 @@
     <ClCompile Include="demo\mansion.cpp" />
     <ClCompile Include="demo\mygamemanager.cpp" />
     <ClCompile Include="demo\plane.cpp" />
+    <ClCompile Include="demo\riven.cpp" />
     <ClCompile Include="demo\rotatecylinder.cpp" />
     <ClCompile Include="demo\street.cpp" />
     <ClCompile Include="math\source\ccolor.cpp" />
@@ -190,6 +191,7 @@
     <ClInclude Include="demo\mansion.h" />
     <ClInclude Include="demo\mygamemanager.h" />
     <ClInclude Include="demo\plane.h" />
+    <ClInclude Include="demo\riven.h" />
     <ClInclude Include="demo\rotatecylinder.h" />
     <ClInclude Include="demo\street.h" />
     <ClInclude Include="math\include\ccolor.h" />
