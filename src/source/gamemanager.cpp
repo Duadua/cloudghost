@@ -36,13 +36,13 @@ void GameManager::init() {
 	// load asset
 	{
 		// shader
-		AssetManager::load_shader("default", "resources/shaders/mvp.vert", "resources/shaders/blinn_phong.frag");
-		AssetManager::load_shader("depth", "resources/shaders/mvp.vert", "resources/shaders/depth.frag");
-		AssetManager::load_shader("solid_color", "resources/shaders/mvp.vert", "resources/shaders/solid_color.frag");
-		AssetManager::load_shader("single_texture", "resources/shaders/mvp.vert", "resources/shaders/single_texture.frag");
+		AssetManager::load_shader("default", "resources/shaders/mvp_anim.vert", "resources/shaders/blinn_phong.frag");
+		AssetManager::load_shader("depth", "resources/shaders/mvp_anim.vert", "resources/shaders/depth.frag");
+		AssetManager::load_shader("solid_color", "resources/shaders/mvp_anim.vert", "resources/shaders/solid_color.frag");
+		AssetManager::load_shader("single_texture", "resources/shaders/mvp_anim.vert", "resources/shaders/single_texture.frag");
 		AssetManager::load_shader("scene2d", "resources/shaders/scene2d.vert", "resources/shaders/single_texture.frag");
 		AssetManager::load_shader("pp", "resources/shaders/scene2d.vert", "resources/shaders/post_process.frag");
-		AssetManager::load_shader("pick", "resources/shaders/mvp.vert", "resources/shaders/pick.frag");
+		AssetManager::load_shader("pick", "resources/shaders/mvp_anim.vert", "resources/shaders/pick.frag");
 		AssetManager::load_shader("vr_mix", "resources/shaders/scene2d.vert", "resources/shaders/vr_mix.frag");
 
 		AssetManager::load_shader("shader_toy_img", "resources/shaders/scene2d.vert", "resources/shaders/shadertoy_img.frag");

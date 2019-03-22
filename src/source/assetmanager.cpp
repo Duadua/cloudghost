@@ -78,7 +78,11 @@ SPTR_Mesh AssetManager::load_mesh(const std::string& key, const std::string& src
 		
 		for (auto i : t_md) {
 			auto t_rd = CREATE_CLASS(RenderData);
-			t_rd->init(i.vertices, i.indices);
+			std::vector<CVertex> t_v;
+			for (auto j = 0; j < i.vertices.size(); ++j) {
+				t_v.push_back(CVertex(i.vertices[j].position, i.vertices[j].normal, i.vertices[j].tex_coord));
+			}
+			t_rd->init(t_v, i.indices);
 			t_rd->set_material_name(i.material.name);
 			map_meshs[key]->add_render_data(t_rd);
 		}
@@ -98,7 +102,11 @@ SPTR_Mesh AssetManager::load_mesh_x(const std::string& key, const std::string& p
 	if (res) {
 		for (auto md : t_mds) {
 			auto t_rd = CREATE_CLASS(RenderData);
-			t_rd->init(md.vertices, md.indices);
+			std::vector<CVertex> t_v;
+			for (auto j = 0; j < md.vertices.size(); ++j) {
+				t_v.push_back(CVertex(md.vertices[j].position, md.vertices[j].normal, md.vertices[j].tex_coord));
+			}
+			t_rd->init(t_v, md.indices);
 			if (md.material.name.compare("") != 0) {
 				if (md.material.map_ka.compare("") != 0) { load_texture_x(md.material.map_ka); }
 				if (md.material.map_kd.compare("") != 0) { load_texture_x(md.material.map_kd); }

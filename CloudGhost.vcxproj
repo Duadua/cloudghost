@@ -240,6 +240,7 @@
     <None Include="resources\shaders\blinn_phong.frag" />
     <None Include="resources\shaders\depth.frag" />
     <None Include="resources\shaders\mvp.vert" />
+    <None Include="resources\shaders\mvp_anim.vert" />
     <None Include="resources\shaders\pick.frag" />
     <None Include="resources\shaders\post_process.frag" />
     <None Include="resources\shaders\scene2d.vert" />
