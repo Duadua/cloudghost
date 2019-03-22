@@ -154,6 +154,7 @@ void MyGameManager::begin_play() {
 	// use direct light
 	{
 		auto d_light = CREATE_CLASS(DirectLightObject);
+		d_light->get_light_component()->set_intensity(2.0f);
         d_light->use(main_shader->get_name());
 	}
 

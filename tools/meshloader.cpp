@@ -664,7 +664,7 @@ bool MeshLoader::load_mesh_obj(const std::string& src, std::vector<MeshData>& md
 
 bool MeshLoader::load_mesh_x(const std::string& path, std::vector<MeshData>& mds) {
 	Assimp::Importer import;
-	auto scene = import.ReadFile(path, aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_CalcTangentSpace);
+	auto scene = import.ReadFile(path, aiProcess_ForceGenNormals | aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_CalcTangentSpace);
 
 	if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode) {
 		c_debug() << "[error][mesh]load mesh fail by assimp\n\t" + std::string(import.GetErrorString());

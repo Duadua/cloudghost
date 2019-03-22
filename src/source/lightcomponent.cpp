@@ -7,7 +7,7 @@ LightComponent::LightComponent() {
 
 	color = CVector3D(1.0f);								// default color
 	intensity = 1.0f;										// default intensity
-	k = CVector3D(1.0f);
+	k = CVector3D(0.2f, 0.6f, 0.2f);
 }
 
 CVector3D LightComponent::get_dirction() {
@@ -34,7 +34,9 @@ int DirectLightComponent::direct_light_num = 0;
 
 DirectLightComponent::DirectLightComponent() {
 	rotation = CVector3D(-46.0f, 0.0f, 0.0f);		// 初始方向
-	k = CVector3D(1.0f, 1.0f, 1.0f);
+	//k = CVector3D(1.0f, 1.0f, 1.0f);
+	k = CVector3D(0.2f, 0.6f, 0.2f);
+
 }
 
 bool DirectLightComponent::use(const std::string& shader) {
