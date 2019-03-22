@@ -195,8 +195,8 @@ SPTR_SkeletalMesh AssetManager::load_mesh_skeletal(const std::string& key, const
 				CVertexBone t_vb;
 				for (auto k = 0; k < std::min(bone_num_per_vertex, m_bone_num_per_vertex); ++k) {
 					t_vb.add(md.bones[j].ids[k], md.bones[j].weights[k]);
-					t_vbs.push_back(t_vb);
 				}
+				t_vbs.push_back(t_vb);
 			}
 			auto t_rd = CREATE_CLASS(RenderData);
 			t_rd->init_with_bone(t_vs, md.indices, t_vbs);

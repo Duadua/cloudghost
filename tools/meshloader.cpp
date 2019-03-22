@@ -838,7 +838,6 @@ bool MeshLoader::load_mesh_skeletal(const std::string& path, std::vector<Skeleta
 			skeleton.add_node(t_sn);
 
 			for (uint i = 0; i < t_node->mNumChildren; ++i) {
-
 				nodes.push(t_node->mChildren[i]);
 				ids.push(static_cast<int>(skeleton.nodes.size()) - 1);
 			}
@@ -941,12 +940,23 @@ bool MeshLoader::load_mesh_skeletal(const std::string& path, std::vector<Skeleta
 				}
 
 				// load bones
+				md.bones.resize(md.vertices.size());					// 预分配顶点骨骼数据为顶点数据大小
 				for (uint j = 0; j < t_mesh->mNumBones; ++j) {
 					auto t_bone = t_mesh->mBones[j];
 
+					// load skeleton's bones
 					std::string t_bname = t_bone->mName.data;
 					MBone t_b; t_b.mat_offset = aimat_to_cmat(t_bone->mOffsetMatrix);
 					skeleton.add_bone(t_b, t_bname);
+
+					// load md's bones
+					uint t_id = skeleton.get_node(t_bname).bone_id;		// 当前骨骼节点的下标
+					if (t_id == -1) { continue; }
+					for (uint k = 0; k < t_bone->mNumWeights; ++k) {
+						uint v_id = t_bone->mWeights[k].mVertexId;
+						float t_w = t_bone->mWeights[k].mWeight;
+						md.bones[v_id].add(t_id, t_w);
+					}
 				}
 
 				mds.push_back(md);

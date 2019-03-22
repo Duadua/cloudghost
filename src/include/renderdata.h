@@ -63,10 +63,7 @@ public:
 
 	void smooth(std::vector<CVertex>& res_v, const std::vector<CVertex>& v, const std::vector<uint>& v_i);
 	
-
 	static RenderDataReprocess* get_instance();
-
-
 
 private:
 	RenderDataReprocess() {}
