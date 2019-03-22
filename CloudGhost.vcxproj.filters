@@ -259,6 +259,12 @@
     <ClCompile Include="demo\riven.cpp">
       <Filter>demo</Filter>
     </ClCompile>
+    <ClCompile Include="src\source\skeletalmesh.cpp">
+      <Filter>src\source\core\renders</Filter>
+    </ClCompile>
+    <ClCompile Include="src\source\skeleton.cpp">
+      <Filter>src\source\core\renders</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <QtUic Include="resources\ui\qtdebugwidget.ui">
@@ -400,6 +406,12 @@
     </ClInclude>
     <ClInclude Include="demo\riven.h">
       <Filter>demo</Filter>
+    </ClInclude>
+    <ClInclude Include="src\include\skeletalmesh.h">
+      <Filter>src\include\core\renders</Filter>
+    </ClInclude>
+    <ClInclude Include="src\include\skeleton.h">
+      <Filter>src\include\core\renders</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

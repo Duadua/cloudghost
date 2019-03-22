@@ -2,9 +2,10 @@
 #include <GL/glew.h>
 
 #include "renderdata.h"
-#include <set>
 
 #include <GLFW/glfw3.h>
+
+#include <set>
 
 CVertexBone::CVertexBone() { for (int i = 0; i < bone_num_per_vertex; ++i) { ids[i] = 0; weights[i] = 0.0f; } }
 
@@ -19,7 +20,7 @@ CVertexBone& CVertexBone::add(uint id, float weight) {
 
 IMPLEMENT_CLASS(RenderData)
 
-RenderData::RenderData() : vao(0), vbo(0), ebo(0) {
+RenderData::RenderData() : vao(0), vbo(0), ebo(0), vbo_bone(0), has_bone(false) {
 	material_name = "default";		// default material
 }
 RenderData::~RenderData() {
@@ -67,8 +68,7 @@ void RenderData::init(const std::vector<CVertex>& v, const std::vector<uint>& i)
 void RenderData::init_with_bone(const std::vector<CVertex>& v, const std::vector<uint>& i, const std::vector<CVertexBone>& vb) {
 	vertices = v;
 	indices = i;
-	bones = vb;
-	has_bone = true;
+	if (vb.size() > 0) { bones = vb; has_bone = true; }
 
 	// 初始化 vbo
 	glGenBuffers(1, &vbo);
@@ -76,10 +76,12 @@ void RenderData::init_with_bone(const std::vector<CVertex>& v, const std::vector
     glBufferData(GL_ARRAY_BUFFER, static_cast<GLsizeiptr>(vertices.size() * sizeof(CVertex)), &vertices[0], GL_STATIC_DRAW);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 
-	glGenBuffers(1, &vbo_bone);
-	glBindBuffer(GL_ARRAY_BUFFER, vbo_bone);
-    glBufferData(GL_ARRAY_BUFFER, static_cast<GLsizeiptr>(bones.size() * sizeof(CVertexBone)), &bones[0], GL_STATIC_DRAW);
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	if (has_bone) {
+		glGenBuffers(1, &vbo_bone);
+		glBindBuffer(GL_ARRAY_BUFFER, vbo_bone);
+		glBufferData(GL_ARRAY_BUFFER, static_cast<GLsizeiptr>(bones.size() * sizeof(CVertexBone)), &bones[0], GL_STATIC_DRAW);
+		glBindBuffer(GL_ARRAY_BUFFER, 0);
+	}
 
 	// 初始化 ebo
 	if (indices.size() > 0) {
@@ -102,11 +104,13 @@ void RenderData::init_with_bone(const std::vector<CVertex>& v, const std::vector
     glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(CVertex), reinterpret_cast<void*>(offsetof(CVertex, tex_coord)));
 	glEnableVertexAttribArray(2);
 
-	glBindBuffer(GL_ARRAY_BUFFER, vbo_bone);
-    glVertexAttribIPointer(5, 4, GL_INT, sizeof(CVertexBone), reinterpret_cast<void*>(0));
-	glEnableVertexAttribArray(6);
-    glVertexAttribPointer(5, 4, GL_INT, GL_FALSE, sizeof(CVertexBone), reinterpret_cast<void*>(offsetof(CVertexBone, weights)));
-	glEnableVertexAttribArray(6);
+	if (has_bone) {
+		glBindBuffer(GL_ARRAY_BUFFER, vbo_bone);
+		glVertexAttribIPointer(5, 4, GL_INT, sizeof(CVertexBone), reinterpret_cast<void*>(0));
+		glEnableVertexAttribArray(6);
+		glVertexAttribPointer(5, 4, GL_INT, GL_FALSE, sizeof(CVertexBone), reinterpret_cast<void*>(offsetof(CVertexBone, weights)));
+		glEnableVertexAttribArray(6);
+	}
 
 	glBindVertexArray(0);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);

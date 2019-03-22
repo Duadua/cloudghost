@@ -6,6 +6,8 @@
 
 std::map<std::string, SPTR_Shader> AssetManager::map_shaders;
 std::map<std::string, SPTR_Mesh> AssetManager::map_meshs;
+std::map<std::string, SPTR_SkeletalMesh> AssetManager::map_skeletalmeshs;
+std::map<std::string, SPTR_Skeleton> AssetManager::map_skeletons;
 std::map<std::string, SPTR_Material> AssetManager::map_materials;
 std::map<std::string, SPTR_Texture2D> AssetManager::map_textures;
 
@@ -134,7 +136,7 @@ SPTR_Mesh AssetManager::load_mesh_x(const std::string& key, const std::string& p
 SPTR_Mesh AssetManager::get_mesh_o(const std::string& key) {
 	if (!map_meshs.count(key)) {
 		c_debug() << "[warning][asset][mesh]no mesh calls \"" + key + "\"";
-		return map_meshs[key] = nullptr;
+		return nullptr;
 	}
 	return map_meshs[key];
 }
@@ -144,9 +146,115 @@ SPTR_Mesh AssetManager::get_mesh(const std::string& key) {
 		return nullptr;
 	}
 	auto t_mi = CREATE_CLASS(Mesh);
-	if (t_mi) {
-		t_mi->copy_from(map_meshs[key]);
+	if (t_mi) { t_mi->copy_from(map_meshs[key]); }
+	return t_mi;
+}
+
+SPTR_SkeletalMesh AssetManager::load_mesh_skeletal(const std::string& key, const std::string& path) {
+	// if (map_skeletalmeshs.count(key)) { c_debug() << "[asset][skeletal_mesh][load] already loaded skeletal_mesh " + key; return nullptr; }
+	if (map_skeletalmeshs.count(key)) { return nullptr; }
+
+	std::vector<SkeletalMeshData> t_mds;
+	MSkeleton t_skeleton;
+	bool res = MeshLoader::load_mesh_skeletal(path, t_mds, t_skeleton);
+
+	map_skeletalmeshs[key] = CREATE_CLASS(SkeletalMesh);
+	if (res) {
+		// load skeleton
+		auto t_sk = CREATE_CLASS(Skeleton);
+		t_sk->set_name(key);
+		std::vector<SkeletonNode> t_nodes;
+		for (auto t_n : t_skeleton.nodes) {
+			SkeletonNode t_sn;
+			t_sn.name = t_n.name;
+			t_sn.id = t_n.id;
+			t_sn.father = t_n.father;
+			t_sn.children.clear(); t_sn.children.assign(t_n.children.begin(), t_n.children.end());
+			t_sn.bone_id = t_n.bone_id;
+			t_nodes.push_back(t_sn);
+		}
+		std::vector<Bone> t_bones;
+		for (auto t_b : t_skeleton.bones) {
+			Bone t_bb;
+			t_bb.mat_offset = t_b.mat_offset;
+			t_bb.mat_finall = t_b.mat_finall;
+			t_bones.push_back(t_bb);
+		}
+		t_sk->init(t_skeleton.root_node, t_skeleton.map_nodes, t_nodes, t_bones);
+		map_skeletons[key] = t_sk;
+		// load skeleta mesh
+		map_skeletalmeshs[key]->set_skeleton(t_sk);
+		
+		for (auto md : t_mds) {
+			std::vector<CVertex> t_vs;
+			for (auto j = 0; j < md.vertices.size(); ++j) {
+				t_vs.push_back(CVertex(md.vertices[j].position, md.vertices[j].normal, md.vertices[j].tex_coord));
+			}
+			std::vector<CVertexBone> t_vbs;
+			for (auto j = 0; j < md.bones.size(); ++j) {
+				CVertexBone t_vb;
+				for (auto k = 0; k < std::min(bone_num_per_vertex, m_bone_num_per_vertex); ++k) {
+					t_vb.add(md.bones[j].ids[k], md.bones[j].weights[k]);
+					t_vbs.push_back(t_vb);
+				}
+			}
+			auto t_rd = CREATE_CLASS(RenderData);
+			t_rd->init_with_bone(t_vs, md.indices, t_vbs);
+			if (md.material.name.compare("") != 0) {
+				if (md.material.map_ka.compare("") != 0) { load_texture_x(md.material.map_ka); }
+				if (md.material.map_kd.compare("") != 0) { load_texture_x(md.material.map_kd); }
+				if (md.material.map_ks.compare("") != 0) { load_texture_x(md.material.map_ks); }
+
+				auto t_mt = CREATE_CLASS(Material);
+				t_mt->set_name(md.material.name);
+				t_mt->set_ka(md.material.ka);
+				t_mt->set_kd(md.material.kd);
+				t_mt->set_ks(md.material.ks);
+				t_mt->set_shininess(md.material.shininess);
+				t_mt->set_map_ka(get_name_of_file(md.material.map_ka));
+				t_mt->set_map_kd(get_name_of_file(md.material.map_kd));
+				t_mt->set_map_ks(get_name_of_file(md.material.map_ks));
+				map_materials[t_mt->get_name()] = t_mt;
+				t_rd->set_material_name(t_mt->get_name());
+			}
+			map_skeletalmeshs[key]->add_render_data(t_rd);
+		}
 	}
+	else { c_debug() << "[warning][asset][skeletal_mesh]load skeletal_mesh failed called \"" + key + "\""; }
+
+	return map_skeletalmeshs[key];
+}
+SPTR_SkeletalMesh AssetManager::get_mesh_skeletal_o(const std::string& key) {
+	if (!map_skeletalmeshs.count(key)) {
+		c_debug() << "[warning][asset][skeletal_mesh]no skeletal_mesh calls \"" + key + "\"";
+		return nullptr;
+	}
+	return map_skeletalmeshs[key];
+}
+SPTR_SkeletalMesh AssetManager::get_mesh_skeletal(const std::string& key) {
+	if (!map_skeletalmeshs.count(key)) {
+		c_debug() << "[warning][asset][skeletal_mesh]no skeletal_mesh calls \"" + key + "\"";
+		return nullptr;
+	}
+	auto t_mi = CREATE_CLASS(SkeletalMesh);
+	if (t_mi) { t_mi->copy_from(map_skeletalmeshs[key]); }
+	return t_mi;
+}
+
+SPTR_Skeleton AssetManager::get_skeleton_o(const std::string& key) {
+	if (!map_skeletons.count(key)) {
+		c_debug() << "[warning][asset][skeleton]no skeleton calls \"" + key + "\"";
+		return nullptr;
+	}
+	return map_skeletons[key];
+}
+SPTR_Skeleton AssetManager::get_skeleton(const std::string& key) {
+	if (!map_skeletons.count(key)) {
+		c_debug() << "[warning][asset][skeleton]no skeleton calls \"" + key + "\"";
+		return nullptr;
+	}
+	auto t_mi = CREATE_CLASS(Skeleton);
+	if (t_mi) { t_mi->copy_from(map_skeletons[key]); }
 	return t_mi;
 }
 

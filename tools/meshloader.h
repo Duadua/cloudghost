@@ -2,6 +2,8 @@
 
 #include "loader.h"
 #include "materialloader.h"
+#include <map>
+#include <cassert>
 #include <string>
 #include <vector>
 
@@ -31,6 +33,80 @@ struct MeshData {
 	std::vector<uint> indices;
 	MaterialData material;
 };
+
+// ===============================================================================================
+// skeleton mesh loader data
+const int m_bone_num_per_vertex = 4;
+struct MVertexBone {
+	uint ids[m_bone_num_per_vertex];
+	float weights[m_bone_num_per_vertex];
+	MVertexBone();
+	MVertexBone& add(uint id, float weigtht);
+};
+struct SkeletalMeshData {
+	std::vector<MVertex> vertices;
+	std::vector<uint> indices;
+	MaterialData material;
+	std::vector<MVertexBone> bones;
+};
+
+struct MBone {
+	CMatrix4x4 mat_offset;
+	CMatrix4x4 mat_finall;
+	MBone() { mat_offset = CMatrix4x4(); mat_finall = CMatrix4x4(); }
+};
+struct MSkeletonNode {
+	std::string name;
+	int id;
+	int father;
+	std::vector<int> children;
+
+	int bone_id;					// if -1 then no bone
+
+	MSkeletonNode() {}
+	MSkeletonNode(const std::string& n, int f = -1, int i = -1, int b = -1)
+		: name(n), id(i), father(f), bone_id(b) {
+		children.clear();
+	}
+	MSkeletonNode& add_children(int i) { children.push_back(i); return (*this); }
+};	// 单个骨骼层次节点
+struct MSkeleton {
+	int root_node;
+	std::map<std::string, int> map_nodes;			// 节点名称到节点下标的映射
+	std::vector<MSkeletonNode> nodes;				// 所有的节点序列 -- 每个节点有其孩子和父亲的下标信息 -- 形成树
+
+	std::vector<MBone> bones;						// 所有的真正的骨骼节点信息 -- 与层次节点一对一，但是并非所有的层次节点都有骨骼
+
+	MSkeleton() { clear(); }
+	void clear() { root_node = -1; map_nodes.clear(); nodes.clear(); bones.clear(); }
+
+	MSkeletonNode& get_node(const std::string& name) {
+		assert(map_nodes.count(name));
+		return nodes[map_nodes[name]];
+	}
+	MSkeleton& add_node(const MSkeletonNode& node) {
+		if (map_nodes.count(node.name)) { return (*this); }
+		int t_id = static_cast<int>(nodes.size());
+		if (node.father == -1 && root_node == -1) root_node = t_id;
+
+		map_nodes[node.name] = t_id;
+		nodes.push_back(node);
+		nodes.back().id = t_id;
+		if (node.father >= 0 && node.father < t_id) { nodes[node.father].add_children(t_id); }
+		return (*this);
+	}
+
+	MSkeleton& add_bone(const MBone& bone, std::string name) {
+		if (!map_nodes.count(name)) { return (*this); }
+		int t_id = static_cast<int>(bones.size());
+		get_node(name).bone_id = t_id;
+		bones.push_back(bone);
+		return (*this);
+	}
+
+};	// 骨骼层次树
+
+// ===============================================================================================
 
 class MeshTxtGen {
 public:
@@ -84,6 +160,7 @@ public:
 
 	// load mesh by assimp
 	static bool load_mesh_x(const std::string& path, std::vector<MeshData>& mds);
+	static bool load_mesh_skeletal(const std::string& path, std::vector<SkeletalMeshData>& mds, MSkeleton& skeleton);
 
 	~MeshLoader(){}
 

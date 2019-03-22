@@ -18,9 +18,9 @@ public:
 	Mesh();
 	Mesh(const Mesh& b);
 	void copy_from(const SPTR_Mesh b);
-	~Mesh();
+	virtual ~Mesh();
 
-	void draw(const std::string& shader);
+	virtual void draw(const std::string& shader);
 
 	void add_render_data(SPTR_RenderData rd);
 
@@ -28,7 +28,7 @@ public:
 
 	RenderDataInstance& render_data(uint id);
 
-private:
+protected:
 
 	bool use_default_mt;
 

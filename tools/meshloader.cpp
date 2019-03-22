@@ -511,6 +511,32 @@ void MeshTxtGen::cac_normal() {
 
 // ===============================================================================================
 
+MVertexBone::MVertexBone() { for (int i = 0; i < m_bone_num_per_vertex; ++i) { ids[i] = 0; weights[i] = 0.0f; } }
+MVertexBone& MVertexBone::add(uint id, float weight) {
+	for (int i = 0; i < m_bone_num_per_vertex; ++i) {
+		if (CMath::fcmp(weights[i], 0.0f) == 0) { ids[i] = id; weights[i] = weight; break; }
+	}
+	return (*this);
+}
+
+CMatrix4x4 aimat_to_cmat(aiMatrix4x4 m) {
+	return CMatrix4x4(
+		m.a1, m.b1, m.c1, m.d1,
+		m.a2, m.b2, m.c2, m.d2,
+		m.a3, m.b3, m.c3, m.d3,
+		m.a4, m.b4, m.c4, m.d4);
+}
+CMatrix4x4 aimat_to_cmat(aiMatrix3x3 m) {
+	return CMatrix4x4(
+		m.a1, m.b1, m.c1, 0.0f,
+		m.a2, m.b2, m.c2, 0.0f,
+		m.a3, m.b3, m.c3, 0.0f,
+		0.0f, 0.0f, 0.0f, 1.0f);
+}
+
+// ======================================================================
+
+
 bool MeshLoader::load_mesh_txt(const std::string& src, std::vector<MeshData>& mds, std::vector<std::string>& mt_files, SourceType source_type) {
 
 	// 打开文件
@@ -673,13 +699,13 @@ bool MeshLoader::load_mesh_x(const std::string& path, std::vector<MeshData>& mds
 	else { c_debug() << "[yep][mesh]load mesh success by assimp\n\t" + path; }
 
 	std::string s_path = get_path_of_file(path);			
+	mds.clear();
 
 	// load mesh
 	std::queue<aiNode*> nodes;
 	nodes.push(scene->mRootNode);
 	while (!nodes.empty()) {
 		auto t_node = nodes.front(); nodes.pop();
-
 		// load cur node's md
 		for (uint i = 0; i < t_node->mNumMeshes; ++i) {
 			auto t_mesh = scene->mMeshes[t_node->mMeshes[i]];
@@ -769,6 +795,160 @@ bool MeshLoader::load_mesh_x(const std::string& path, std::vector<MeshData>& mds
 					}
 					
 				}
+
+				mds.push_back(md);
+			}
+		}
+
+		// push child node to queue
+		for (uint i = 0; i < t_node->mNumChildren; ++i) { nodes.push(t_node->mChildren[i]); }
+
+	}
+
+	return true;
+}
+
+bool MeshLoader::load_mesh_skeletal(const std::string& path, std::vector<SkeletalMeshData>& mds, MSkeleton& skeleton) {
+	Assimp::Importer import;
+	auto scene = import.ReadFile(path, aiProcess_ForceGenNormals | aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_CalcTangentSpace);
+
+	if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode) {
+		c_debug() << "[error][skeletal_mesh]load skeletal_mesh fail by assimp\n\t" + std::string(import.GetErrorString());
+		return false;
+	}
+	else { c_debug() << "[yep][skeletal_mesh]load skeletal_mesh success by assimp\n\t" + path; }
+
+	std::string s_path = get_path_of_file(path);
+	mds.clear();
+	skeleton.clear();
+
+	// pre gen skeleton
+	{
+		std::queue<aiNode*> nodes;
+		std::queue<int> ids;
+
+		nodes.push(scene->mRootNode);
+		ids.push(-1);		// 第一个是 root 节点
+
+		while (!nodes.empty() && !ids.empty()) {
+			auto t_node = nodes.front(); nodes.pop();
+			int t_id = ids.front(); ids.pop();
+
+			MSkeletonNode t_sn(t_node->mName.data, t_id);
+			skeleton.add_node(t_sn);
+
+			for (uint i = 0; i < t_node->mNumChildren; ++i) {
+
+				nodes.push(t_node->mChildren[i]);
+				ids.push(static_cast<int>(skeleton.nodes.size()) - 1);
+			}
+		}
+	}
+
+	// load mesh
+	std::queue<aiNode*> nodes;
+	nodes.push(scene->mRootNode);
+	while (!nodes.empty()) {
+		auto t_node = nodes.front(); nodes.pop();
+		// load cur node's md
+		for (uint i = 0; i < t_node->mNumMeshes; ++i) {
+			auto t_mesh = scene->mMeshes[t_node->mMeshes[i]];
+			// load one md;
+			{
+				SkeletalMeshData md;
+
+				// load vertice
+				for (uint j = 0; j < t_mesh->mNumVertices; ++j) {
+					MVertex t_v;
+
+					auto t_mv = t_mesh->mVertices[j];
+					t_v.position = CVector3D(t_mv.x, t_mv.y, t_mv.z);
+
+					if (t_mesh->mTextureCoords[0] != nullptr) {
+						auto t_mt = t_mesh->mTextureCoords[0][j];
+						t_v.tex_coord = CVector2D(t_mt.x, t_mt.y);
+					}
+
+					if (t_mesh->mNormals != nullptr) {
+						auto t_mn = t_mesh->mNormals[j];
+						t_v.normal = CVector3D(t_mn.x, t_mn.y, t_mn.z);
+					}
+
+					md.vertices.push_back(t_v);
+				}
+
+				// load indices
+				for (uint j = 0; j < t_mesh->mNumFaces; ++j) {
+					auto t_face = t_mesh->mFaces[j];
+					for (uint k = 0; k < t_face.mNumIndices; ++k) {
+						md.indices.push_back(t_face.mIndices[k]);
+					}
+				}
+
+				// load materials
+				if (t_mesh->mMaterialIndex >= 0) {
+					auto t_mt = scene->mMaterials[t_mesh->mMaterialIndex];
+
+					aiString t_name;
+					aiGetMaterialString(t_mt, AI_MATKEY_NAME, &t_name);
+					md.material.name = t_name.C_Str();
+
+					aiColor4D t_ka(1.0f, 1.0f, 1.0f, 1.0f);
+					aiGetMaterialColor(t_mt, AI_MATKEY_COLOR_AMBIENT, &t_ka);
+					md.material.ka = CVector3D(static_cast<float>(t_ka.r), static_cast<float>(t_ka.g), static_cast<float>(t_ka.b));
+
+					aiColor4D t_kd(1.0f, 1.0f, 1.0f, 1.0f);
+					aiGetMaterialColor(t_mt, AI_MATKEY_COLOR_DIFFUSE, &t_kd);
+					md.material.kd = CVector3D(static_cast<float>(t_kd.r), static_cast<float>(t_kd.g), static_cast<float>(t_kd.b));
+
+					aiColor4D t_ks(1.0f, 1.0f, 1.0f, 1.0f);
+					aiGetMaterialColor(t_mt, AI_MATKEY_COLOR_SPECULAR, &t_ks);
+					md.material.ks = CVector3D(static_cast<float>(t_ks.r), static_cast<float>(t_ks.g), static_cast<float>(t_ks.b));
+
+					float t_sh;
+					aiGetMaterialFloat(t_mt, AI_MATKEY_SHININESS, &t_sh);
+					md.material.shininess = t_sh;
+
+					// load texture
+					{
+						int len = t_mt->GetTextureCount(aiTextureType_AMBIENT);
+						if (len > 1) len = 1;		// 临时
+						for (int j = 0; j < len; ++j) {
+							aiString t_txname;
+							t_mt->GetTexture(aiTextureType_AMBIENT, j, &t_txname);
+							md.material.map_ka = s_path + "/" + get_name_of_file(t_txname.C_Str());
+						}
+					}
+					{
+						int len = t_mt->GetTextureCount(aiTextureType_DIFFUSE);
+						if (len > 1) len = 1;		// 临时
+						for (int j = 0; j < len; ++j) {
+							aiString t_txname;
+							t_mt->GetTexture(aiTextureType_DIFFUSE, j, &t_txname);
+							md.material.map_kd = s_path + "/" + get_name_of_file(t_txname.C_Str());
+						}
+					}
+					{
+						int len = t_mt->GetTextureCount(aiTextureType_SPECULAR);
+						if (len > 1) len = 1;		// 临时
+						for (int j = 0; j < len; ++j) {
+							aiString t_txname;
+							t_mt->GetTexture(aiTextureType_SPECULAR, j, &t_txname);
+							md.material.map_ks = s_path + "/" + get_name_of_file(t_txname.C_Str());
+						}
+					}
+
+				}
+
+				// load bones
+				for (uint j = 0; j < t_mesh->mNumBones; ++j) {
+					auto t_bone = t_mesh->mBones[j];
+
+					std::string t_bname = t_bone->mName.data;
+					MBone t_b; t_b.mat_offset = aimat_to_cmat(t_bone->mOffsetMatrix);
+					skeleton.add_bone(t_b, t_bname);
+				}
+
 				mds.push_back(md);
 			}
 		}
