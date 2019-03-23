@@ -156,7 +156,8 @@ SPTR_SkeletalMesh AssetManager::load_mesh_skeletal(const std::string& key, const
 
 	std::vector<SkeletalMeshData> t_mds;
 	MSkeleton t_skeleton;
-	bool res = MeshLoader::load_mesh_skeletal(path, t_mds, t_skeleton);
+	std::vector<AnimData> t_ads;
+	bool res = MeshLoader::load_mesh_skeletal(path, t_mds, t_skeleton, t_ads);
 
 	map_skeletalmeshs[key] = CREATE_CLASS(SkeletalMesh);
 	if (res) {
@@ -182,9 +183,9 @@ SPTR_SkeletalMesh AssetManager::load_mesh_skeletal(const std::string& key, const
 		}
 		t_sk->init(t_skeleton.root_node, t_skeleton.map_nodes, t_nodes, t_bones);
 		map_skeletons[key] = t_sk;
-		// load skeleta mesh
+
+		// load skeletal mesh
 		map_skeletalmeshs[key]->set_skeleton(t_sk);
-		
 		for (auto md : t_mds) {
 			std::vector<CVertex> t_vs;
 			for (auto j = 0; j < md.vertices.size(); ++j) {
@@ -219,6 +220,12 @@ SPTR_SkeletalMesh AssetManager::load_mesh_skeletal(const std::string& key, const
 			}
 			map_skeletalmeshs[key]->add_render_data(t_rd);
 		}
+
+		// load animation sequence -- if have
+		for (auto ad : t_ads) {
+			
+		}
+
 	}
 	else { c_debug() << "[warning][asset][skeletal_mesh]load skeletal_mesh failed called \"" + key + "\""; }
 

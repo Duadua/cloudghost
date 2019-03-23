@@ -808,7 +808,7 @@ bool MeshLoader::load_mesh_x(const std::string& path, std::vector<MeshData>& mds
 	return true;
 }
 
-bool MeshLoader::load_mesh_skeletal(const std::string& path, std::vector<SkeletalMeshData>& mds, MSkeleton& skeleton) {
+bool MeshLoader::load_mesh_skeletal(const std::string& path, std::vector<SkeletalMeshData>& mds, MSkeleton& skeleton, std::vector<AnimData>& ads) {
 	Assimp::Importer import;
 	auto scene = import.ReadFile(path, aiProcess_ForceGenNormals | aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_CalcTangentSpace);
 
@@ -821,6 +821,8 @@ bool MeshLoader::load_mesh_skeletal(const std::string& path, std::vector<Skeleta
 	std::string s_path = get_path_of_file(path);
 	mds.clear();
 	skeleton.clear();
+	skeleton.name = get_name_of_file(path) + "_skeleton";
+	ads.clear();
 
 	// pre gen skeleton
 	{
@@ -971,8 +973,12 @@ bool MeshLoader::load_mesh_skeletal(const std::string& path, std::vector<Skeleta
 	// load animation
 	c_debug() << std::to_string(scene->mNumAnimations);
 	for (uint i = 0; i < scene->mNumAnimations; ++i) {
-		c_debug() << scene->mAnimations[i]->mName.data;
+		AnimData t_ad;
+		t_ad.name = scene->mAnimations[i]->mName.data;					// 可在 3dmax 中按 scene 名称保存
+		
 		c_debug() << std::to_string(scene->mAnimations[i]->mDuration);
+
+		ads.push_back(t_ad);
 	}
 
 	return true;

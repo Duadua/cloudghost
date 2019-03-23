@@ -80,9 +80,9 @@ struct MSkeleton {
 	MSkeleton() { clear(); }
 	void clear() { root_node = -1; map_nodes.clear(); nodes.clear(); bones.clear(); }
 
-	MSkeletonNode& get_node(const std::string& name) {
-		assert(map_nodes.count(name));
-		return nodes[map_nodes[name]];
+	MSkeletonNode& get_node(const std::string& n) {
+		assert(map_nodes.count(n));
+		return nodes[map_nodes[n]];
 	}
 	MSkeleton& add_node(const MSkeletonNode& node) {
 		if (map_nodes.count(node.name)) { return (*this); }
@@ -96,15 +96,31 @@ struct MSkeleton {
 		return (*this);
 	}
 
-	MSkeleton& add_bone(const MBone& bone, std::string name) {
-		if (!map_nodes.count(name)) { return (*this); }
+	MSkeleton& add_bone(const MBone& bone, std::string n) {
+		if (!map_nodes.count(n)) { return (*this); }
 		int t_id = static_cast<int>(bones.size());
-		get_node(name).bone_id = t_id;
+		get_node(n).bone_id = t_id;
 		bones.push_back(bone);
 		return (*this);
 	}
 
+	std::string name;
+
 };	// 骨骼层次树
+
+// ===============================================================================================
+
+// 动画相关
+struct MAnimNode {
+
+};
+struct AnimData {
+
+	std::map<std::string, int> map_anim_nodes;
+	std::vector<MAnimNode> anim_nodes;
+
+	std::string name;
+};
 
 // ===============================================================================================
 
@@ -160,7 +176,7 @@ public:
 
 	// load mesh by assimp
 	static bool load_mesh_x(const std::string& path, std::vector<MeshData>& mds);
-	static bool load_mesh_skeletal(const std::string& path, std::vector<SkeletalMeshData>& mds, MSkeleton& skeleton);
+	static bool load_mesh_skeletal(const std::string& path, std::vector<SkeletalMeshData>& mds, MSkeleton& skeleton, std::vector<AnimData>& ads);
 
 	~MeshLoader(){}
 
