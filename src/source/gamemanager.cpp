@@ -37,6 +37,7 @@ void GameManager::init() {
 	{
 		// shader
 		AssetManager::load_shader("default", "resources/shaders/mvp_anim.vert", "resources/shaders/blinn_phong.frag");
+		//AssetManager::load_shader("default", "resources/shaders/mvp_anim.vert", "resources/shaders/single_texture.frag");
 		AssetManager::load_shader("depth", "resources/shaders/mvp_anim.vert", "resources/shaders/depth.frag");
 		AssetManager::load_shader("solid_color", "resources/shaders/mvp_anim.vert", "resources/shaders/solid_color.frag");
 		AssetManager::load_shader("single_texture", "resources/shaders/mvp_anim.vert", "resources/shaders/single_texture.frag");

@@ -813,7 +813,7 @@ bool MeshLoader::load_mesh_skeletal(const std::string& path, std::vector<Skeleta
 	auto scene = import.ReadFile(path, aiProcess_ForceGenNormals | aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_CalcTangentSpace);
 
 	if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode) {
-		c_debug() << "[error][skeletal_mesh]load skeletal_mesh fail by assimp\n\t" + std::string(import.GetErrorString());
+		c_debug() << "[error][skeletal_mesh]load skeletal_mesh fail by assimp\n\t" + path + " " + std::string(import.GetErrorString());
 		return false;
 	}
 	else { c_debug() << "[yep][skeletal_mesh]load skeletal_mesh success by assimp\n\t" + path; }
@@ -966,6 +966,13 @@ bool MeshLoader::load_mesh_skeletal(const std::string& path, std::vector<Skeleta
 		// push child node to queue
 		for (uint i = 0; i < t_node->mNumChildren; ++i) { nodes.push(t_node->mChildren[i]); }
 
+	}
+
+	// load animation
+	c_debug() << std::to_string(scene->mNumAnimations);
+	for (uint i = 0; i < scene->mNumAnimations; ++i) {
+		c_debug() << scene->mAnimations[i]->mName.data;
+		c_debug() << std::to_string(scene->mAnimations[i]->mDuration);
 	}
 
 	return true;

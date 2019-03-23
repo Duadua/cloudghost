@@ -8,10 +8,12 @@
 	resources/models/static/Street/Street_environment_V01.obj
 # =========================
 	[yep][mesh]load mesh success by assimp
-	resources/models/animation/Riven/Riven_idle.FBX
+	resources/models/animation/Riven18/riven18.FBX
 # =========================
 	[yep][skeletal_mesh]load skeletal_mesh success by assimp
-	resources/models/animation/Riven/Riven_idle.FBX
+	resources/models/animation/Riven18/riven18.FBX
+# =========================
+	0
 # =========================
 	[warning][asset][shader]no shader calls ""
 # =========================

@@ -9,7 +9,7 @@ struct AnimNode {
 };
 
 DECLARE_AUTO_PTR(AnimSequence)
-class AnimSequence : CObject{
+class AnimSequence : public CObject {
 	DECLARE_CLASS(AnimSequence)
 
 public:
