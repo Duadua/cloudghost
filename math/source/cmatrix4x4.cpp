@@ -103,7 +103,7 @@ CMatrix4x4& CMatrix4x4::scale(float f) {
 }
 
 CMatrix4x4& CMatrix4x4::rotate(float angle, const CVector3D& v) {
-	float a = CMath::deg_to_rad(angle);
+	float a = CMath_ins().deg_to_rad(angle);
 	float c = std::cos(a);
 	float s = std::sin(a);
 	
@@ -137,9 +137,9 @@ CMatrix4x4& CMatrix4x4::rotate(float angle, float x, float y, float z) {
 	return (*this);
 }
 CMatrix4x4& CMatrix4x4::rotate_euler(const CVector3D& euler_angle) {
-	float x = CMath::deg_to_rad(euler_angle[0]);
-	float y = CMath::deg_to_rad(euler_angle[1]);
-	float z = CMath::deg_to_rad(euler_angle[2]);
+	float x = CMath_ins().deg_to_rad(euler_angle[0]);
+	float y = CMath_ins().deg_to_rad(euler_angle[1]);
+	float z = CMath_ins().deg_to_rad(euler_angle[2]);
 	CVector3D c(std::cos(x), std::cos(y), std::cos(z));
 	CVector3D s(std::sin(x), std::sin(y), std::sin(z));
 
@@ -205,7 +205,7 @@ CVector3D	CMatrix4x4::get_rotate_euler() const {
     float y = static_cast<float>(std::atan2(-m[0][2], sy));
     float z = static_cast<float>(std::atan2(m[0][1], m[0][0]));
 
-	/*if (sy < CMath::eps) {
+	/*if (sy < CMath_ins().eps) {
 		x = (float)std::atan2(-m[2][1], m[1][1]);
 		y = (float)std::atan2(-m[0][2], sy);
 		z = 0.0f;
@@ -217,7 +217,7 @@ CVector3D	CMatrix4x4::get_rotate_euler() const {
 	}
 	*/
 
-	return CVector3D(CMath::rad_to_deg(x), CMath::rad_to_deg(y), CMath::rad_to_deg(z));
+	return CVector3D(CMath_ins().rad_to_deg(x), CMath_ins().rad_to_deg(y), CMath_ins().rad_to_deg(z));
 }
 CVector4D	CMatrix4x4::get_rotate_angle_axis() const {
 	return CVector4D();
@@ -291,7 +291,7 @@ CMatrix4x4& CMatrix4x4::frustum(float left, float right, float bottom, float top
 	return (*this);
 }
 CMatrix4x4& CMatrix4x4::perspective(float vertical_angle, float aspect_ratio, float near, float far) {
-	float alpha = 1.0f / std::tan(CMath::deg_to_rad(vertical_angle / 2.0f));
+	float alpha = 1.0f / std::tan(CMath_ins().deg_to_rad(vertical_angle / 2.0f));
 	set_to_zero();
 	m[0][0] = alpha / aspect_ratio;					// x
 	m[1][1] = alpha;								// y

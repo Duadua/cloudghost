@@ -11,7 +11,7 @@ CVertexBone::CVertexBone() { for (int i = 0; i < bone_num_per_vertex; ++i) { ids
 
 CVertexBone& CVertexBone::add(uint id, float weight) {
 	for (int i = 0; i < bone_num_per_vertex; ++i) {
-		if (CMath::fcmp(weights[i], 0.0f) == 0) { ids[i] = id; weights[i] = weight; break; }
+		if (CMath_ins().fcmp(weights[i], 0.0f) == 0) { ids[i] = id; weights[i] = weight; break; }
 	}
 	return (*this);
 }
@@ -135,10 +135,10 @@ RenderDataReprocess* RenderDataReprocess::get_instance() {
 RenderDataReprocess& renderdata_reprocess() { return (*RenderDataReprocess::get_instance()); }
 
 void RenderDataReprocess::bump(std::vector<CVertex>& res_v, const std::vector<CVertex>& v, int step, float out_scope, float in_scope) {
-	step = CMath::clamp(step, 1, 1000); step *= 3; 
+	step = CMath_ins().clamp(step, 1, 1000); step *= 3; 
 	
 	res_v.clear(); res_v.assign(v.begin(), v.end()); int i = 0;
-	for (auto& mv : res_v) { if (i%step == 0) mv.position += mv.normal * CMath::random(-in_scope, out_scope); ++i; }
+	for (auto& mv : res_v) { if (i%step == 0) mv.position += mv.normal * CMath_ins().random(-in_scope, out_scope); ++i; }
 }
 
 void RenderDataReprocess::smooth(std::vector<CVertex>& res_v, const std::vector<CVertex>& v, const std::vector<uint>& v_i) {

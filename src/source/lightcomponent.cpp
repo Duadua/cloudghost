@@ -14,9 +14,9 @@ CVector3D LightComponent::get_dirction() {
 	CVector3D res;
 	auto t_r = get_rotation();
 
-	float yaw = CMath::deg_to_rad(rotation.y());
-	float pitch = CMath::deg_to_rad(rotation.x());
-    //float roll = CMath::deg_to_rad(rotation.z());
+	float yaw = CMath_ins().deg_to_rad(rotation.y());
+	float pitch = CMath_ins().deg_to_rad(rotation.x());
+    //float roll = CMath_ins().deg_to_rad(rotation.z());
 
 	res.set_x(std::sin(yaw) * std::cos(pitch));
 	res.set_z(std::cos(yaw) * std::cos(pitch));
@@ -148,8 +148,8 @@ bool SpotLightComponent::use(const std::string& shader) {
 	t_shader->set_float(t_name + ".att_kb", att_kb);
 	t_shader->set_float(t_name + ".att_kc", att_kc);
 
-	t_shader->set_float(t_name + ".inner", std::cos(CMath::deg_to_rad(inner)));
-	t_shader->set_float(t_name + ".outer", std::cos(CMath::deg_to_rad(outer)));
+	t_shader->set_float(t_name + ".inner", std::cos(CMath_ins().deg_to_rad(inner)));
+	t_shader->set_float(t_name + ".outer", std::cos(CMath_ins().deg_to_rad(outer)));
 
 	t_shader->set_int("u_spot_light_num", ++spot_light_num);
 

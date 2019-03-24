@@ -58,8 +58,8 @@ void FreeCamera::move_forward(float offset) {
 	CVector3D new_rotation = get_root_component()->get_rotation();
 
 	// move z_axis
-	float yaw = CMath::deg_to_rad(new_rotation.y());
-	float pitch = CMath::deg_to_rad(new_rotation.x());
+	float yaw = CMath_ins().deg_to_rad(new_rotation.y());
+	float pitch = CMath_ins().deg_to_rad(new_rotation.x());
 	new_location += offset * CVector3D(std::sin(yaw)*std::cos(pitch), std::sin(pitch), std::cos(yaw)*std::cos(pitch));
 
 	get_root_component()->set_location(new_location);
@@ -70,7 +70,7 @@ void FreeCamera::move_forward_plane(float offset) {
 	CVector3D new_rotation = get_root_component()->get_rotation();
 
 	// move z_axis
-	float yaw = CMath::deg_to_rad(new_rotation.y());
+	float yaw = CMath_ins().deg_to_rad(new_rotation.y());
 	new_location += offset * CVector3D(std::sin(yaw), 0.0f, std::cos(yaw));
 
 	get_root_component()->set_location(new_location);
@@ -80,7 +80,7 @@ void FreeCamera::move_right(float offset) {
 	CVector3D new_rotation = get_root_component()->get_rotation();
 
 	// move x_axis
-	float yaw = CMath::deg_to_rad(new_rotation.y());
+	float yaw = CMath_ins().deg_to_rad(new_rotation.y());
 	new_location += offset * CVector3D(std::cos(yaw), 0.0f, -std::sin(yaw));
 
 	get_root_component()->set_location(new_location);
@@ -95,8 +95,8 @@ void FreeCamera::move_up(float offset) {
 	CVector3D new_rotation = get_root_component()->get_rotation();
 
 	// move y_axis
-	float pitch = CMath::deg_to_rad(new_rotation.x());
-	float yaw = CMath::deg_to_rad(new_rotation.y());
+	float pitch = CMath_ins().deg_to_rad(new_rotation.x());
+	float yaw = CMath_ins().deg_to_rad(new_rotation.y());
 	new_location += offset * CVector3D(-std::sin(yaw)*std::sin(pitch), std::cos(pitch), -std::cos(yaw)*std::sin(pitch));
 
 	get_root_component()->set_location(new_location);

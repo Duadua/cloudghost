@@ -53,6 +53,7 @@ public:
 	virtual SPTR_Shader			set_main_shader() = 0;		// 设置主Shader
 };
 
+// 这是一个子类代理单例 -- 所以不能继承 Singleton
 class GameManager : public GameManagerImpl {
 
 public:
@@ -78,8 +79,6 @@ public:
 	static GameManager* get_instance();
 
 	void add_game_object(const std::string& key, SPTR_GameObject value);
-
-	
 
 public:									// used for qt ui
     GET_SET(CColor, background_color)

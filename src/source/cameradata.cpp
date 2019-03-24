@@ -11,9 +11,9 @@ void CameraData::update(CVector3D l, CVector3D r) {
 	location = l;
 	rotation = r;
 
-	float yaw = CMath::deg_to_rad(rotation.y());
-	float pitch = CMath::deg_to_rad(rotation.x());
-	float roll = CMath::deg_to_rad(rotation.z());
+	float yaw = CMath_ins().deg_to_rad(rotation.y());
+	float pitch = CMath_ins().deg_to_rad(rotation.x());
+	float roll = CMath_ins().deg_to_rad(rotation.z());
 
 	// 计算 world_up
 	world_up.set_z(0.0f);

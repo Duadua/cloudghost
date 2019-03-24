@@ -87,7 +87,6 @@ int main(int argc, char *argv[]) {
 		c_debug() << std::to_string(time_manager().cur_runtime_msconds());
 	}*/
 	
-	c_debug() << SingleTest::get_instance().test();
 
 	MyGameManager gm;
 	CMainWindow cmw;

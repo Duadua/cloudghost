@@ -6,6 +6,7 @@
 #include "cvector4d.h"
 #include "cmatrix4x4.h"
 #include "cquaternion.h"
+#include "singleton.h"
 #include <memory>
 #include <random>
 #include <chrono>					// c++11 time 库
@@ -29,32 +30,33 @@ using msecnd_type = std::chrono::duration<ll, std::ratio<1, 1000>>;
 using system_time_point = std::chrono::system_clock::time_point;
 using highrs_time_point = std::chrono::high_resolution_clock::time_point;
 
-class CMath {
+SINGLETON_CLASS(CMath) {
+	SINGLETON(CMath)
 public:
-	~CMath() {}
-	static const float pi;
-	static const float eps;
 
-	template<class T> static T clamp(T x, T a, T b) { if (x < a) x = a; if (x > b) x = b; return x; }
+	const float pi = static_cast<float>(acos(-1));
+	const float eps = static_cast<float>(1e-6);
 
-	template<class T> static T pow(T a, T p);
+	template<class T> T clamp(T x, T a, T b) { if (x < a) x = a; if (x > b) x = b; return x; }
 
-	static float rad_to_deg(float rad);
-	static float deg_to_rad(float deg);
+	template<class T> T pow(T a, T p);
 
-	static float interp_linear(float v, float min, float max);		// 线性插值 v ~ [0.0 ,, 1.0]
+	float rad_to_deg(float rad);
+	float deg_to_rad(float deg);
 
-    static int fcmp(float a, float b);								// -1 -- < ; 0 -- = ; 1 -- >
+	float interp_linear(float v, float min, float max);		// 线性插值 v ~ [0.0 ,, 1.0]
 
-	static std::default_random_engine dre;
-	static void set_random_seed(int seed) { dre.seed(seed); }
-	template<class T> static T random(T min, T max);				// random in [min, max]
-	template<> static float random(float min, float max);			// 显示具体化
+    int fcmp(float a, float b);								// -1 -- < ; 0 -- = ; 1 -- >
+
+	std::default_random_engine dre;
+	void set_random_seed(int seed) { dre.seed(seed); }
+	template<class T> T random(T min, T max);				// random in [min, max]
+	template<> float random(float min, float max);			// 显示具体化
 
 private:
-	CMath();
-
+	virtual void _init() override;
 };
+SINGLETON_X(CMath)
 
 template<class T> 
 T CMath::pow(T a, T p) {

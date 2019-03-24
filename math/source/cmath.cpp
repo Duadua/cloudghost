@@ -1,12 +1,7 @@
 #include "cmath.h"
 #include <cmath>
 
-const float CMath::pi = static_cast<float>(acos(-1));
-const float CMath::eps = static_cast<float>(1e-6);
-
-std::default_random_engine CMath::dre;
-
-CMath::CMath() {
+void CMath::_init() {
 	ll t_t = (std::chrono::time_point_cast<msecnd_type>(std::chrono::system_clock::now())).time_since_epoch().count();
 	dre.seed(static_cast<uint>(t_t));
 }

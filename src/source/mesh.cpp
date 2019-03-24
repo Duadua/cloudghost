@@ -29,6 +29,6 @@ void Mesh::add_render_data(SPTR_RenderData rd) {
 	if (rd != nullptr) render_datas.push_back(RenderDataInstance(rd)); 
 }
 RenderDataInstance& Mesh::render_data(uint id) {
-	id = CMath::clamp<uint>(id, 0, static_cast<uint>(render_datas.size() - 1));
+	id = CMath_ins().clamp<uint>(id, 0, static_cast<uint>(render_datas.size() - 1));
 	return render_datas[id];
 }

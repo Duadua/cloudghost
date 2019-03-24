@@ -654,7 +654,7 @@ void GameManager::mouse_released() {
 	// 造成一次单击事件
 	// read pix
 	float delta = (InputManager::get_input_data().mouse_pressed_pos - InputManager::get_input_data().mouse_cur_pos).manhattanLength();
-	if (delta < CMath::eps) {
+	if (delta < CMath_ins().eps) {
 		b_mouse_clicked = true;
         mouse_clicked_x = static_cast<uint>(InputManager::get_input_data().mouse_cur_pos.x());
         mouse_clicked_y = viewport_info.heigh - static_cast<uint>(InputManager::get_input_data().mouse_cur_pos.y() - 1);

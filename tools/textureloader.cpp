@@ -2,9 +2,9 @@
 #include "stb_head.h"
 
 bool TextureGen::gen_texture_txt(const std::string& res, TextureGenType type, CColor color, uint depth, SourceType source_type) {
-	depth = CMath::clamp(depth, 1u, 10u);
-	uint width = CMath::pow(2u, depth);
-	uint heigh = CMath::pow(2u, depth);
+	depth = CMath_ins().clamp(depth, 1u, 10u);
+	uint width = CMath_ins().pow(2u, depth);
+	uint heigh = CMath_ins().pow(2u, depth);
 
 	// 打开文件
 	std::ostream* out;
@@ -57,10 +57,10 @@ SPTR_uchar TextureGen::gen_gradua(uint& data_size, uint width, uint heigh, CColo
 	for (uint i = 0; i < heigh; ++i) {
 		for (uint j = 0; j < width; ++j) {
             float t_v = 1.0f * j / width;
-            uint t_r = static_cast<uint>(CMath::interp_linear(t_v, 1.0f*color.r(), 255.0f));
-            uint t_g = static_cast<uint>(CMath::interp_linear(t_v, 1.0f*color.g(), 255.0f));
-            uint t_b = static_cast<uint>(CMath::interp_linear(t_v, 1.0f*color.b(), 255.0f));
-			//uint t_a = CMath::interp_linear(t_v, color.a(), 0.0f);
+            uint t_r = static_cast<uint>(CMath_ins().interp_linear(t_v, 1.0f*color.r(), 255.0f));
+            uint t_g = static_cast<uint>(CMath_ins().interp_linear(t_v, 1.0f*color.g(), 255.0f));
+            uint t_b = static_cast<uint>(CMath_ins().interp_linear(t_v, 1.0f*color.b(), 255.0f));
+			//uint t_a = CMath_ins().interp_linear(t_v, color.a(), 0.0f);
 			CColor t_color(t_r, t_g, t_b);
 			uint t_c = t_color.get_uint();
 			memcpy(t_data.get() + sizeof(uint) * 2 + i * width * 4 + j * 4, &t_c, sizeof(uint));

@@ -70,7 +70,7 @@ void MeshTxtGen::gen_triangle_right() {
 
 }
 void MeshTxtGen::gen_triangle_regular() {
-	float h = std::sin(CMath::deg_to_rad(60.0f));
+	float h = std::sin(CMath_ins().deg_to_rad(60.0f));
 	MVertex a(CVector3D(-0.5f, -0.5f, 0.0f));
 	MVertex b(CVector3D(0.5f, -0.5f, 0.0f));
 	MVertex c(CVector3D(0.0f, -0.5f + h, 0.0f));
@@ -107,7 +107,7 @@ void MeshTxtGen::gen_rect() {
 void MeshTxtGen::gen_circle(uint depth) {
 	MVertex o(CVector3D(0.0f, 0.0f, 0.0f), CVector3D(), CVector2D(0.5f));
 	add_one_vertex(o);
-	float rad = 2.0f*CMath::pi / depth;
+	float rad = 2.0f*CMath_ins().pi / depth;
 	for (uint i = 0; i < depth; ++i) {
 		MVertex t(CVector3D(0.5f*std::cos(i*rad), 0.5f*std::sin(i*rad), 0.0f));
 		t.tex_coord = t.position.xy() + CVector2D(0.5f);
@@ -224,7 +224,7 @@ void MeshTxtGen::gen_cone(uint depth) {
 	{
 		MVertex o(CVector3D(0.0f, -0.5f, 0.0f), CVector3D(), CVector2D(0.5f));
 		add_one_vertex(o);
-		float rad = 2.0f*CMath::pi / depth;
+		float rad = 2.0f*CMath_ins().pi / depth;
 		for (uint i = 0; i < depth; ++i) {
 			MVertex t(CVector3D(0.5f*std::cos(i*rad), -0.5f, 0.5f*std::sin(i*rad)));
 			t.tex_coord = t.position.xz() + CVector2D(0.5f);
@@ -237,7 +237,7 @@ void MeshTxtGen::gen_cone(uint depth) {
 	{
 		MVertex o(CVector3D(0.0f, 0.5f, 0.0f), CVector3D(), CVector2D(0.5f));
 		add_one_vertex(o);
-		float rad = 2.0f*CMath::pi / depth;
+		float rad = 2.0f*CMath_ins().pi / depth;
 		for (uint i = 0; i < depth; ++i) {
 			MVertex t(CVector3D(0.5f*std::cos(i*rad), -0.5f, 0.5f*std::sin(i*rad)));
 			t.tex_coord = t.position.xz() + CVector2D(0.5f);
@@ -247,7 +247,7 @@ void MeshTxtGen::gen_cone(uint depth) {
 	}
 }
 void MeshTxtGen::gen_sphere(uint depth) {
-	depth = CMath::clamp<uint>(depth, 1, 5);
+	depth = CMath_ins().clamp<uint>(depth, 1, 5);
 
 	// first depth
 	{
@@ -313,10 +313,10 @@ void MeshTxtGen::gen_sphere(uint depth) {
 
 					if (!v_mid.count(puu_ab)) {
 						MVertex d = MVertex((a.position + b.position).normalize());
-                        if (CMath::fcmp(a.position.y(), 1.0f) == 0 || CMath::fcmp(a.position.y(), -1.0f) == 0) {
+                        if (CMath_ins().fcmp(a.position.y(), 1.0f) == 0 || CMath_ins().fcmp(a.position.y(), -1.0f) == 0) {
                             a.tex_coord.set_x(b.tex_coord.x());
                         }
-                        if (CMath::fcmp(b.position.y(), 1.0f) == 0 || CMath::fcmp(b.position.y(), -1.0f) == 0) {
+                        if (CMath_ins().fcmp(b.position.y(), 1.0f) == 0 || CMath_ins().fcmp(b.position.y(), -1.0f) == 0) {
                             b.tex_coord.set_x(a.tex_coord.x());
                         }
 						d.tex_coord = (a.tex_coord + b.tex_coord) * 0.5f;
@@ -327,10 +327,10 @@ void MeshTxtGen::gen_sphere(uint depth) {
 
 					if (!v_mid.count(puu_bc)) {
 						MVertex e = MVertex((b.position + c.position).normalize());
-                        if (CMath::fcmp(b.position.y(), 1.0f) == 0 || CMath::fcmp(b.position.y(), -1.0f)) {
+                        if (CMath_ins().fcmp(b.position.y(), 1.0f) == 0 || CMath_ins().fcmp(b.position.y(), -1.0f)) {
                             b.tex_coord.set_x(c.tex_coord.x());
                         }
-                        if (CMath::fcmp(c.position.y(), 1.0f) == 0 || CMath::fcmp(c.position.y(), -1.0f)) {
+                        if (CMath_ins().fcmp(c.position.y(), 1.0f) == 0 || CMath_ins().fcmp(c.position.y(), -1.0f)) {
                             c.tex_coord.set_x(b.tex_coord.x());
                         }
 						e.tex_coord = (b.tex_coord + c.tex_coord) * 0.5f;
@@ -341,10 +341,10 @@ void MeshTxtGen::gen_sphere(uint depth) {
 
 					if (!v_mid.count(puu_ca)) {
 						MVertex f = MVertex((c.position + a.position).normalize());
-                        if (CMath::fcmp(c.position.y(), 1.0f) == 0 || CMath::fcmp(c.position.y(), -1.0f)) {
+                        if (CMath_ins().fcmp(c.position.y(), 1.0f) == 0 || CMath_ins().fcmp(c.position.y(), -1.0f)) {
                             c.tex_coord.set_x(a.tex_coord.x());
                         }
-                        if (CMath::fcmp(a.position.y(), 1.0f) == 0 || CMath::fcmp(a.position.y(), -1.0f)) {
+                        if (CMath_ins().fcmp(a.position.y(), 1.0f) == 0 || CMath_ins().fcmp(a.position.y(), -1.0f)) {
                             a.tex_coord.set_x(c.tex_coord.x());
                         }
 						f.tex_coord = (c.tex_coord + a.tex_coord) * 0.5f;
@@ -374,7 +374,7 @@ void MeshTxtGen::gen_cylinder(uint depth) {
 	{
 		MVertex o(CVector3D(0.0f, 0.5f, 0.0f), CVector3D(), CVector2D(0.5f));
 		add_one_vertex(o);
-		float rad = 2.0f*CMath::pi / depth;
+		float rad = 2.0f*CMath_ins().pi / depth;
 		for (uint i = 0; i < depth; ++i) {
 			MVertex t(CVector3D(0.5f*std::cos(i*rad), 0.5f, 0.5f*std::sin(i*rad)));
 			t.tex_coord = t.position.xz() + CVector2D(0.5f);
@@ -390,7 +390,7 @@ void MeshTxtGen::gen_cylinder(uint depth) {
 	{
 		MVertex o(CVector3D(0.0f, -0.5f, 0.0f), CVector3D(), CVector2D(0.5f));
 		add_one_vertex(o);
-		float rad = 2.0f*CMath::pi / depth;
+		float rad = 2.0f*CMath_ins().pi / depth;
 		for (uint i = 0; i < depth; ++i) {
 			MVertex t(CVector3D(0.5f*std::cos(i*rad), -0.5f, 0.5f*std::sin(i*rad)));
 			t.tex_coord = t.position.xz() + CVector2D(0.5f);
@@ -404,7 +404,7 @@ void MeshTxtGen::gen_cylinder(uint depth) {
 	cnt += depth + 1;
 	// side
 	{
-		float rad = 2.0f*CMath::pi / depth;
+		float rad = 2.0f*CMath_ins().pi / depth;
 		for (uint i = 0; i <= depth; ++i) {
 			MVertex t(CVector3D(0.5f*std::cos(i*rad), -0.5f, 0.5f*std::sin(i*rad)));
             t.tex_coord = CVector2D(1.0f * i / depth, 0.0f);
@@ -471,7 +471,7 @@ void MeshTxtGen::add_one_vertex(const MVertex& x) { vertices.push_back(x); }
 void MeshTxtGen::add_one_face(uint a, uint b, uint c) {
 	// 利用混合积保持三角面片的一致性顺序 -- 逆时针
 	float det = vertices[a].position.mix(vertices[b].position, vertices[c].position);
-    if (CMath::fcmp(det, 0.0f) > 0) { std::swap(b, c); }
+    if (CMath_ins().fcmp(det, 0.0f) > 0) { std::swap(b, c); }
 
 	if (mesh_datas.size() == 0) mesh_datas.push_back(MeshData());
 	mesh_datas[mesh_datas.size()-1].indices.push_back(a); 
@@ -514,7 +514,7 @@ void MeshTxtGen::cac_normal() {
 MVertexBone::MVertexBone() { for (int i = 0; i < m_bone_num_per_vertex; ++i) { ids[i] = 0; weights[i] = 0.0f; } }
 MVertexBone& MVertexBone::add(uint id, float weight) {
 	for (int i = 0; i < m_bone_num_per_vertex; ++i) {
-		if (CMath::fcmp(weights[i], 0.0f) == 0) { ids[i] = id; weights[i] = weight; break; }
+		if (CMath_ins().fcmp(weights[i], 0.0f) == 0) { ids[i] = id; weights[i] = weight; break; }
 	}
 	return (*this);
 }

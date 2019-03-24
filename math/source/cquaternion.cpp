@@ -6,7 +6,7 @@ CQuaternion::CQuaternion(const CVector3D& euler_angle) {
 }
 CQuaternion::CQuaternion(const CVector4D& angle_axis) {
 	CVector3D t_r = angle_axis.yzw().normalize();
-	float t_a = CMath::deg_to_rad(angle_axis[0] / 2.0f);		// angle / 2.0
+	float t_a = CMath_ins().deg_to_rad(angle_axis[0] / 2.0f);		// angle / 2.0
 	x = t_r[0] * (std::sin(t_a));
 	y = t_r[1] * (std::sin(t_a));
 	z = t_r[2] * (std::sin(t_a));
@@ -14,7 +14,7 @@ CQuaternion::CQuaternion(const CVector4D& angle_axis) {
 }
 CQuaternion::CQuaternion(float angle, const CVector3D& axis) {
 	CVector3D t_r = axis.get_normalize();
-	float t_a = CMath::deg_to_rad(angle / 2.0f);		// angle / 2.0
+	float t_a = CMath_ins().deg_to_rad(angle / 2.0f);		// angle / 2.0
 	x = t_r[0] * (std::sin(t_a));
 	y = t_r[1] * (std::sin(t_a));
 	z = t_r[2] * (std::sin(t_a));
@@ -27,7 +27,7 @@ CVector3D CQuaternion::get_euler_angle() const {
 }
 CVector4D CQuaternion::get_angle_axis() const {
 	float t_a = std::acos(w);	// angle / 2.0
-	float angle = CMath::rad_to_deg(t_a * 2.0f);
+	float angle = CMath_ins().rad_to_deg(t_a * 2.0f);
 	float v_x = x / std::sin(t_a);
 	float v_y = y / std::sin(t_a);
 	float v_z = z / std::sin(t_a);

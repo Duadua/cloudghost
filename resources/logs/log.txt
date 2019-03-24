@@ -1,8 +1,6 @@
 # =========================
 	[debug]start
 # =========================
-	singleton yep
-# =========================
 	[yep][mesh]load mesh success by assimp
 	resources/models/static/Elf_Mansion/Elf_Mansion.fbx
 # =========================
