@@ -22,8 +22,10 @@ void MyGameManager::load_asset() {
 	// mesh
 	AssetManager::load_mesh_x("elf_mansion", "resources/models/static/Elf_Mansion/Elf_Mansion.fbx");
 	AssetManager::load_mesh_x("street", "resources/models/static/Street/Street_environment_V01.obj");
-	AssetManager::load_mesh_x("riven", "resources/models/animation/Riven18/riven18.FBX");
-	AssetManager::load_mesh_skeletal("riven", "resources/models/animation/Riven18/riven18_idle1.FBX");
+	//skeletal mesh
+	AssetManager::load_mesh_skeletal("riven", "resources/models/animation/Riven18/riven18.FBX");
+	// animation
+	AssetManager::load_anim_sequences("resources/models/animation/Riven18/riven18_idle1.FBX", "riven");
 
 	// material
 	AssetManager::load_materials("resources/materials/txt/cube_material.txt"); 

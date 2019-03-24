@@ -8,6 +8,7 @@ std::map<std::string, SPTR_Shader> AssetManager::map_shaders;
 std::map<std::string, SPTR_Mesh> AssetManager::map_meshs;
 std::map<std::string, SPTR_SkeletalMesh> AssetManager::map_skeletalmeshs;
 std::map<std::string, SPTR_Skeleton> AssetManager::map_skeletons;
+std::map<std::string, SPTR_AnimSequence> AssetManager::map_anim_sequence;
 std::map<std::string, SPTR_Material> AssetManager::map_materials;
 std::map<std::string, SPTR_Texture2D> AssetManager::map_textures;
 
@@ -156,14 +157,16 @@ SPTR_SkeletalMesh AssetManager::load_mesh_skeletal(const std::string& key, const
 
 	std::vector<SkeletalMeshData> t_mds;
 	MSkeleton t_skeleton;
+	std::vector<MBone> t_mbones;
 	std::vector<AnimData> t_ads;
-	bool res = MeshLoader::load_mesh_skeletal(path, t_mds, t_skeleton, t_ads);
+	bool res = MeshLoader::load_mesh_skeletal(path, t_mds, t_skeleton, t_mbones, t_ads);
 
 	map_skeletalmeshs[key] = CREATE_CLASS(SkeletalMesh);
 	if (res) {
 		// load skeleton
 		auto t_sk = CREATE_CLASS(Skeleton);
 		t_sk->set_name(key);
+
 		std::vector<SkeletonNode> t_nodes;
 		for (auto t_n : t_skeleton.nodes) {
 			SkeletonNode t_sn;
@@ -174,18 +177,22 @@ SPTR_SkeletalMesh AssetManager::load_mesh_skeletal(const std::string& key, const
 			t_sn.bone_id = t_n.bone_id;
 			t_nodes.push_back(t_sn);
 		}
+	
+		t_sk->init(t_skeleton.root_node, t_skeleton.map_nodes, t_nodes);
+		map_skeletons[key] = t_sk;
+
+		// load skeletal mesh
+		map_skeletalmeshs[key]->set_skeleton(get_skeleton(t_sk->get_name()));	// 返回一个实例 -- 而非原骨架
+		// set mesh's bone data
 		std::vector<Bone> t_bones;
-		for (auto t_b : t_skeleton.bones) {
+		for (auto t_b : t_mbones) {
 			Bone t_bb;
 			t_bb.mat_offset = t_b.mat_offset;
 			t_bb.mat_finall = t_b.mat_finall;
 			t_bones.push_back(t_bb);
 		}
-		t_sk->init(t_skeleton.root_node, t_skeleton.map_nodes, t_nodes, t_bones);
-		map_skeletons[key] = t_sk;
-
-		// load skeletal mesh
-		map_skeletalmeshs[key]->set_skeleton(t_sk);
+		map_skeletalmeshs[key]->set_bones(t_bones);
+		// set mesh's rd data
 		for (auto md : t_mds) {
 			std::vector<CVertex> t_vs;
 			for (auto j = 0; j < md.vertices.size(); ++j) {
@@ -223,7 +230,35 @@ SPTR_SkeletalMesh AssetManager::load_mesh_skeletal(const std::string& key, const
 
 		// load animation sequence -- if have
 		for (auto ad : t_ads) {
-			
+			if (map_anim_sequence.count(ad.name)) { continue; }
+			auto t_anim = CREATE_CLASS(AnimSequence);
+			t_anim->set_skeleton_name(key);
+
+			t_anim->set_name(ad.name);
+			t_anim->set_duration(ad.duration);
+			t_anim->set_ticks_per_seconds(ad.ticks_per_seconds);
+
+			std::vector<AnimNode> t_ans;
+			for (auto an : ad.anim_nodes) {
+				AnimNode t_an;
+				t_an.id = an.id;
+				t_an.name = an.name;
+
+				t_an.position_keys.clear();
+				for (auto pk : an.position_keys) { t_an.position_keys.push_back(AnimPositionKey(pk.time, pk.value)); }
+
+				t_an.rotation_keys.clear();
+				for (auto rk : an.rotation_keys) { t_an.rotation_keys.push_back(AnimRotationKey(rk.time, rk.value)); }
+
+				t_an.scale_keys.clear();
+				for (auto sk : an.scale_keys) { t_an.scale_keys.push_back(AnimScaleKey(sk.time, sk.value)); }
+
+				t_ans.push_back(t_an);
+			}
+
+			t_anim->init(ad.map_anim_nodes, t_ans);
+
+			map_anim_sequence[t_anim->get_name()] = t_anim;
 		}
 
 	}
@@ -263,6 +298,56 @@ SPTR_Skeleton AssetManager::get_skeleton(const std::string& key) {
 	auto t_mi = CREATE_CLASS(Skeleton);
 	if (t_mi) { t_mi->copy_from(map_skeletons[key]); }
 	return t_mi;
+}
+
+bool AssetManager::load_anim_sequences(const std::string& path, const std::string& skeleton_name) {
+	if (!map_skeletons.count(skeleton_name)) { c_debug() << "[error][asset][anim] the skeleton this anim sequence depending is not exist called \"" + skeleton_name + "\""; return false; }
+
+	std::vector<AnimData> t_ads;
+	bool res = MeshLoader::load_mesh_animation(path, t_ads);
+
+	if (res) {
+		for (auto ad : t_ads) {
+			if (map_anim_sequence.count(ad.name)) { continue; }
+			auto t_anim = CREATE_CLASS(AnimSequence);
+			t_anim->set_skeleton_name(skeleton_name);
+
+			t_anim->set_name(ad.name);
+			t_anim->set_duration(ad.duration);
+			t_anim->set_ticks_per_seconds(ad.ticks_per_seconds);
+
+			std::vector<AnimNode> t_ans;
+			for (auto an : ad.anim_nodes) {
+				AnimNode t_an;
+				t_an.id = an.id;
+				t_an.name = an.name;
+
+				t_an.position_keys.clear(); 
+				for (auto pk : an.position_keys) { t_an.position_keys.push_back(AnimPositionKey(pk.time, pk.value)); }
+
+				t_an.rotation_keys.clear(); 
+				for (auto rk : an.rotation_keys) { t_an.rotation_keys.push_back(AnimRotationKey(rk.time, rk.value)); }
+
+				t_an.scale_keys.clear(); 
+				for (auto sk : an.scale_keys) { t_an.scale_keys.push_back(AnimScaleKey(sk.time, sk.value)); }
+
+				t_ans.push_back(t_an);
+			}
+			t_anim->init(ad.map_anim_nodes, t_ans);
+
+			map_anim_sequence[t_anim->get_name()] = t_anim;
+		} // 每一个动画序列
+	}
+	else { c_debug() << "[warning][asset][anim] load anim_sequence failed from \"" + path + "\""; }
+
+	return true;
+}
+SPTR_AnimSequence AssetManager::get_anim_sequence(const std::string& key) {
+	if (!map_anim_sequence.count(key)) {
+		c_debug() << "[warning][asset][anim]no anim_sequence calls \"" + key + "\"";
+		return nullptr;
+	}
+	return map_anim_sequence[key];
 }
 
 bool AssetManager::load_materials(const std::string& src, SourceType source_type) {

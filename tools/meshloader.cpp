@@ -808,7 +808,7 @@ bool MeshLoader::load_mesh_x(const std::string& path, std::vector<MeshData>& mds
 	return true;
 }
 
-bool MeshLoader::load_mesh_skeletal(const std::string& path, std::vector<SkeletalMeshData>& mds, MSkeleton& skeleton, std::vector<AnimData>& ads) {
+bool MeshLoader::load_mesh_skeletal(const std::string& path, std::vector<SkeletalMeshData>& mds, MSkeleton& skeleton, std::vector<MBone>& bones, std::vector<AnimData>& ads) {
 	Assimp::Importer import;
 	auto scene = import.ReadFile(path, aiProcess_ForceGenNormals | aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_CalcTangentSpace);
 
@@ -822,6 +822,7 @@ bool MeshLoader::load_mesh_skeletal(const std::string& path, std::vector<Skeleta
 	mds.clear();
 	skeleton.clear();
 	skeleton.name = get_name_of_file(path) + "_skeleton";
+	bones.clear();
 	ads.clear();
 
 	// pre gen skeleton
@@ -949,7 +950,8 @@ bool MeshLoader::load_mesh_skeletal(const std::string& path, std::vector<Skeleta
 					// load skeleton's bones
 					std::string t_bname = t_bone->mName.data;
 					MBone t_b; t_b.mat_offset = aimat_to_cmat(t_bone->mOffsetMatrix);
-					skeleton.add_bone(t_b, t_bname);
+					skeleton.add_bone(static_cast<int>(bones.size()), t_bname);
+					bones.push_back(t_b);
 
 					// load md's bones
 					uint t_id = skeleton.get_node(t_bname).bone_id;		// 当前骨骼节点的下标
@@ -971,15 +973,98 @@ bool MeshLoader::load_mesh_skeletal(const std::string& path, std::vector<Skeleta
 	}
 
 	// load animation
-	c_debug() << std::to_string(scene->mNumAnimations);
 	for (uint i = 0; i < scene->mNumAnimations; ++i) {
 		AnimData t_ad;
 		t_ad.name = scene->mAnimations[i]->mName.data;					// 可在 3dmax 中按 scene 名称保存
-		
-		c_debug() << std::to_string(scene->mAnimations[i]->mDuration);
+		t_ad.duration = static_cast<float>(scene->mAnimations[i]->mDuration);
+		t_ad.ticks_per_seconds = static_cast<float>(scene->mAnimations[i]->mTicksPerSecond);
+
+		// load anim node
+		for (uint j = 0; j < scene->mAnimations[i]->mNumChannels; ++j) {
+			auto t_c = scene->mAnimations[i]->mChannels[j];
+
+			MAnimNode t_an;
+			t_an.name = t_c->mNodeName.data;
+			for (uint k = 0; k < t_c->mNumPositionKeys; ++k) {
+				auto t_k = t_c->mPositionKeys[k];
+				float t_t = static_cast<float>(t_k.mTime);
+				CVector3D t_v = CVector3D(static_cast<float>(t_k.mValue.x), static_cast<float>(t_k.mValue.y), static_cast<float>(t_k.mValue.z));
+				t_an.position_keys.push_back(MAnimPositionKey(t_t, t_v));
+			}
+			for (uint k = 0; k < t_c->mNumRotationKeys; ++k) {
+				auto t_k = t_c->mRotationKeys[k];
+				float t_t = static_cast<float>(t_k.mTime);
+				CQuaternion t_v = CQuaternion(t_k.mValue.x, t_k.mValue.y, t_k.mValue.z, t_k.mValue.w);
+				t_an.rotation_keys.push_back(MAnimRotationKey(t_t, t_v));
+			}
+			for (uint k = 0; k < t_c->mNumScalingKeys; ++k) {
+				auto t_k = t_c->mScalingKeys[k];
+				float t_t = static_cast<float>(t_k.mTime);
+				CVector3D t_v = CVector3D(static_cast<float>(t_k.mValue.x), static_cast<float>(t_k.mValue.y), static_cast<float>(t_k.mValue.z));
+				t_an.scale_keys.push_back(MAnimScaleKey(t_t, t_v));
+			}
+
+			t_ad.add_node(t_an);
+		}
 
 		ads.push_back(t_ad);
 	}
 
 	return true;
 }
+
+bool MeshLoader::load_mesh_animation(const std::string& path, std::vector<AnimData>& ads) {
+	Assimp::Importer import;
+	auto scene = import.ReadFile(path, aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_CalcTangentSpace);
+
+	if (!scene || !scene->mRootNode) {
+		c_debug() << "[error][animation]load animation fail by assimp\n\t" + path + " " + std::string(import.GetErrorString());
+		return false;
+	}
+	else { c_debug() << "[yep][animation]load animation success by assimp\n\t" + path; }
+
+	std::string s_path = get_path_of_file(path);
+	ads.clear();
+
+	for (uint i = 0; i < scene->mNumAnimations; ++i) {
+		AnimData t_ad;
+		t_ad.name = scene->mAnimations[i]->mName.data;					// 可在 3dmax 中按 scene 名称保存
+		t_ad.duration = static_cast<float>(scene->mAnimations[i]->mDuration);
+		t_ad.ticks_per_seconds = static_cast<float>(scene->mAnimations[i]->mTicksPerSecond);
+
+		// load anim node
+		for (uint j = 0; j < scene->mAnimations[i]->mNumChannels; ++j) {
+			auto t_c = scene->mAnimations[i]->mChannels[j];
+
+			MAnimNode t_an;
+			t_an.name = t_c->mNodeName.data;
+			for (uint k = 0; k < t_c->mNumPositionKeys; ++k) {
+				auto t_k = t_c->mPositionKeys[k];
+				float t_t = static_cast<float>(t_k.mTime);
+				CVector3D t_v = CVector3D(static_cast<float>(t_k.mValue.x), static_cast<float>(t_k.mValue.y), static_cast<float>(t_k.mValue.z));
+				t_an.position_keys.push_back(MAnimPositionKey(t_t, t_v));
+			}
+			for (uint k = 0; k < t_c->mNumRotationKeys; ++k) {
+				auto t_k = t_c->mRotationKeys[k];
+				float t_t = static_cast<float>(t_k.mTime);
+				CQuaternion t_v = CQuaternion(t_k.mValue.x, t_k.mValue.y, t_k.mValue.z, t_k.mValue.w);
+				t_an.rotation_keys.push_back(MAnimRotationKey(t_t, t_v));
+			}
+			for (uint k = 0; k < t_c->mNumScalingKeys; ++k) {
+				auto t_k = t_c->mScalingKeys[k];
+				float t_t = static_cast<float>(t_k.mTime);
+				CVector3D t_v = CVector3D(static_cast<float>(t_k.mValue.x), static_cast<float>(t_k.mValue.y), static_cast<float>(t_k.mValue.z));
+				t_an.scale_keys.push_back(MAnimScaleKey(t_t, t_v));
+			}
+
+			t_ad.add_node(t_an);
+		}
+
+		ads.push_back(t_ad);
+	}
+
+	return true;
+
+}
+
+

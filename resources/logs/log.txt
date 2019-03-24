@@ -7,5 +7,14 @@
 	[yep][mesh]load mesh success by assimp
 	resources/models/static/Street/Street_environment_V01.obj
 # =========================
-	[yep][mesh]load mesh success by assimp
+	[yep][skeletal_mesh]load skeletal_mesh success by assimp
 	resources/models/animation/Riven18/riven18.FBX
+# =========================
+	[yep][animation]load animation success by assimp
+	resources/models/animation/Riven18/riven18_idle1.FBX
+# =========================
+	[warning][asset][shader]no shader calls ""
+# =========================
+	[warning][asset][mesh]no mesh calls "riven"
+# =========================
+	[warning][asset][material]no material calls ""

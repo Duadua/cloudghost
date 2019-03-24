@@ -75,10 +75,8 @@ struct MSkeleton {
 	std::map<std::string, int> map_nodes;			// 节点名称到节点下标的映射
 	std::vector<MSkeletonNode> nodes;				// 所有的节点序列 -- 每个节点有其孩子和父亲的下标信息 -- 形成树
 
-	std::vector<MBone> bones;						// 所有的真正的骨骼节点信息 -- 与层次节点一对一，但是并非所有的层次节点都有骨骼
-
 	MSkeleton() { clear(); }
-	void clear() { root_node = -1; map_nodes.clear(); nodes.clear(); bones.clear(); }
+	void clear() { root_node = -1; map_nodes.clear(); nodes.clear(); }
 
 	MSkeletonNode& get_node(const std::string& n) {
 		assert(map_nodes.count(n));
@@ -96,13 +94,11 @@ struct MSkeleton {
 		return (*this);
 	}
 
-	MSkeleton& add_bone(const MBone& bone, std::string n) {
+	MSkeleton& add_bone(int bid, std::string n) {
 		if (!map_nodes.count(n)) { return (*this); }
-		int t_id = static_cast<int>(bones.size());
-		get_node(n).bone_id = t_id;
-		bones.push_back(bone);
+		get_node(n).bone_id = bid;
 		return (*this);
-	}
+	} // bone 与 nodes 的映射关系
 
 	std::string name;
 
@@ -131,10 +127,18 @@ struct MAnimScaleKey {
 };
 
 struct MAnimNode {
+	int id;
 	std::string name;								// node name 与 骨骼层次里的 node 名称对应
 	std::vector<MAnimPositionKey> position_keys;
 	std::vector<MAnimRotationKey> rotation_keys;
 	std::vector<MAnimScaleKey> scale_keys;
+
+	MAnimNode() {}
+	MAnimNode(const MAnimNode& b) : id(b.id), name(b.name) {
+		position_keys.clear(); position_keys.assign(b.position_keys.begin(), b.position_keys.end());
+		rotation_keys.clear(); rotation_keys.assign(b.rotation_keys.begin(), b.rotation_keys.end());
+		scale_keys.clear(); scale_keys.assign(b.scale_keys.begin(), b.scale_keys.end());
+	}
 
 };
 struct AnimData {
@@ -145,6 +149,16 @@ struct AnimData {
 	std::string name;
 	float duration;									// 持续时间 -- 总共的帧数
 	float ticks_per_seconds;						// 每秒多少帧 -- 1000.0 / ticks_per_seconds 为每帧多少毫秒
+
+	AnimData& add_node(const MAnimNode& an) {
+		if (map_anim_nodes.count(an.name)) { return (*this); }
+		int t_id = static_cast<int>(anim_nodes.size());
+
+		map_anim_nodes[an.name] = t_id;
+		anim_nodes.push_back(an);
+		anim_nodes.back().id = t_id;
+		return (*this);
+	}
 
 };
 
@@ -202,7 +216,8 @@ public:
 
 	// load mesh by assimp
 	static bool load_mesh_x(const std::string& path, std::vector<MeshData>& mds);
-	static bool load_mesh_skeletal(const std::string& path, std::vector<SkeletalMeshData>& mds, MSkeleton& skeleton, std::vector<AnimData>& ads);
+	static bool load_mesh_skeletal(const std::string& path, std::vector<SkeletalMeshData>& mds, MSkeleton& skeleton, std::vector<MBone>& bones, std::vector<AnimData>& ads);
+	static bool load_mesh_animation(const std::string& path, std::vector<AnimData>& ads);
 
 	~MeshLoader(){}
 

@@ -87,8 +87,6 @@ int main(int argc, char *argv[]) {
 	}*/
 	
 
-
-
 	MyGameManager gm;
 	CMainWindow cmw;
 	cmw.show();
