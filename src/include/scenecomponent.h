@@ -8,7 +8,7 @@ class SceneComponent : public Component, public std::enable_shared_from_this<Sce
 	DECLARE_CLASS(SceneComponent)
 public:
 	SceneComponent();
-	virtual ~SceneComponent();
+	virtual ~SceneComponent() override;
 
 	virtual void draw(const std::string& shader);
 

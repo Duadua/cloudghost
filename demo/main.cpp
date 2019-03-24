@@ -8,6 +8,7 @@
 #include "tools/qtimagehelper.h"
 
 #include "timemanager.h"
+#include "singleton.h"
 
 #ifdef C_DEBUG
 #include "loader.h"
@@ -86,6 +87,7 @@ int main(int argc, char *argv[]) {
 		c_debug() << std::to_string(time_manager().cur_runtime_msconds());
 	}*/
 	
+	c_debug() << SingleTest::get_instance().test();
 
 	MyGameManager gm;
 	CMainWindow cmw;

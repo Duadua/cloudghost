@@ -8,7 +8,7 @@ std::default_random_engine CMath::dre;
 
 CMath::CMath() {
 	ll t_t = (std::chrono::time_point_cast<msecnd_type>(std::chrono::system_clock::now())).time_since_epoch().count();
-	dre.seed(t_t);
+	dre.seed(static_cast<uint>(t_t));
 }
 
 float CMath::rad_to_deg(float rad) { return (180.0f / pi)*rad; }

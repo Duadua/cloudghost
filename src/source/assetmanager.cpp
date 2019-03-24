@@ -182,7 +182,7 @@ SPTR_SkeletalMesh AssetManager::load_mesh_skeletal(const std::string& key, const
 		map_skeletons[key] = t_sk;
 
 		// load skeletal mesh
-		map_skeletalmeshs[key]->set_skeleton(get_skeleton(t_sk->get_name()));	// 返回一个实例 -- 而非原骨架
+		map_skeletalmeshs[key]->set_skeleton(t_sk);	
 		// set mesh's bone data
 		std::vector<Bone> t_bones;
 		for (auto t_b : t_mbones) {
@@ -283,21 +283,12 @@ SPTR_SkeletalMesh AssetManager::get_mesh_skeletal(const std::string& key) {
 	return t_mi;
 }
 
-SPTR_Skeleton AssetManager::get_skeleton_o(const std::string& key) {
-	if (!map_skeletons.count(key)) {
-		c_debug() << "[warning][asset][skeleton]no skeleton calls \"" + key + "\"";
-		return nullptr;
-	}
-	return map_skeletons[key];
-}
 SPTR_Skeleton AssetManager::get_skeleton(const std::string& key) {
 	if (!map_skeletons.count(key)) {
 		c_debug() << "[warning][asset][skeleton]no skeleton calls \"" + key + "\"";
 		return nullptr;
 	}
-	auto t_mi = CREATE_CLASS(Skeleton);
-	if (t_mi) { t_mi->copy_from(map_skeletons[key]); }
-	return t_mi;
+	return map_skeletons[key];
 }
 
 bool AssetManager::load_anim_sequences(const std::string& path, const std::string& skeleton_name) {

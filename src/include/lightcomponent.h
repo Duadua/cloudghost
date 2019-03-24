@@ -8,7 +8,7 @@ class LightComponent : public SceneComponent {
 	DECLARE_CLASS(LightComponent)
 public:
 	LightComponent();
-	virtual ~LightComponent() {}
+	virtual ~LightComponent() override {}
 
     virtual bool use(const std::string& shader) { if(shader.size() > 0) {} return false; }
 

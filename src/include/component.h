@@ -6,7 +6,7 @@ class Component : public CObject {
 	DECLARE_CLASS(Component)
 public:
 	Component();
-	virtual ~Component();
+	virtual ~Component() override;
 
 private:
 	

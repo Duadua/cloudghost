@@ -41,7 +41,6 @@ public:
 	static SPTR_SkeletalMesh get_mesh_skeletal_o(const std::string& key);			// 获得原始 skeleton
 	static SPTR_SkeletalMesh get_mesh_skeletal(const std::string& key);
 
-	static SPTR_Skeleton get_skeleton_o(const std::string& key);	// 获得原始骨骼
 	static SPTR_Skeleton get_skeleton(const std::string& key);
 
 	static bool load_anim_sequences(const std::string& path, const std::string& skeleton_name);

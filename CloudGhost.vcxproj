@@ -170,9 +170,11 @@
     <ClCompile Include="src\source\rendertarget.cpp" />
     <ClCompile Include="src\source\scenecomponent.cpp" />
     <ClCompile Include="src\source\shader.cpp" />
+    <ClCompile Include="src\source\singleton.cpp" />
     <ClCompile Include="src\source\skeletalmesh.cpp" />
     <ClCompile Include="src\source\skeleton.cpp" />
     <ClCompile Include="src\source\sphereobject.cpp" />
+    <ClCompile Include="src\source\stringtool.cpp" />
     <ClCompile Include="src\source\texture2d.cpp" />
     <ClCompile Include="src\source\timemanager.cpp" />
     <ClCompile Include="tools\loader.cpp" />
@@ -227,9 +229,11 @@
     <ClInclude Include="src\include\rendertarget.h" />
     <ClInclude Include="src\include\scenecomponent.h" />
     <ClInclude Include="src\include\shader.h" />
+    <ClInclude Include="src\include\singleton.h" />
     <ClInclude Include="src\include\skeletalmesh.h" />
     <ClInclude Include="src\include\skeleton.h" />
     <ClInclude Include="src\include\sphereobject.h" />
+    <ClInclude Include="src\include\stringtool.h" />
     <ClInclude Include="src\include\texture2d.h" />
     <ClInclude Include="src\include\timemanager.h" />
     <ClInclude Include="tools\loader.h" />
