@@ -34,7 +34,7 @@ bool TextureGen::gen_texture_txt(const std::string& res, TextureGenType type, CC
 
 SPTR_uchar TextureGen::gen_solide(uint& data_size, uint width, uint heigh, CColor color) {
 	data_size = width * 4 * heigh + sizeof(uint)*2;
-	auto t_data = make_shared_array<uchar>(data_size + 1);
+	auto t_data = StringHelper_ins().make_shared_array<uchar>(data_size + 1);
 
 	memcpy(t_data.get(), &width, sizeof(uint));
 	memcpy(t_data.get() + sizeof(uint), &heigh, sizeof(uint));
@@ -49,7 +49,7 @@ SPTR_uchar TextureGen::gen_solide(uint& data_size, uint width, uint heigh, CColo
 }
 SPTR_uchar TextureGen::gen_gradua(uint& data_size, uint width, uint heigh, CColor color) {
 	data_size = width * 4 * heigh + sizeof(uint) * 2;
-	auto t_data = make_shared_array<uchar>(data_size + 1);
+	auto t_data = StringHelper_ins().make_shared_array<uchar>(data_size + 1);
 
 	memcpy(t_data.get(), &width, sizeof(uint));
 	memcpy(t_data.get() + sizeof(uint), &heigh, sizeof(uint));
@@ -70,7 +70,7 @@ SPTR_uchar TextureGen::gen_gradua(uint& data_size, uint width, uint heigh, CColo
 }
 SPTR_uchar TextureGen::gen_thetwo(uint& data_size, uint width, uint heigh, CColor color) {
 	data_size = width * 4 * heigh + sizeof(uint) * 2;
-	auto t_data = make_shared_array<uchar>(data_size + 1);
+	auto t_data = StringHelper_ins().make_shared_array<uchar>(data_size + 1);
 
 	memcpy(t_data.get(), &width, sizeof(uint));
 	memcpy(t_data.get() + sizeof(uint), &heigh, sizeof(uint));
@@ -107,7 +107,7 @@ SPTR_uchar TextureLoader::load_texture_txt(const std::string& path, uint& width,
 	uint t_size;
 	in->seekg(0, std::ios::end);										// 跳到文件尾
     t_size = static_cast<uint>(in->tellg());												// 以获得内容大小
-	auto t_data = make_shared_array<uchar>(t_size + 1);					// 以开辟相应容量的存储空间
+	auto t_data = StringHelper_ins().make_shared_array<uchar>(t_size + 1);					// 以开辟相应容量的存储空间
 
 	in->seekg(0, std::ios::beg);										// 跳到文件头
     in->read(reinterpret_cast<char*>(t_data.get()), t_size);
@@ -116,7 +116,7 @@ SPTR_uchar TextureLoader::load_texture_txt(const std::string& path, uint& width,
 	memcpy(&heigh, t_data.get()+sizeof(uint), sizeof(uint));
 	uint data_size = width * 4 * heigh;
 
-	auto t_res = make_shared_array<uchar>(data_size + 1);
+	auto t_res = StringHelper_ins().make_shared_array<uchar>(data_size + 1);
 	memcpy(t_res.get(), t_data.get() + sizeof(uint) * 2, data_size);
 	return t_res;
 }
@@ -127,7 +127,7 @@ SPTR_uchar TextureLoader::load_texture_png(const std::string& path, uint& data_s
 	
 	fs.seekg(0, std::ios::end);										// 跳到文件尾
     data_size = static_cast<uint>(fs.tellg());											// 以获得内容大小
-	auto t_data = make_shared_array<uchar>(data_size + 1);			// 以开辟相应容量的存储空间
+	auto t_data = StringHelper_ins().make_shared_array<uchar>(data_size + 1);			// 以开辟相应容量的存储空间
 
 	fs.seekg(0, std::ios::beg);										// 跳到文件头
     fs.read(reinterpret_cast<char*>(t_data.get()), data_size);
@@ -138,7 +138,7 @@ SPTR_uchar TextureLoader::load_texture_x(const std::string& path, int& width, in
 	auto data = stbi_load(path.c_str(), &width, &heigh, &channel, 0);
 	auto data_size = width * heigh * channel;
 	if (data == nullptr || data_size == 0) { return nullptr; }
-	auto t_data = make_shared_array<uchar>(data_size + 1);
+	auto t_data = StringHelper_ins().make_shared_array<uchar>(data_size + 1);
 	memcpy(t_data.get(), data, data_size);
 	stbi_image_free(data);
 	return t_data;
@@ -147,7 +147,7 @@ SPTR_uchar TextureLoader::load_texture_dds(const std::string& path, int& width, 
 	auto data = stbi_dds_load(path.c_str(), &width, &heigh, &channel, 0);
 	auto data_size = width * heigh * channel;
 	if (data == nullptr || data_size == 0) { return nullptr; }
-	auto t_data = make_shared_array<uchar>(data_size + 1);
+	auto t_data = StringHelper_ins().make_shared_array<uchar>(data_size + 1);
 	memcpy(t_data.get(), data, data_size);
 	stbi_image_free(data);
 	return t_data;

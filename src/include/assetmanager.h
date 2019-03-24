@@ -7,9 +7,7 @@
 #include "singleton.h"
 #include "skeletalmesh.h"
 #include "animsequence.h"
-#include "tools/meshloader.h"
-#include "tools/textureloader.h"
-#include "tools/materialloader.h"
+#include "tools/loader.h"
 #include <map>
 #include <string>
 

@@ -48,8 +48,8 @@ public:
 };
 SINGLETON_X(SingleTest)
 
-c_debug() << SingleTest::get_instance().test();
-c_debug() << instance<SingleTest>().test();
-c_debug() << SingleTest_ins().test();
+c_debuger() << SingleTest::get_instance().test();
+c_debuger() << instance<SingleTest>().test();
+c_debuger() << SingleTest_ins().test();
 */
 

@@ -1,7 +1,9 @@
 #pragma once
 
+#include "cmath.h"
 #include "reflex.h"
-#include "tools/meshloader.h"
+#include "singleton.h"
+
 const int bone_num_per_vertex = 4;
 
 struct CVertex {
@@ -55,21 +57,14 @@ DECLARE_AUTO_PTR(RenderData)
 // ===================================
 // 用于对获得 rd 再加工 -- 随机凹凸, 平滑等
 
-class RenderDataReprocess {
+SINGLETON_CLASS(RenderDataReprocess) {
+	SINGLETON(RenderDataReprocess)
 public:
-	~RenderDataReprocess() {}
 	
 	void bump(std::vector<CVertex>& res_v, const std::vector<CVertex>& v, int step = 5, float out_scope = 0.1f, float in_scope = 0.01f);
 
 	void smooth(std::vector<CVertex>& res_v, const std::vector<CVertex>& v, const std::vector<uint>& v_i);
 	
-	static RenderDataReprocess* get_instance();
-
-private:
-	RenderDataReprocess() {}
-
-	static RenderDataReprocess* instance;
-
 };
-RenderDataReprocess& renderdata_reprocess();
+SINGLETON_X(RenderDataReprocess)
 

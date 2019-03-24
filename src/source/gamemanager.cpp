@@ -25,8 +25,8 @@ void GameManager::init() {
 		glewExperimental = true;
 		uint flag = glewInit();
 		if (flag != GLEW_OK) {
-			c_debug() << "[error][glew]init fail";
-            c_debug() << reinterpret_cast<const char*>(glewGetErrorString(flag));
+			c_debuger() << "[error][glew]init fail";
+            c_debuger() << reinterpret_cast<const char*>(glewGetErrorString(flag));
 		}
 		else { }
 	}
@@ -378,7 +378,7 @@ void GameManager::shader_toy_pass() {
 		auto stbr = shader_toy_buffer_rts[i];
 		stbr->use();
 		draw_init();
-        std::string t_name = "shader_toy_buffer_" + char_to_string(static_cast<char>(i + 'a'));
+        std::string t_name = "shader_toy_buffer_" + StringHelper_ins().char_to_string(static_cast<char>(i + 'a'));
 		auto t_shader = AssetManager_ins().get_shader(t_name);
 		if (t_shader != nullptr) {
 			t_shader->set_vec3("iResolution", CVector3D(viewport_info.width, viewport_info.heigh, 0.0f));
@@ -456,7 +456,7 @@ void GameManager::init_rt() {
 	scene_rt = CREATE_CLASS(RenderTarget);
 	if (scene_rt != nullptr) {
 		if (!scene_rt->init_normal(viewport_info.width, viewport_info.heigh)) {
-			c_debug() << "create rt fail";
+			c_debuger() << "create rt fail";
 		}
 	}
 
@@ -464,7 +464,7 @@ void GameManager::init_rt() {
 	pp_rt = CREATE_CLASS(RenderTarget);
 	if (pp_rt != nullptr) {
 		if (!pp_rt->init_normal(viewport_info.width, viewport_info.heigh)) {
-			c_debug() << "create rt fail";
+			c_debuger() << "create rt fail";
 		}
 	}
 
@@ -660,16 +660,7 @@ void GameManager::mouse_released() {
 	}
 }
 
-// ==========================================================================================
 
-std::string GameManager::int_to_string(int i) { return std::to_string(i); }
-std::string GameManager::uint_to_string(uint ui) { return std::to_string(ui); }
-
-std::string GameManager::char_to_string(char c) {
-	std::string res("");
-	res.push_back(c);
-	return res;
-}
 
 
 

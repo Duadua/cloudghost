@@ -16,7 +16,7 @@ bool QtImageHelper::data_to_png(const std::string& path, const SPTR_uchar data, 
 		}
 	}
 	if (img.save(QString::fromStdString(path), "png")) {
-		c_debug() << "save png : " + path;
+		c_debuger() << "save png : " + path;
 	}
 	
 	return true;
@@ -63,7 +63,7 @@ bool QtImageHelper::repair_png(std::string& path) {
 // ===========================================================================
 
 bool QtImageHelper::repair_one_png(std::string& path) {
-	c_debug() << "repair : " << path;
+	c_debuger() << "repair : " << path;
 
 	std::ifstream fs;
 	fs.open(path, std::ios::binary);

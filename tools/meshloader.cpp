@@ -536,7 +536,6 @@ CMatrix4x4 aimat_to_cmat(aiMatrix3x3 m) {
 
 // ======================================================================
 
-
 bool MeshLoader::load_mesh_txt(const std::string& src, std::vector<MeshData>& mds, std::vector<std::string>& mt_files, SourceType source_type) {
 
 	// 打开文件
@@ -693,12 +692,12 @@ bool MeshLoader::load_mesh_x(const std::string& path, std::vector<MeshData>& mds
 	auto scene = import.ReadFile(path, aiProcess_ForceGenNormals | aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_CalcTangentSpace);
 
 	if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode) {
-		c_debug() << "[error][mesh]load mesh fail by assimp\n\t" + std::string(import.GetErrorString());
+		c_debuger() << "[error][mesh]load mesh fail by assimp\n\t" + std::string(import.GetErrorString());
 		return false;
 	}
-	else { c_debug() << "[yep][mesh]load mesh success by assimp\n\t" + path; }
+	else { c_debuger() << "[yep][mesh]load mesh success by assimp\n\t" + path; }
 
-	std::string s_path = get_path_of_file(path);			
+	std::string s_path = FileHelper_ins().get_path_of_file(path);			
 	mds.clear();
 
 	// load mesh
@@ -772,7 +771,7 @@ bool MeshLoader::load_mesh_x(const std::string& path, std::vector<MeshData>& mds
 						for (int j = 0; j < len; ++j) {
 							aiString t_txname;
 							t_mt->GetTexture(aiTextureType_AMBIENT, j, &t_txname);
-							md.material.map_ka = s_path + "/" + get_name_of_file(t_txname.C_Str());
+							md.material.map_ka = s_path + "/" + FileHelper_ins().get_name_of_file(t_txname.C_Str());
 						}
 					}
 					{
@@ -781,7 +780,7 @@ bool MeshLoader::load_mesh_x(const std::string& path, std::vector<MeshData>& mds
 						for (int j = 0; j < len; ++j) {
 							aiString t_txname;
 							t_mt->GetTexture(aiTextureType_DIFFUSE, j, &t_txname);
-							md.material.map_kd = s_path + "/" + get_name_of_file(t_txname.C_Str());
+							md.material.map_kd = s_path + "/" + FileHelper_ins().get_name_of_file(t_txname.C_Str());
 						}
 					}
 					{
@@ -790,7 +789,7 @@ bool MeshLoader::load_mesh_x(const std::string& path, std::vector<MeshData>& mds
 						for (int j = 0; j < len; ++j) {
 							aiString t_txname;
 							t_mt->GetTexture(aiTextureType_SPECULAR, j, &t_txname);
-							md.material.map_ks = s_path + "/" + get_name_of_file(t_txname.C_Str());
+							md.material.map_ks = s_path + "/" + FileHelper_ins().get_name_of_file(t_txname.C_Str());
 						}
 					}
 					
@@ -813,15 +812,15 @@ bool MeshLoader::load_mesh_skeletal(const std::string& path, std::vector<Skeleta
 	auto scene = import.ReadFile(path, aiProcess_ForceGenNormals | aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_CalcTangentSpace);
 
 	if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode) {
-		c_debug() << "[error][skeletal_mesh]load skeletal_mesh fail by assimp\n\t" + path + " " + std::string(import.GetErrorString());
+		c_debuger() << "[error][skeletal_mesh]load skeletal_mesh fail by assimp\n\t" + path + " " + std::string(import.GetErrorString());
 		return false;
 	}
-	else { c_debug() << "[yep][skeletal_mesh]load skeletal_mesh success by assimp\n\t" + path; }
+	else { c_debuger() << "[yep][skeletal_mesh]load skeletal_mesh success by assimp\n\t" + path; }
 
-	std::string s_path = get_path_of_file(path);
+	std::string s_path = FileHelper_ins().get_path_of_file(path);
 	mds.clear();
 	skeleton.clear();
-	skeleton.name = get_name_of_file(path) + "_skeleton";
+	skeleton.name = FileHelper_ins().get_name_of_file(path) + "_skeleton";
 	bones.clear();
 	ads.clear();
 
@@ -918,7 +917,7 @@ bool MeshLoader::load_mesh_skeletal(const std::string& path, std::vector<Skeleta
 						for (int j = 0; j < len; ++j) {
 							aiString t_txname;
 							t_mt->GetTexture(aiTextureType_AMBIENT, j, &t_txname);
-							md.material.map_ka = s_path + "/" + get_name_of_file(t_txname.C_Str());
+							md.material.map_ka = s_path + "/" + FileHelper_ins().get_name_of_file(t_txname.C_Str());
 						}
 					}
 					{
@@ -927,7 +926,7 @@ bool MeshLoader::load_mesh_skeletal(const std::string& path, std::vector<Skeleta
 						for (int j = 0; j < len; ++j) {
 							aiString t_txname;
 							t_mt->GetTexture(aiTextureType_DIFFUSE, j, &t_txname);
-							md.material.map_kd = s_path + "/" + get_name_of_file(t_txname.C_Str());
+							md.material.map_kd = s_path + "/" + FileHelper_ins().get_name_of_file(t_txname.C_Str());
 						}
 					}
 					{
@@ -936,7 +935,7 @@ bool MeshLoader::load_mesh_skeletal(const std::string& path, std::vector<Skeleta
 						for (int j = 0; j < len; ++j) {
 							aiString t_txname;
 							t_mt->GetTexture(aiTextureType_SPECULAR, j, &t_txname);
-							md.material.map_ks = s_path + "/" + get_name_of_file(t_txname.C_Str());
+							md.material.map_ks = s_path + "/" + FileHelper_ins().get_name_of_file(t_txname.C_Str());
 						}
 					}
 
@@ -1018,12 +1017,12 @@ bool MeshLoader::load_mesh_animation(const std::string& path, std::vector<AnimDa
 	auto scene = import.ReadFile(path, aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_CalcTangentSpace);
 
 	if (!scene || !scene->mRootNode) {
-		c_debug() << "[error][animation]load animation fail by assimp\n\t" + path + " " + std::string(import.GetErrorString());
+		c_debuger() << "[error][animation]load animation fail by assimp\n\t" + path + " " + std::string(import.GetErrorString());
 		return false;
 	}
-	else { c_debug() << "[yep][animation]load animation success by assimp\n\t" + path; }
+	else { c_debuger() << "[yep][animation]load animation success by assimp\n\t" + path; }
 
-	std::string s_path = get_path_of_file(path);
+	std::string s_path = FileHelper_ins().get_path_of_file(path);
 	ads.clear();
 
 	for (uint i = 0; i < scene->mNumAnimations; ++i) {

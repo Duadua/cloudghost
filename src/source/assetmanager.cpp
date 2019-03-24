@@ -3,15 +3,19 @@
 
 #include "assetmanager.h"
 
+#include "tools/meshloader.h"
+#include "tools/textureloader.h"
+#include "tools/materialloader.h"
+
 SPTR_Shader AssetManager::load_shader(const std::string& key, const std::string& v_path, const std::string& f_path, const std::string& g_path, SourceType source_type) {
-	//if (map_shaders.count(key)) { c_debug() << "[asset][shader][load] already loaded shader " + key; return nullptr; }
+	//if (map_shaders.count(key)) { c_debuger() << "[asset][shader][load] already loaded shader " + key; return nullptr; }
 	if (map_shaders.count(key)) { return nullptr; }
 
 	std::string v_code, f_code, g_code;
 	if (source_type == SourceType::BY_FILE) {
-		v_code = load_txt(v_path); 
-		f_code = load_txt(f_path); 
-		if(g_path.compare("") != 0) g_code = load_txt(g_path);
+		v_code = FileHelper_ins().load_txt(v_path); 
+		f_code = FileHelper_ins().load_txt(f_path); 
+		if(g_path.compare("") != 0) g_code = FileHelper_ins().load_txt(g_path);
 	}
 	else if (source_type == SourceType::BY_STRING) {
 		v_code = v_path; 
@@ -20,7 +24,7 @@ SPTR_Shader AssetManager::load_shader(const std::string& key, const std::string&
 	}
 
 	if (v_code.compare("") == 0 || f_code.compare("") == 0) {
-		c_debug() << "[warning][asset][shader]cannot load shader \"" + key + "\"";
+		c_debuger() << "[warning][asset][shader]cannot load shader \"" + key + "\"";
 		return nullptr;
 	}
 
@@ -32,7 +36,7 @@ SPTR_Shader AssetManager::load_shader(const std::string& key, const std::string&
 }
 SPTR_Shader AssetManager::get_shader(const std::string& key) {
 	if (!map_shaders.count(key)) {
-		c_debug() << "[warning][asset][shader]no shader calls \"" + key + "\"";
+		c_debuger() << "[warning][asset][shader]no shader calls \"" + key + "\"";
 		return map_shaders[key] = nullptr;
 	}
 	return map_shaders[key];
@@ -50,7 +54,7 @@ bool AssetManager::clear_shaders() {
 }
 
 SPTR_Mesh AssetManager::load_mesh(const std::string& key, const std::string& src, SourceType source_type) {
-	// if (map_meshs.count(key)) { c_debug() << "[asset][mesh][load] already loaded mesh " + key; return nullptr; }
+	// if (map_meshs.count(key)) { c_debuger() << "[asset][mesh][load] already loaded mesh " + key; return nullptr; }
 	if (map_meshs.count(key)) { return nullptr; }
 
 	std::vector<MeshData> t_md;
@@ -58,7 +62,7 @@ SPTR_Mesh AssetManager::load_mesh(const std::string& key, const std::string& src
 	bool res = false;
 
 	if (source_type == SourceType::BY_FILE) {
-		std::string suf = get_suff_of_file(src);			// 获得文件路径后缀
+		std::string suf = FileHelper_ins().get_suff_of_file(src);			// 获得文件路径后缀
 		if (suf.compare(".txt") == 0) { res = MeshLoader::load_mesh_txt(src, t_md, t_mt_files, SourceType::BY_FILE); }
 		else if (suf.compare(".obj") == 0) { res = MeshLoader::load_mesh_obj(src, t_md, t_mt_files, SourceType::BY_FILE); }
 	}
@@ -81,12 +85,12 @@ SPTR_Mesh AssetManager::load_mesh(const std::string& key, const std::string& src
 			map_meshs[key]->add_render_data(t_rd);
 		}
 	}
-	else { c_debug() << "[warning][asset][mesh]load mesh failed called \"" + key + "\""; }
+	else { c_debuger() << "[warning][asset][mesh]load mesh failed called \"" + key + "\""; }
 
 	return map_meshs[key];
 }
 SPTR_Mesh AssetManager::load_mesh_x(const std::string& key, const std::string& path) {
-	// if (map_meshs.count(key)) { c_debug() << "[asset][mesh][load] already loaded mesh " + key; return nullptr; }
+	// if (map_meshs.count(key)) { c_debuger() << "[asset][mesh][load] already loaded mesh " + key; return nullptr; }
 	if (map_meshs.count(key)) { return nullptr; }
 
 	std::vector<MeshData> t_mds;
@@ -112,29 +116,29 @@ SPTR_Mesh AssetManager::load_mesh_x(const std::string& key, const std::string& p
 				t_mt->set_kd(md.material.kd);
 				t_mt->set_ks(md.material.ks);
 				t_mt->set_shininess(md.material.shininess);
-				t_mt->set_map_ka(get_name_of_file(md.material.map_ka));
-				t_mt->set_map_kd(get_name_of_file(md.material.map_kd));
-				t_mt->set_map_ks(get_name_of_file(md.material.map_ks));
+				t_mt->set_map_ka(FileHelper_ins().get_name_of_file(md.material.map_ka));
+				t_mt->set_map_kd(FileHelper_ins().get_name_of_file(md.material.map_kd));
+				t_mt->set_map_ks(FileHelper_ins().get_name_of_file(md.material.map_ks));
 				map_materials[t_mt->get_name()] = t_mt;
 				t_rd->set_material_name(t_mt->get_name());
 			}
 			map_meshs[key]->add_render_data(t_rd);
 		}
 	}
-	else { c_debug() << "[warning][asset][mesh]load mesh failed called \"" + key + "\""; }
+	else { c_debuger() << "[warning][asset][mesh]load mesh failed called \"" + key + "\""; }
 
 	return map_meshs[key];
 }
 SPTR_Mesh AssetManager::get_mesh_o(const std::string& key) {
 	if (!map_meshs.count(key)) {
-		c_debug() << "[warning][asset][mesh]no mesh calls \"" + key + "\"";
+		c_debuger() << "[warning][asset][mesh]no mesh calls \"" + key + "\"";
 		return nullptr;
 	}
 	return map_meshs[key];
 }
 SPTR_Mesh AssetManager::get_mesh(const std::string& key) {
 	if (!map_meshs.count(key)) {
-		c_debug() << "[warning][asset][mesh]no mesh calls \"" + key + "\"";
+		c_debuger() << "[warning][asset][mesh]no mesh calls \"" + key + "\"";
 		return nullptr;
 	}
 	auto t_mi = CREATE_CLASS(Mesh);
@@ -143,7 +147,7 @@ SPTR_Mesh AssetManager::get_mesh(const std::string& key) {
 }
 
 SPTR_SkeletalMesh AssetManager::load_mesh_skeletal(const std::string& key, const std::string& path) {
-	// if (map_skeletalmeshs.count(key)) { c_debug() << "[asset][skeletal_mesh][load] already loaded skeletal_mesh " + key; return nullptr; }
+	// if (map_skeletalmeshs.count(key)) { c_debuger() << "[asset][skeletal_mesh][load] already loaded skeletal_mesh " + key; return nullptr; }
 	if (map_skeletalmeshs.count(key)) { return nullptr; }
 
 	std::vector<SkeletalMeshData> t_mds;
@@ -210,9 +214,9 @@ SPTR_SkeletalMesh AssetManager::load_mesh_skeletal(const std::string& key, const
 				t_mt->set_kd(md.material.kd);
 				t_mt->set_ks(md.material.ks);
 				t_mt->set_shininess(md.material.shininess);
-				t_mt->set_map_ka(get_name_of_file(md.material.map_ka));
-				t_mt->set_map_kd(get_name_of_file(md.material.map_kd));
-				t_mt->set_map_ks(get_name_of_file(md.material.map_ks));
+				t_mt->set_map_ka(FileHelper_ins().get_name_of_file(md.material.map_ka));
+				t_mt->set_map_kd(FileHelper_ins().get_name_of_file(md.material.map_kd));
+				t_mt->set_map_ks(FileHelper_ins().get_name_of_file(md.material.map_ks));
 				map_materials[t_mt->get_name()] = t_mt;
 				t_rd->set_material_name(t_mt->get_name());
 			}
@@ -253,20 +257,20 @@ SPTR_SkeletalMesh AssetManager::load_mesh_skeletal(const std::string& key, const
 		}
 
 	}
-	else { c_debug() << "[warning][asset][skeletal_mesh]load skeletal_mesh failed called \"" + key + "\""; }
+	else { c_debuger() << "[warning][asset][skeletal_mesh]load skeletal_mesh failed called \"" + key + "\""; }
 
 	return map_skeletalmeshs[key];
 }
 SPTR_SkeletalMesh AssetManager::get_mesh_skeletal_o(const std::string& key) {
 	if (!map_skeletalmeshs.count(key)) {
-		c_debug() << "[warning][asset][skeletal_mesh]no skeletal_mesh calls \"" + key + "\"";
+		c_debuger() << "[warning][asset][skeletal_mesh]no skeletal_mesh calls \"" + key + "\"";
 		return nullptr;
 	}
 	return map_skeletalmeshs[key];
 }
 SPTR_SkeletalMesh AssetManager::get_mesh_skeletal(const std::string& key) {
 	if (!map_skeletalmeshs.count(key)) {
-		c_debug() << "[warning][asset][skeletal_mesh]no skeletal_mesh calls \"" + key + "\"";
+		c_debuger() << "[warning][asset][skeletal_mesh]no skeletal_mesh calls \"" + key + "\"";
 		return nullptr;
 	}
 	auto t_mi = CREATE_CLASS(SkeletalMesh);
@@ -276,14 +280,14 @@ SPTR_SkeletalMesh AssetManager::get_mesh_skeletal(const std::string& key) {
 
 SPTR_Skeleton AssetManager::get_skeleton(const std::string& key) {
 	if (!map_skeletons.count(key)) {
-		c_debug() << "[warning][asset][skeleton]no skeleton calls \"" + key + "\"";
+		c_debuger() << "[warning][asset][skeleton]no skeleton calls \"" + key + "\"";
 		return nullptr;
 	}
 	return map_skeletons[key];
 }
 
 bool AssetManager::load_anim_sequences(const std::string& path, const std::string& skeleton_name) {
-	if (!map_skeletons.count(skeleton_name)) { c_debug() << "[error][asset][anim] the skeleton this anim sequence depending is not exist called \"" + skeleton_name + "\""; return false; }
+	if (!map_skeletons.count(skeleton_name)) { c_debuger() << "[error][asset][anim] the skeleton this anim sequence depending is not exist called \"" + skeleton_name + "\""; return false; }
 
 	std::vector<AnimData> t_ads;
 	bool res = MeshLoader::load_mesh_animation(path, t_ads);
@@ -320,13 +324,13 @@ bool AssetManager::load_anim_sequences(const std::string& path, const std::strin
 			map_anim_sequence[t_anim->get_name()] = t_anim;
 		} // 每一个动画序列
 	}
-	else { c_debug() << "[warning][asset][anim] load anim_sequence failed from \"" + path + "\""; }
+	else { c_debuger() << "[warning][asset][anim] load anim_sequence failed from \"" + path + "\""; }
 
 	return true;
 }
 SPTR_AnimSequence AssetManager::get_anim_sequence(const std::string& key) {
 	if (!map_anim_sequence.count(key)) {
-		c_debug() << "[warning][asset][anim]no anim_sequence calls \"" + key + "\"";
+		c_debuger() << "[warning][asset][anim]no anim_sequence calls \"" + key + "\"";
 		return nullptr;
 	}
 	return map_anim_sequence[key];
@@ -338,7 +342,7 @@ bool AssetManager::load_materials(const std::string& src, SourceType source_type
 	std::vector<MaterialData> t_mds;
 
 	if (source_type == SourceType::BY_FILE) {
-		std::string suf = get_suff_of_file(src);			// 获得文件路径后缀
+		std::string suf = FileHelper_ins().get_suff_of_file(src);			// 获得文件路径后缀
 		if (suf.compare(".txt") == 0) { res = MaterialLoader::load_material_txt(src,t_mds, SourceType::BY_FILE); }
 		else if (suf.compare(".mtl") == 0) { res = MaterialLoader::load_material_mtl(src,t_mds, SourceType::BY_FILE); }
 	}
@@ -347,7 +351,7 @@ bool AssetManager::load_materials(const std::string& src, SourceType source_type
 	}
 
 	for (auto i : t_mds) {
-		// if (map_materials.count(i.name)) { c_debug() << "[asset][materials][load] already loaded material " + i.name; continue; }
+		// if (map_materials.count(i.name)) { c_debuger() << "[asset][materials][load] already loaded material " + i.name; continue; }
 		if (map_materials.count(i.name)) { continue; }
 
 		auto t_md = CREATE_CLASS(Material);
@@ -366,18 +370,18 @@ bool AssetManager::load_materials(const std::string& src, SourceType source_type
 }
 SPTR_Material AssetManager::get_material(const std::string& key) {
 	if (!map_materials.count(key)) {
-		c_debug() << "[warning][asset][material]no material calls \"" + key + "\"";
+		c_debuger() << "[warning][asset][material]no material calls \"" + key + "\"";
 		return map_materials[key] = nullptr;
 	}
 	return map_materials[key];
 }
 
 bool AssetManager::load_texture(const std::string& path, SourceType source_type) {
-	std::string t_name = get_name_of_file(path);			// 获得文件名
-	// if (map_textures.count(t_name)) { c_debug() << "[asset][texture][load] already loaded texture " + t_name; return false; }
+	std::string t_name = FileHelper_ins().get_name_of_file(path);			// 获得文件名
+	// if (map_textures.count(t_name)) { c_debuger() << "[asset][texture][load] already loaded texture " + t_name; return false; }
 	if (map_textures.count(t_name)) { return false; }
 
-	std::string t_suf = get_suff_of_file(path);				// 获得文件路径后缀
+	std::string t_suf = FileHelper_ins().get_suff_of_file(path);				// 获得文件路径后缀
     uint width = 0, heigh = 0;
 	SPTR_uchar t_res = nullptr;
 
@@ -410,7 +414,7 @@ bool AssetManager::load_texture(const std::string& path, SourceType source_type)
 	} 
 
 	if (t_res == nullptr) {
-		c_debug() << "[warning][asset][texture]load texture failed called \"" + path + "\"";
+		c_debuger() << "[warning][asset][texture]load texture failed called \"" + path + "\"";
 		return false;
 	}
 
@@ -425,11 +429,11 @@ bool AssetManager::load_texture(const std::string& path, SourceType source_type)
 	return true;
 }
 bool AssetManager::load_texture_x(const std::string& path) {
-	std::string t_name = get_name_of_file(path);			// 获得文件名
-	// if (map_textures.count(t_name)) { c_debug() << "[asset][texture][load] already loaded texture " + t_name; return false; }
+	std::string t_name = FileHelper_ins().get_name_of_file(path);			// 获得文件名
+	// if (map_textures.count(t_name)) { c_debuger() << "[asset][texture][load] already loaded texture " + t_name; return false; }
 	if (map_textures.count(t_name)) { return false; }
 
-	std::string t_suf = get_suff_of_file(path);				// 获得文件路径后缀
+	std::string t_suf = FileHelper_ins().get_suff_of_file(path);				// 获得文件路径后缀
     int width = 0, heigh = 0, channel = 0;
 	SPTR_uchar t_res = nullptr;
 
@@ -437,7 +441,7 @@ bool AssetManager::load_texture_x(const std::string& path) {
 	else { t_res = TextureLoader::load_texture_x(path, width, heigh, channel); }
 	
 	if (t_res == nullptr) {
-		c_debug() << "[warning][asset][texture]load texture failed called \"" + path + "\"";
+		c_debuger() << "[warning][asset][texture]load texture failed called \"" + path + "\"";
 		return false;
 	}
 
@@ -457,14 +461,14 @@ bool AssetManager::load_texture_x(const std::string& path) {
 }
 SPTR_Texture2D AssetManager::get_texture(const std::string& key) {
 	if (!map_textures.count(key)) {
-		c_debug() << "[warning][asset][texture]no texture calls \"" + key + "\"";
+		c_debuger() << "[warning][asset][texture]no texture calls \"" + key + "\"";
 		return map_textures[key] = nullptr;
 	}
 	return map_textures[key];
 		
 }
 SPTR_Texture2D AssetManager::gen_blank_texture(const std::string& key, uint width, uint heigh, uint internal_format, uint format, uint data_type) {
-	if (map_textures.count(key)) { c_debug() << "[asset][texture][gen] already gen texture " + key; return false; }
+	if (map_textures.count(key)) { c_debuger() << "[asset][texture][gen] already gen texture " + key; return false; }
 	auto t_texture = CREATE_CLASS(Texture2D);
 	t_texture->set_name(key);
 	t_texture->gen(width, heigh, internal_format, format, data_type);

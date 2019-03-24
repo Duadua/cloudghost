@@ -7,7 +7,7 @@
 #include <QOpenGLWidget>
 #include "timemanager.h"
 #include "inputmanager.h"
-#include "loader.h"
+#include "cdebuger.h"
 
 // mouse
 void InputManager::exec_mouse_pressed_event(QMouseEvent* event) {

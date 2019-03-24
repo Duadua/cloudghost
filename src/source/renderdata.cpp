@@ -3,8 +3,6 @@
 
 #include "renderdata.h"
 
-#include <GLFW/glfw3.h>
-
 #include <set>
 
 CVertexBone::CVertexBone() { for (int i = 0; i < bone_num_per_vertex; ++i) { ids[i] = 0; weights[i] = 0.0f; } }
@@ -126,13 +124,6 @@ void RenderData::draw() {
 }
 
 // ===========================================================================
-
-RenderDataReprocess* RenderDataReprocess::instance = nullptr;
-RenderDataReprocess* RenderDataReprocess::get_instance() {
-	if (instance == nullptr) { instance = new RenderDataReprocess(); }
-	return instance;
-}
-RenderDataReprocess& renderdata_reprocess() { return (*RenderDataReprocess::get_instance()); }
 
 void RenderDataReprocess::bump(std::vector<CVertex>& res_v, const std::vector<CVertex>& v, int step, float out_scope, float in_scope) {
 	step = CMath_ins().clamp(step, 1, 1000); step *= 3; 

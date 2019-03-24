@@ -29,7 +29,7 @@
    </size>
   </property>
   <property name="windowTitle">
-   <string>c_debug_qt [dua专用]</string>
+   <string>c_debuger_qt [dua专用]</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>

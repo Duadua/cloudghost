@@ -75,7 +75,7 @@ void MyGameManager::begin_play() {
 			for (int i = 0; i < 6; ++i) {
 				{
 					auto t_mo = CREATE_CLASS(RotateCylinder);
-					std::string t_name = "cylinder" + int_to_string(j) + "_" + int_to_string(i);
+					std::string t_name = "cylinder" + StringHelper_ins().int_to_string(j) + "_" + StringHelper_ins().int_to_string(i);
 					add_game_object(t_name, t_mo);
 					t_mo->get_root_component()->set_location(2.0f*(j - 0.5f), 1.001f, 2.0f * (i - 3));
 					t_mo->get_root_component()->set_scale(0.5f, 2.0f, 0.5f);
@@ -86,7 +86,7 @@ void MyGameManager::begin_play() {
 				}
 				{
 					auto t_mo = CREATE_CLASS(FlowSphere);
-					std::string t_name = "sphere" + int_to_string(j) + "_" + int_to_string(i);
+					std::string t_name = "sphere" + StringHelper_ins().int_to_string(j) + "_" + StringHelper_ins().int_to_string(i);
 					add_game_object(t_name, t_mo);
 					t_mo->get_root_component()->set_location(2.0f*(j - 0.5f), 2.35f, 2.0f * (i - 3));
 					t_mo->get_root_component()->set_scale(0.3f);

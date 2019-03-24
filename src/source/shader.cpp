@@ -2,7 +2,7 @@
 #include <GL/glew.h>
 
 #include "shader.h"
-#include "loader.h"
+#include "cdebuger.h"
 
 IMPLEMENT_CLASS(Shader)
 
@@ -11,8 +11,8 @@ Shader::Shader() {
 		glewExperimental = true;
         GLenum flag = glewInit();
 		if (flag != GLEW_OK) {
-			c_debug() << "[error][glew]init fail";
-            c_debug() << reinterpret_cast<const char*>(glewGetErrorString(flag));
+			c_debuger() << "[error][glew]init fail";
+            c_debuger() << reinterpret_cast<const char*>(glewGetErrorString(flag));
 		}
 	}
 }
@@ -70,7 +70,7 @@ void Shader::check_compile_errors(uint id) {
 		glGetShaderInfoLog(id, 1024, nullptr, res);
         std::string info = "[error][shader][compile]" + name + "\n";
         info.append(res);
-		c_debug() << info;
+		c_debuger() << info;
 	}
 }
 void Shader::check_link_errors(uint id) {
@@ -81,7 +81,7 @@ void Shader::check_link_errors(uint id) {
 		glGetProgramInfoLog(id, 1024, nullptr, res);
 		std::string info = "[error][shader][link]" + name + "\n";
 		info.append(res);
-		c_debug() << info;
+		c_debuger() << info;
 	}
 }
 

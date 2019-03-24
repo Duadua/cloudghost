@@ -283,13 +283,13 @@
     <ClCompile Include="src\source\stringhelper.cpp">
       <Filter>src\source\helper</Filter>
     </ClCompile>
-    <ClCompile Include="src\source\debuger.cpp">
-      <Filter>src\source\helper</Filter>
-    </ClCompile>
     <ClCompile Include="src\source\filehelper.cpp">
       <Filter>src\source\helper</Filter>
     </ClCompile>
     <ClCompile Include="src\source\typehelper.cpp">
+      <Filter>src\source\helper</Filter>
+    </ClCompile>
+    <ClCompile Include="src\source\cdebuger.cpp">
       <Filter>src\source\helper</Filter>
     </ClCompile>
   </ItemGroup>
@@ -449,13 +449,13 @@
     <ClInclude Include="src\include\stringhelper.h">
       <Filter>src\include\helper</Filter>
     </ClInclude>
-    <ClInclude Include="src\include\debuger.h">
-      <Filter>src\include\helper</Filter>
-    </ClInclude>
     <ClInclude Include="src\include\filehelper.h">
       <Filter>src\include\helper</Filter>
     </ClInclude>
     <ClInclude Include="src\include\typehelper.h">
+      <Filter>src\include\helper</Filter>
+    </ClInclude>
+    <ClInclude Include="src\include\cdebuger.h">
       <Filter>src\include\helper</Filter>
     </ClInclude>
   </ItemGroup>

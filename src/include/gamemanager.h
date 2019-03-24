@@ -4,6 +4,7 @@
 #include "gameobject.h"
 #include "rendertarget.h"
 #include "cameraobject.h"
+#include "stringhelper.h"
 #include <map>
 #include <string>
 #include <memory>
@@ -170,15 +171,6 @@ private:
 	uint cur_pick_component_id;
 	void mouse_released();
 
-// time
-private:
-		
-// string helper function
-public:
-	
-	static std::string int_to_string(int ui);
-	static std::string uint_to_string(uint ui);
-	static std::string char_to_string(char c);
-
 };
+
 inline GameManager& GameManager_ins() { return (*GameManager::get_instance()); }

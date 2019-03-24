@@ -1,7 +1,7 @@
 #define GLEW_STATIC
 #include <GL/glew.h>
 
-#include "loader.h"
+#include "cdebuger.h"
 #include "texture2d.h"
 
 IMPLEMENT_CLASS(Texture2D)
@@ -12,8 +12,8 @@ Texture2D::Texture2D() : name(""), width(0), heigh(0), internal_format(GL_RGBA),
 		glewExperimental = true;
         GLenum flag = glewInit();
 		if (flag != GLEW_OK) {
-			c_debug() << "[error][glew]init fail";
-            c_debug() << reinterpret_cast<const char*>(glewGetErrorString(flag));
+			c_debuger() << "[error][glew]init fail";
+            c_debuger() << reinterpret_cast<const char*>(glewGetErrorString(flag));
 		}
 	}
 }

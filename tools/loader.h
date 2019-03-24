@@ -1,7 +1,7 @@
 #pragma once
 
 #include "cmath.h"
-#include "debuger.h"
+#include "cdebuger.h"
 #include "filehelper.h"
 #include "stringhelper.h"
 #include <sstream>

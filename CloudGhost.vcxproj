@@ -155,7 +155,7 @@
     <ClCompile Include="src\source\cmainwindow.cpp" />
     <ClCompile Include="src\source\cubeobject.cpp" />
     <ClCompile Include="src\source\cylinderobject.cpp" />
-    <ClCompile Include="src\source\debuger.cpp" />
+    <ClCompile Include="src\source\cdebuger.cpp" />
     <ClCompile Include="src\source\delegate.cpp" />
     <ClCompile Include="src\source\filehelper.cpp" />
     <ClCompile Include="src\source\freecamera.cpp" />
@@ -217,7 +217,7 @@
     <ClInclude Include="src\include\component.h" />
     <ClInclude Include="src\include\cubeobject.h" />
     <ClInclude Include="src\include\cylinderobject.h" />
-    <ClInclude Include="src\include\debuger.h" />
+    <ClInclude Include="src\include\cdebuger.h" />
     <ClInclude Include="src\include\delegate.h" />
     <ClInclude Include="src\include\filehelper.h" />
     <ClInclude Include="src\include\freecamera.h" />

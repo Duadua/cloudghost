@@ -1,4 +1,5 @@
 #include "lightcomponent.h"
+#include "stringhelper.h"
 #include "assetmanager.h"
 
 IMPLEMENT_CLASS(LightComponent)
@@ -45,9 +46,7 @@ bool DirectLightComponent::use(const std::string& shader) {
 	if (t_shader == nullptr) return false;
 
 	// get uniform name in shader 
-	std::ostringstream oss;
-	oss << "u_direct_light[" << direct_light_num << "]";
-	std::string t_name = oss.str();
+	std::string t_name = "u_direct_light[" + StringHelper_ins().int_to_string(direct_light_num) + "]";
 
 	// bind uniform value for t_shader
 	t_shader->use();
@@ -61,7 +60,6 @@ bool DirectLightComponent::use(const std::string& shader) {
 	return true;
 
 }
-
 
 // =======================================================
 
@@ -81,9 +79,7 @@ bool PointLightComponent::use(const std::string& shader) {
 	if (t_shader == nullptr) return false;
 
 	// get uniform name in shader 
-	std::ostringstream oss;
-	oss << "u_point_light[" << point_light_num << "]";
-	std::string t_name = oss.str();
+	std::string t_name = "u_point_light[" + StringHelper_ins().int_to_string(point_light_num) + "]";
 
 	// bind uniform value for t_shader
 	t_shader->use();
@@ -133,9 +129,7 @@ bool SpotLightComponent::use(const std::string& shader) {
 	if (t_shader == nullptr) return false;
 
 	// get uniform name in shader 
-	std::ostringstream oss;
-	oss << "u_spot_light[" << spot_light_num << "]";
-	std::string t_name = oss.str();
+	std::string t_name = "u_spot_light[" + StringHelper_ins().int_to_string(spot_light_num) + "]";
 
 	// bind uniform value for t_shader
 	t_shader->use();
