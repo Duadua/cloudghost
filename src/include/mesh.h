@@ -1,14 +1,15 @@
 #pragma once
 
 #include "reflex.h"
+#include "material.h"
 #include "renderdata.h"
 #include <string>
 
 struct RenderDataInstance {
 	SPTR_RenderData rd;
-	std::string material;
-	RenderDataInstance() : material("") {}
-	RenderDataInstance(SPTR_RenderData t_rd, const std::string& t_mt = "") : rd(t_rd), material(t_mt) {}
+	SPTR_Material material;
+	RenderDataInstance() : material(nullptr) {}
+	RenderDataInstance(SPTR_RenderData t_rd, SPTR_Material t_mt = nullptr) : rd(t_rd), material(t_mt) {}
 };
 
 DECLARE_AUTO_PTR(Mesh)

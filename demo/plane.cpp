@@ -1,5 +1,4 @@
 #include "plane.h"
-#include "assetmanager.h"
 #include "meshcomponent.h"
 
 IMPLEMENT_CLASS(PlaneObject)
@@ -46,7 +45,7 @@ void PlaneObject::tick() {
 
 }
 
-void PlaneObject::set_material(std::string name, uint rid) {
+void PlaneObject::set_material(SPTR_Material name, uint rid) {
 	auto t_mo = get_root_component()->get_child_components()[0];
 	if (t_mo != nullptr) {
 		for (uint i = 0; i < 4; ++i) {

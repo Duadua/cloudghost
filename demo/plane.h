@@ -1,4 +1,6 @@
 #pragma once
+
+#include "material.h"
 #include "gameobject.h"
 
 class PlaneObject : public GameObject {
@@ -10,7 +12,7 @@ public:
 	virtual void begin_play();
 	virtual void tick();
 
-	void set_material(std::string name, uint rid = 0);
+	void set_material(SPTR_Material name, uint rid = 0);
 
 	// DECLARE_ATTR(public, double, width, PlaneObject);
 

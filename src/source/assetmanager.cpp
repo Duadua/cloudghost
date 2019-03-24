@@ -37,7 +37,7 @@ SPTR_Shader AssetManager::load_shader(const std::string& key, const std::string&
 SPTR_Shader AssetManager::get_shader(const std::string& key) {
 	if (!map_shaders.count(key)) {
 		c_debuger() << "[warning][asset][shader]no shader calls \"" + key + "\"";
-		return map_shaders[key] = nullptr;
+		return nullptr;
 	}
 	return map_shaders[key];
 }
@@ -368,12 +368,21 @@ bool AssetManager::load_materials(const std::string& src, SourceType source_type
 
 	return res;
 }
+SPTR_Material AssetManager::get_material_o(const std::string& key) {
+	if (!map_materials.count(key)) {
+		c_debuger() << "[warning][asset][material]no material calls \"" + key + "\"";
+		return nullptr;
+	}
+	return map_materials[key];
+}
 SPTR_Material AssetManager::get_material(const std::string& key) {
 	if (!map_materials.count(key)) {
 		c_debuger() << "[warning][asset][material]no material calls \"" + key + "\"";
-		return map_materials[key] = nullptr;
+		return nullptr;
 	}
-	return map_materials[key];
+	auto t_mi = CREATE_CLASS(Material);
+	if (t_mi) { t_mi->copy_from(map_materials[key]); }
+	return t_mi;
 }
 
 bool AssetManager::load_texture(const std::string& path, SourceType source_type) {
@@ -462,7 +471,7 @@ bool AssetManager::load_texture_x(const std::string& path) {
 SPTR_Texture2D AssetManager::get_texture(const std::string& key) {
 	if (!map_textures.count(key)) {
 		c_debuger() << "[warning][asset][texture]no texture calls \"" + key + "\"";
-		return map_textures[key] = nullptr;
+		return nullptr;
 	}
 	return map_textures[key];
 		

@@ -1,6 +1,20 @@
 # =========================
 	[debug]start
 # =========================
+	[warning][asset][material]no material calls ""
+# =========================
+	[warning][asset][material]no material calls ""
+# =========================
+	[warning][asset][material]no material calls ""
+# =========================
+	[warning][asset][material]no material calls ""
+# =========================
+	[warning][asset][material]no material calls ""
+# =========================
+	[warning][asset][material]no material calls ""
+# =========================
+	[warning][asset][material]no material calls ""
+# =========================
 	[yep][mesh]load mesh success by assimp
 	resources/models/static/Elf_Mansion/Elf_Mansion.fbx
 # =========================
@@ -16,5 +30,3 @@
 	[warning][asset][shader]no shader calls ""
 # =========================
 	[warning][asset][mesh]no mesh calls "riven"
-# =========================
-	[warning][asset][material]no material calls ""

@@ -4,10 +4,13 @@
 #include "reflex.h"
 #include <string>
 
+DECLARE_AUTO_PTR(Material)
 class Material : public CObject {
 	DECLARE_CLASS(Material)
 public:
 	Material();
+	Material(const Material& b);
+	void copy_from(const SPTR_Material b);
 	~Material() {}
 
 	void use(const std::string& shader);
@@ -40,6 +43,4 @@ private:
 	std::string map_kd;
 	std::string map_ks;
 
-
 };
-DECLARE_AUTO_PTR(Material)

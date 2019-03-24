@@ -47,6 +47,7 @@ public:
 	SPTR_AnimSequence get_anim_sequence(const std::string& key);	// 获得动画序列
 
 	bool load_materials(const std::string& src, SourceType source_type = SourceType::BY_FILE);
+	SPTR_Material get_material_o(const std::string& key);
 	SPTR_Material get_material(const std::string& key);
 
 	bool load_texture(const std::string& path, SourceType source_type = SourceType::BY_FILE);

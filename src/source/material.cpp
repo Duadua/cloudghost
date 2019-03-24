@@ -6,15 +6,16 @@ IMPLEMENT_CLASS(Material)
 std::string Material::default_material_name = "default";
 
 Material::Material() {
-	ka = CVector3D(1.0f);
-	kd = CVector3D(1.0f);
-	ks = CVector3D(1.0f);
-
+	ka = CVector3D(1.0f); kd = CVector3D(1.0f); ks = CVector3D(1.0f); 
 	shininess = 1.0f;
-
-	map_ka = "";
-	map_kd = "";
-	map_ks = "";
+	map_ka = ""; map_kd = ""; map_ks = "";
+}
+Material::Material(const Material& b) : ka(b.ka), kd(b.kd), ks(b.ks), shininess(b.shininess), 
+	map_ka(b.map_ka), map_kd(b.map_kd), map_ks(b.map_ks) { }
+void Material::copy_from(const SPTR_Material b) {
+	ka = b->ka; kd = b->kd; ks = b->ks; 
+	shininess = b->shininess;
+	map_ka = b->map_ka; map_kd = b->map_kd; map_ks = b->map_ks;
 }
 
 void Material::use(const std::string& shader) {
