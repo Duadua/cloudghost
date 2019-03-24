@@ -36,39 +36,39 @@ void GameManager::init() {
 	// load asset
 	{
 		// shader
-		AssetManager::load_shader("default", "resources/shaders/mvp_anim.vert", "resources/shaders/blinn_phong.frag");
-		//AssetManager::load_shader("default", "resources/shaders/mvp_anim.vert", "resources/shaders/single_texture.frag");
-		AssetManager::load_shader("depth", "resources/shaders/mvp_anim.vert", "resources/shaders/depth.frag");
-		AssetManager::load_shader("solid_color", "resources/shaders/mvp_anim.vert", "resources/shaders/solid_color.frag");
-		AssetManager::load_shader("single_texture", "resources/shaders/mvp_anim.vert", "resources/shaders/single_texture.frag");
-		AssetManager::load_shader("scene2d", "resources/shaders/scene2d.vert", "resources/shaders/single_texture.frag");
-		AssetManager::load_shader("pp", "resources/shaders/scene2d.vert", "resources/shaders/post_process.frag");
-		AssetManager::load_shader("pick", "resources/shaders/mvp_anim.vert", "resources/shaders/pick.frag");
-		AssetManager::load_shader("vr_mix", "resources/shaders/scene2d.vert", "resources/shaders/vr_mix.frag");
+		AssetManager_ins().load_shader("default", "resources/shaders/mvp_anim.vert", "resources/shaders/blinn_phong.frag");
+		//AssetManager_ins().load_shader("default", "resources/shaders/mvp_anim.vert", "resources/shaders/single_texture.frag");
+		AssetManager_ins().load_shader("depth", "resources/shaders/mvp_anim.vert", "resources/shaders/depth.frag");
+		AssetManager_ins().load_shader("solid_color", "resources/shaders/mvp_anim.vert", "resources/shaders/solid_color.frag");
+		AssetManager_ins().load_shader("single_texture", "resources/shaders/mvp_anim.vert", "resources/shaders/single_texture.frag");
+		AssetManager_ins().load_shader("scene2d", "resources/shaders/scene2d.vert", "resources/shaders/single_texture.frag");
+		AssetManager_ins().load_shader("pp", "resources/shaders/scene2d.vert", "resources/shaders/post_process.frag");
+		AssetManager_ins().load_shader("pick", "resources/shaders/mvp_anim.vert", "resources/shaders/pick.frag");
+		AssetManager_ins().load_shader("vr_mix", "resources/shaders/scene2d.vert", "resources/shaders/vr_mix.frag");
 
-		AssetManager::load_shader("shader_toy_img", "resources/shaders/scene2d.vert", "resources/shaders/shadertoy_img.frag");
-		AssetManager::load_shader("shader_toy_buffer_a", "resources/shaders/scene2d.vert", "resources/shaders/shadertoy_buffer_a.frag");
-		AssetManager::load_shader("shader_toy_buffer_b", "resources/shaders/scene2d.vert", "resources/shaders/shadertoy_buffer_b.frag");
-		AssetManager::load_shader("shader_toy_buffer_c", "resources/shaders/scene2d.vert", "resources/shaders/shadertoy_buffer_c.frag");
-		AssetManager::load_shader("shader_toy_buffer_d", "resources/shaders/scene2d.vert", "resources/shaders/shadertoy_buffer_d.frag");
+		AssetManager_ins().load_shader("shader_toy_img", "resources/shaders/scene2d.vert", "resources/shaders/shadertoy_img.frag");
+		AssetManager_ins().load_shader("shader_toy_buffer_a", "resources/shaders/scene2d.vert", "resources/shaders/shadertoy_buffer_a.frag");
+		AssetManager_ins().load_shader("shader_toy_buffer_b", "resources/shaders/scene2d.vert", "resources/shaders/shadertoy_buffer_b.frag");
+		AssetManager_ins().load_shader("shader_toy_buffer_c", "resources/shaders/scene2d.vert", "resources/shaders/shadertoy_buffer_c.frag");
+		AssetManager_ins().load_shader("shader_toy_buffer_d", "resources/shaders/scene2d.vert", "resources/shaders/shadertoy_buffer_d.frag");
 
 		// mesh
-		AssetManager::load_mesh("triangle_right", "resources/models/txt/triangle_right.txt");
-		AssetManager::load_mesh("triangle_regular", "resources/models/txt/triangle_regular.txt");
-		AssetManager::load_mesh("rect", "resources/models/txt/rect.txt");
-		AssetManager::load_mesh("circle", "resources/models/txt/circle.txt");
+		AssetManager_ins().load_mesh("triangle_right", "resources/models/txt/triangle_right.txt");
+		AssetManager_ins().load_mesh("triangle_regular", "resources/models/txt/triangle_regular.txt");
+		AssetManager_ins().load_mesh("rect", "resources/models/txt/rect.txt");
+		AssetManager_ins().load_mesh("circle", "resources/models/txt/circle.txt");
 
-		AssetManager::load_mesh("cube", "resources/models/txt/cube.txt");
-		AssetManager::load_mesh("cone", "resources/models/txt/cone.txt");
-		AssetManager::load_mesh("cylinder", "resources/models/txt/cylinder.txt");
-		AssetManager::load_mesh("sphere", "resources/models/txt/sphere.txt");
+		AssetManager_ins().load_mesh("cube", "resources/models/txt/cube.txt");
+		AssetManager_ins().load_mesh("cone", "resources/models/txt/cone.txt");
+		AssetManager_ins().load_mesh("cylinder", "resources/models/txt/cylinder.txt");
+		AssetManager_ins().load_mesh("sphere", "resources/models/txt/sphere.txt");
 
 		// material
-		AssetManager::load_materials("resources/materials/txt/default_material.txt");
-		AssetManager::load_materials("resources/materials/txt/single_material.txt");
-		//AssetManager::load_texture("resources/textures/txt/texture_default.txt");
-		AssetManager::load_texture_x("resources/textures/texture_default.png");
-		AssetManager::load_texture_x("resources/textures/brickwall_d.jpg");
+		AssetManager_ins().load_materials("resources/materials/txt/default_material.txt");
+		AssetManager_ins().load_materials("resources/materials/txt/single_material.txt");
+		//AssetManager_ins().load_texture("resources/textures/txt/texture_default.txt");
+		AssetManager_ins().load_texture_x("resources/textures/texture_default.png");
+		AssetManager_ins().load_texture_x("resources/textures/brickwall_d.jpg");
 
 		load_asset();						// 加载资源
 		
@@ -123,7 +123,7 @@ void GameManager::init() {
 void GameManager::draw() {
 	// update time
 	{
-		time_manager().update_tick();
+		TimeManager_ins().update_tick();
 	}
 	// update
 	{
@@ -161,7 +161,7 @@ void GameManager::scene_pass() {
 
 	draw_init();
 
-	auto s_shader = AssetManager::get_shader("scene2d");
+	auto s_shader = AssetManager_ins().get_shader("scene2d");
 	if (s_shader != nullptr) {
 		s_shader->use();
 		if (scene_texture != nullptr) { scene_texture->bind(0); }
@@ -177,7 +177,7 @@ void GameManager::pick_pass() {
 	front_polygon_mode = GL_FILL;
 	draw_init();
 
-	auto p_shader = AssetManager::get_shader("pick");
+	auto p_shader = AssetManager_ins().get_shader("pick");
 	if (p_shader != nullptr) {
 		p_shader->use();
 		p_shader->set_mat4("u_view", main_camera->get_camera_component()->get_view_mat());
@@ -209,7 +209,7 @@ void GameManager::base_pass() {
 		main_shader->set_vec3("u_view_pos", main_camera->get_root_component()->get_location());
 	}
 	
-	auto t_shader = AssetManager::get_shader("solid_color");
+	auto t_shader = AssetManager_ins().get_shader("solid_color");
 	if (t_shader != nullptr) {
 		t_shader->use();
 		t_shader->set_mat4("u_view", main_camera->get_camera_component()->get_view_mat());
@@ -246,7 +246,7 @@ void GameManager::post_process_pass() {
 	pp_rt->use();
 	draw_init();
 
-	auto p_shader = AssetManager::get_shader("pp");
+	auto p_shader = AssetManager_ins().get_shader("pp");
 	if (p_shader != nullptr) {
 		p_shader->use();
 		if (scene_texture != nullptr) { scene_texture->bind(0); }
@@ -282,7 +282,7 @@ void GameManager::vr_pass() {
 				main_shader->set_mat4("u_view", main_camera->get_camera_component()->get_view_mat());
 				main_shader->set_vec3("u_view_pos", main_camera->get_root_component()->get_location());
 			}
-			auto t_shader = AssetManager::get_shader("solid_color");
+			auto t_shader = AssetManager_ins().get_shader("solid_color");
 			if (t_shader != nullptr) {
 				t_shader->use();
 				t_shader->set_mat4("u_view", main_camera->get_camera_component()->get_view_mat());
@@ -318,7 +318,7 @@ void GameManager::vr_pass() {
 				main_shader->set_mat4("u_view", main_camera->get_camera_component()->get_view_mat());
 				main_shader->set_vec3("u_view_pos", main_camera->get_root_component()->get_location());
 			}
-			auto t_shader = AssetManager::get_shader("solid_color");
+			auto t_shader = AssetManager_ins().get_shader("solid_color");
 			if (t_shader != nullptr) {
 				t_shader->use();
 				t_shader->set_mat4("u_view", main_camera->get_camera_component()->get_view_mat());
@@ -349,7 +349,7 @@ void GameManager::vr_pass() {
 		vr_rt_mix->use();
 		draw_init();
 
-		auto m_shader = AssetManager::get_shader("vr_mix");
+		auto m_shader = AssetManager_ins().get_shader("vr_mix");
 		if (m_shader != nullptr && vr_rt->get_attach_textures().size() >= 2) {
 			auto t_left = vr_rt->get_attach_textures()[0].texture;
 			auto t_right = vr_rt->get_attach_textures()[1].texture;
@@ -371,15 +371,15 @@ void GameManager::vr_pass() {
 void GameManager::shader_toy_pass() {
 
 	// get time
-	//float t_time = 0.001f * time_manager().cur_runtime_msconds();
-	float t_time = time_manager().cur_runtime_seconds();
+	//float t_time = 0.001f * TimeManager_ins().cur_runtime_msconds();
+	float t_time = TimeManager_ins().cur_runtime_seconds();
 
 	for (uint i = 0; i < 4; ++i) {
 		auto stbr = shader_toy_buffer_rts[i];
 		stbr->use();
 		draw_init();
         std::string t_name = "shader_toy_buffer_" + char_to_string(static_cast<char>(i + 'a'));
-		auto t_shader = AssetManager::get_shader(t_name);
+		auto t_shader = AssetManager_ins().get_shader(t_name);
 		if (t_shader != nullptr) {
 			t_shader->set_vec3("iResolution", CVector3D(viewport_info.width, viewport_info.heigh, 0.0f));
 
@@ -391,7 +391,7 @@ void GameManager::shader_toy_pass() {
 
 	shader_toy_rt->use();
 	draw_init();
-	auto t_shader = AssetManager::get_shader("shader_toy_img");
+	auto t_shader = AssetManager_ins().get_shader("shader_toy_img");
 	if (t_shader != nullptr) {
 		t_shader->use();
 		t_shader->set_vec3("iResolution", CVector3D(viewport_info.width, viewport_info.heigh, 0.0f));
@@ -408,7 +408,7 @@ void GameManager::shader_toy_pass() {
 
 void GameManager::draw_scene(const std::string& shader) {
 	glDisable(GL_DEPTH_TEST);
-	static auto s_mesh = AssetManager::get_mesh("rect");
+	static auto s_mesh = AssetManager_ins().get_mesh("rect");
 	if (s_mesh != nullptr) {
 		s_mesh->set_use_default_mt(false);
 		s_mesh->draw(shader);
@@ -532,12 +532,12 @@ void GameManager::resize(uint w, uint h) {
 		main_shader->use();
 		main_shader->set_mat4("u_projection", projection);
 	}
-	auto t_s = AssetManager::get_shader("solid_color");
+	auto t_s = AssetManager_ins().get_shader("solid_color");
 	if (t_s != nullptr) {
 		t_s->use();
 		t_s->set_mat4("u_projection", projection);
 	}
-	auto p_s = AssetManager::get_shader("pick");
+	auto p_s = AssetManager_ins().get_shader("pick");
 	if (p_s != nullptr) {
 		p_s->use();
 		p_s->set_mat4("u_projection", projection);
@@ -547,7 +547,7 @@ void GameManager::resize(uint w, uint h) {
 	
 }
 void GameManager::exit() {
-	InputManager::exit();
+	InputManager_ins().exit();
 }
 
 SPTR_CameraObject GameManager::set_main_camera() {
@@ -558,7 +558,7 @@ SPTR_CameraObject GameManager::set_main_camera() {
 
     return std::dynamic_pointer_cast<CameraObject>(free_camera);
 }
-SPTR_Shader	GameManager::set_main_shader() { return AssetManager::get_shader("default"); }
+SPTR_Shader	GameManager::set_main_shader() { return AssetManager_ins().get_shader("default"); }
 
 void GameManager::set_depth_test(bool enable, uint depth_func, uint depth_mask) {
 	if (enable) { glEnable(GL_DEPTH_TEST); }
@@ -609,7 +609,6 @@ GameManager::~GameManager() {
 GameManager* GameManager::get_instance() {
 	assert(instance);
 	return instance;
-
 }
 
 void GameManager::add_game_object(const std::string& key, SPTR_GameObject value) {
@@ -642,7 +641,7 @@ void GameManager::map_input_default() {
 	{
 		InputState is;
 		is.mouse_released = Qt::LeftButton;
-		InputManager::map_action("gm_m_r", is);
+		InputManager_ins().map_action("gm_m_r", is);
 	}
 	
 }
@@ -653,11 +652,11 @@ void GameManager::bind_input_default() {
 void GameManager::mouse_released() {
 	// 造成一次单击事件
 	// read pix
-	float delta = (InputManager::get_input_data().mouse_pressed_pos - InputManager::get_input_data().mouse_cur_pos).manhattanLength();
+	float delta = (InputManager_ins().get_input_data().mouse_pressed_pos - InputManager_ins().get_input_data().mouse_cur_pos).manhattanLength();
 	if (delta < CMath_ins().eps) {
 		b_mouse_clicked = true;
-        mouse_clicked_x = static_cast<uint>(InputManager::get_input_data().mouse_cur_pos.x());
-        mouse_clicked_y = viewport_info.heigh - static_cast<uint>(InputManager::get_input_data().mouse_cur_pos.y() - 1);
+        mouse_clicked_x = static_cast<uint>(InputManager_ins().get_input_data().mouse_cur_pos.x());
+        mouse_clicked_y = viewport_info.heigh - static_cast<uint>(InputManager_ins().get_input_data().mouse_cur_pos.y() - 1);
 	}
 }
 

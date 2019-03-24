@@ -41,7 +41,7 @@ DirectLightComponent::DirectLightComponent() {
 
 bool DirectLightComponent::use(const std::string& shader) {
 
-	auto t_shader = AssetManager::get_shader(shader);
+	auto t_shader = AssetManager_ins().get_shader(shader);
 	if (t_shader == nullptr) return false;
 
 	// get uniform name in shader 
@@ -77,7 +77,7 @@ PointLightComponent::PointLightComponent() {
 }
 
 bool PointLightComponent::use(const std::string& shader) {
-	auto t_shader = AssetManager::get_shader(shader);
+	auto t_shader = AssetManager_ins().get_shader(shader);
 	if (t_shader == nullptr) return false;
 
 	// get uniform name in shader 
@@ -129,7 +129,7 @@ SpotLightComponent::SpotLightComponent() {
 }
 
 bool SpotLightComponent::use(const std::string& shader) {
-	auto t_shader = AssetManager::get_shader(shader);
+	auto t_shader = AssetManager_ins().get_shader(shader);
 	if (t_shader == nullptr) return false;
 
 	// get uniform name in shader 

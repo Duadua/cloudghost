@@ -82,9 +82,9 @@ int main(int argc, char *argv[]) {
 
 	// test timemanager
 	/*{
-		c_debug() << time_manager().cur_time_data().to_string();
-		c_debug() << std::to_string(time_manager().cur_time_msconds());
-		c_debug() << std::to_string(time_manager().cur_runtime_msconds());
+		c_debug() << TimeManager_ins().cur_time_data().to_string();
+		c_debug() << std::to_string(TimeManager_ins().cur_time_msconds());
+		c_debug() << std::to_string(TimeManager_ins().cur_runtime_msconds());
 	}*/
 	
 

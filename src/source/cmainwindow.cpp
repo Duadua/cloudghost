@@ -70,41 +70,41 @@ void CMainWindow::resizeEvent(QResizeEvent *event) {
 	gl_view->resize( geometry().width() - 100, geometry().height() - 100);
 }
 
-void CMainWindow::trigger_rb_3d() { GameManager::get_instance()->set_b_use_vr(!GameManager::get_instance()->get_b_use_vr()); }
+void CMainWindow::trigger_rb_3d() { GameManager_ins().set_b_use_vr(!GameManager_ins().get_b_use_vr()); }
 void CMainWindow::trigger_polygon_mode(QAction* act) {
 	if (act->objectName().compare("action_pm_fill") == 0) {
-		GameManager::get_instance()->set_front_polygon_mode(GL_FILL);
-		GameManager::get_instance()->set_back_polygon_mode(GL_FILL);
+		GameManager_ins().set_front_polygon_mode(GL_FILL);
+		GameManager_ins().set_back_polygon_mode(GL_FILL);
 	}
 	else if (act->objectName().compare("action_pm_line") == 0) {
-		GameManager::get_instance()->set_front_polygon_mode(GL_LINE);
-		GameManager::get_instance()->set_back_polygon_mode(GL_LINE);
+		GameManager_ins().set_front_polygon_mode(GL_LINE);
+		GameManager_ins().set_back_polygon_mode(GL_LINE);
 	}
 }
 void CMainWindow::trigger_select_pp(QAction* act) {
 	if (act->objectName().compare("action_pp_normal") == 0) {
-		GameManager::get_instance()->set_pp_type(PostProcessType::NOPE);
+		GameManager_ins().set_pp_type(PostProcessType::NOPE);
 	}
 	else if (act->objectName().compare("action_pp_gray") == 0) {
-		GameManager::get_instance()->set_pp_type(PostProcessType::GRAY);
+		GameManager_ins().set_pp_type(PostProcessType::GRAY);
 	}
 	else if (act->objectName().compare("action_pp_invers") == 0) {
-		GameManager::get_instance()->set_pp_type(PostProcessType::INVERS);
+		GameManager_ins().set_pp_type(PostProcessType::INVERS);
 	}
 	else if (act->objectName().compare("action_pp_blur") == 0) {
-		GameManager::get_instance()->set_pp_type(PostProcessType::BLUR);
+		GameManager_ins().set_pp_type(PostProcessType::BLUR);
 	}
 	else if (act->objectName().compare("action_pp_sharpen") == 0) {
-		GameManager::get_instance()->set_pp_type(PostProcessType::SHARPEN);
+		GameManager_ins().set_pp_type(PostProcessType::SHARPEN);
 	}
 	else if (act->objectName().compare("action_pp_edge_det") == 0) {
-		GameManager::get_instance()->set_pp_type(PostProcessType::EDGE_DET);
+		GameManager_ins().set_pp_type(PostProcessType::EDGE_DET);
 	}
 }
 
 
 
 void CMainWindow::trigger_shader_toy() {
-	GameManager::get_instance()->set_b_use_shader_toy(!GameManager::get_instance()->get_b_use_shader_toy());
+	GameManager_ins().set_b_use_shader_toy(!GameManager_ins().get_b_use_shader_toy());
 }
 

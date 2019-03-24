@@ -62,12 +62,6 @@
     <Filter Include="resources\logs">
       <UniqueIdentifier>{5fa81130-129b-45bc-a992-ad1cb506a503}</UniqueIdentifier>
     </Filter>
-    <Filter Include="src\include\cameras">
-      <UniqueIdentifier>{91b85cd2-c143-4748-9379-b2427d3ddfa1}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="src\include\lights">
-      <UniqueIdentifier>{7a1ac122-8d49-4bad-b220-a3a9ebb6948f}</UniqueIdentifier>
-    </Filter>
     <Filter Include="src\include\core">
       <UniqueIdentifier>{fd93f3e0-2ab5-4cbe-8591-a044d2033dfb}</UniqueIdentifier>
     </Filter>
@@ -104,14 +98,29 @@
     <Filter Include="src\source\ui">
       <UniqueIdentifier>{f10b1ad3-fabc-4cf7-b18a-c30725187e50}</UniqueIdentifier>
     </Filter>
-    <Filter Include="src\source\cameras">
+    <Filter Include="src\include\helper">
+      <UniqueIdentifier>{05f803d1-6417-4b99-9cd0-8798569c52b9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\source\helper">
+      <UniqueIdentifier>{5e806fc6-1a6d-488e-844a-abcad9914937}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\include\preset">
+      <UniqueIdentifier>{e787bd40-1fd4-4186-b3eb-fc58ea59cabb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\include\preset\cameras">
+      <UniqueIdentifier>{91b85cd2-c143-4748-9379-b2427d3ddfa1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\include\preset\shapes">
+      <UniqueIdentifier>{1e2315e2-e5e5-400b-9036-6542d90ec8a4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\source\preset">
+      <UniqueIdentifier>{ff8e2f7c-1260-44ad-a5b0-6639ecadcff3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\source\preset\cameras">
       <UniqueIdentifier>{d74b32ae-ec9c-4953-9f08-beb7fe340d3c}</UniqueIdentifier>
     </Filter>
-    <Filter Include="src\source\shapes">
+    <Filter Include="src\source\preset\shapes">
       <UniqueIdentifier>{7acf4846-966f-4a4e-8dd1-9cf873c6a00a}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="src\include\shapes">
-      <UniqueIdentifier>{1e2315e2-e5e5-400b-9036-6542d90ec8a4}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -233,16 +242,16 @@
       <Filter>src\source\ui</Filter>
     </ClCompile>
     <ClCompile Include="src\source\freecamera.cpp">
-      <Filter>src\source\cameras</Filter>
+      <Filter>src\source\preset\cameras</Filter>
     </ClCompile>
     <ClCompile Include="src\source\cubeobject.cpp">
-      <Filter>src\source\shapes</Filter>
+      <Filter>src\source\preset\shapes</Filter>
     </ClCompile>
     <ClCompile Include="src\source\cylinderobject.cpp">
-      <Filter>src\source\shapes</Filter>
+      <Filter>src\source\preset\shapes</Filter>
     </ClCompile>
     <ClCompile Include="src\source\sphereobject.cpp">
-      <Filter>src\source\shapes</Filter>
+      <Filter>src\source\preset\shapes</Filter>
     </ClCompile>
     <ClCompile Include="demo\flowsphere.cpp">
       <Filter>demo</Filter>
@@ -268,11 +277,20 @@
     <ClCompile Include="src\source\animsequence.cpp">
       <Filter>src\source\core\renders</Filter>
     </ClCompile>
-    <ClCompile Include="src\source\stringtool.cpp">
-      <Filter>src\source\core</Filter>
-    </ClCompile>
     <ClCompile Include="src\source\singleton.cpp">
       <Filter>src\source\core</Filter>
+    </ClCompile>
+    <ClCompile Include="src\source\stringhelper.cpp">
+      <Filter>src\source\helper</Filter>
+    </ClCompile>
+    <ClCompile Include="src\source\debuger.cpp">
+      <Filter>src\source\helper</Filter>
+    </ClCompile>
+    <ClCompile Include="src\source\filehelper.cpp">
+      <Filter>src\source\helper</Filter>
+    </ClCompile>
+    <ClCompile Include="src\source\typehelper.cpp">
+      <Filter>src\source\helper</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -330,10 +348,10 @@
       <Filter>demo</Filter>
     </ClInclude>
     <ClInclude Include="src\include\cubeobject.h">
-      <Filter>src\include\shapes</Filter>
+      <Filter>src\include\preset\shapes</Filter>
     </ClInclude>
     <ClInclude Include="src\include\freecamera.h">
-      <Filter>src\include\cameras</Filter>
+      <Filter>src\include\preset\cameras</Filter>
     </ClInclude>
     <ClInclude Include="src\include\delegate.h">
       <Filter>src\include\core</Filter>
@@ -396,10 +414,10 @@
       <Filter>src\include\core\components</Filter>
     </ClInclude>
     <ClInclude Include="src\include\cylinderobject.h">
-      <Filter>src\include\shapes</Filter>
+      <Filter>src\include\preset\shapes</Filter>
     </ClInclude>
     <ClInclude Include="src\include\sphereobject.h">
-      <Filter>src\include\shapes</Filter>
+      <Filter>src\include\preset\shapes</Filter>
     </ClInclude>
     <ClInclude Include="demo\flowsphere.h">
       <Filter>demo</Filter>
@@ -425,11 +443,20 @@
     <ClInclude Include="src\include\animsequence.h">
       <Filter>src\include\core\renders</Filter>
     </ClInclude>
-    <ClInclude Include="src\include\stringtool.h">
-      <Filter>src\include\core</Filter>
-    </ClInclude>
     <ClInclude Include="src\include\singleton.h">
       <Filter>src\include\core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\include\stringhelper.h">
+      <Filter>src\include\helper</Filter>
+    </ClInclude>
+    <ClInclude Include="src\include\debuger.h">
+      <Filter>src\include\helper</Filter>
+    </ClInclude>
+    <ClInclude Include="src\include\filehelper.h">
+      <Filter>src\include\helper</Filter>
+    </ClInclude>
+    <ClInclude Include="src\include\typehelper.h">
+      <Filter>src\include\helper</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

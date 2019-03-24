@@ -1,5 +1,4 @@
 #include "materialloader.h"
-#include <algorithm>
 
 bool MaterialGen::gen_material_txt(std::string& res, const MaterialData& md, SourceType source_type) {
 	std::ostream* out;

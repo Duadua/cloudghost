@@ -31,14 +31,14 @@ void FreeCamera::turn(float offset) {
 	get_root_component()->set_rotation(new_rotation);
 
 	// set cursor pos
-	InputManager::cursor_clip();
-	InputManager::cursor_show(Qt::BlankCursor);
-	if(InputManager::cursor_in_edge()) InputManager::cursor_move(InputManager::get_input_data().mouse_pressed_pos);
+	InputManager_ins().cursor_clip();
+	InputManager_ins().cursor_show(Qt::BlankCursor);
+	if(InputManager_ins().cursor_in_edge()) InputManager_ins().cursor_move(InputManager_ins().get_input_data().mouse_pressed_pos);
 }
 void FreeCamera::turn_over() {
-	InputManager::cursor_unclip();
-	InputManager::cursor_show(Qt::CrossCursor);
-	InputManager::cursor_move(InputManager::get_input_data().mouse_pressed_pos, 4);
+	InputManager_ins().cursor_unclip();
+	InputManager_ins().cursor_show(Qt::CrossCursor);
+	InputManager_ins().cursor_move(InputManager_ins().get_input_data().mouse_pressed_pos, 4);
 }
 void FreeCamera::look_up(float offset) {
 	CVector3D new_rotation = get_root_component()->get_rotation();
@@ -48,9 +48,9 @@ void FreeCamera::look_up(float offset) {
 	get_root_component()->set_rotation(new_rotation);
 	
 	// set cursor pos
-	InputManager::cursor_clip();
-	InputManager::cursor_show(Qt::BlankCursor);
-	if (InputManager::cursor_in_edge()) InputManager::cursor_move(InputManager::get_input_data().mouse_pressed_pos);
+	InputManager_ins().cursor_clip();
+	InputManager_ins().cursor_show(Qt::BlankCursor);
+	if (InputManager_ins().cursor_in_edge()) InputManager_ins().cursor_move(InputManager_ins().get_input_data().mouse_pressed_pos);
 }
 
 void FreeCamera::move_forward(float offset) {
@@ -86,9 +86,9 @@ void FreeCamera::move_right(float offset) {
 	get_root_component()->set_location(new_location);
 
 	// set cursor pos
-	InputManager::cursor_clip();
-	InputManager::cursor_show(Qt::BlankCursor);
-	if (InputManager::cursor_in_edge()) InputManager::cursor_move(InputManager::get_input_data().mouse_pressed_pos);
+	InputManager_ins().cursor_clip();
+	InputManager_ins().cursor_show(Qt::BlankCursor);
+	if (InputManager_ins().cursor_in_edge()) InputManager_ins().cursor_move(InputManager_ins().get_input_data().mouse_pressed_pos);
 }
 void FreeCamera::move_up(float offset) {
 	CVector3D new_location = get_root_component()->get_location();

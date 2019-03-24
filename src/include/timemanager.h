@@ -1,6 +1,7 @@
 #pragma once
 
 #include "cmath.h"
+#include "singleton.h"
 
 struct DateTime {
 	int year;
@@ -18,11 +19,10 @@ struct DateTime {
 
 };
 
-class TimeManager {
+//class TimeManager {
+SINGLETON_CLASS(TimeManager) {
+	SINGLETON(TimeManager)
 public:
-	~TimeManager() {}
-
-	static TimeManager* get_instance();
 
 	DateTime	cur_time_data();					// 当前系统时间  -- 输出用
 	ll			cur_time_msconds();					// 当前系统时间  -- 毫秒
@@ -33,17 +33,15 @@ public:
 	ll get_delta_tick_msconds() { return delta_tick_msconds; }
 
 private:
-	TimeManager() : delta_tick_msconds(0) {}
 
-	static TimeManager* instance;
-
-	static system_time_point time_start_s;	// 程序开始时的系统时间
-	static highrs_time_point time_start_h;	// 程序开始时的boot 启动时间 -- 防止运算过程中修改系统时间
-	static ll				 time_start_m;	// 程序开始时的系统时间秒数
+	system_time_point time_start_s;	// 程序开始时的系统时间
+	highrs_time_point time_start_h;	// 程序开始时的boot 启动时间 -- 防止运算过程中修改系统时间
+	ll				  time_start_m;	// 程序开始时的系统时间秒数
 
 	ll pre_tick_msconds;					// 上一帧运行的时间
 	ll delta_tick_msconds;					// 每两帧之间的时间间隔
 
-};
+	virtual void _init() override;
 
-TimeManager& time_manager();
+};
+SINGLETON_X(TimeManager)

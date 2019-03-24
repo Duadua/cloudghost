@@ -10,25 +10,6 @@
 #include "loader.h"
 
 // mouse
-QTimer InputManager::timer_mouse_pressed_over;
-
-// key
-QTimer InputManager::timer_key_pressed_over;
-
-// binders
-
-QMap<QString, QVector<InputState> > InputManager::axis_maps;
-QMap<QString, QVector<InputState> > InputManager::action_maps;
-
-QMap<QString, DELEGATE_ICLASS(InputAxis)> InputManager::input_axis;
-QMap<QString, DELEGATE_ICLASS(InputAction)> InputManager::input_actions;
-
-InputData InputManager::cur_input_data;
-InputState InputManager::cur_input_state;
-
-QOpenGLWidget* InputManager::gl;
-
-// mouse
 void InputManager::exec_mouse_pressed_event(QMouseEvent* event) {
 
 	cur_input_state.mouse_pressing = event->buttons();
@@ -46,7 +27,7 @@ void InputManager::exec_mouse_pressed_event(QMouseEvent* event) {
 		cur_input_data.mouse_cur_pos = event->pos();
 	} // 只有一个键按下
 	
-	exec_axis_mouse_move(static_cast<float>(time_manager().get_delta_tick_msconds()));
+	exec_axis_mouse_move(static_cast<float>(TimeManager_ins().get_delta_tick_msconds()));
 }
 void InputManager::exec_mouse_release_event(QMouseEvent* event) {
 
@@ -55,7 +36,7 @@ void InputManager::exec_mouse_release_event(QMouseEvent* event) {
 	
 	cur_input_state.modifiers = event->modifiers();
 
-	exec_axis_mouse_move(static_cast<float>(time_manager().get_delta_tick_msconds()));
+	exec_axis_mouse_move(static_cast<float>(TimeManager_ins().get_delta_tick_msconds()));
 }
 void InputManager::exec_mouse_moveeee_event(QMouseEvent* event) {
 
@@ -69,11 +50,11 @@ void InputManager::exec_mouse_moveeee_event(QMouseEvent* event) {
 	cur_input_data.mouse_last_pos = event->pos();
 	cur_input_data.mouse_cur_pos = event->pos();
 	
-	exec_axis_mouse_move(static_cast<float>(time_manager().get_delta_tick_msconds()));
+	exec_axis_mouse_move(static_cast<float>(TimeManager_ins().get_delta_tick_msconds()));
 }
 void InputManager::exec_mouse_wheeeel_event(QWheelEvent* event) {
 	cur_input_data.mouse_wheel_delta = event->delta();
-	exec_axis_mouse_wheel(static_cast<float>(time_manager().get_delta_tick_msconds()));
+	exec_axis_mouse_wheel(static_cast<float>(TimeManager_ins().get_delta_tick_msconds()));
 }
 void InputManager::mouse_pressed_over() {
 	cur_input_data.mouse_pressed_count = 0;

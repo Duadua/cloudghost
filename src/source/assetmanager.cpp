@@ -2,15 +2,6 @@
 #include <GL/glew.h>
 
 #include "assetmanager.h"
-// #include <QImage>
-
-std::map<std::string, SPTR_Shader> AssetManager::map_shaders;
-std::map<std::string, SPTR_Mesh> AssetManager::map_meshs;
-std::map<std::string, SPTR_SkeletalMesh> AssetManager::map_skeletalmeshs;
-std::map<std::string, SPTR_Skeleton> AssetManager::map_skeletons;
-std::map<std::string, SPTR_AnimSequence> AssetManager::map_anim_sequence;
-std::map<std::string, SPTR_Material> AssetManager::map_materials;
-std::map<std::string, SPTR_Texture2D> AssetManager::map_textures;
 
 SPTR_Shader AssetManager::load_shader(const std::string& key, const std::string& v_path, const std::string& f_path, const std::string& g_path, SourceType source_type) {
 	//if (map_shaders.count(key)) { c_debug() << "[asset][shader][load] already loaded shader " + key; return nullptr; }

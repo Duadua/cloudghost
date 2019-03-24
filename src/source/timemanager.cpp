@@ -15,16 +15,15 @@ std::string DateTime::to_string() const {
 
 // ================================================================================
 
-system_time_point TimeManager::time_start_s = std::chrono::time_point_cast<msecnd_type>(std::chrono::system_clock::now());
-highrs_time_point TimeManager::time_start_h = std::chrono::time_point_cast<msecnd_type>(std::chrono::high_resolution_clock::now());
-ll				  TimeManager::time_start_m = (std::chrono::time_point_cast<msecnd_type>(std::chrono::system_clock::now())).time_since_epoch().count();
+void TimeManager::_init() {
+	time_start_s = std::chrono::time_point_cast<msecnd_type>(std::chrono::system_clock::now());
+	time_start_h = std::chrono::time_point_cast<msecnd_type>(std::chrono::high_resolution_clock::now());
+	time_start_m = (std::chrono::time_point_cast<msecnd_type>(std::chrono::system_clock::now())).time_since_epoch().count();
+	
+	pre_tick_msconds = 0;
+	delta_tick_msconds = 0;
 
-TimeManager* TimeManager::instance = nullptr;
-TimeManager* TimeManager::get_instance() {
-	if (instance == nullptr) { instance = new TimeManager(); }
-	return instance;
 }
-TimeManager& time_manager() { return (*TimeManager::get_instance()); }
 
 DateTime TimeManager::cur_time_data() {
 	auto c_h = std::chrono::time_point_cast<msecnd_type>(std::chrono::high_resolution_clock::now());

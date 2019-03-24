@@ -181,3 +181,4 @@ public:
 	static std::string char_to_string(char c);
 
 };
+inline GameManager& GameManager_ins() { return (*GameManager::get_instance()); }
