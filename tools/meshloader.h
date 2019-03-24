@@ -111,7 +111,30 @@ struct MSkeleton {
 // ===============================================================================================
 
 // 动画相关
+struct MAnimPositionKey {
+	float time;
+	CVector3D value;
+	MAnimPositionKey() {}
+	MAnimPositionKey(float t, const CVector3D& v) : time(t), value(v) {}
+};
+struct MAnimRotationKey {
+	float time;
+	CQuaternion value;
+	MAnimRotationKey() {}
+	MAnimRotationKey(float t, const CQuaternion& v) : time(t), value(v) {}
+};
+struct MAnimScaleKey {
+	float time;
+	CVector3D value;
+	MAnimScaleKey() {}
+	MAnimScaleKey(float t, const CVector3D& v) : time(t), value(v) {}
+};
+
 struct MAnimNode {
+	std::string name;								// node name 与 骨骼层次里的 node 名称对应
+	std::vector<MAnimPositionKey> position_keys;
+	std::vector<MAnimRotationKey> rotation_keys;
+	std::vector<MAnimScaleKey> scale_keys;
 
 };
 struct AnimData {
@@ -120,6 +143,9 @@ struct AnimData {
 	std::vector<MAnimNode> anim_nodes;
 
 	std::string name;
+	float duration;									// 持续时间 -- 总共的帧数
+	float ticks_per_seconds;						// 每秒多少帧 -- 1000.0 / ticks_per_seconds 为每帧多少毫秒
+
 };
 
 // ===============================================================================================
