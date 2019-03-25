@@ -7,6 +7,9 @@
 
 class CMatrix4x4 {
 public:
+	const static int row_size = 4;
+	const static int col_size = 4;
+
 	CMatrix4x4() : scaled(1.0f) { set_to_identity(); }
 	CMatrix4x4(const float* d) : scaled(1.0f) { memcpy(m, d, sizeof(m)); }
 	CMatrix4x4(const float* d, int cols, int rows);
@@ -66,7 +69,7 @@ public:
 
 	inline const float* data() const { return *m; }
 private:
-	float m[4][4];													// 列主序 -- m[i][j] -- 第 i 列 第 j 行
+	float m[col_size][row_size];									// 列主序 -- m[i][j] -- 第 i 列 第 j 行
 
 	CVector3D scaled;												// 已经缩放的因子
 
@@ -100,12 +103,12 @@ inline CMatrix4x4& CMatrix4x4::set_row(int index, const CVector4D& value) {
 }
 
 inline float& CMatrix4x4::operator()(int row, int col) {
-	if (row < 0) row = 0; if (row > 3) row = 3; 
-	if (col < 0) col = 0; if (col > 3) col = 3; 
+	if (row < 0) row = 0; if (row >= row_size) row = row_size - 1;
+	if (col < 0) col = 0; if (col >= col_size) col = col_size - 1; 
 	return m[col][row]; 
 }
 inline const float& CMatrix4x4::operator()(int row, int col) const {
-	if (row < 0) row = 0; if (row > 3) row = 3; 
-	if (col < 0) col = 0; if (col > 3) col = 3; 
+	if (row < 0) row = 0; if (row >= row_size) row = row_size - 1; 
+	if (col < 0) col = 0; if (col >= col_size) col = col_size - 1;
 	return m[col][row]; 
 }

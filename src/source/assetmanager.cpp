@@ -322,6 +322,8 @@ bool AssetManager::load_anim_sequences(const std::string& path, const std::strin
 			t_anim->init(ad.map_anim_nodes, t_ans);
 
 			map_anim_sequence[t_anim->get_name()] = t_anim;
+			c_debuger() << "[yep][asset][anim] load animation sequence success call " + t_anim->get_name();
+
 		} // 每一个动画序列
 	}
 	else { c_debuger() << "[warning][asset][anim] load anim_sequence failed from \"" + path + "\""; }

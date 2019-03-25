@@ -292,6 +292,12 @@
     <ClCompile Include="src\source\cdebuger.cpp">
       <Filter>src\source\helper</Filter>
     </ClCompile>
+    <ClCompile Include="src\source\skeletalmeshcomponent.cpp">
+      <Filter>src\source\core</Filter>
+    </ClCompile>
+    <ClCompile Include="math\source\cmatrix2x2.cpp">
+      <Filter>math\source</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <QtUic Include="resources\ui\qtdebugwidget.ui">
@@ -457,6 +463,12 @@
     </ClInclude>
     <ClInclude Include="src\include\cdebuger.h">
       <Filter>src\include\helper</Filter>
+    </ClInclude>
+    <ClInclude Include="src\include\skeletalmeshcomponent.h">
+      <Filter>src\include\core\components</Filter>
+    </ClInclude>
+    <ClInclude Include="math\include\cmatrix2x2.h">
+      <Filter>math\include</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -27,6 +27,6 @@
 	[yep][animation]load animation success by assimp
 	resources/models/animation/Riven18/riven18_idle1.FBX
 # =========================
-	[warning][asset][shader]no shader calls ""
+	[yep][asset][anim] load animation sequence success call riven18_idle1
 # =========================
-	[warning][asset][mesh]no mesh calls "riven"
+	[warning][asset][shader]no shader calls ""

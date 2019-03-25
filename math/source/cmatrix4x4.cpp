@@ -3,14 +3,14 @@
 #include <sstream>
 
 CMatrix4x4::CMatrix4x4(const float* d, int cols, int rows) : scaled(1.0f) {
-	for (int i = 0; i < cols && i < 4; ++i) { for (int j = 0; j < rows && j < 4; ++j) {
+	for (int i = 0; i < cols && i < col_size; ++i) { for (int j = 0; j < rows && j < row_size; ++j) {
 			m[i][j] = d[i*cols + j];
 	}}
 }
 
 CMatrix4x4& CMatrix4x4::set_to_identity() {
 	scaled = CVector3D(1.0f);
-	for (int i = 0; i < 4; ++i) { for (int j = 0; j < 4; ++j) {
+	for (int i = 0; i < col_size; ++i) { for (int j = 0; j < row_size; ++j) {
 		if(i == j) m[i][j]= 1.0f; 
 		else m[i][j] = 0.0f;
 	}}
@@ -18,11 +18,11 @@ CMatrix4x4& CMatrix4x4::set_to_identity() {
 }
 CMatrix4x4& CMatrix4x4::set_to_zero() {
 	scaled = CVector3D(1.0f);
-	for (int i = 0; i < 4; ++i) { for (int j = 0; j < 4; ++j) { m[i][j] = 0; }} 
+	for (int i = 0; i < col_size; ++i) { for (int j = 0; j < row_size; ++j) { m[i][j] = 0; }} 
 	return (*this);
 }
 CMatrix4x4& CMatrix4x4::set_to_transpose() {
-	for (int i = 0; i < 4; ++i) { for (int j = 0; j < i; ++j) { std::swap(m[i][j], m[j][i]); } }
+	for (int i = 0; i < col_size; ++i) { for (int j = 0; j < i; ++j) { std::swap(m[i][j], m[j][i]); } }
 	return (*this);
 }
 
@@ -34,23 +34,23 @@ CMatrix4x4 CMatrix4x4::get_transpose() const {
 CMatrix4x4 operator * (const CMatrix4x4& a, const CMatrix4x4& b) {
 	CMatrix4x4 res;
 	res.scaled = a.scaled * b.scaled;
-	for (int i = 0; i < 4; ++i) { for (int j = 0; j < 4; ++j) {
+	for (int i = 0; i < CMatrix4x4::row_size; ++i) { for (int j = 0; j < CMatrix4x4::col_size; ++j) {
 			res(i, j) = a.row(i).dot(b.column(j));
 	}}
 	return res;
 }
 CVector4D operator * (const CMatrix4x4& a, const CVector4D& b) {
 	CVector4D res;
-	for (int i = 0; i < 4; ++i) { res += a.column(i)*b[i]; }
+	for (int i = 0; i < CMatrix4x4::col_size; ++i) { res += a.column(i)*b[i]; }
 	return res;
 }
 CVector3D operator * (const CMatrix4x4& a, const CVector3D& b) { return (a*CVector4D(b)).xyz(); }
 
 std::ostream& operator << (std::ostream& out, const CMatrix4x4& b) {
 	out << "CMatrix4x4 (\n";
-    for (int i = 0; i < 4; ++i) {
+    for (int i = 0; i < CMatrix4x4::row_size; ++i) {
 		out << "\t\t";
-        for (int j = 0; j < 4; ++j) {
+		for (int j = 0; j < CMatrix4x4::col_size; ++j) {
 			out << std::to_string(b(i, j)) << " ";
 		}
 		out << "\n";
@@ -303,6 +303,5 @@ CMatrix4x4& CMatrix4x4::perspective(float vertical_angle, float aspect_ratio, fl
 	m[2][3] = -1;									// w
 	return (*this);
 }
-
 
 
