@@ -57,10 +57,10 @@ SPTR_uchar TextureGen::gen_gradua(uint& data_size, uint width, uint heigh, CColo
 	for (uint i = 0; i < heigh; ++i) {
 		for (uint j = 0; j < width; ++j) {
             float t_v = 1.0f * j / width;
-            uint t_r = static_cast<uint>(CMath_ins().interp_linear(t_v, 1.0f*color.r(), 255.0f));
-            uint t_g = static_cast<uint>(CMath_ins().interp_linear(t_v, 1.0f*color.g(), 255.0f));
-            uint t_b = static_cast<uint>(CMath_ins().interp_linear(t_v, 1.0f*color.b(), 255.0f));
-			//uint t_a = CMath_ins().interp_linear(t_v, color.a(), 0.0f);
+            uint t_r = static_cast<uint>(CMath_ins().linear_lerp(1.0f*color.r(), 255.0f, t_v));
+            uint t_g = static_cast<uint>(CMath_ins().linear_lerp(1.0f*color.g(), 255.0f, t_v));
+            uint t_b = static_cast<uint>(CMath_ins().linear_lerp(1.0f*color.b(), 255.0f, t_v));
+			//uint t_a = CMath_ins().linear_lerp(color.a(), 0.0f, t_v);
 			CColor t_color(t_r, t_g, t_b);
 			uint t_c = t_color.get_uint();
 			memcpy(t_data.get() + sizeof(uint) * 2 + i * width * 4 + j * 4, &t_c, sizeof(uint));

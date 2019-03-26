@@ -102,7 +102,8 @@ int main(int argc, char *argv[]) {
 	c_debuger() << mat4x4.inverse().to_string();
 	*/
 	
-	{
+	// test quaternion slerp
+	/*{
 		CQuaternion a(0.0f, 0.0f, 0.0f, 1.0f);
 		CQuaternion b(0.0f, 0.0f, 0.707f, 0.707f);
 		c_debuger() << slerp(a, b, 0.333f).to_string();
@@ -117,6 +118,7 @@ int main(int argc, char *argv[]) {
 		c_debuger() << std::to_string(res.z);
 		c_debuger() << std::to_string(res.w);
 	}
+	*/
 
 	MyGameManager gm;
 	CMainWindow cmw;

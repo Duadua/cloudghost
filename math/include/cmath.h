@@ -46,10 +46,12 @@ public:
 	float rad_to_deg(float rad);
 	float deg_to_rad(float deg);
 
-	float interp_linear(float v, float min, float max);		// 线性插值 v ~ [0.0 ,, 1.0]
+	// 线性插值 t ~ [0.0 ,, 1.0]
+	template<class T> T linear_lerp(const T& a, const T& b, float t) { return (1.0f - t)*a + t * b; }
 
     int fcmp(float a, float b);								// -1 -- < ; 0 -- = ; 1 -- >
 
+	// random
 	std::default_random_engine dre;
 	void set_random_seed(int seed) { dre.seed(seed); }
 	template<class T> T random(T min, T max);				// random in [min, max]
