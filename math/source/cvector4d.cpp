@@ -1,4 +1,5 @@
 #include "cvector4d.h" 
+#include <sstream>
 
 CVector4D operator + (const CVector4D& a, const CVector4D& b) { return CVector4D(a[0] + b[0], a[1] + b[1], a[2] + b[2], a[3] + b[3]); }
 CVector4D operator - (const CVector4D& a, const CVector4D& b) { return CVector4D(a[0] - b[0], a[1] - b[1], a[2] - b[2], a[3] - b[3]); }
@@ -6,6 +7,16 @@ CVector4D operator * (const CVector4D& a, const CVector4D& b) { return CVector4D
 CVector4D operator / (const CVector4D& a, const CVector4D& b) {
 	if (b[0] == 0.0f || b[1] == 0.0f || b[2] == 0.0f || b[3] == 0.0f) { return CVector4D(); }
 	return CVector4D(a[0] / b[0], a[1] / b[1], a[2] / b[2], a[3] / b[3]);
+}
+
+std::ostream& operator << (std::ostream& out, const CVector4D& b) {
+	out << "CVector4D ( " << b.x() << ", " << b.y() << ", " << b.z() << ", " << b.w() << " )";
+	return out;
+}
+std::string CVector4D::to_string() const {
+	std::ostringstream oss;
+	oss << (*this);
+	return oss.str();
 }
 
 CVector4D CVector4D::operator +=(const CVector4D& b) { v[0] += b[0]; v[1] += b[1]; v[2] += b[2]; v[3] += b[3]; return (*this); }

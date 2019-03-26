@@ -12,6 +12,10 @@
 #include "singleton.h"
 #include "cmath.h"
 
+#include <assimp/scene.h>
+#include <assimp/Importer.hpp>
+#include <assimp/postprocess.h>
+
 #ifndef NDEBUG
 #include "cdebuger.h"
 #endif // !NDEBUG
@@ -98,6 +102,21 @@ int main(int argc, char *argv[]) {
 	c_debuger() << mat4x4.inverse().to_string();
 	*/
 	
+	{
+		CQuaternion a(0.0f, 0.0f, 0.0f, 1.0f);
+		CQuaternion b(0.0f, 0.0f, 0.707f, 0.707f);
+		c_debuger() << slerp(a, b, 0.333f).to_string();
+
+		aiQuaternion aa(1.0f, 0.0f, 0.0f, 0.0f);
+		aiQuaternion bb(0.707f, 0.0f, 0.0f, 0.707f);
+		aiQuaternion res;
+		aiQuaternion::Interpolate(res, aa, bb, 0.333f);
+		res.Normalize();
+		c_debuger() << std::to_string(res.x);
+		c_debuger() << std::to_string(res.y);
+		c_debuger() << std::to_string(res.z);
+		c_debuger() << std::to_string(res.w);
+	}
 
 	MyGameManager gm;
 	CMainWindow cmw;

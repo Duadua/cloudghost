@@ -31,6 +31,9 @@ public:
 	friend CVector4D operator * (const CVector4D& a, const CVector4D& b);
 	friend CVector4D operator / (const CVector4D& a, const CVector4D& b);
 
+	friend std::ostream& operator << (std::ostream& out, const CVector4D& b);
+	std::string to_string() const;
+
 	CVector4D operator +=(const CVector4D& b);
 	CVector4D operator *=(const CVector4D& b);
 
