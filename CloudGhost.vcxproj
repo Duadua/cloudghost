@@ -141,6 +141,7 @@
     <ClCompile Include="math\source\ccolor.cpp" />
     <ClCompile Include="math\source\cmath.cpp" />
     <ClCompile Include="math\source\cmatrix2x2.cpp" />
+    <ClCompile Include="math\source\cmatrix3x3.cpp" />
     <ClCompile Include="math\source\cvector2d.cpp" />
     <ClCompile Include="math\source\cvector3d.cpp" />
     <ClCompile Include="math\source\cmatrix4x4.cpp" />
@@ -207,6 +208,7 @@
     <ClInclude Include="math\include\ccolor.h" />
     <ClInclude Include="math\include\cmath.h" />
     <ClInclude Include="math\include\cmatrix2x2.h" />
+    <ClInclude Include="math\include\cmatrix3x3.h" />
     <ClInclude Include="math\include\cvector2d.h" />
     <ClInclude Include="math\include\cvector3d.h" />
     <ClInclude Include="math\include\cmatrix4x4.h" />

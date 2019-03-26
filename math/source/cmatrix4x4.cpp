@@ -1,4 +1,5 @@
 #include "cmath.h"
+#include "cmatrix3x3.h"
 #include "cmatrix4x4.h"
 #include <sstream>
 
@@ -26,19 +27,65 @@ CMatrix4x4& CMatrix4x4::set_to_transpose() {
 	return (*this);
 }
 
-CMatrix4x4 CMatrix4x4::get_transpose() const {
+float CMatrix4x4::det() const {
+	float ans = 0.0f;
+	for (int i = 0; i < col_size; ++i) { ans += m[i][0] * cofactor(0, i); }
+	return ans;
+}
+float CMatrix4x4::cofactor(int row, int col) const {
+	float tmp[col_size - 1][row_size - 1]{ 0 };
+	int cur_c = 0;
+	for (int i = 0; i < col_size; ++i) {
+		if (i == col) continue;
+		int cur_r = 0;
+		for (int j = 0; j < row_size; ++j) {
+			if (j == row) continue;
+			tmp[cur_c][cur_r] = m[i][j];
+			++cur_r;
+		}
+		++cur_c;
+	}
+	if ((row + col) & 1) return -1.0f * CMatrix3x3(*tmp).det();
+	return CMatrix3x3(*tmp).det();
+}
+
+CMatrix4x4 CMatrix4x4::adj() const {
+	CMatrix4x4 ans;
+	for (int i = 0; i < col_size; ++i) {
+		for (int j = 0; j < row_size; ++j) { ans(i, j) = cofactor(j, i); } // 伴随矩阵需要转置
+	}
+	return ans;
+}
+CMatrix4x4 CMatrix4x4::inverse() const {
+	float d = det();
+	if (CMath_ins().fcmp(d, CMath_ins().eps) == 0) { return CMatrix4x4(); }
+	CMatrix4x4 res = 1.0f / d * adj();
+	return res;
+}
+CMatrix4x4 CMatrix4x4::transpose() const {
 	CMatrix4x4 res = (*this);
 	return res.set_to_transpose();
 }
 
-CMatrix4x4 operator * (const CMatrix4x4& a, const CMatrix4x4& b) {
-	CMatrix4x4 res;
-	res.scaled = a.scaled * b.scaled;
-	for (int i = 0; i < CMatrix4x4::row_size; ++i) { for (int j = 0; j < CMatrix4x4::col_size; ++j) {
-			res(i, j) = a.row(i).dot(b.column(j));
-	}}
+CMatrix4x4 CMatrix4x4::operator * (float b) const {
+	CMatrix4x4 res((*this));
+	res.scaled = scaled * b;
+	for (int i = 0; i < CMatrix4x4::row_size; ++i) {
+		for (int j = 0; j < CMatrix4x4::col_size; ++j) { res(i, j) *= b; }
+	}
 	return res;
 }
+CMatrix4x4 CMatrix4x4::operator * (const CMatrix4x4& b) const {
+	CMatrix4x4 res;
+	res.scaled = scaled * b.scaled;
+	for (int i = 0; i < CMatrix4x4::row_size; ++i) {
+		for (int j = 0; j < CMatrix4x4::col_size; ++j) {
+			res(i, j) = row(i).dot(b.column(j));
+		}
+	}
+	return res;
+}
+CMatrix4x4 operator * (float a, const CMatrix4x4& b) { return b * a; }
 CVector4D operator * (const CMatrix4x4& a, const CVector4D& b) {
 	CVector4D res;
 	for (int i = 0; i < CMatrix4x4::col_size; ++i) { res += a.column(i)*b[i]; }

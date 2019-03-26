@@ -10,6 +10,7 @@
 
 #include "timemanager.h"
 #include "singleton.h"
+#include "cmath.h"
 
 #ifndef NDEBUG
 #include "cdebuger.h"
@@ -87,6 +88,15 @@ int main(int argc, char *argv[]) {
 		c_debuger() << std::to_string(TimeManager_ins().cur_time_msconds());
 		c_debuger() << std::to_string(TimeManager_ins().cur_runtime_msconds());
 	}*/
+	
+	/*CMatrix4x4 mat4x4(
+		5.0f, 2.0f, -0.0f, 0.0f,
+		2.0f, 1.0f, 0.0f, 0.0f,
+		0.0f, 0.0f, 8.0f, 3.0f,
+		0.0f, 0.0f, 5.0f, 2.0f
+		);
+	c_debuger() << mat4x4.inverse().to_string();
+	*/
 	
 
 	MyGameManager gm;

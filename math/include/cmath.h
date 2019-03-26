@@ -4,6 +4,8 @@
 #include "cvector2d.h"
 #include "cvector3d.h"
 #include "cvector4d.h"
+#include "cmatrix2x2.h"
+#include "cmatrix3x3.h"
 #include "cmatrix4x4.h"
 #include "cquaternion.h"
 #include "singleton.h"

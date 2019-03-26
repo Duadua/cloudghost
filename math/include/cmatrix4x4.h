@@ -28,9 +28,12 @@ public:
 	inline float& operator()(int row, int col);						// return m[column][row]
 	inline const float& operator()(int row, int col) const;
 
-	friend CMatrix4x4 operator * (const CMatrix4x4& a, const CMatrix4x4& b);
+	CMatrix4x4 operator * (float b) const;
+	CMatrix4x4 operator * (const CMatrix4x4& b) const;
+	friend CMatrix4x4 operator * (float a, const CMatrix4x4& b);
 	friend CVector4D operator * (const CMatrix4x4& a, const CVector4D& b);
 	friend CVector3D operator * (const CMatrix4x4& a, const CVector3D& b);
+
 	friend std::ostream& operator << (std::ostream& out, const CMatrix4x4& b);
 	std::string to_string() const;
 
@@ -65,7 +68,12 @@ public:
 	CMatrix4x4& set_to_zero();										// 0矩阵
 	CMatrix4x4& set_to_transpose();									// 转置矩阵
 
-	CMatrix4x4 get_transpose() const;								// 转置矩阵										
+	float det() const;												// 行列式的值
+	float cofactor(int row, int col) const;							// 代数余子式
+
+	CMatrix4x4 adj() const;											// 伴随矩阵
+	CMatrix4x4 inverse() const;										// 逆矩阵
+	CMatrix4x4 transpose() const;									// 转置矩阵			
 
 	inline const float* data() const { return *m; }
 private:
