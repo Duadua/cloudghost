@@ -4,6 +4,7 @@
 #include "typehelper.h"
 #include <string>
 #include <memory>
+#include <sstream>
 
 SINGLETON_CLASS(StringHelper) {
 	SINGLETON(StringHelper)
@@ -16,6 +17,9 @@ public:
 	std::string int_to_string(int ui);
 	std::string uint_to_string(uint ui);
 	std::string char_to_string(char c);
+
+	// T 需要重载 << 运算符
+	template<class T> std::string to_string(const T& t) { std::ostringstream oss; oss << t; return oss.str(); }
 
 private:
 	

@@ -1,8 +1,6 @@
 # =========================
 	[debug]start
 # =========================
-	6.650000
-# =========================
 	[warning][asset][material]no material calls ""
 # =========================
 	[warning][asset][material]no material calls ""

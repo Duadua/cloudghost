@@ -11,6 +11,7 @@
 #include "timemanager.h"
 #include "singleton.h"
 #include "cmath.h"
+#include "stringhelper.h"
 
 #include <assimp/scene.h>
 #include <assimp/Importer.hpp>
@@ -106,7 +107,7 @@ int main(int argc, char *argv[]) {
 	/*{
 		CQuaternion a(0.0f, 0.0f, 0.0f, 1.0f);
 		CQuaternion b(0.0f, 0.0f, 0.707f, 0.707f);
-		c_debuger() << slerp(a, b, 0.333f).to_string();
+		c_debuger() << StringHelper_ins().to_string(slerp(a, b, 0.333f));
 
 		aiQuaternion aa(1.0f, 0.0f, 0.0f, 0.0f);
 		aiQuaternion bb(0.707f, 0.0f, 0.0f, 0.707f);
@@ -119,7 +120,7 @@ int main(int argc, char *argv[]) {
 		c_debuger() << std::to_string(res.w);
 	}
 	*/
-
+	
 	MyGameManager gm;
 	CMainWindow cmw;
 	cmw.show();
