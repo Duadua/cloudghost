@@ -1,13 +1,22 @@
 #pragma once
 
-#include "shader.h"
-#include "gameobject.h"
-#include "rendertarget.h"
-#include "cameraobject.h"
-#include "stringhelper.h"
+#include "cmath.h"
+#include "reflex.h"
 #include <map>
 #include <string>
 #include <memory>
+
+PRE_DECLARE_CLASS(Shader)
+USING_SPTR(Shader)
+PRE_DECLARE_CLASS(RenderTarget)
+USING_SPTR(RenderTarget)
+PRE_DECLARE_CLASS(GameObject)
+USING_SPTR(GameObject)
+PRE_DECLARE_CLASS(CameraObject)
+USING_SPTR(CameraObject)
+PRE_DECLARE_CLASS(Texture2D)
+USING_SPTR(Texture2D)
+
 
 #define GL_LESS					0x0201
 #define GL_TRUE					1
@@ -19,11 +28,6 @@
 #define GL_LINE					0x1B01
 #define GL_BACK					0x0405
 #define GL_CCW					0x0901
-
-class QKeyEvent;
-class QMouseEvent;
-class QWheelEvent;
-class QOpenGLWidget;
 
 enum PostProcessType {
 	NOPE,					// 原色

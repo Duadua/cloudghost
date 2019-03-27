@@ -1,5 +1,6 @@
 #include "riven.h"
 #include "assetmanager.h"
+#include "skeletalmesh.h"
 #include "skeletalmeshcomponent.h"
 
 IMPLEMENT_CLASS(Riven)

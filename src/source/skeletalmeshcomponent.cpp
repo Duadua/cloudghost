@@ -1,5 +1,7 @@
-#include "skeletalmeshcomponent.h"
+#include "shader.h"
+#include "skeletalmesh.h"
 #include "assetmanager.h"
+#include "skeletalmeshcomponent.h"
 
 IMPLEMENT_CLASS(SkeletalMeshComponent)
 
@@ -20,5 +22,4 @@ void SkeletalMeshComponent::draw(const std::string& shader) {
 
 	for (auto cc : child_components) { cc->draw(shader); }
 }
-
 

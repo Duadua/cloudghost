@@ -1,3 +1,4 @@
+#include "cameracomponent.h"
 #include "cameraobject.h"
 
 IMPLEMENT_CLASS(CameraObject)

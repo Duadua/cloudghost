@@ -1,3 +1,5 @@
+#include "mesh.h"
+#include "assetmanager.h"
 #include "sphereobject.h"
 #include "meshcomponent.h"
 
@@ -7,7 +9,7 @@ SphereObject::SphereObject() {
 
 	auto mc = CREATE_CLASS(MeshComponent);
 	set_root_component(mc);
-	mc->set_mesh("sphere");
+	mc->set_mesh(AssetManager_ins().get_mesh("sphere"));
 }
 
 void SphereObject::begin_play() {

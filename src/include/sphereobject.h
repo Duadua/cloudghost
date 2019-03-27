@@ -1,7 +1,9 @@
 #pragma once
 
-#include "material.h"
 #include "gameobject.h"
+
+PRE_DECLARE_CLASS(Material)
+USING_SPTR(Material)
 
 class SphereObject : public GameObject {
 	DECLARE_CLASS(SphereObject)

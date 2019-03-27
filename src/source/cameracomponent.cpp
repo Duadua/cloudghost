@@ -4,7 +4,7 @@
 
 IMPLEMENT_CLASS(CameraComponent)
 
-CameraComponent::CameraComponent() : camera_mesh(""), camera_speed(0.05f){
+CameraComponent::CameraComponent() : camera_mesh(nullptr), camera_speed(0.05f){
 	camera_data = CREATE_CLASS(CameraData);
 }
 CameraComponent::~CameraComponent() {}

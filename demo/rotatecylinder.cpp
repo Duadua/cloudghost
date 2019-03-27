@@ -1,5 +1,6 @@
 #include "cmath.h"
 #include "rotatecylinder.h"
+#include "scenecomponent.h"
 #include "timemanager.h"
 
 IMPLEMENT_CLASS(RotateCylinder)

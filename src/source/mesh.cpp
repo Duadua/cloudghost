@@ -1,4 +1,6 @@
 #include "mesh.h"
+#include "material.h"
+#include "renderdata.h"
 #include "assetmanager.h"
 
 IMPLEMENT_CLASS(Mesh)

@@ -1,3 +1,5 @@
+#include "mesh.h"
+#include "shader.h"
 #include "meshcomponent.h"
 #include "assetmanager.h"
 
@@ -20,4 +22,3 @@ void MeshComponent::draw(const std::string& shader) {
 
 	for (auto cc : child_components) { cc->draw(shader); }
 }
-void MeshComponent::set_mesh(const std::string& name) { mesh = AssetManager_ins().get_mesh(name); }

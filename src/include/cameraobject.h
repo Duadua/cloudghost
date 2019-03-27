@@ -1,7 +1,10 @@
 #pragma once
 
+#include "reflex.h"
 #include "gameobject.h"
-#include "cameracomponent.h"
+
+PRE_DECLARE_CLASS(CameraComponent)
+USING_SPTR(CameraComponent)
 
 class CameraObject : public GameObject {
 	DECLARE_CLASS(CameraObject)

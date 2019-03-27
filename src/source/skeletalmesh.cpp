@@ -1,3 +1,8 @@
+#include "shader.h"
+#include "skeleton.h"
+#include "material.h"
+#include "renderdata.h"
+#include "animsequence.h"
 #include "skeletalmesh.h"
 #include "assetmanager.h"
 

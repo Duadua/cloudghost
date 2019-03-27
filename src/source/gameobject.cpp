@@ -1,3 +1,4 @@
+#include "shader.h"
 #include "gameobject.h"
 #include "assetmanager.h"
 #include "scenecomponent.h"

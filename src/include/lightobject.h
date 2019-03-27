@@ -1,7 +1,17 @@
 #pragma once
 
 #include "gameobject.h"
-#include "lightcomponent.h"
+
+PRE_DECLARE_CLASS(LightComponent)
+USING_SPTR(LightComponent)
+PRE_DECLARE_CLASS(DirectLightComponent)
+USING_SPTR(DirectLightComponent)
+PRE_DECLARE_CLASS(PointLightComponent)
+USING_SPTR(PointLightComponent)
+PRE_DECLARE_CLASS(SpotLightComponent)
+USING_SPTR(SpotLightComponent)
+PRE_DECLARE_CLASS(SkyLightComponent)
+USING_SPTR(SkyLightComponent)
 
 enum LightType {
 	DIRECT_LIGHT,

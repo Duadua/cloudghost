@@ -1,8 +1,11 @@
 #pragma once
 
 #include "reflex.h"
-#include "scenecomponent.h"
+#include "typehelper.h"
 #include <memory>
+
+PRE_DECLARE_CLASS(SceneComponent)
+USING_SPTR(SceneComponent)
 
 class GameObject : public CObject {
 	DECLARE_CLASS(GameObject)

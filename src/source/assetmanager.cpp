@@ -1,7 +1,15 @@
 #define GLEW_STATIC
 #include <GL/glew.h>
 
+#include "mesh.h"
+#include "shader.h"
+#include "skeleton.h"
+#include "skeletalmesh.h"
+#include "renderdata.h"
+#include "material.h"
+#include "animsequence.h"
 #include "assetmanager.h"
+#include "texture2d.h"
 
 #include "tools/meshloader.h"
 #include "tools/textureloader.h"

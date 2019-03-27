@@ -1,3 +1,4 @@
+#include "shader.h"
 #include "lightcomponent.h"
 #include "stringhelper.h"
 #include "assetmanager.h"

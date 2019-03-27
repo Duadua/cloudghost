@@ -1,15 +1,26 @@
 #pragma once
 
-#include "mesh.h"
-#include "shader.h"
-#include "material.h"
-#include "texture2d.h"
+#include "reflex.h"
 #include "singleton.h"
-#include "skeletalmesh.h"
-#include "animsequence.h"
-#include "tools/loader.h"
 #include <map>
 #include <string>
+
+#include "tools/loader.h"
+
+PRE_DECLARE_CLASS(Mesh)
+USING_SPTR(Mesh)
+PRE_DECLARE_CLASS(SkeletalMesh)
+USING_SPTR(SkeletalMesh)
+PRE_DECLARE_CLASS(Skeleton)
+USING_SPTR(Skeleton)
+PRE_DECLARE_CLASS(AnimSequence)
+USING_SPTR(AnimSequence)
+PRE_DECLARE_CLASS(Shader)
+USING_SPTR(Shader)
+PRE_DECLARE_CLASS(Material)
+USING_SPTR(Material)
+PRE_DECLARE_CLASS(Texture2D)
+USING_SPTR(Texture2D)
 
 #define GL_RGB				0x1907
 #define GL_BGRA				0x80E1

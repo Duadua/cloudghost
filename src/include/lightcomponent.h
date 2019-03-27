@@ -1,7 +1,7 @@
 #pragma once
 
-#include "scenecomponent.h"
 #include "cmath.h"
+#include "scenecomponent.h"
 
 // base light
 class LightComponent : public SceneComponent {

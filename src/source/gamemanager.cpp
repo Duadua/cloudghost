@@ -1,8 +1,13 @@
 #define GLEW_STATIC
 #include <GL/glew.h>
 
+#include "mesh.h"
+#include "shader.h"
+#include "texture2d.h"
 #include "gameobject.h"
 #include "freecamera.h"
+#include "rendertarget.h"
+#include "cameracomponent.h"
 
 #include "timemanager.h"
 #include "gamemanager.h"

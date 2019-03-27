@@ -1,4 +1,5 @@
 #include "mansion.h"
+#include "assetmanager.h"
 #include "meshcomponent.h"
 
 IMPLEMENT_CLASS(Mansion)
@@ -9,7 +10,7 @@ Mansion::Mansion() {
 
 	auto mc = CREATE_CLASS(MeshComponent);
 	mc->attach_to(rt);
-	mc->set_mesh("elf_mansion");
+	mc->set_mesh(AssetManager_ins().get_mesh("elf_mansion"));
 	//mc->set_rotation(-90.0f, 0.0f, 0.0f);
 
 }

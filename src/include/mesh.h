@@ -1,9 +1,13 @@
 #pragma once
 
 #include "reflex.h"
-#include "material.h"
-#include "renderdata.h"
+#include "typehelper.h"
 #include <string>
+
+PRE_DECLARE_CLASS(Material)
+USING_SPTR(Material)
+PRE_DECLARE_CLASS(RenderData)
+USING_SPTR(RenderData)
 
 struct RenderDataInstance {
 	SPTR_RenderData rd;

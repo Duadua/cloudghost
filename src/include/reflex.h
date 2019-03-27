@@ -12,15 +12,20 @@ using uchar = unsigned char;
 class ClassInfo;
 class ClassFactory;
 
-#define DECLARE_AUTO_PTR(name)											\
-class name;																\
-using SPTR_##name = std::shared_ptr<name>;							\
-using WPTR_##name = std::weak_ptr<name>;							\
-using UPTR_##name = std::unique_ptr<name>;
+#define PRE_DECLARE_CLASS(name) class name;
+#define USING_SPTR(name) using SPTR_##name = std::shared_ptr<name>;							
+#define USING_WPTR(name) using WPTR_##name = std::weak_ptr<name>;							
+#define USING_UPTR(name) using UPTR_##name = std::unique_ptr<name>;							
+
+#define DECLARE_AUTO_PTR(name)						\
+PRE_DECLARE_CLASS(name)								\
+USING_SPTR(name)									\
+USING_WPTR(name)									\
+USING_UPTR(name)									\
 
 #define DECLARE_CLASS(name)												\
 	private:															\
-        static ClassInfo class_info_##name;							\
+        static ClassInfo class_info_##name;								\
 	public:																\
 		static ClassInfo* get_class_info();								\
         static SPTR_CObject create_object_##name();
@@ -32,7 +37,7 @@ using UPTR_##name = std::unique_ptr<name>;
 access:																	\
 	attr_type attr_key;													\
 private:																\
-    class ClassAttrRegister_##attr_key{								\
+    class ClassAttrRegister_##attr_key{									\
 	public:																\
         ClassAttrRegister_##attr_key() {								\
             static ClassAttrRegister reg_##attr_key(					\
@@ -139,16 +144,12 @@ std::dynamic_pointer_cast<name>(ClassFactory::create_object((#name)))
 
 // ===========================================================================
 
-#define GET(type, name)										\
-public:														\
-    type get_##name() { return name; }
-#define SET(type, name)										\
-public:														\
-    void set_##name(const type& t_name) { name = t_name; }
+#define GET(type, name)	type get_##name() { return name; }			
+
+#define SET(type, name)	void set_##name(const type& t_name) { name = t_name; }
 
 #define GET_SET(type, name)									\
-public:														\
-    void set_##name(const type& t_name) { name = t_name; }  \
-    type get_##name() { return name; }
+	SET(type, name)											\
+	GET(type, name)
 
 

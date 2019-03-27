@@ -1,4 +1,6 @@
+#include "shader.h"
 #include "material.h"
+#include "texture2d.h"
 #include "assetmanager.h"
 
 IMPLEMENT_CLASS(Material)

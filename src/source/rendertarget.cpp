@@ -1,6 +1,7 @@
 #define GLEW_STATIC
 #include <GL/glew.h>
 
+#include "texture2d.h"
 #include "rendertarget.h"
 
 IMPLEMENT_CLASS(RenderBuffer)

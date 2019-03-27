@@ -1,4 +1,6 @@
+#include "mesh.h"
 #include "cubeobject.h"
+#include "assetmanager.h"
 #include "meshcomponent.h"
 
 IMPLEMENT_CLASS(CubeObject)
@@ -7,7 +9,7 @@ CubeObject::CubeObject() {
 
 	auto mc = CREATE_CLASS(MeshComponent);
 	set_root_component(mc);
-	mc->set_mesh("cube");
+	mc->set_mesh(AssetManager_ins().get_mesh("cube"));
 }
 
 void CubeObject::begin_play() {

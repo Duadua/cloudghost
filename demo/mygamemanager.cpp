@@ -1,9 +1,12 @@
+#include "shader.h"
+#include "texture2d.h"
 #include "freecamera.h"
 #include "inputmanager.h"
 #include "assetmanager.h"
 #include "mygamemanager.h"
 #include "meshcomponent.h"
 #include "lightobject.h"
+#include "lightcomponent.h"
 
 #include "cubeobject.h"
 #include "sphereobject.h"

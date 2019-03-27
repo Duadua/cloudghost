@@ -1,3 +1,5 @@
+#include "mesh.h"
+#include "assetmanager.h"
 #include "cylinderobject.h"
 #include "meshcomponent.h"
 
@@ -7,7 +9,7 @@ CylinderObject::CylinderObject() {
 
 	auto mc = CREATE_CLASS(MeshComponent);
 	set_root_component(mc);
-	mc->set_mesh("cylinder");
+	mc->set_mesh(AssetManager_ins().get_mesh("cylinder"));
 }
 
 void CylinderObject::begin_play() {

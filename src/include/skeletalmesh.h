@@ -3,9 +3,11 @@
 // skeletal mesh
 
 #include "mesh.h"
-#include "skeleton.h"
-#include "animsequence.h"
 
+PRE_DECLARE_CLASS(Skeleton)
+USING_SPTR(Skeleton)
+PRE_DECLARE_CLASS(AnimSequence)
+USING_SPTR(AnimSequence)
 
 struct Bone {
 	CMatrix4x4 mat_offset;

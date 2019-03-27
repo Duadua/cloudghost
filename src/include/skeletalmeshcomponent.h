@@ -1,8 +1,10 @@
 #pragma once
 
-#include "skeletalmesh.h"
 #include "scenecomponent.h"
 #include <string>
+
+PRE_DECLARE_CLASS(SkeletalMesh)
+USING_SPTR(SkeletalMesh)
 
 class SkeletalMeshComponent : public SceneComponent {
 	DECLARE_CLASS(SkeletalMeshComponent)

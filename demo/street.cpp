@@ -1,4 +1,5 @@
 #include "street.h"
+#include "assetmanager.h"
 #include "meshcomponent.h"
 
 IMPLEMENT_CLASS(Street)
@@ -9,7 +10,7 @@ Street::Street() {
 
 	auto mc = CREATE_CLASS(MeshComponent);
 	mc->attach_to(rt);
-	mc->set_mesh("street");
+	mc->set_mesh(AssetManager_ins().get_mesh("street"));
 //	mc->set_rotation(-90.0f, 0.0f, 0.0f);
 
 }

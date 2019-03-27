@@ -1,8 +1,10 @@
 #pragma once
 
-#include "mesh.h"
 #include "scenecomponent.h"
 #include <string>
+
+PRE_DECLARE_CLASS(Mesh)
+USING_SPTR(Mesh)
 
 class MeshComponent : public SceneComponent {
 	DECLARE_CLASS(MeshComponent)
@@ -12,8 +14,7 @@ public:
 
 	virtual void draw(const std::string& shader) override;
 	
-	void set_mesh(const std::string& name);
-	SPTR_Mesh get_mesh() { return mesh; }
+	GET_SET(SPTR_Mesh, mesh)
 
 private:
 	SPTR_Mesh mesh;

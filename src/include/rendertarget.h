@@ -4,7 +4,9 @@
 
 #include "cmath.h"
 #include "reflex.h"
-#include "texture2d.h"
+
+PRE_DECLARE_CLASS(Texture2D)
+USING_SPTR(Texture2D)
 
 #define GL_DEPTH_STENCIL_ATTACHMENT 0x821A
 #define GL_DEPTH24_STENCIL8			0x88F0
