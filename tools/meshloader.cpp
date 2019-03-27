@@ -807,7 +807,7 @@ bool MeshLoader::load_mesh_x(const std::string& path, std::vector<MeshData>& mds
 	return true;
 }
 
-bool MeshLoader::load_mesh_skeletal(const std::string& path, std::vector<SkeletalMeshData>& mds, MSkeleton& skeleton, std::vector<MBone>& bones, std::vector<AnimData>& ads) {
+bool MeshLoader::load_mesh_skeletal(const std::string& path, std::vector<SkeletalMeshData>& mds, MSkeleton& skeleton, std::vector<MBone>& bones, CMatrix4x4& mat_global, std::vector<AnimData>& ads) {
 	Assimp::Importer import;
 	auto scene = import.ReadFile(path, aiProcess_ForceGenNormals | aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_CalcTangentSpace);
 
@@ -847,6 +847,9 @@ bool MeshLoader::load_mesh_skeletal(const std::string& path, std::vector<Skeleta
 	}
 
 	// load mesh
+	mat_global = aimat_to_cmat(scene->mRootNode->mTransformation);
+	mat_global = mat_global.inverse();
+
 	std::queue<aiNode*> nodes;
 	nodes.push(scene->mRootNode);
 	while (!nodes.empty()) {

@@ -48,6 +48,7 @@ struct SkeletalMeshData {
 	std::vector<uint> indices;
 	MaterialData material;
 	std::vector<MVertexBone> bones;
+	CMatrix4x4 mat_global;
 };
 
 struct MBone {
@@ -216,7 +217,7 @@ public:
 
 	// load mesh by assimp
 	static bool load_mesh_x(const std::string& path, std::vector<MeshData>& mds);
-	static bool load_mesh_skeletal(const std::string& path, std::vector<SkeletalMeshData>& mds, MSkeleton& skeleton, std::vector<MBone>& bones, std::vector<AnimData>& ads);
+	static bool load_mesh_skeletal(const std::string& path, std::vector<SkeletalMeshData>& mds, MSkeleton& skeleton, std::vector<MBone>& bones, CMatrix4x4& mat_global, std::vector<AnimData>& ads);
 	static bool load_mesh_animation(const std::string& path, std::vector<AnimData>& ads);
 
 	~MeshLoader(){}

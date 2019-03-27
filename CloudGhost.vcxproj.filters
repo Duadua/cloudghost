@@ -301,6 +301,9 @@
     <ClCompile Include="math\source\cmatrix3x3.cpp">
       <Filter>math\source</Filter>
     </ClCompile>
+    <ClCompile Include="src\source\animplayer.cpp">
+      <Filter>src\source\core\renders</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <QtUic Include="resources\ui\qtdebugwidget.ui">
@@ -475,6 +478,9 @@
     </ClInclude>
     <ClInclude Include="math\include\cmatrix3x3.h">
       <Filter>math\include</Filter>
+    </ClInclude>
+    <ClInclude Include="src\include\animplayer.h">
+      <Filter>src\include\core\renders</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

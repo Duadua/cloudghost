@@ -153,8 +153,9 @@ SPTR_SkeletalMesh AssetManager::load_mesh_skeletal(const std::string& key, const
 	std::vector<SkeletalMeshData> t_mds;
 	MSkeleton t_skeleton;
 	std::vector<MBone> t_mbones;
+	CMatrix4x4 mat_global;
 	std::vector<AnimData> t_ads;
-	bool res = MeshLoader::load_mesh_skeletal(path, t_mds, t_skeleton, t_mbones, t_ads);
+	bool res = MeshLoader::load_mesh_skeletal(path, t_mds, t_skeleton, t_mbones, mat_global, t_ads);
 
 	map_skeletalmeshs[key] = CREATE_CLASS(SkeletalMesh);
 	if (res) {
@@ -178,6 +179,7 @@ SPTR_SkeletalMesh AssetManager::load_mesh_skeletal(const std::string& key, const
 
 		// load skeletal mesh
 		map_skeletalmeshs[key]->set_skeleton(t_sk);	
+		map_skeletalmeshs[key]->set_mat_global(mat_global);
 		// set mesh's bone data
 		std::vector<Bone> t_bones;
 		for (auto t_b : t_mbones) {
