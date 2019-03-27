@@ -5,9 +5,36 @@
 
 #include "cdebuger.h"
 
-void AnimPlayer::play_anim_sequence(SPTR_AnimSequence anim, SPTR_SkeletalMesh mesh, float time) {
-	if (!anim || !mesh) return;
-	if (anim->get_name().compare(mesh->get_skeleton()->get_name()) != 0) { return; }
+IMPLEMENT_CLASS(AnimPlayer)
 
-	c_debuger() << "play anim yep";
+void AnimPlayer::init() {
+	anim = nullptr;
+	mesh = nullptr;
+
+	is_played = false;
+	is_can_play = true;
+	is_looping = true;
+
+	init_position = 0.0f;
+
+}
+
+void AnimPlayer::play(SPTR_AnimSequence a, SPTR_SkeletalMesh m, float time) {
+	if (!a || !m) return;
+	if (a->get_skeleton_name().compare(m->get_skeleton()->get_name()) != 0) { return; }
+	if (!is_played) {
+		is_played = true; 
+		anim = a; mesh = m; 
+	}
+
+
+}
+void AnimPlayer::stop() {
+
+}
+void AnimPlayer::pause() {
+
+}
+void AnimPlayer::go_on() { 
+
 }
