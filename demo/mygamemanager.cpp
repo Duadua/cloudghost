@@ -195,10 +195,6 @@ void MyGameManager::begin_play() {
 
 }
 
-void MyGameManager::tick() {
-
-}
-
 void MyGameManager::map_input() {
 	InputState is;
 	is.mouse_pressing = Qt::RightButton;

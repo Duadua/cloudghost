@@ -1,11 +1,13 @@
 #include "shader.h"
+#include "animplayer.h"
+#include "animsequence.h"
 #include "skeletalmesh.h"
 #include "assetmanager.h"
 #include "skeletalmeshcomponent.h"
 
 IMPLEMENT_CLASS(SkeletalMeshComponent)
 
-SkeletalMeshComponent::SkeletalMeshComponent() { mesh = nullptr; }
+SkeletalMeshComponent::SkeletalMeshComponent() { mesh = nullptr; anim = nullptr; }
 SkeletalMeshComponent::~SkeletalMeshComponent() { }
 
 void SkeletalMeshComponent::draw(const std::string& shader) {
@@ -19,7 +21,5 @@ void SkeletalMeshComponent::draw(const std::string& shader) {
 		}
 		mesh->draw(shader);
 	}
-
-	for (auto cc : child_components) { cc->draw(shader); }
 }
 

@@ -15,6 +15,8 @@ void Mesh::copy_from(const SPTR_Mesh b) {
 }
 Mesh::~Mesh() {}
 
+void Mesh::tick(float time) { time; }
+
 void Mesh::draw(const std::string& shader) {
 	for (auto rd : render_datas) { 
 		auto t_material = rd.material;

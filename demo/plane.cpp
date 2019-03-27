@@ -44,9 +44,6 @@ PlaneObject::PlaneObject() {
 void PlaneObject::begin_play() {
 
 }
-void PlaneObject::tick() {
-
-}
 
 void PlaneObject::set_material(SPTR_Material name, uint rid) {
 	auto t_mo = get_root_component()->get_child_components()[0];

@@ -132,8 +132,8 @@ void GameManager::draw() {
 	}
 	// update
 	{
-		tick();
-		main_tick();
+		tick(TimeManager_ins().cur_runtime_msconds());
+		main_tick(TimeManager_ins().cur_runtime_msconds());
 	}
 	
 	// draw
@@ -427,13 +427,13 @@ void GameManager::draw_all_objs(const std::string& shader) {
 	for (auto go : game_objects) {
 		if (go.second->get_id() != cur_pick_object_id) { 
 			glStencilFunc(GL_ALWAYS, 0, 0xff); 
-			go.second->draw(shader);
+			go.second->_draw(shader);
 		} // 总是通过测试 -- 且通过后置0
 	} // 先画没被选中的 -- 保证最后写入的 1 不被 0 覆盖
 	for (auto go : game_objects) {
 		if (go.second->get_id() == cur_pick_object_id) { 
 			glStencilFunc(GL_ALWAYS, 1, 0xff); 
-			go.second->draw(shader);
+			go.second->_draw(shader);
 		} // 总是通过测试 -- 且通过后置1
 	}
 	set_polygon_mode();
@@ -443,7 +443,7 @@ void GameManager::draw_border(const std::string& shader) {
 	for (auto go : game_objects) {
 		if (go.second->get_id() == cur_pick_object_id) {
 			go.second->get_root_component()->set_all_border(true);
-			go.second->draw(shader);
+			go.second->_draw(shader);
 			go.second->get_root_component()->set_all_border(false);
 		}	// 拾取 -- 绘制边框
 	}
@@ -628,17 +628,17 @@ void GameManager::main_bind_input() {
 }
 void GameManager::main_begin_play() {
 	for (auto it = game_objects.begin(); it != game_objects.end(); ++it) {
-		(*it).second->begin_play();
+		(*it).second->_begin_play();
 	}
 }
-void GameManager::main_tick() {
+void GameManager::main_tick(float time) {
 	for (auto it = game_objects.begin(); it != game_objects.end(); ++it) {
-		(*it).second->tick();
+		(*it).second->_tick(time);
 	}
 }
 void GameManager::main_draw(const std::string& shader) {
 	for (auto it = game_objects.begin(); it != game_objects.end(); ++it) {
-		(*it).second->draw(shader);
+		(*it).second->_draw(shader);
 	}
 }
 

@@ -51,7 +51,7 @@ public:
 
 	virtual void load_asset() = 0;							// 加载资源
 	virtual void begin_play() = 0;							// 设置模型等
-	virtual void tick() = 0;								// 每帧变化的参数
+	virtual void tick(float time) = 0;						// 每帧变化的参数
 	virtual void map_input() = 0;							// 绑定输入
 
 	virtual SPTR_CameraObject	set_main_camera() = 0;		// 设置主相机 
@@ -72,7 +72,7 @@ public:
 public:
 	virtual void load_asset() override {}
 	virtual void begin_play() override {}
-	virtual void tick() override {}
+	virtual void tick(float time) override { time; }
 	virtual void map_input() override {}
 
 	virtual SPTR_CameraObject	set_main_camera() override;
@@ -127,7 +127,7 @@ protected:
 private:
 	void main_bind_input();
 	void main_begin_play();
-	void main_tick();
+	void main_tick(float time);
 	void main_draw(const std::string& shader);
 
 	// default init

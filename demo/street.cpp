@@ -18,6 +18,3 @@ Street::Street() {
 void Street::begin_play() {
 
 }
-void Street::tick() {
-
-}

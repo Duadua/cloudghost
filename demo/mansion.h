@@ -8,7 +8,6 @@ public:
 	virtual ~Mansion() {}
 
 	virtual void begin_play();
-	virtual void tick();
 
 	// DECLARE_ATTR(public, double, width, PlaneObject);
 

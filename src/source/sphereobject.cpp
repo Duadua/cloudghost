@@ -16,10 +16,6 @@ void SphereObject::begin_play() {
 
 }
 
-void SphereObject::tick() {
-
-}
-
 void SphereObject::set_material(SPTR_Material name, uint rid) {
 	auto t_mo = std::dynamic_pointer_cast<MeshComponent>(get_root_component());
 	if (t_mo != nullptr) {

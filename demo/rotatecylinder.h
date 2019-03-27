@@ -7,7 +7,7 @@ public:
 	RotateCylinder() : o_rotation(CVector3D(0.0f)) {}
 
 	virtual void begin_play();
-	virtual void tick();
+	virtual void tick(float time) override;
 
 	void update_origin_rotation();
 

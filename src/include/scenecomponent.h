@@ -10,7 +10,13 @@ public:
 	SceneComponent();
 	virtual ~SceneComponent() override;
 
-	virtual void draw(const std::string& shader);
+	virtual void begin_play() {}
+	virtual void tick(float time) { time; }
+	virtual void draw(const std::string& shader) { shader; }
+
+	void _begin_play();
+	void _tick(float time);
+	void _draw(const std::string& shader);
 
 	void attach_to(SPTR_SceneComponent parent);
 	

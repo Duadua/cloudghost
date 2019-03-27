@@ -11,7 +11,7 @@ USING_SPTR(SkeletalMesh)
 SINGLETON_CLASS(AnimPlayer) {
 	SINGLETON(AnimPlayer)
 public:
-	void play_anim_sequence(SPTR_AnimSequence, SPTR_SkeletalMesh, float time);
+	void play_anim_sequence(SPTR_AnimSequence anim, SPTR_SkeletalMesh mesh, float time);
 
 private:
 };

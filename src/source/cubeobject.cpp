@@ -16,10 +16,6 @@ void CubeObject::begin_play() {
 	
 }
 
-void CubeObject::tick() {
-
-}
-
 void CubeObject::set_material(SPTR_Material name, uint rid) {
 	auto t_mo = std::dynamic_pointer_cast<MeshComponent>(get_root_component());
 	if (t_mo != nullptr) {

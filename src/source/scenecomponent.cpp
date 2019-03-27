@@ -6,8 +6,17 @@ IMPLEMENT_CLASS(SceneComponent)
 SceneComponent::SceneComponent() : is_border(false), scale(CVector3D(1.0f, 1.0f, 1.0f)) {}
 SceneComponent::~SceneComponent() {}
 
-void SceneComponent::draw(const std::string& shader) {
-	for (auto cc : child_components) { cc->draw(shader); }
+void SceneComponent::_begin_play() { 
+	begin_play();
+	for (auto cc : child_components) { cc->_begin_play(); } 
+}
+void SceneComponent::_tick(float time) {
+	tick(time);
+	for (auto cc : child_components) { cc->_tick(time); }
+}
+void SceneComponent::_draw(const std::string& shader) {
+	draw(shader);
+	for (auto cc : child_components) { cc->_draw(shader); }
 }
 
 void SceneComponent::attach_to(SPTR_SceneComponent parent) {

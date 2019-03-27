@@ -12,6 +12,7 @@ public:
 	MeshComponent();
     virtual ~MeshComponent() override;
 
+	virtual void tick(float time) override;
 	virtual void draw(const std::string& shader) override;
 	
 	GET_SET(SPTR_Mesh, mesh)

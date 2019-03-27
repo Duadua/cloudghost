@@ -6,8 +6,6 @@
 
 PRE_DECLARE_CLASS(Skeleton)
 USING_SPTR(Skeleton)
-PRE_DECLARE_CLASS(AnimSequence)
-USING_SPTR(AnimSequence)
 
 struct Bone {
 	CMatrix4x4 mat_offset;
@@ -30,18 +28,13 @@ public:
 
 	GET_SET(SPTR_Skeleton, skeleton)
 	GET_SET(CMatrix4x4, mat_global)
-	GET(SPTR_AnimSequence, animation)
-
-	bool set_animation(SPTR_AnimSequence anim);
 
 private:
 
-	// 骨骼动画相关
+	// 骨骼相关
 	SPTR_Skeleton skeleton;
 	std::vector<Bone> bones;						// 所有的真正的骨骼节点信息 -- 与层次节点一对一，但是并非所有的层次节点都有骨骼
 	CMatrix4x4 mat_global;							// 根骨骼的逆变换矩阵
-
-	SPTR_AnimSequence animation;					// 动画序列 -- 依赖于 skeleton
 
 };
 

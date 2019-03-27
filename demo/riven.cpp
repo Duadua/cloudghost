@@ -14,7 +14,7 @@ Riven::Riven() {
 	mc->set_mesh(AssetManager_ins().get_mesh_skeletal("riven"));
 	auto ms = mc->get_mesh();
 	if (ms) {
-		ms->set_animation(AssetManager_ins().get_anim_sequence("riven18_idle1"));
+		//ms->set_animation(AssetManager_ins().get_anim_sequence("riven18_idle1"));
 	}
 	mc->set_scale(0.02f);
 	//	mc->set_rotation(-90.0f, 0.0f, 0.0f);
@@ -22,8 +22,5 @@ Riven::Riven() {
 }
 
 void Riven::begin_play() {
-
-}
-void Riven::tick() {
 
 }

@@ -12,7 +12,6 @@ public:
 	virtual ~PlaneObject() {}
 
 	virtual void begin_play();
-	virtual void tick();
 
 	void set_material(SPTR_Material name, uint rid = 0);
 

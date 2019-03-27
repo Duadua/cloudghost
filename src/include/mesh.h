@@ -25,6 +25,7 @@ public:
 	void copy_from(const SPTR_Mesh b);
 	virtual ~Mesh();
 
+	virtual void tick(float time);
 	virtual void draw(const std::string& shader);
 
 	void add_render_data(SPTR_RenderData rd);

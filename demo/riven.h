@@ -8,7 +8,6 @@ public:
 	virtual ~Riven() {}
 
 	virtual void begin_play();
-	virtual void tick();
 
 };
 DECLARE_AUTO_PTR(Riven)

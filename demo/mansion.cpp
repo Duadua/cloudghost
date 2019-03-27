@@ -18,6 +18,3 @@ Mansion::Mansion() {
 void Mansion::begin_play() {
 
 }
-void Mansion::tick() {
-
-}
