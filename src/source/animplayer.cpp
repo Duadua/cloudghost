@@ -17,45 +17,60 @@ void AnimPlayer::init(SPTR_AnimSequence a, SPTR_SkeletalMesh m) {
 	is_looping = true;
 
 	init_position = 0.0f;
-	init_time = 0.0f;
 
+	cur_time = 0.0f;
 	cur_frame = 0.0f;
 	cur_position = init_position;
 
 }
 
+void AnimPlayer::set_init_position(float i) {
+	init_position = i; 
+}
 void AnimPlayer::play(float time) {
-	if (!check_anim()) return;
+	if (!is_can_play) { return; }
+	if (!check_anim()) { return; }
 
 	if (!is_played) {
 		is_played = true; 
 
-		init_time = time;
+		cur_time = time;
 		cur_frame = anim->get_duration() * init_position;			// 当前的动画帧
 		cur_position = cur_frame / anim->get_duration();
 	}
+	if (is_paused) {
+		is_paused = false;
+		cur_time = time;					// 继续地话要更新下时间 -- 否则把暂停的时间也算进去了 - 但不用更新cur_frame
+	} 
 
 	// update cur_frame
-
+	float t_frame = 0.001f * (time - cur_time) * anim->get_ticks_per_seconds() + cur_frame;
+	if (!is_looping && CMath_ins().fcmp(t_frame, anim->get_duration()) > 0) {
+		is_can_play = false;
+		return;
+	} // 不能重复播放时 -- 到头即停
+	
+	cur_time = time;
+	cur_frame = std::fmodf(t_frame, anim->get_duration());
+	cur_position = cur_frame / anim->get_duration();
 
 	// update bones
-	update_bones();
-
-
-
+	update_bones(cur_frame);
 
 }
+void AnimPlayer::start() { is_can_play = true; is_paused = true; }
 void AnimPlayer::stop() {
+	is_can_play = false;
+	is_played = false;
 
 }
-void AnimPlayer::pause() {
+void AnimPlayer::pause() { is_can_play = false; }
 
-}
 void AnimPlayer::go_on() { 
 
 }
 
-void AnimPlayer::update_bones() {
+void AnimPlayer::update_bones(float frame) {
 	if (!check_anim()) return;
 
 	auto t_skeleton = mesh->get_skeleton();
@@ -78,9 +93,9 @@ void AnimPlayer::update_bones() {
 			// 插值操作
 			cur_mat.set_to_identity();
 
-			auto v_trans = t_anim_node.get_trans(cur_frame); // translate 插值
-			auto v_rotat = t_anim_node.get_rotat(cur_frame); // rotate 插值
-			auto v_scale = t_anim_node.get_scale(cur_frame); // scale 插值
+			auto v_trans = t_anim_node.get_trans(frame); // translate 插值
+			auto v_rotat = t_anim_node.get_rotat(frame); // rotate 插值
+			auto v_scale = t_anim_node.get_scale(frame); // scale 插值
 
 			//cur_mat.scale(v_scale).rotate_quaternion(v_rotat).translate(v_trans);
 			cur_mat.translate(v_trans).rotate_quaternion(v_rotat).scale(v_scale);

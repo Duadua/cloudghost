@@ -7,6 +7,7 @@
 #include "meshcomponent.h"
 #include "lightobject.h"
 #include "lightcomponent.h"
+#include "skeletalmeshcomponent.h"
 
 #include "cubeobject.h"
 #include "sphereobject.h"
@@ -29,6 +30,7 @@ void MyGameManager::load_asset() {
 	AssetManager_ins().load_mesh_skeletal("riven", "resources/models/animation/Riven18/riven18.FBX");
 	// animation
 	AssetManager_ins().load_anim_sequences("resources/models/animation/Riven18/riven18_idle1.FBX", "riven");
+	AssetManager_ins().load_anim_sequences("resources/models/animation/Riven18/riven18_dance.FBX", "riven");
 
 	// material
 	AssetManager_ins().load_materials("resources/materials/txt/cube_material.txt"); 
@@ -52,11 +54,20 @@ void MyGameManager::begin_play() {
 	
 	// add Riven
 	{
-		auto riven = CREATE_CLASS(Riven);
-		add_game_object("riven", riven);
-		riven->get_root_component()->set_location(5.0f, 0.0f, 0.0f);
-		riven->get_root_component()->set_rotation(0.0f, -90.0f, 0.0f);
-
+		{
+			auto riven = CREATE_CLASS(Riven);
+			add_game_object("riven", riven);
+			riven->get_root_component()->set_location(-5.0f, 0.0f, 0.0f);
+			riven->get_root_component()->set_rotation(0.0f, 90.0f, 0.0f);
+		}
+		{
+			auto riven = CREATE_CLASS(Riven);
+			add_game_object("rivend", riven);
+			riven->get_root_component()->set_location(3.0f, 0.0f, 0.0f);
+			riven->get_root_component()->set_rotation(0.0f, -90.0f, 0.0f);
+			auto mc = std::dynamic_pointer_cast<SkeletalMeshComponent>(riven->get_root_component()->get_child_components()[0]);
+			if (mc) { mc->set_anim(AssetManager_ins().get_anim_sequence("riven18_dance")); }
+		}
 	}
 
 	// 添加 城堡 mesh

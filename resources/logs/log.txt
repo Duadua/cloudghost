@@ -29,4 +29,9 @@
 # =========================
 	[yep][asset][anim] load animation sequence success call riven18_idle1
 # =========================
+	[yep][animation]load animation success by assimp
+	resources/models/animation/Riven18/riven18_dance.FBX
+# =========================
+	[yep][asset][anim] load animation sequence success call riven18_dance
+# =========================
 	[warning][asset][shader]no shader calls ""

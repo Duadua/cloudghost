@@ -78,7 +78,6 @@ CQuaternion AnimNode::get_rotat(float time) const {
 	float time_r = rotation_keys[t_id].time;
 	float ratio = (time - time_l) / (time_r - time_l);
 	assert(CMath_ins().fcmp(ratio, 0.0f) >= 0 && CMath_ins().fcmp(ratio, 1.0f) <= 0);
-
 	// 插值
 	auto value_l = rotation_keys[t_id - 1].value;
 	auto value_r = rotation_keys[t_id].value;

@@ -79,16 +79,19 @@ void CQuaternion::rotate(CVector3D& v) const {
 	v[0] = t_r.x; v[1] = t_r.y; v[2] = t_r.z;
 }
 
-CQuaternion llerp(const CQuaternion& a, const CQuaternion& b, float t) { 
+CQuaternion nlerp(const CQuaternion& a, const CQuaternion& b, float t) { 
 	CQuaternion res = (1.0f - t)*a + t * b; 
 	res.normalize();
 	return res;
 }
 
 CQuaternion slerp(const CQuaternion& a, const CQuaternion& b, float t) {
+	if (CMath_ins().fcmp(t, 0.0f) == 0) return a;
+	if (CMath_ins().fcmp(t, 1.0f) == 0) return b;
+
 	CQuaternion bb(b);
 
-	float t_dot = a.dot(b);
+	float t_dot = a.dot(bb);
 	if (CMath_ins().fcmp(t_dot, 0.0f) < 0) {
 		t_dot = -t_dot;
 		bb = -bb;
@@ -108,7 +111,7 @@ CQuaternion slerp(const CQuaternion& a, const CQuaternion& b, float t) {
 
 	} // t_dot 趋近1时角度过小 -- 直接使用线插
 
-	return t_a * a + t_b * b;
+	return t_a * a + t_b * bb;
 }
 CQuaternion squad(const CQuaternion& a, const CQuaternion& tga, const CQuaternion& tgb, const CQuaternion& b, float t) {
 	CQuaternion t_sa = tga;				// 临时 -- 不是这么算的

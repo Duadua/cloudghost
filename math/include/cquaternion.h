@@ -43,7 +43,7 @@ public:
 
 	void rotate(CVector3D& v) const;				// 旋转向量
 
-	friend CQuaternion llerp(const CQuaternion& a, const CQuaternion& b, float t);	// linear lerp -- 线性插值
+	friend CQuaternion nlerp(const CQuaternion& a, const CQuaternion& b, float t);	// linear lerp -- 线性插值
 	friend CQuaternion slerp(const CQuaternion& a, const CQuaternion& b, float t);	// spherical lerp -- 球面插值
 	friend CQuaternion squad(const CQuaternion& a, const CQuaternion& tga,
 		const CQuaternion& tgb, const CQuaternion& b, float t);						// 球面四形插值 -- 用于插值一组四元数而确保平滑

@@ -15,11 +15,26 @@ SkeletalMeshComponent::~SkeletalMeshComponent() { }
 
 void SkeletalMeshComponent::begin_play() {
 	if (!anim_player) { anim_player = CREATE_CLASS(AnimPlayer); anim_player->init(anim, mesh); }
-	anim_player->update_bones();
-
+	anim_player->set_is_looping(true);
+	//anim_player->set_init_position(0.5f);
 }
 void SkeletalMeshComponent::tick(float time) {
-	//if(anim_player) anim_player->play(time);
+	// test anim_player
+	/*static float i_time = time;
+	static bool f1 = true;
+	if (f1 && time - i_time > 5000.0f) {
+		//if (anim_player) anim_player->stop();
+		if (anim_player) anim_player->pause();
+		f1 = false;
+	}
+	static bool f2 = true;
+	if (f2 && time - i_time > 10000.0f) {
+		if (anim_player) anim_player->start();
+		f2 = false;
+	}
+	*/
+	
+	if(anim_player) anim_player->play(time);
 }
 void SkeletalMeshComponent::draw(const std::string& shader) {
 	if (mesh != nullptr) {

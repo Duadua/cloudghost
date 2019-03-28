@@ -14,8 +14,8 @@ void RotateCylinder::begin_play() {
 
 void RotateCylinder::tick(float time) {
 
-	//float sy = 1.0f * (TimeManager_ins().cur_runtime_msconds()/10 % 360);
-	float sy = - std::fmodf(0.2f * time, 360.0f);
+	float sy = 1.0f * (static_cast<int>((time * 0.2f)) % 360);
+	//float sy = - std::fmodf(0.2f * time, 360.0f);
 
 	root_component->set_rotation(o_rotation + CVector3D(0.0f, sy, 0.0f));
 
