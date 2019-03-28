@@ -33,6 +33,10 @@ struct AnimNode {
 	AnimNode() {}
 	AnimNode(const AnimNode& b);
 
+	CVector3D	get_trans(float time) const;	// time = [0, duration]
+	CVector3D	get_scale(float time) const;	// time = [0, duration]
+	CQuaternion	get_rotat(float time) const;	// time = [0, duration]
+
 };
 
 DECLARE_AUTO_PTR(AnimSequence)
@@ -46,8 +50,9 @@ public:
 	~AnimSequence() {}
 
 	void add_node(const AnimNode& an);
-
-	void update(float cur_time);						// 更新动画序列
+	const AnimNode& get_node(const std::string& key);
+	const AnimNode& get_node(int id);
+	bool has_node(const std::string& key) { return map_anim_nodes.count(key); }
 
 	GET_SET(std::string, name)
 	GET_SET(float, duration)

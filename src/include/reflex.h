@@ -141,7 +141,6 @@ private:
 #define CREATE_CLASS(name)												\
 std::dynamic_pointer_cast<name>(ClassFactory::create_object((#name)))
 
-
 // ===========================================================================
 
 #define GET(type, name)	type get_##name() { return name; }			

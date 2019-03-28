@@ -63,6 +63,7 @@ struct MSkeletonNode {
 	std::vector<int> children;
 
 	int bone_id;					// if -1 then no bone
+	CMatrix4x4 mat_trans;			// 变换矩阵
 
 	MSkeletonNode() {}
 	MSkeletonNode(const std::string& n, int f = -1, int i = -1, int b = -1)

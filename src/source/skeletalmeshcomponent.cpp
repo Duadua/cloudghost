@@ -9,16 +9,17 @@ IMPLEMENT_CLASS(SkeletalMeshComponent)
 
 SkeletalMeshComponent::SkeletalMeshComponent() { 
 	mesh = nullptr; anim = nullptr; 
-	anim_player = CREATE_CLASS(AnimPlayer); 
-	anim_player->init();
+	anim_player = nullptr;
 }
 SkeletalMeshComponent::~SkeletalMeshComponent() { }
 
 void SkeletalMeshComponent::begin_play() {
-	if (!anim_player) { anim_player = CREATE_CLASS(AnimPlayer); anim_player->init(); }
+	if (!anim_player) { anim_player = CREATE_CLASS(AnimPlayer); anim_player->init(anim, mesh); }
+	anim_player->update_bones();
+
 }
 void SkeletalMeshComponent::tick(float time) {
-	if(anim_player) anim_player->play(anim, mesh, time);
+	//if(anim_player) anim_player->play(time);
 }
 void SkeletalMeshComponent::draw(const std::string& shader) {
 	if (mesh != nullptr) {

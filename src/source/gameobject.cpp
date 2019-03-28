@@ -15,12 +15,12 @@ GameObject::GameObject(SPTR_SceneComponent root) {
 }
 
 void GameObject::_begin_play() {
-	begin_play();
 	if (root_component) root_component->_begin_play();
+	begin_play();
 }
 void GameObject::_tick(float time) {
-	tick(time);
 	if (root_component) root_component->_tick(time);
+	tick(time);
 }
 void GameObject::_draw(const std::string& shader) {
 	if (root_component == nullptr) return;
@@ -30,5 +30,7 @@ void GameObject::_draw(const std::string& shader) {
 		t_shader->set_uint("u_object_id", id);
 		root_component->_draw(shader);
 	}
+
+	draw(shader);
 
 }

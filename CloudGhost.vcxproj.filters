@@ -292,9 +292,6 @@
     <ClCompile Include="src\source\cdebuger.cpp">
       <Filter>src\source\helper</Filter>
     </ClCompile>
-    <ClCompile Include="src\source\skeletalmeshcomponent.cpp">
-      <Filter>src\source\core</Filter>
-    </ClCompile>
     <ClCompile Include="math\source\cmatrix2x2.cpp">
       <Filter>math\source</Filter>
     </ClCompile>
@@ -303,6 +300,9 @@
     </ClCompile>
     <ClCompile Include="src\source\animplayer.cpp">
       <Filter>src\source\core\renders</Filter>
+    </ClCompile>
+    <ClCompile Include="src\source\skeletalmeshcomponent.cpp">
+      <Filter>src\source\core\components</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -22,6 +22,10 @@ void main() {
 	if(a_bone_weight[1] > 0.0f) t_bone_mat += u_bones[a_bone_id[1]] * a_bone_weight[1];
 	if(a_bone_weight[2] > 0.0f) t_bone_mat += u_bones[a_bone_id[2]] * a_bone_weight[2];
 	if(a_bone_weight[3] > 0.0f) t_bone_mat += u_bones[a_bone_id[3]] * a_bone_weight[3];
+	//t_bone_mat  = u_bones[a_bone_id[0]] * a_bone_weight[0];
+	//t_bone_mat += u_bones[a_bone_id[1]] * a_bone_weight[1];
+	//t_bone_mat += u_bones[a_bone_id[2]] * a_bone_weight[2];
+	//t_bone_mat += u_bones[a_bone_id[3]] * a_bone_weight[3];
 
 	mat4 t_model = u_model * t_bone_mat;
 

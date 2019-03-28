@@ -4,13 +4,14 @@
 #include "renderdata.h"
 #include "skeletalmesh.h"
 #include "assetmanager.h"
+#include <cassert>
 
 IMPLEMENT_CLASS(SkeletalMesh)
 
 SkeletalMesh::SkeletalMesh() { skeleton = nullptr; bones.clear(); }
 SkeletalMesh::SkeletalMesh(const SkeletalMesh& b) : Mesh(b) { skeleton = b.skeleton; bones.assign(b.bones.begin(), b.bones.end()); }
 void SkeletalMesh::copy_from(const SPTR_SkeletalMesh b) { Mesh::copy_from(b); skeleton = b->skeleton; bones.assign(b->bones.begin(), b->bones.end()); }
-void SkeletalMesh::set_bones(const std::vector<Bone>& b) { bones.assign(b.begin(), b.end()); }
+//void SkeletalMesh::set_bones(const std::vector<Bone>& b) { bones.assign(b.begin(), b.end()); }
 
 void SkeletalMesh::draw(const std::string& shader) {
 	auto t_shader = AssetManager_ins().get_shader(shader);
@@ -28,4 +29,13 @@ void SkeletalMesh::draw(const std::string& shader) {
 		rd.rd->draw();
 		Material::un_use(shader);
 	}
+}
+Bone& SkeletalMesh::get_bone(int bid) {
+	assert(bid >= 0 && bid < bones.size());
+	return bones[bid];
+}
+
+void SkeletalMesh::update_bone_mat(int id, const CMatrix4x4& mat) {
+	get_bone(id).mat_finall = mat_global * mat * get_bone(id).mat_offset;
+	//c_debuger() << get_bone(id).mat_offset.to_string();
 }

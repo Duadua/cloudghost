@@ -519,6 +519,7 @@ MVertexBone& MVertexBone::add(uint id, float weight) {
 	return (*this);
 }
 
+/*
 CMatrix4x4 aimat_to_cmat(aiMatrix4x4 m) {
 	return CMatrix4x4(
 		m.a1, m.b1, m.c1, m.d1,
@@ -531,6 +532,22 @@ CMatrix4x4 aimat_to_cmat(aiMatrix3x3 m) {
 		m.a1, m.b1, m.c1, 0.0f,
 		m.a2, m.b2, m.c2, 0.0f,
 		m.a3, m.b3, m.c3, 0.0f,
+		0.0f, 0.0f, 0.0f, 1.0f);
+}
+*/
+
+CMatrix4x4 aimat_to_cmat(aiMatrix4x4 m) {
+	return CMatrix4x4(
+		m.a1, m.a2, m.a3, m.a4,
+		m.b1, m.b2, m.b3, m.b4,
+		m.c1, m.c2, m.c3, m.c4,
+		m.d1, m.d2, m.d3, m.d4);
+}
+CMatrix4x4 aimat_to_cmat(aiMatrix3x3 m) {
+	return CMatrix4x4(
+		m.a1, m.a2, m.a3, 0.0f,
+		m.b1, m.b2, m.b3, 0.0f,
+		m.c1, m.c2, m.c3, 0.0f,
 		0.0f, 0.0f, 0.0f, 1.0f);
 }
 
@@ -837,6 +854,7 @@ bool MeshLoader::load_mesh_skeletal(const std::string& path, std::vector<Skeleta
 			int t_id = ids.front(); ids.pop();
 
 			MSkeletonNode t_sn(t_node->mName.data, t_id);
+			t_sn.mat_trans = aimat_to_cmat(t_node->mTransformation);
 			skeleton.add_node(t_sn);
 
 			for (uint i = 0; i < t_node->mNumChildren; ++i) {

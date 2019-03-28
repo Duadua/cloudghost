@@ -105,8 +105,8 @@ void RenderData::init_with_bone(const std::vector<CVertex>& v, const std::vector
 	if (has_bone) {
 		glBindBuffer(GL_ARRAY_BUFFER, vbo_bone);
 		glVertexAttribIPointer(5, 4, GL_INT, sizeof(CVertexBone), reinterpret_cast<void*>(0));
-		glEnableVertexAttribArray(6);
-		glVertexAttribPointer(5, 4, GL_INT, GL_FALSE, sizeof(CVertexBone), reinterpret_cast<void*>(offsetof(CVertexBone, weights)));
+		glEnableVertexAttribArray(5);
+		glVertexAttribPointer(6, 4, GL_FLOAT, GL_FALSE, sizeof(CVertexBone), reinterpret_cast<void*>(offsetof(CVertexBone, weights)));
 		glEnableVertexAttribArray(6);
 	}
 

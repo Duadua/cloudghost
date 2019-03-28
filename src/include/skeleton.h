@@ -11,6 +11,7 @@ struct SkeletonNode {
 	std::vector<int> children;
 
 	int bone_id;					// if -1 then no bone
+	CMatrix4x4 mat_trans;			// 变换矩阵
 
 	SkeletonNode() { children.clear(); }
 	SkeletonNode(const std::string& n, int f = -1, int i = -1, int b = -1)
@@ -33,10 +34,12 @@ public:
 	~Skeleton() {}
 
 	SkeletonNode& get_node(const std::string& n); 
+	SkeletonNode& get_node(int nid);
 	void add_node(const SkeletonNode& node);
 	void add_bone(int bid, std::string n);
 
 	GET_SET(std::string, name)
+	GET_SET(int, root_node)
 
 private:
 	int root_node;

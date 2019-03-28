@@ -179,6 +179,7 @@ SPTR_SkeletalMesh AssetManager::load_mesh_skeletal(const std::string& key, const
 			t_sn.father = t_n.father;
 			t_sn.children.clear(); t_sn.children.assign(t_n.children.begin(), t_n.children.end());
 			t_sn.bone_id = t_n.bone_id;
+			t_sn.mat_trans = t_n.mat_trans;
 			t_nodes.push_back(t_sn);
 		}
 	

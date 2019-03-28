@@ -18,7 +18,11 @@ void Skeleton::copy_from(const SPTR_Skeleton b) {
 
 SkeletonNode& Skeleton::get_node(const std::string& n) {
 	assert(map_nodes.count(n));
-	return nodes[map_nodes[n]];
+	return get_node(map_nodes[n]);
+}
+SkeletonNode& Skeleton::get_node(int nid) {
+	assert(nid >= 0 && nid < nodes.size());
+	return nodes[nid];
 }
 
 void Skeleton::add_node(const SkeletonNode& node) {

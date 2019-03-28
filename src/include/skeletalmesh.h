@@ -21,13 +21,18 @@ public:
 	SkeletalMesh();
 	SkeletalMesh(const SkeletalMesh& b);
 	void copy_from(const SPTR_SkeletalMesh b);
-	void set_bones(const std::vector<Bone>& b);
+	//void set_bones(const std::vector<Bone>& b);
 	virtual ~SkeletalMesh() override {}
 
 	virtual void draw(const std::string& shader) override;
 
+	Bone& get_bone(int id);
+	void update_bone_mat(int id, const CMatrix4x4& mat);
+
 	GET_SET(SPTR_Skeleton, skeleton)
+	GET_SET(std::vector<Bone>, bones)
 	GET_SET(CMatrix4x4, mat_global)
+
 
 private:
 
