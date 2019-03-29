@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>CSubmitWidget</class>
+ <widget class="QWidget" name="CSubmitWidget">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>215</width>
+    <height>50</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>CSubmitWidget [dua 专用]</string>
+  </property>
+  <layout class="QHBoxLayout" name="horizontalLayout">
+   <item>
+    <widget class="QPushButton" name="button_ok">
+     <property name="styleSheet">
+      <string notr="true">QPushButton {
+	background-color: #DDDDDD; 
+	padding: 5px;
+	border-radius: 10px; 
+	font: 10pt &quot;微软雅黑&quot;;
+}
+
+QPushButton:hover {
+	background-color: #BBBBBB; 
+}
+
+QPushButton:pressed {
+	background-color: #888888; 
+}
+
+</string>
+     </property>
+     <property name="text">
+      <string>确定</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QPushButton" name="button_cancel">
+     <property name="styleSheet">
+      <string notr="true">QPushButton {
+	background-color: #DDDDDD; 
+	padding: 5px;
+	border-radius: 10px; 
+	font: 10pt &quot;微软雅黑&quot;;
+}
+
+QPushButton:hover {
+	background-color: #BBBBBB; 
+}
+
+QPushButton:pressed {
+	background-color: #888888; 
+}
+
+</string>
+     </property>
+     <property name="text">
+      <string>取消</string>
+     </property>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <layoutdefault spacing="6" margin="11"/>
+ <tabstops>
+  <tabstop>button_ok</tabstop>
+  <tabstop>button_cancel</tabstop>
+ </tabstops>
+ <resources/>
+ <connections/>
+</ui>

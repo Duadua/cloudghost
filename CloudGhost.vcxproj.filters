@@ -307,6 +307,9 @@
     <ClCompile Include="src\source\cspinwidget.cpp">
       <Filter>src\source\ui</Filter>
     </ClCompile>
+    <ClCompile Include="src\source\csubmitwidget.cpp">
+      <Filter>src\source\ui</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <QtUic Include="resources\ui\qtdebugwidget.ui">
@@ -316,6 +319,9 @@
       <Filter>resources\ui</Filter>
     </QtUic>
     <QtUic Include="resources\ui\cspinwidget.ui">
+      <Filter>resources\ui</Filter>
+    </QtUic>
+    <QtUic Include="resources\ui\csubmitwidget.ui">
       <Filter>resources\ui</Filter>
     </QtUic>
   </ItemGroup>
@@ -500,6 +506,9 @@
       <Filter>src\include\ui</Filter>
     </QtMoc>
     <QtMoc Include="src\include\cspinwidget.h">
+      <Filter>src\include\ui</Filter>
+    </QtMoc>
+    <QtMoc Include="src\include\csubmitwidget.h">
       <Filter>src\include\ui</Filter>
     </QtMoc>
   </ItemGroup>

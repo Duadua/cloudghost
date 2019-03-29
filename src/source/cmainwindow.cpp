@@ -14,7 +14,7 @@ CMainWindow::CMainWindow(QWidget *parent) : QMainWindow(parent), gl_view(nullptr
 	// init ui
 	{ init_ui(); }
 
-	init_gl_view(geometry().top() + 50, geometry().left() + 50, geometry().width() - 100, geometry().height() -100);
+	init_gl_view(geometry().left() + 50, geometry().top() + 60, geometry().width() - 100, geometry().height() -100);
 
 }
 
@@ -26,7 +26,7 @@ void CMainWindow::init_ui() {
 	{
 		// bg_color
 		ui_bg_color = new QColorDialog(this);
-		ui_bg_color->setOption(QColorDialog::NoButtons);
+		//ui_bg_color->setOption(QColorDialog::NoButtons);
 		ui_bg_color_custom_cnt = 0;
 		QWidgetAction *ui_action_bg_color = new QWidgetAction(this);
 		ui_action_bg_color->setDefaultWidget(ui_bg_color);

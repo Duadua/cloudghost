@@ -13,6 +13,9 @@
   <property name="windowTitle">
    <string>CSpinWidget [dua专用]</string>
   </property>
+  <property name="styleSheet">
+   <string notr="true"/>
+  </property>
   <layout class="QHBoxLayout" name="horizontalLayout">
    <item>
     <widget class="QSpinBox" name="spin">
@@ -21,7 +24,7 @@
      </property>
      <property name="styleSheet">
       <string notr="true">QSpinBox {
-	background-color: #DDDDDD;
+	background-color: #BBBBBB;
 	border-radius: 5px;
 }
  
@@ -41,7 +44,7 @@ QSpinBox:disabled {
      </property>
      <property name="styleSheet">
       <string notr="true">QSlider::groove:horizontal {
-	background: #C0C0C0;
+	background: #CCCCCC;
 	height: 5px;
 	border-radius: 2px;
 }
@@ -56,13 +59,13 @@ QSlider::sub-page:horizontal {
 }
 
 QSlider::add-page:horizontal {
-	background: #C0C0C0;
+	background: #CCCCCC;
 	height: 10px;
 	border-radius: 2px;
 }
 
 QSlider::handle:horizontal {
-    background: #808080;
+    background: #888888;
     width: 15px;
     margin-top: -5px;
     margin-bottom: -5px;
@@ -70,12 +73,16 @@ QSlider::handle:horizontal {
 }
 
 QSlider::handle:horizontal:hover {
-    background: #505050;
+    background: #555555;
 
     width: 15px;
     margin-top: -5px;
     margin-bottom: -5px;
     border-radius: 7px;
+}
+
+QSlider::handle:horizontal:pressed {
+	background-color: #333333;
 }
 
 QSlider::sub-page:horizontal:disabled {
