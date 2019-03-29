@@ -56,6 +56,7 @@
      </property>
      <addaction name="action_pm_fill"/>
      <addaction name="action_pm_line"/>
+     <addaction name="action_pm_point"/>
     </widget>
     <addaction name="action_color_bg"/>
     <addaction name="action_color_border"/>
@@ -255,6 +256,14 @@
    </property>
    <property name="text">
     <string>线框模式</string>
+   </property>
+  </action>
+  <action name="action_pm_point">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>点元模式</string>
    </property>
   </action>
  </widget>

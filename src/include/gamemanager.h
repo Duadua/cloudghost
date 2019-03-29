@@ -24,8 +24,9 @@ USING_SPTR(Texture2D)
 #define GL_KEEP					0x1E00
 #define GL_SRC_ALPHA			0x0302
 #define GL_ONE_MINUS_SRC_ALPHA	0x0303
-#define GL_FILL					0x1B02
+#define GL_POINT				0x1B00
 #define GL_LINE					0x1B01
+#define GL_FILL					0x1B02
 #define GL_BACK					0x0405
 #define GL_CCW					0x0901
 

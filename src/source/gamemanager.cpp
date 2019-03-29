@@ -587,7 +587,6 @@ void GameManager::set_blend(bool enable, uint sfactor, uint dfactor) {
 	glBlendFunc(sfactor, dfactor);
 }
 void GameManager::set_polygon_mode(uint front_mode, uint back_mode) {
-    if(back_mode == 0) {}
 	glPolygonMode(GL_FRONT, front_mode);
 	glPolygonMode(GL_BACK, back_mode);
 }

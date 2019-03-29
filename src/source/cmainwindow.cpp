@@ -24,6 +24,7 @@ void CMainWindow::init_ui() {
 			auto ag = new QActionGroup(this);
 			ag->addAction(ui.action_pm_fill);
 			ag->addAction(ui.action_pm_line);
+			ag->addAction(ui.action_pm_point);
 			connect(ag, SIGNAL(triggered(QAction*)), this, SLOT(trigger_polygon_mode(QAction*)));
 		}
 
@@ -79,6 +80,10 @@ void CMainWindow::trigger_polygon_mode(QAction* act) {
 	else if (act->objectName().compare("action_pm_line") == 0) {
 		GameManager_ins().set_front_polygon_mode(GL_LINE);
 		GameManager_ins().set_back_polygon_mode(GL_LINE);
+	}
+	else if (act->objectName().compare("action_pm_point") == 0) {
+		GameManager_ins().set_front_polygon_mode(GL_POINT);
+		GameManager_ins().set_back_polygon_mode(GL_POINT);
 	}
 }
 void CMainWindow::trigger_select_pp(QAction* act) {
