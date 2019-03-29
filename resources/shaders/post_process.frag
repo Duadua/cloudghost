@@ -7,12 +7,11 @@ in vec2 o_tex_coord;
 uniform sampler2D	u_texture;
 uniform int			u_pp_type;
 
-
 // 反相
 vec3 invers(vec3 color) { return vec3(1.0 - color); }
 // 灰度
 vec3 gray(vec3 color, vec3 k) {
-	float t_av = (k.r * color.r + k.g * color.g + k.b * color.b) / 3.0;
+	float t_av = (k.r * color.r + k.g * color.g + k.b * color.b);
 	return vec3(t_av);
 }
 
@@ -67,7 +66,7 @@ vec3 sharpen() {
 
 vec3 pp(vec3 color) {
 	switch(u_pp_type) {
-	case 1 : return gray(color, vec3(0.3, 0.6, 0.1).rgb); break;
+	case 1 : return gray(color, vec3(0.2, 0.7, 0.1).rgb); break;
 	case 2 : return invers(color); break;
 	case 3 : return blur(); break;
 	case 4 : return sharpen(); break;

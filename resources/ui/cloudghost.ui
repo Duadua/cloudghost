@@ -49,15 +49,16 @@ QMenuBar::item {
 	margin: 5px;
 }
 QMenuBar::item:selected {
-	background-color: #BBBBBB;
+	background-color: #DDDDDD;
 	border-radius: 5px; 
 }
 QMenuBar::item:pressed {
-	background-color: #888888;
+	background-color: #BBBBBB;
 }
 
 QMenu {
-	background-color: #DDDDDD;
+	background-color: #EEEEEE;
+	border: 1px solid #DDDDDD;
 	padding:5px;
 	font: 10pt &quot;微软雅黑&quot;;
 }
@@ -65,13 +66,12 @@ QMenu::item {
 	background-color: transparent;
 	border-radius: 10px; 
 	padding:3px 20px;
-	font: 10pt &quot;微软雅黑&quot;;
 }
 QMenu::item:selected {
-	background-color: #BBBBBB;
+	background-color: #DDDDDD;
 }
 QMenu::item:pressed {
-	background-color: #888888;
+	background-color: #BBBBBB;
 }</string>
    </property>
    <widget class="QMenu" name="menu_start">

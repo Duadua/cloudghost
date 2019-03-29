@@ -36,8 +36,12 @@ private:
 	void init_ui();
 
 public slots:
-	void trigger_bg_color();
-	void trigger_bd_color();
+	void trigger_bg_color_init();
+	void trigger_bg_color_ok();
+	void trigger_bg_color_cancel();
+	void trigger_bd_color_init();
+	void trigger_bd_color_ok();
+
 	void trigger_rb_3d();
 	void trigger_eye_delta_init();
 	void trigger_eye_delta(int v);

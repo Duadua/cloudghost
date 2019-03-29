@@ -24,7 +24,7 @@
      </property>
      <property name="styleSheet">
       <string notr="true">QSpinBox {
-	background-color: #BBBBBB;
+	background-color: #DDDDDD;
 	border-radius: 5px;
 }
  

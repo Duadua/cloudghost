@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>215</width>
-    <height>50</height>
+    <width>209</width>
+    <height>55</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -16,12 +16,21 @@
   <layout class="QHBoxLayout" name="horizontalLayout">
    <item>
     <widget class="QPushButton" name="button_ok">
+     <property name="minimumSize">
+      <size>
+       <width>90</width>
+       <height>30</height>
+      </size>
+     </property>
      <property name="styleSheet">
       <string notr="true">QPushButton {
 	background-color: #DDDDDD; 
 	padding: 5px;
 	border-radius: 10px; 
 	font: 10pt &quot;微软雅黑&quot;;
+
+	min-width: 80px;
+	min-height: 20px;
 }
 
 QPushButton:hover {
@@ -41,12 +50,21 @@ QPushButton:pressed {
    </item>
    <item>
     <widget class="QPushButton" name="button_cancel">
+     <property name="minimumSize">
+      <size>
+       <width>90</width>
+       <height>30</height>
+      </size>
+     </property>
      <property name="styleSheet">
       <string notr="true">QPushButton {
 	background-color: #DDDDDD; 
 	padding: 5px;
 	border-radius: 10px; 
 	font: 10pt &quot;微软雅黑&quot;;
+
+	min-width: 80px;
+	min-height: 20px;
 }
 
 QPushButton:hover {
