@@ -1,5 +1,6 @@
 .vs
-generated
-x64
-x64_qt
+/generated
+/x64
+/x64_qt
+/package/x64
 *.aps
