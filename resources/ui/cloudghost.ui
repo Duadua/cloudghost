@@ -58,17 +58,32 @@
      <addaction name="action_pm_line"/>
      <addaction name="action_pm_point"/>
     </widget>
-    <addaction name="action_color_bg"/>
-    <addaction name="action_color_border"/>
+    <widget class="QMenu" name="menu_eye_delta">
+     <property name="title">
+      <string>双眼视距</string>
+     </property>
+    </widget>
+    <widget class="QMenu" name="menu_bg_color">
+     <property name="title">
+      <string>背景颜色</string>
+     </property>
+    </widget>
+    <widget class="QMenu" name="menu_bd_color">
+     <property name="title">
+      <string>边框颜色</string>
+     </property>
+    </widget>
+    <addaction name="menu_bg_color"/>
+    <addaction name="menu_bd_color"/>
     <addaction name="separator"/>
     <addaction name="menu_polygon_mode"/>
     <addaction name="separator"/>
     <addaction name="action_rb_3d"/>
-    <addaction name="action_eye_delta"/>
+    <addaction name="menu_eye_delta"/>
     <addaction name="separator"/>
     <addaction name="menu_post_process"/>
    </widget>
-   <widget class="QMenu" name="menushadertoy">
+   <widget class="QMenu" name="menu_shadertoy">
     <property name="title">
      <string>shadertoy</string>
     </property>
@@ -88,7 +103,7 @@
    </widget>
    <addaction name="menu_start"/>
    <addaction name="menu_shading"/>
-   <addaction name="menushadertoy"/>
+   <addaction name="menu_shadertoy"/>
   </widget>
   <widget class="QToolBar" name="mainToolBar">
    <attribute name="toolBarArea">
@@ -108,11 +123,6 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+V</string>
-   </property>
-  </action>
-  <action name="action_eye_delta">
-   <property name="text">
-    <string>双眼视距</string>
    </property>
   </action>
   <action name="action_pp_gray">
@@ -135,16 +145,6 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+S, Ctrl+S</string>
-   </property>
-  </action>
-  <action name="action_color_bg">
-   <property name="text">
-    <string>背景颜色</string>
-   </property>
-  </action>
-  <action name="action_color_border">
-   <property name="text">
-    <string>边框颜色</string>
    </property>
   </action>
   <action name="action_pp_invers">

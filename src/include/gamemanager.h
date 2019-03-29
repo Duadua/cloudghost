@@ -98,6 +98,8 @@ public:									// used for qt ui
 
 protected:
 	static GameManager* instance;
+
+	virtual void _init();			// 构造时 init
 	
     GET(ViewportInfo, viewport_info)
 

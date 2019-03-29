@@ -1,8 +1,12 @@
 #include "cmainwindow.h"
 #include "cglwidget.h"
+#include "cspinwidget.h"
 #include "gamemanager.h"
 
 #include <QColorDialog>
+#include <QWidgetAction>
+#include <QSlider>
+#include <QHBoxLayout>
 
 #include "cdebuger.h"
 
@@ -22,16 +26,35 @@ void CMainWindow::init_ui() {
 	{
 		// bg_color
 		ui_bg_color = new QColorDialog(this);
+		ui_bg_color->setOption(QColorDialog::NoButtons);
 		ui_bg_color_custom_cnt = 0;
-		connect(ui.action_color_bg, SIGNAL(triggered()), this, SLOT(trigger_bg_color()));
+		QWidgetAction *ui_action_bg_color = new QWidgetAction(this);
+		ui_action_bg_color->setDefaultWidget(ui_bg_color);
+		ui.menu_bg_color->addAction(ui_action_bg_color);
+		connect(ui.menu_bg_color, SIGNAL(aboutToShow()), this, SLOT(trigger_bg_color()));
 		
 		// border color
 		ui_bd_color = new QColorDialog(this);
+		ui_bd_color->setOption(QColorDialog::NoButtons);
 		ui_bd_color_custom_cnt = 0;
-		connect(ui.action_color_border, SIGNAL(triggered()), this, SLOT(trigger_bd_color()));
+		//connect(ui.action_color_border, SIGNAL(triggered()), this, SLOT(trigger_bd_color()));
+		QWidgetAction *ui_action_bd_color = new QWidgetAction(this);
+		ui_action_bd_color->setDefaultWidget(ui_bd_color);
+		ui.menu_bd_color->addAction(ui_action_bd_color);
 
 		// red_blue_3d
-		connect(ui.action_rb_3d, SIGNAL(triggered()), this, SLOT(trigger_rb_3d()));
+		{
+			connect(ui.action_rb_3d, SIGNAL(triggered()), this, SLOT(trigger_rb_3d()));
+
+			// 生成菜单栏 spinbox
+			ui_eye_delta = new CSpinWidget(this);
+			connect(ui_eye_delta, SIGNAL(value_changed(int)), this, SLOT(trigger_eye_delta(int)));
+
+			QWidgetAction *ui_action_eye_delta = new QWidgetAction(this);
+			ui_action_eye_delta->setDefaultWidget(ui_eye_delta);
+			ui.menu_eye_delta->addAction(ui_action_eye_delta);
+			connect(ui.menu_eye_delta, SIGNAL(aboutToShow()), this, SLOT(trigger_eye_delta_init()));
+		}
 
 		// polygon_mode 
 		{
@@ -96,7 +119,7 @@ void CMainWindow::trigger_bg_color() {
 		GameManager_ins().get_background_color().a());
 
 	ui_bg_color->setCurrentColor(c);
-	if (ui_bg_color_custom_cnt == 0) { ui_bg_color->setCustomColor(0, c); }
+	/*if (ui_bg_color_custom_cnt == 0) { ui_bg_color->setCustomColor(0, c); }
 
 	bool flag = true;
 	auto tmp = ui_bg_color->getRgba(c.rgba(), &flag, this);
@@ -105,6 +128,7 @@ void CMainWindow::trigger_bg_color() {
 
 	ui_bg_color_custom_cnt = (ui_bg_color_custom_cnt) % (ui_bg_color->customCount()/2 - 1) + 1;
 	if(ui_bg_color_custom_cnt != 0) ui_bg_color->setCustomColor(ui_bg_color_custom_cnt * 2, tmp);
+	*/
 }
 void CMainWindow::trigger_bd_color() {
 	QColor c = QColor(
@@ -126,6 +150,13 @@ void CMainWindow::trigger_bd_color() {
 }
 
 void CMainWindow::trigger_rb_3d() { GameManager_ins().set_b_use_vr(!GameManager_ins().get_b_use_vr()); }
+void CMainWindow::trigger_eye_delta_init() {
+	ui_eye_delta->set_value(static_cast<int>(GameManager_ins().get_vr_delta()*200 + 0.5f));
+}
+void CMainWindow::trigger_eye_delta(int v) {
+	GameManager_ins().set_vr_delta(CMath_ins().linear_lerp(0.0f, 0.5f, v*0.01f));
+}
+
 void CMainWindow::trigger_polygon_mode(QAction* act) {
 	if (act->objectName().compare("action_pm_fill") == 0) {
 		GameManager_ins().set_front_polygon_mode(GL_FILL);
@@ -140,6 +171,7 @@ void CMainWindow::trigger_polygon_mode(QAction* act) {
 		GameManager_ins().set_back_polygon_mode(GL_POINT);
 	}
 }
+
 void CMainWindow::trigger_select_pp(QAction* act) {
 	if (act->objectName().compare("action_pp_normal") == 0) {
 		GameManager_ins().set_pp_type(PostProcessType::NOPE);

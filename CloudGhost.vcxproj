@@ -156,6 +156,7 @@
     <ClCompile Include="src\source\cglwidget.cpp" />
     <ClCompile Include="src\source\component.cpp" />
     <ClCompile Include="src\source\cmainwindow.cpp" />
+    <ClCompile Include="src\source\cspinwidget.cpp" />
     <ClCompile Include="src\source\cubeobject.cpp" />
     <ClCompile Include="src\source\cylinderobject.cpp" />
     <ClCompile Include="src\source\cdebuger.cpp" />
@@ -193,6 +194,7 @@
   </ItemGroup>
   <ItemGroup>
     <QtUic Include="resources\ui\cloudghost.ui" />
+    <QtUic Include="resources\ui\cspinwidget.ui" />
     <QtUic Include="resources\ui\qtdebugwidget.ui" />
   </ItemGroup>
   <ItemGroup>
@@ -222,6 +224,10 @@
     <ClInclude Include="src\include\cameradata.h" />
     <ClInclude Include="src\include\cameraobject.h" />
     <ClInclude Include="src\include\component.h" />
+    <QtMoc Include="src\include\cspinwidget.h">
+      <IncludePath Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">.\generated;.;$(QTDIR)\include;.\generated\$(ConfigurationName)\.;$(QTDIR)\include\QtCore;$(QTDIR)\include\QtGui;$(QTDIR)\include\QtANGLE;$(QTDIR)\include\QtOpenGL;$(QTDIR)\include\QtWidgets</IncludePath>
+      <IncludePath Condition="'$(Configuration)|$(Platform)'=='Release|x64'">.\generated;.;$(QTDIR)\include;.\generated\$(ConfigurationName)\.;$(QTDIR)\include\QtCore;$(QTDIR)\include\QtGui;$(QTDIR)\include\QtANGLE;$(QTDIR)\include\QtOpenGL;$(QTDIR)\include\QtWidgets</IncludePath>
+    </QtMoc>
     <ClInclude Include="src\include\cubeobject.h" />
     <ClInclude Include="src\include\cylinderobject.h" />
     <ClInclude Include="src\include\cdebuger.h" />

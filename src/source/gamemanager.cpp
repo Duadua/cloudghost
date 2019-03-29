@@ -19,6 +19,20 @@
 
 #include <GLFW/glfw3.h>
 
+void GameManager::_init() {
+	// ui setting init
+	{
+		background_color = CColor(205, 220, 232);
+		border_color = CColor(221, 161, 18);
+		front_polygon_mode = GL_FILL;
+		back_polygon_mode = GL_FILL;
+		b_use_vr = false;
+		vr_delta = 0.1f;
+		pp_type = PostProcessType::NOPE;
+		b_use_shader_toy = false;
+	}
+}
+
 void GameManager::init() {
 
 	// init glfw
@@ -91,17 +105,6 @@ void GameManager::init() {
 		main_bind_input();
 	}
 
-	// ui setting init
-	{
-		background_color = CColor(205, 220, 232);
-		border_color = CColor(221, 161, 18);
-		front_polygon_mode = GL_FILL;
-		back_polygon_mode = GL_FILL;
-		b_use_vr = false;
-		vr_delta = 0.1f;
-		pp_type = PostProcessType::NOPE;
-		b_use_shader_toy = false;
-	}
 
 	// gl state init
 	{
@@ -604,6 +607,7 @@ GameManager* GameManager::instance = nullptr;
 GameManager::GameManager() {
 	assert(instance == nullptr);
 	instance = this;
+	_init();
 	game_objects.clear();
 }
 GameManager::~GameManager() {

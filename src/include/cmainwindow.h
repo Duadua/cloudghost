@@ -6,6 +6,7 @@
 class CGLWidget;
 class QResizeEvent;
 class QColorDialog;
+class CSpinWidget;
 
 class CMainWindow : public QMainWindow {
 	Q_OBJECT
@@ -24,16 +25,22 @@ private:
 
 private:
 	Ui::CloudGhostClass ui;
+
 	QColorDialog* ui_bg_color;
 	int ui_bg_color_custom_cnt;
 	QColorDialog* ui_bd_color;
 	int ui_bd_color_custom_cnt;
+
+	CSpinWidget* ui_eye_delta;
+
 	void init_ui();
 
 public slots:
 	void trigger_bg_color();
 	void trigger_bd_color();
 	void trigger_rb_3d();
+	void trigger_eye_delta_init();
+	void trigger_eye_delta(int v);
 	void trigger_polygon_mode(QAction* act);
 	void trigger_select_pp(QAction* act);
 
