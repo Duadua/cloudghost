@@ -2,6 +2,7 @@
 
 #include "cmath.h"
 #include "reflex.h"
+#include <stack>
 #include <string>
 
 DECLARE_AUTO_PTR(Shader)
@@ -45,5 +46,24 @@ private:
 	void check_compile_errors(uint id);
 	void check_link_errors(uint id);
 };
+
+// =================================================================
+
+DECLARE_AUTO_PTR(ShaderStack)
+class ShaderStack : public CObject, std::enable_shared_from_this<ShaderStack> {
+	DECLARE_CLASS(ShaderStack)
+public:
+
+	SPTR_ShaderStack push(const SPTR_Shader shader);
+	SPTR_ShaderStack pop();
+
+	SPTR_Shader top() const;
+
+	SPTR_ShaderStack use();
+
+private:
+	std::stack<SPTR_Shader> shaders;
+};
+
 
 

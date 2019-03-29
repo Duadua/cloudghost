@@ -133,3 +133,30 @@ void Shader::set_mat4(const std::string& n, const CMatrix4x4& value) {
     GLint location = glGetUniformLocation(shader_id, n.c_str());
 	glUniformMatrix4fv(location, 1, GL_FALSE, value.data());
 }
+
+// ==========================================================================================
+
+IMPLEMENT_CLASS(ShaderStack)
+
+SPTR_ShaderStack ShaderStack::push(const SPTR_Shader shader) {
+	shaders.push(shader); use();
+	return shared_from_this();
+}
+SPTR_ShaderStack ShaderStack::pop() {
+	if (!shaders.empty()) shaders.pop(); use();
+	return shared_from_this();
+}
+
+SPTR_Shader ShaderStack::top() const {
+	if (shaders.empty()) return nullptr;
+	return shaders.top();
+}
+
+SPTR_ShaderStack ShaderStack::use() {
+	if (!shaders.empty() && shaders.top()) shaders.top()->use();
+	return shared_from_this();
+}
+
+
+
+
