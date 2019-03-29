@@ -2,6 +2,10 @@
 #include "cglwidget.h"
 #include "gamemanager.h"
 
+#include <QColorDialog>
+
+#include "cdebuger.h"
+
 CMainWindow::CMainWindow(QWidget *parent) : QMainWindow(parent), gl_view(nullptr) {
 	// init ui
 	{ init_ui(); }
@@ -16,6 +20,16 @@ void CMainWindow::init_ui() {
 
 	// init shading menu
 	{
+		// bg_color
+		ui_bg_color = new QColorDialog(this);
+		ui_bg_color_custom_cnt = 0;
+		connect(ui.action_color_bg, SIGNAL(triggered()), this, SLOT(trigger_bg_color()));
+		
+		// border color
+		ui_bd_color = new QColorDialog(this);
+		ui_bd_color_custom_cnt = 0;
+		connect(ui.action_color_border, SIGNAL(triggered()), this, SLOT(trigger_bd_color()));
+
 		// red_blue_3d
 		connect(ui.action_rb_3d, SIGNAL(triggered()), this, SLOT(trigger_rb_3d()));
 
@@ -53,6 +67,7 @@ void CMainWindow::init_ui() {
 
 CMainWindow::~CMainWindow() {
 	delete gl_view; 
+	delete ui_bg_color;
 }
 void CMainWindow::closeEvent(QCloseEvent *event) {
     if(event != nullptr) {}
@@ -69,6 +84,45 @@ void CMainWindow::resizeEvent(QResizeEvent *event) {
     if(event != nullptr) {}
 	if (gl_view == nullptr) return;
 	gl_view->resize( geometry().width() - 100, geometry().height() - 100);
+}
+
+// =====================================================================================
+
+void CMainWindow::trigger_bg_color() { 
+	QColor c = QColor(
+		GameManager_ins().get_background_color().r(),
+		GameManager_ins().get_background_color().g(),
+		GameManager_ins().get_background_color().b(),
+		GameManager_ins().get_background_color().a());
+
+	ui_bg_color->setCurrentColor(c);
+	if (ui_bg_color_custom_cnt == 0) { ui_bg_color->setCustomColor(0, c); }
+
+	bool flag = true;
+	auto tmp = ui_bg_color->getRgba(c.rgba(), &flag, this);
+	QColor res(tmp);
+	GameManager_ins().set_background_color(CColor(res.red(), res.green(), res.blue(), res.alpha())); 
+
+	ui_bg_color_custom_cnt = (ui_bg_color_custom_cnt) % (ui_bg_color->customCount()/2 - 1) + 1;
+	if(ui_bg_color_custom_cnt != 0) ui_bg_color->setCustomColor(ui_bg_color_custom_cnt * 2, tmp);
+}
+void CMainWindow::trigger_bd_color() {
+	QColor c = QColor(
+		GameManager_ins().get_border_color().r(),
+		GameManager_ins().get_border_color().g(),
+		GameManager_ins().get_border_color().b(),
+		GameManager_ins().get_border_color().a());
+
+	ui_bd_color->setCurrentColor(c);
+	if (ui_bd_color_custom_cnt == 0) { ui_bd_color->setCustomColor(1, c); }
+
+	bool flag = true;
+	auto tmp = ui_bd_color->getRgba(c.rgba(), &flag, this);
+	QColor res(tmp);
+	GameManager_ins().set_border_color(CColor(res.red(), res.green(), res.blue(), res.alpha())); 
+
+	ui_bd_color_custom_cnt = (ui_bd_color_custom_cnt) % (ui_bd_color->customCount() / 2 - 1) + 1;
+	if (ui_bd_color_custom_cnt != 0) ui_bd_color->setCustomColor(ui_bd_color_custom_cnt * 2 + 1, tmp);
 }
 
 void CMainWindow::trigger_rb_3d() { GameManager_ins().set_b_use_vr(!GameManager_ins().get_b_use_vr()); }
