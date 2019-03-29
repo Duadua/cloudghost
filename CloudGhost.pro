@@ -12,7 +12,7 @@ DEFINES += _UNICODE _ENABLE_EXTENDED_ALIGNED_STORAGE WIN64 QT_DLL QT_OPENGL_LIB 
 QMAKE_CXXFLAGS_WARN_ON += -wd4819
 
 CONFIG(debug, debug|release){
-    DESTDIR = ./x64/Debug
+    DESTDIR = .././package/x64/qt_Debug
     INCLUDEPATH += ./generated \
         . \
         ./generated/Debug \
@@ -22,6 +22,7 @@ CONFIG(debug, debug|release){
         ./third_part/glfw/include \
         ./third_part/glew/include \
         ./third_part/assimp/include \
+        ./third_part/stb/include \
         ./tools \
         $$(VC_IncludePath) \
         $$(WindowsSDK_IncludePath)
@@ -55,7 +56,7 @@ CONFIG(debug, debug|release){
 
 } # debug
 else {
-    DESTDIR = ./x64/Release
+    DESTDIR = .././package/x64/qt_Release
     INCLUDEPATH += ./generated \
         . \
         ./generated/Release \
@@ -65,6 +66,7 @@ else {
         ./third_part/glfw/include \
         ./third_part/glew/include \
         ./third_part/assimp/include \
+        ./third_part/stb/include \
         ./tools \
         $$(VC_IncludePath) \
         $$(WindowsSDK_IncludePath)
