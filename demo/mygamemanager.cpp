@@ -374,7 +374,6 @@ void MyGameManager::map_input() {
 	InputManager_ins().map_axis("move_up", is);
 }
 
-
 SPTR_Shader	MyGameManager::set_main_shader() {
 	auto t_shader = AssetManager_ins().get_shader("");
 	if (t_shader == nullptr) { return GameManager::set_main_shader(); }

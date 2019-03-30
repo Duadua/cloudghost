@@ -4,6 +4,12 @@
 #include "inputmanager.h"
 
 CGLWidget::CGLWidget(QWidget *parent) : QOpenGLWidget(parent) { 
+	// init gl version
+	QSurfaceFormat format;
+	format.setVersion(3, 3);
+	format.setProfile(QSurfaceFormat::CoreProfile);
+	setFormat(format);
+
 	// init gl mouse cursor
 	setCursor(Qt::CrossCursor);
 	setFocusPolicy(Qt::StrongFocus);  

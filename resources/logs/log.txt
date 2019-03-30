@@ -15,21 +15,21 @@
 # =========================
 	[warning][asset][material]no material calls ""
 # =========================
-	[yep][mesh]load mesh success by assimp
+	[yep][mesh]load mesh success
 	resources/models/static/Elf_Mansion/Elf_Mansion.fbx
 # =========================
-	[yep][mesh]load mesh success by assimp
+	[yep][mesh]load mesh success
 	resources/models/static/Street/Street_environment_V01.obj
 # =========================
-	[yep][skeletal_mesh]load skeletal_mesh success by assimp
+	[yep][skeletal_mesh]load skeletal_mesh success
 	resources/models/animation/Riven18/riven18.FBX
 # =========================
-	[yep][animation]load animation success by assimp
+	[yep][animation]load animation success
 	resources/models/animation/Riven18/riven18_idle1.FBX
 # =========================
 	[yep][asset][anim] load animation sequence success call riven18_idle1
 # =========================
-	[yep][animation]load animation success by assimp
+	[yep][animation]load animation success
 	resources/models/animation/Riven18/riven18_dance.FBX
 # =========================
 	[yep][asset][anim] load animation sequence success call riven18_dance
