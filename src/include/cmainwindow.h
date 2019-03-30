@@ -35,6 +35,7 @@ private:
 	CSpinWidget* ui_eye_delta;
 
 	CTextWidget* ui_about;
+	CTextWidget* ui_guide;
 
 	void init_ui();
 
@@ -52,5 +53,8 @@ public slots:
 	void trigger_select_pp(QAction* act);
 
 	void trigger_shader_toy();
+
+	void trigger_guide();
 	void trigger_about();
+
 };

@@ -117,10 +117,38 @@ void CMainWindow::init_ui() {
 	
 	// init help menu
 	{
+		// init guide widget
+		{
+			ui_guide = new CTextWidget(this);
+			ui_guide->setVisible(false);
+			ui_guide->setWindowTitle(QString::fromUtf8("操作指南"));
+			std::string str = "[移动]\t鼠标右键 + WASD\n";
+			str += "[移动]\t鼠标左键 + WASD\n";
+			str += "[移动]\t鼠标左右键(同时按) + WASD\n";
+			str += "[环顾]\t鼠标右键滑动\n";
+			str += "[环顾]\t鼠标左键左右滑动\n";
+			str += "[开车]\t鼠标左键前后滑动\n";
+			str += "[上天]\t鼠标左右键向前滑动 or 鼠标按下+E\n";
+			str += "[入地]\t鼠标左右键向后滑动 or 鼠标按下+Q\n";
+			str += "[说明]\t可参考 unreal engine 4 基础操作\n";
+			ui_guide->set_text(str);
+			ui_guide->setWindowModality(Qt::WindowModal);
+			connect(ui.action_guide, SIGNAL(triggered()), this, SLOT(trigger_guide()));
+		}
 		// init about widget
 		{
 			ui_about = new CTextWidget(this);
 			ui_about->setVisible(false);
+			ui_about->setMinimumSize(400, 500);
+			ui_about->setWindowTitle(QString::fromUtf8("关于"));
+			std::string str = "[作者]\tDua\n[时间]\t2019.03.30\n[清单]\t已支持的功能\n\t";
+			str += "[图元生成]\n\t[资源导入]\n\t[事件分发]\n\t[数学库]\n\t[BlinnPhong直接光照]\n\t[拾取]\n\t";
+			str += "[后期处理]\n\t[红蓝3D]\n\t[骨骼动画]\n\t[shadertoy]\n";
+			str += "[说明]\t持续更新中, 有好的bug或者好的建议\n\t欢迎与本人联系, 共同学习, 共同进步。\n\t兴趣是最好的老师。\n";
+			str += "[声明]\t水平有限, 仅供学习和参考, \n\t不得进行任何商业用途, \n\t否则产生的一切后果将由使用者本人承担\n";
+			str += "[邮箱]\t270389972@qq.com\n";
+			str += "[以上]\t\\(^o^)/\n";
+			ui_about->set_text(str);
 			ui_about->setWindowModality(Qt::WindowModal);
 			connect(ui.action_about, SIGNAL(triggered()), this, SLOT(trigger_about()));
 		}
@@ -246,4 +274,9 @@ void CMainWindow::trigger_shader_toy() {
 	GameManager_ins().set_b_use_shader_toy(!GameManager_ins().get_b_use_shader_toy());
 }
 
+void CMainWindow::trigger_guide() { ui_guide->setVisible(true); }
 void CMainWindow::trigger_about() { ui_about->setVisible(true); }
+
+
+
+
