@@ -16,6 +16,8 @@ struct DateTime {
 
 	friend std::ostream& operator << (std::ostream& out, const DateTime& b);
 	std::string to_string() const;
+	std::string get_date() const;
+	std::string get_time() const;
 
 };
 

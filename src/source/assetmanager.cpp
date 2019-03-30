@@ -383,14 +383,14 @@ bool AssetManager::load_materials(const std::string& src, SourceType source_type
 }
 SPTR_Material AssetManager::get_material_o(const std::string& key) {
 	if (!map_materials.count(key)) {
-		c_debuger() << "[warning][asset][material]no material calls \"" + key + "\"";
+		if (key.compare("") != 0) { c_debuger() << "[warning][asset][material]no material calls \"" + key + "\""; }
 		return nullptr;
 	}
 	return map_materials[key];
 }
 SPTR_Material AssetManager::get_material(const std::string& key) {
 	if (!map_materials.count(key)) {
-		c_debuger() << "[warning][asset][material]no material calls \"" + key + "\"";
+		if (key.compare("") != 0) { c_debuger() << "[warning][asset][material]no material calls \"" + key + "\""; }
 		return nullptr;
 	}
 	auto t_mi = CREATE_CLASS(Material);

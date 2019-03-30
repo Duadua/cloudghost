@@ -2,14 +2,34 @@
 #include <sstream>
 
 std::ostream& operator << (std::ostream& out, const DateTime& b) {
-	out << "DataTime ( "
-		<< b.year << "." << b.month << "." << b.day << " -- "
-		<< b.hour << ":" << b.minute << ":" << b.seconds << " )";
+	out << "["
+		<< b.year << "." 
+		<< (b.month < 10 ? "0":"") << b.month << "." 
+		<< (b.day < 10 ? "0":"") << b.day << "]["
+		<< (b.hour < 10 ? "0":"") << b.hour << ":" 
+		<< (b.minute < 10 ? "0":"") << b.minute << ":" 
+		<< (b.seconds < 10 ? "0":"") << b.seconds << "]";
 	return out;
 }
 std::string DateTime::to_string() const {
 	std::ostringstream oss;
 	oss << (*this);
+	return oss.str();
+}
+std::string DateTime::get_date() const {
+	std::ostringstream oss;
+	oss << "["
+		<< year << "."
+		<< (month < 10 ? "0" : "") << month << "."
+		<< (day < 10 ? "0" : "") << day << "]";
+	return oss.str();
+}
+std::string DateTime::get_time() const {
+	std::ostringstream oss;
+	oss << "["
+		<< (hour < 10 ? "0" : "") << hour << ":"
+		<< (minute < 10 ? "0" : "") << minute << ":"
+		<< (seconds < 10 ? "0" : "") << seconds << "]";
 	return oss.str();
 }
 
@@ -29,10 +49,10 @@ DateTime TimeManager::cur_time_data() {
 	auto c_h = std::chrono::time_point_cast<msecnd_type>(std::chrono::high_resolution_clock::now());
 	auto c_t = std::chrono::time_point_cast<msecnd_type>(time_start_s + (c_h - time_start_h));
 	auto tt = std::chrono::system_clock::to_time_t(c_t);
-	struct tm* t_tm = nullptr;
-	localtime_s(t_tm, &tt);
-	return DateTime(t_tm->tm_year + 1900, t_tm->tm_mon + 1, t_tm->tm_mday,
-		t_tm->tm_hour, t_tm->tm_min, t_tm->tm_sec);
+	struct tm t_tm;
+	localtime_s(&t_tm, &tt);
+	return DateTime(t_tm.tm_year + 1900, t_tm.tm_mon + 1, t_tm.tm_mday,
+		t_tm.tm_hour, t_tm.tm_min, t_tm.tm_sec);
 }
 ll TimeManager::cur_time_msconds() {
 	auto c_h = std::chrono::time_point_cast<msecnd_type>(std::chrono::high_resolution_clock::now());

@@ -1,37 +1,23 @@
 # =========================
-	[c_debuger][dua][2019.03.16]
+[23:54:24][dua][c_debuger] start at [2019.03.30]
 # =========================
-	[warning][asset][material]no material calls ""
+[23:54:24][yep][mesh]load mesh success
+resources/models/static/Elf_Mansion/Elf_Mansion.fbx
 # =========================
-	[warning][asset][material]no material calls ""
+[23:54:26][yep][mesh]load mesh success
+resources/models/static/Street/Street_environment_V01.obj
 # =========================
-	[warning][asset][material]no material calls ""
+[23:54:27][yep][skeletal_mesh]load skeletal_mesh success
+resources/models/animation/Riven18/riven18.FBX
 # =========================
-	[warning][asset][material]no material calls ""
+[23:54:27][yep][animation]load animation success
+resources/models/animation/Riven18/riven18_idle1.FBX
 # =========================
-	[warning][asset][material]no material calls ""
+[23:54:27][yep][asset][anim] load animation sequence success call riven18_idle1
 # =========================
-	[warning][asset][material]no material calls ""
+[23:54:27][yep][animation]load animation success
+resources/models/animation/Riven18/riven18_dance.FBX
 # =========================
-	[warning][asset][material]no material calls ""
+[23:54:27][yep][asset][anim] load animation sequence success call riven18_dance
 # =========================
-	[yep][mesh]load mesh success
-	resources/models/static/Elf_Mansion/Elf_Mansion.fbx
-# =========================
-	[yep][mesh]load mesh success
-	resources/models/static/Street/Street_environment_V01.obj
-# =========================
-	[yep][skeletal_mesh]load skeletal_mesh success
-	resources/models/animation/Riven18/riven18.FBX
-# =========================
-	[yep][animation]load animation success
-	resources/models/animation/Riven18/riven18_idle1.FBX
-# =========================
-	[yep][asset][anim] load animation sequence success call riven18_idle1
-# =========================
-	[yep][animation]load animation success
-	resources/models/animation/Riven18/riven18_dance.FBX
-# =========================
-	[yep][asset][anim] load animation sequence success call riven18_dance
-# =========================
-	[warning][asset][shader]no shader calls ""
+[23:54:27][warning][asset][shader]no shader calls ""

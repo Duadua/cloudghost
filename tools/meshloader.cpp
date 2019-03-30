@@ -709,10 +709,10 @@ bool MeshLoader::load_mesh_x(const std::string& path, std::vector<MeshData>& mds
 	auto scene = import.ReadFile(path, aiProcess_ForceGenNormals | aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_CalcTangentSpace);
 
 	if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode) {
-		c_debuger() << "[error][mesh]load mesh fail\n\t" + std::string(import.GetErrorString());
+		c_debuger() << "[error][mesh]load mesh fail\n" + std::string(import.GetErrorString());
 		return false;
 	}
-	else { c_debuger() << "[yep][mesh]load mesh success\n\t" + path; }
+	else { c_debuger() << "[yep][mesh]load mesh success\n" + path; }
 
 	std::string s_path = FileHelper_ins().get_path_of_file(path);			
 	mds.clear();
@@ -829,10 +829,10 @@ bool MeshLoader::load_mesh_skeletal(const std::string& path, std::vector<Skeleta
 	auto scene = import.ReadFile(path, aiProcess_ForceGenNormals | aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_CalcTangentSpace);
 
 	if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode) {
-		c_debuger() << "[error][skeletal_mesh]load skeletal_mesh fail\n\t" + path + " " + std::string(import.GetErrorString());
+		c_debuger() << "[error][skeletal_mesh]load skeletal_mesh fail\n" + path + " " + std::string(import.GetErrorString());
 		return false;
 	}
-	else { c_debuger() << "[yep][skeletal_mesh]load skeletal_mesh success\n\t" + path; }
+	else { c_debuger() << "[yep][skeletal_mesh]load skeletal_mesh success\n" + path; }
 
 	std::string s_path = FileHelper_ins().get_path_of_file(path);
 	mds.clear();
@@ -1038,10 +1038,10 @@ bool MeshLoader::load_mesh_animation(const std::string& path, std::vector<AnimDa
 	auto scene = import.ReadFile(path, aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_CalcTangentSpace);
 
 	if (!scene || !scene->mRootNode) {
-		c_debuger() << "[error][animation]load animation fail\n\t" + path + " " + std::string(import.GetErrorString());
+		c_debuger() << "[error][animation]load animation fail\n" + path + " " + std::string(import.GetErrorString());
 		return false;
 	}
-	else { c_debuger() << "[yep][animation]load animation success\n\t" + path; }
+	else { c_debuger() << "[yep][animation]load animation success\n" + path; }
 
 	std::string s_path = FileHelper_ins().get_path_of_file(path);
 	ads.clear();
