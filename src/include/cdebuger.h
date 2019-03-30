@@ -32,7 +32,7 @@ public:
 	std::string get_data() const { return data; }
 
 #ifdef C_DEBUG_QT
-	class QtDebugWidget* c_debuger_qt;
+	class CDebugerWidget* ui_c_debuger;
 #endif // C_DEBUG_QT
 
 private:

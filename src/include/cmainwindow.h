@@ -7,6 +7,7 @@ class CGLWidget;
 class QResizeEvent;
 class QColorDialog;
 class CSpinWidget;
+class CTextWidget;
 
 class CMainWindow : public QMainWindow {
 	Q_OBJECT
@@ -33,6 +34,8 @@ private:
 
 	CSpinWidget* ui_eye_delta;
 
+	CTextWidget* ui_about;
+
 	void init_ui();
 
 public slots:
@@ -49,5 +52,5 @@ public slots:
 	void trigger_select_pp(QAction* act);
 
 	void trigger_shader_toy();
-
+	void trigger_about();
 };

@@ -3,6 +3,7 @@
 #include "cspinwidget.h"
 #include "csubmitwidget.h"
 #include "gamemanager.h"
+#include "ctextwidget.h"
 
 #include <QColorDialog>
 #include <QWidgetAction>
@@ -114,6 +115,16 @@ void CMainWindow::init_ui() {
 		connect(ui.action_st_show, SIGNAL(triggered()), this, SLOT(trigger_shader_toy()));
 	}
 	
+	// init help menu
+	{
+		// init about widget
+		{
+			ui_about = new CTextWidget(this);
+			ui_about->setVisible(false);
+			ui_about->setWindowModality(Qt::WindowModal);
+			connect(ui.action_about, SIGNAL(triggered()), this, SLOT(trigger_about()));
+		}
+	}
 }
 
 CMainWindow::~CMainWindow() {
@@ -231,9 +242,8 @@ void CMainWindow::trigger_select_pp(QAction* act) {
 	}
 }
 
-
-
 void CMainWindow::trigger_shader_toy() {
 	GameManager_ins().set_b_use_shader_toy(!GameManager_ins().get_b_use_shader_toy());
 }
 
+void CMainWindow::trigger_about() { ui_about->setVisible(true); }

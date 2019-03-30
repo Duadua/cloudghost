@@ -13,22 +13,9 @@
 #include "cmath.h"
 #include "stringhelper.h"
 
-#include <assimp/scene.h>
-#include <assimp/Importer.hpp>
-#include <assimp/postprocess.h>
-
-#ifndef NDEBUG
-#include "cdebuger.h"
-#endif // !NDEBUG
-
 int main(int argc, char *argv[]) {
 	QApplication a(argc, argv);
 		
-#ifdef C_DEBUG
-	// test c_debuger()
-	{ c_debuger() << "[debug]start"; }
-#endif // C_DEBUG
-
 	/* test reflex
 	CObject* obj = ClassFactory::create_object("CObject");
 	c_debuger() << obj->get_class_info()->get_class_name();

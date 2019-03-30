@@ -153,11 +153,13 @@
     <ClCompile Include="src\source\cameracomponent.cpp" />
     <ClCompile Include="src\source\cameradata.cpp" />
     <ClCompile Include="src\source\cameraobject.cpp" />
+    <ClCompile Include="src\source\cdebugerwidget.cpp" />
     <ClCompile Include="src\source\cglwidget.cpp" />
     <ClCompile Include="src\source\component.cpp" />
     <ClCompile Include="src\source\cmainwindow.cpp" />
     <ClCompile Include="src\source\cspinwidget.cpp" />
     <ClCompile Include="src\source\csubmitwidget.cpp" />
+    <ClCompile Include="src\source\ctextwidget.cpp" />
     <ClCompile Include="src\source\cubeobject.cpp" />
     <ClCompile Include="src\source\cylinderobject.cpp" />
     <ClCompile Include="src\source\cdebuger.cpp" />
@@ -189,7 +191,6 @@
     <ClCompile Include="tools\loader.cpp" />
     <ClCompile Include="tools\materialloader.cpp" />
     <ClCompile Include="tools\meshloader.cpp" />
-    <ClCompile Include="tools\qtdebugwidget.cpp" />
     <ClCompile Include="tools\qtimagehelper.cpp" />
     <ClCompile Include="tools\textureloader.cpp" />
   </ItemGroup>
@@ -197,7 +198,7 @@
     <QtUic Include="resources\ui\cloudghost.ui" />
     <QtUic Include="resources\ui\cspinwidget.ui" />
     <QtUic Include="resources\ui\csubmitwidget.ui" />
-    <QtUic Include="resources\ui\qtdebugwidget.ui" />
+    <QtUic Include="resources\ui\ctextwidget.ui" />
   </ItemGroup>
   <ItemGroup>
     <QtRcc Include="resources\cloudghost.qrc" />
@@ -225,12 +226,20 @@
     <ClInclude Include="src\include\cameracomponent.h" />
     <ClInclude Include="src\include\cameradata.h" />
     <ClInclude Include="src\include\cameraobject.h" />
+    <QtMoc Include="src\include\cdebugerwidget.h">
+      <IncludePath Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">.\generated;.;$(QTDIR)\include;.\generated\$(ConfigurationName)\.;$(QTDIR)\include\QtCore;$(QTDIR)\include\QtGui;$(QTDIR)\include\QtANGLE;$(QTDIR)\include\QtOpenGL;$(QTDIR)\include\QtWidgets;.\src</IncludePath>
+      <IncludePath Condition="'$(Configuration)|$(Platform)'=='Release|x64'">.\generated;.;$(QTDIR)\include;.\generated\$(ConfigurationName)\.;$(QTDIR)\include\QtCore;$(QTDIR)\include\QtGui;$(QTDIR)\include\QtANGLE;$(QTDIR)\include\QtOpenGL;$(QTDIR)\include\QtWidgets;.\src</IncludePath>
+    </QtMoc>
     <ClInclude Include="src\include\component.h" />
     <QtMoc Include="src\include\cspinwidget.h">
       <IncludePath Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">.\generated;.;$(QTDIR)\include;.\generated\$(ConfigurationName)\.;$(QTDIR)\include\QtCore;$(QTDIR)\include\QtGui;$(QTDIR)\include\QtANGLE;$(QTDIR)\include\QtOpenGL;$(QTDIR)\include\QtWidgets</IncludePath>
       <IncludePath Condition="'$(Configuration)|$(Platform)'=='Release|x64'">.\generated;.;$(QTDIR)\include;.\generated\$(ConfigurationName)\.;$(QTDIR)\include\QtCore;$(QTDIR)\include\QtGui;$(QTDIR)\include\QtANGLE;$(QTDIR)\include\QtOpenGL;$(QTDIR)\include\QtWidgets</IncludePath>
     </QtMoc>
     <QtMoc Include="src\include\csubmitwidget.h">
+      <IncludePath Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">.\generated;.;$(QTDIR)\include;.\generated\$(ConfigurationName)\.;$(QTDIR)\include\QtCore;$(QTDIR)\include\QtGui;$(QTDIR)\include\QtANGLE;$(QTDIR)\include\QtOpenGL;$(QTDIR)\include\QtWidgets;.\src</IncludePath>
+      <IncludePath Condition="'$(Configuration)|$(Platform)'=='Release|x64'">.\generated;.;$(QTDIR)\include;.\generated\$(ConfigurationName)\.;$(QTDIR)\include\QtCore;$(QTDIR)\include\QtGui;$(QTDIR)\include\QtANGLE;$(QTDIR)\include\QtOpenGL;$(QTDIR)\include\QtWidgets;.\src</IncludePath>
+    </QtMoc>
+    <QtMoc Include="src\include\ctextwidget.h">
       <IncludePath Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">.\generated;.;$(QTDIR)\include;.\generated\$(ConfigurationName)\.;$(QTDIR)\include\QtCore;$(QTDIR)\include\QtGui;$(QTDIR)\include\QtANGLE;$(QTDIR)\include\QtOpenGL;$(QTDIR)\include\QtWidgets;.\src</IncludePath>
       <IncludePath Condition="'$(Configuration)|$(Platform)'=='Release|x64'">.\generated;.;$(QTDIR)\include;.\generated\$(ConfigurationName)\.;$(QTDIR)\include\QtCore;$(QTDIR)\include\QtGui;$(QTDIR)\include\QtANGLE;$(QTDIR)\include\QtOpenGL;$(QTDIR)\include\QtWidgets;.\src</IncludePath>
     </QtMoc>
@@ -265,7 +274,6 @@
     <ClInclude Include="tools\loader.h" />
     <ClInclude Include="tools\materialloader.h" />
     <ClInclude Include="tools\meshloader.h" />
-    <QtMoc Include="tools\qtdebugwidget.h" />
     <ClInclude Include="tools\qtimagehelper.h" />
     <ClInclude Include="tools\textureloader.h" />
     <QtMoc Include="src\include\cmainwindow.h">

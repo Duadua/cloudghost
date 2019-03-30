@@ -2,15 +2,19 @@
 #include "filehelper.h"
 
 #ifdef C_DEBUG_QT
-#include "qtdebugwidget.h"
+#include "cdebugerwidget.h"
 #endif // C_DEBUG_QT
 
 void CDebuger::_init() {
 	data = ""; ss.clear(); 
 #ifdef C_DEBUG_QT
-	c_debuger_qt = new QtDebugWidget();
-	c_debuger_qt->show();
+	ui_c_debuger = new CDebugerWidget();
+	ui_c_debuger->show();
 #endif // C_DEBUG_QT
+
+#ifdef C_DEBUG
+	(*this) << "[c_debuger][dua][2019.03.16]";
+#endif // C_DEBUG
 }
 
 void CDebuger::log(std::string str) {
@@ -20,7 +24,7 @@ void CDebuger::log(std::string str) {
 #endif // C_DEBUG
 
 #ifdef C_DEBUG_QT
-	if (c_debuger_qt != nullptr) { c_debuger_qt->append_text("# =========================\n\t" + str + "\n"); }
+	if (ui_c_debuger != nullptr) { ui_c_debuger->append_text("# =========================\n\t" + str + "\n"); }
 #endif // C_DEBUG_QT
 }
 
@@ -33,7 +37,7 @@ CDebuger& CDebuger::operator << (const std::string& str) {
 
 #ifdef C_DEBUG_QT
 	std::string t_str = "# =========================\n\t" + str + "\n";
-	if (c_debuger_qt != nullptr) { c_debuger_qt->append_text(t_str); }
+	if (ui_c_debuger != nullptr) { ui_c_debuger->append_text(t_str); }
 #endif // C_DEBUG_QT
 
 	return (*this);

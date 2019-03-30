@@ -169,9 +169,6 @@
     <ClCompile Include="math\source\cquaternion.cpp">
       <Filter>math\source</Filter>
     </ClCompile>
-    <ClCompile Include="tools\qtdebugwidget.cpp">
-      <Filter>tools</Filter>
-    </ClCompile>
     <ClCompile Include="demo\mansion.cpp">
       <Filter>demo</Filter>
     </ClCompile>
@@ -310,11 +307,14 @@
     <ClCompile Include="src\source\csubmitwidget.cpp">
       <Filter>src\source\ui</Filter>
     </ClCompile>
+    <ClCompile Include="src\source\ctextwidget.cpp">
+      <Filter>src\source\ui</Filter>
+    </ClCompile>
+    <ClCompile Include="src\source\cdebugerwidget.cpp">
+      <Filter>src\source\ui</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <QtUic Include="resources\ui\qtdebugwidget.ui">
-      <Filter>resources\ui</Filter>
-    </QtUic>
     <QtUic Include="resources\ui\cloudghost.ui">
       <Filter>resources\ui</Filter>
     </QtUic>
@@ -322,6 +322,9 @@
       <Filter>resources\ui</Filter>
     </QtUic>
     <QtUic Include="resources\ui\csubmitwidget.ui">
+      <Filter>resources\ui</Filter>
+    </QtUic>
+    <QtUic Include="resources\ui\ctextwidget.ui">
       <Filter>resources\ui</Filter>
     </QtUic>
   </ItemGroup>
@@ -496,9 +499,6 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <QtMoc Include="tools\qtdebugwidget.h">
-      <Filter>tools</Filter>
-    </QtMoc>
     <QtMoc Include="src\include\cglwidget.h">
       <Filter>src\include\ui</Filter>
     </QtMoc>
@@ -509,6 +509,12 @@
       <Filter>src\include\ui</Filter>
     </QtMoc>
     <QtMoc Include="src\include\csubmitwidget.h">
+      <Filter>src\include\ui</Filter>
+    </QtMoc>
+    <QtMoc Include="src\include\ctextwidget.h">
+      <Filter>src\include\ui</Filter>
+    </QtMoc>
+    <QtMoc Include="src\include\cdebugerwidget.h">
       <Filter>src\include\ui</Filter>
     </QtMoc>
   </ItemGroup>
