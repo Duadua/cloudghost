@@ -113,6 +113,8 @@ void GameManager::init() {
 		set_blend(true, GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 		set_polygon_mode(front_polygon_mode, back_polygon_mode);
 		set_cull_face();
+
+		glEnable(GL_PROGRAM_POINT_SIZE);
 	}
 	
 	// init rt
@@ -592,6 +594,7 @@ void GameManager::set_blend(bool enable, uint sfactor, uint dfactor) {
 void GameManager::set_polygon_mode(uint front_mode, uint back_mode) {
 	glPolygonMode(GL_FRONT, front_mode);
 	glPolygonMode(GL_BACK, back_mode);
+	glPolygonMode(GL_FRONT_AND_BACK, front_mode);			// GL_FRONT and GL_BACK is not work at 330
 }
 void GameManager::set_cull_face(bool enable, uint mode, uint front_face) {
 	if (enable) { glEnable(GL_CULL_FACE); }

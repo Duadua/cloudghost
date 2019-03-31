@@ -35,10 +35,19 @@ void main() {
 
     gl_Position = u_projection * u_view * t_model * vec4(a_pos, 1.0f);
 
+	// gl_PointSize = gl_Position.z;
+
 }
 
 /*
   a_* -- layout in
   o_* -- out
   u_* -- uniform
+*/
+
+/*
+	内建变量
+	gl_Position -- 顶点位置 -- 决定顶点的最终位置
+	gl_PointSize -- 顶点大小 -- 需要开启 GL_PROGRAM_POINT_SIZE
+	gl_VertexID -- 顶点索引值
 */
