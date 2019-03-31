@@ -3,8 +3,6 @@
 out vec4 r_color;
 
 in O_VS {
-	vec3 world_pos;
-	vec3 normal;
 	vec2 tex_coord;
 } i_fs;
 

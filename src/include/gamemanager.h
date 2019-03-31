@@ -37,6 +37,7 @@ enum PostProcessType {
 	BLUR,					// 模糊
 	SHARPEN,				// 锐化
 	EDGE_DET,				// 边缘检测
+	REAL_RB					// 真_红蓝3D
 	
 };
 

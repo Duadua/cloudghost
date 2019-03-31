@@ -103,6 +103,7 @@ void CMainWindow::init_ui() {
 			ag->addAction(ui.action_pp_blur);
 			ag->addAction(ui.action_pp_sharpen);
 			ag->addAction(ui.action_pp_edge_det);
+			ag->addAction(ui.action_pp_real_rb3d);
 			ui.action_pp_normal->setChecked(true);
 			connect(ag, SIGNAL(triggered(QAction*)), this, SLOT(trigger_select_pp(QAction*)));
 		}
@@ -267,6 +268,9 @@ void CMainWindow::trigger_select_pp(QAction* act) {
 	}
 	else if (act->objectName().compare("action_pp_edge_det") == 0) {
 		GameManager_ins().set_pp_type(PostProcessType::EDGE_DET);
+	}
+	else if (act->objectName().compare("action_pp_real_rb3d") == 0) {
+		GameManager_ins().set_pp_type(PostProcessType::REAL_RB);
 	}
 }
 

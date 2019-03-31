@@ -289,13 +289,14 @@
     <None Include="resources\shaders\mvp_anim.vert" />
     <None Include="resources\shaders\pick.frag" />
     <None Include="resources\shaders\post_process.frag" />
-    <None Include="resources\shaders\scene2d.vert" />
+    <None Include="resources\shaders\scene_2d.vert" />
     <None Include="resources\shaders\shadertoy_buffer_a.frag" />
     <None Include="resources\shaders\shadertoy_buffer_b.frag" />
     <None Include="resources\shaders\shadertoy_buffer_c.frag" />
     <None Include="resources\shaders\shadertoy_buffer_d.frag" />
     <None Include="resources\shaders\shadertoy_img.frag" />
     <None Include="resources\shaders\single_texture.frag" />
+    <None Include="resources\shaders\single_texture_2d.frag" />
     <None Include="resources\shaders\solid_color.frag" />
     <None Include="resources\shaders\vr_mix.frag" />
   </ItemGroup>

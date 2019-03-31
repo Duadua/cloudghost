@@ -60,16 +60,16 @@ void GameManager::init() {
 		AssetManager_ins().load_shader("depth", "resources/shaders/mvp_anim.vert", "resources/shaders/depth.frag");
 		AssetManager_ins().load_shader("solid_color", "resources/shaders/mvp_anim.vert", "resources/shaders/solid_color.frag");
 		AssetManager_ins().load_shader("single_texture", "resources/shaders/mvp_anim.vert", "resources/shaders/single_texture.frag");
-		AssetManager_ins().load_shader("scene2d", "resources/shaders/scene2d.vert", "resources/shaders/single_texture.frag");
-		AssetManager_ins().load_shader("pp", "resources/shaders/scene2d.vert", "resources/shaders/post_process.frag");
+		AssetManager_ins().load_shader("scene2d", "resources/shaders/scene_2d.vert", "resources/shaders/single_texture_2d.frag");
+		AssetManager_ins().load_shader("pp", "resources/shaders/scene_2d.vert", "resources/shaders/post_process.frag");
 		AssetManager_ins().load_shader("pick", "resources/shaders/mvp_anim.vert", "resources/shaders/pick.frag");
-		AssetManager_ins().load_shader("vr_mix", "resources/shaders/scene2d.vert", "resources/shaders/vr_mix.frag");
+		AssetManager_ins().load_shader("vr_mix", "resources/shaders/scene_2d.vert", "resources/shaders/vr_mix.frag");
 
-		AssetManager_ins().load_shader("shader_toy_img", "resources/shaders/scene2d.vert", "resources/shaders/shadertoy_img.frag");
-		AssetManager_ins().load_shader("shader_toy_buffer_a", "resources/shaders/scene2d.vert", "resources/shaders/shadertoy_buffer_a.frag");
-		AssetManager_ins().load_shader("shader_toy_buffer_b", "resources/shaders/scene2d.vert", "resources/shaders/shadertoy_buffer_b.frag");
-		AssetManager_ins().load_shader("shader_toy_buffer_c", "resources/shaders/scene2d.vert", "resources/shaders/shadertoy_buffer_c.frag");
-		AssetManager_ins().load_shader("shader_toy_buffer_d", "resources/shaders/scene2d.vert", "resources/shaders/shadertoy_buffer_d.frag");
+		AssetManager_ins().load_shader("shader_toy_img", "resources/shaders/scene_2d.vert", "resources/shaders/shadertoy_img.frag");
+		AssetManager_ins().load_shader("shader_toy_buffer_a", "resources/shaders/scene_2d.vert", "resources/shaders/shadertoy_buffer_a.frag");
+		AssetManager_ins().load_shader("shader_toy_buffer_b", "resources/shaders/scene_2d.vert", "resources/shaders/shadertoy_buffer_b.frag");
+		AssetManager_ins().load_shader("shader_toy_buffer_c", "resources/shaders/scene_2d.vert", "resources/shaders/shadertoy_buffer_c.frag");
+		AssetManager_ins().load_shader("shader_toy_buffer_d", "resources/shaders/scene_2d.vert", "resources/shaders/shadertoy_buffer_d.frag");
 
 		// mesh
 		AssetManager_ins().load_mesh("triangle_right", "resources/models/txt/triangle_right.txt");

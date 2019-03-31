@@ -2,7 +2,9 @@
 
 out vec4 r_color;
 
-in vec2 o_tex_coord;
+in O_VS {
+	vec2 tex_coord;
+} i_fs;
 
 uniform sampler2D	u_texture;
 uniform int			u_pp_type;
@@ -30,7 +32,7 @@ vec2 offsets[9] = vec2[](
 );
 vec3 cac_kernel(float kernel[9]) {
 	vec3 t_c[9];
-    for(int i = 0; i < 9; i++) { t_c[i] = vec3(texture(u_texture, o_tex_coord.st + offsets[i]).rgb); }
+    for(int i = 0; i < 9; i++) { t_c[i] = vec3(texture(u_texture, i_fs.tex_coord.st + offsets[i]).rgb); }
 
     vec3 res = vec3(0.0);
     for(int i = 0; i < 9; i++) { res += t_c[i] * kernel[i]; }
@@ -63,7 +65,10 @@ vec3 sharpen() {
     );
 	return cac_kernel(kernel);
 }
-
+vec3 real_rb3d(vec3 color) {
+	if(gl_FragCoord.x < 400) { return vec3(color.r, 0.0, 0.0); }	
+	else { return vec3(0.0, 0.0, color.b); }
+}
 vec3 pp(vec3 color) {
 	switch(u_pp_type) {
 	case 1 : return gray(color, vec3(0.2, 0.7, 0.1).rgb);
@@ -71,12 +76,13 @@ vec3 pp(vec3 color) {
 	case 3 : return blur(); 
 	case 4 : return sharpen(); 
 	case 5 : return edge_det(); 
+	case 6 : return real_rb3d(color);
 	}
 	return color;
 }
 
 void main() {
 
-	vec3 t_c = texture(u_texture, o_tex_coord).rgb;
+	vec3 t_c = texture(u_texture, i_fs.tex_coord).rgb;
 	r_color = vec4(pp(t_c), 1.0);
 }

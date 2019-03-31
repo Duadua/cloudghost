@@ -97,6 +97,7 @@ QMenu::item:pressed {
      <addaction name="action_pp_blur"/>
      <addaction name="action_pp_sharpen"/>
      <addaction name="action_pp_edge_det"/>
+     <addaction name="action_pp_real_rb3d"/>
     </widget>
     <widget class="QMenu" name="menu_polygon_mode">
      <property name="title">
@@ -322,6 +323,17 @@ QMenu::item:pressed {
   <action name="action_about">
    <property name="text">
     <string>关于</string>
+   </property>
+  </action>
+  <action name="action_pp_real_rb3d">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>真_红蓝</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+S, Ctrl+D</string>
    </property>
   </action>
  </widget>

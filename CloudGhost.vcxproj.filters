@@ -531,12 +531,6 @@
     <None Include="resources\shaders\solid_color.frag">
       <Filter>resources\shaders</Filter>
     </None>
-    <None Include="resources\shaders\single_texture.frag">
-      <Filter>resources\shaders</Filter>
-    </None>
-    <None Include="resources\shaders\scene2d.vert">
-      <Filter>resources\shaders</Filter>
-    </None>
     <None Include="resources\shaders\post_process.frag">
       <Filter>resources\shaders</Filter>
     </None>
@@ -562,6 +556,15 @@
       <Filter>resources\shaders</Filter>
     </None>
     <None Include="resources\shaders\mvp_anim.vert">
+      <Filter>resources\shaders</Filter>
+    </None>
+    <None Include="resources\shaders\single_texture_2d.frag">
+      <Filter>resources\shaders</Filter>
+    </None>
+    <None Include="resources\shaders\scene_2d.vert">
+      <Filter>resources\shaders</Filter>
+    </None>
+    <None Include="resources\shaders\single_texture.frag">
       <Filter>resources\shaders</Filter>
     </None>
   </ItemGroup>

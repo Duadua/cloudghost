@@ -8,9 +8,11 @@ const int max_sky_light_num	    = 1;
 
 out vec4 r_color;
 
-in vec3 o_world_pos;
-in vec3 o_normal;
-in vec2 o_tex_coord;
+in O_VS {
+	vec3 world_pos;
+	vec3 normal;
+	vec2 tex_coord;
+} i_fs;
 
 // base material
 struct material {
@@ -104,19 +106,19 @@ vec3 t_normal;
 material_helper t_material_helper;
 
 void pre_cac() {
-    t_view_dir = normalize(u_view_pos - o_world_pos);
-    t_normal = normalize(o_normal);
+    t_view_dir = normalize(u_view_pos - i_fs.world_pos);
+    t_normal = normalize(i_fs.normal);
 
     // init material_helper by uniform material
     t_material_helper.ka = u_material.ka;
     t_material_helper.kd = u_material.kd;
     t_material_helper.ks = u_material.ks;
     t_material_helper.shininess = u_material.shininess;
-    if(u_material.has_map_ka) t_material_helper.map_ka_color = texture(u_material.map_ka, o_tex_coord);
+    if(u_material.has_map_ka) t_material_helper.map_ka_color = texture(u_material.map_ka, i_fs.tex_coord);
     else t_material_helper.map_ka_color = vec4(1.0);
-    if(u_material.has_map_kd) t_material_helper.map_kd_color = texture(u_material.map_kd, o_tex_coord);
+    if(u_material.has_map_kd) t_material_helper.map_kd_color = texture(u_material.map_kd, i_fs.tex_coord);
     else t_material_helper.map_kd_color = vec4(1.0);
-    if(u_material.has_map_ks) t_material_helper.map_ks_color = texture(u_material.map_ks, o_tex_coord);
+    if(u_material.has_map_ks) t_material_helper.map_ks_color = texture(u_material.map_ks, i_fs.tex_coord);
     else t_material_helper.map_ks_color = vec4(1.0);
 		
 }
@@ -139,15 +141,15 @@ vec3 blinn_phong(vec3 normal, vec3 light_dir, vec3 view_dir, material_helper mh,
 // cac light_attenuation
 float att_dirct_light(DirectLight light) { return 1.0; }
 float att_point_light(PointLight light) { 
-    float dis = length(light.position - o_world_pos);
+    float dis = length(light.position - i_fs.world_pos);
     float att = 1.0 / (light.att_ka + light.att_kb*dis + light.att_kc*dis*dis);
     return att; 
 }
 float att_spott_light(SpotLight light) { 
-    float dis = length(light.position - o_world_pos);
+    float dis = length(light.position - i_fs.world_pos);
     float att = 1.0 / (light.att_ka + light.att_kb*dis + light.att_kc*dis*dis);
 
-    vec3 t_light_dir = normalize(light.position - o_world_pos);
+    vec3 t_light_dir = normalize(light.position - i_fs.world_pos);
     float theta = dot(t_light_dir, normalize(-light.dirction));   // cos value
     float epsilon = light.inner - light.outer;          // cos value -- inner > outer
     float intensity = clamp((theta - light.outer) / epsilon, 0.0, 1.0);
@@ -163,14 +165,14 @@ vec3 cac_direct_light_one(DirectLight light) {
     return res;
 }
 vec3 cac_point_light_one(PointLight light) {
-    vec3 t_light_dir = normalize(light.position - o_world_pos);
+    vec3 t_light_dir = normalize(light.position - i_fs.world_pos);
     vec3 t_c = light.color * light.intensity * att_point_light(light);
 
     vec3 res = t_c * blinn_phong(t_normal, t_light_dir, t_view_dir, t_material_helper, light.k);
     return res;
 }
 vec3 cac_spot_light_one(SpotLight light) {
-    vec3 t_light_dir = normalize(light.position - o_world_pos);
+    vec3 t_light_dir = normalize(light.position - i_fs.world_pos);
     vec3 t_c = light.color * light.intensity * att_spott_light(light);
 
     vec3 res = t_c * blinn_phong(t_normal, t_light_dir, t_view_dir, t_material_helper, light.k);
@@ -209,7 +211,7 @@ void main(void) {
     // t_color = vec3(1.0, 0.0, 0.0);
     //r_color = vec4(t_color, 1.0);
 
-	//vec4 t_c = texture(u_material.map_kd, o_tex_coord);
+	//vec4 t_c = texture(u_material.map_kd, i_fs.tex_coord);
 	//if(t_c.a < 0.01) discard;
     //r_color = t_c;
 
@@ -220,11 +222,12 @@ void main(void) {
     t_color += cac_sky_light();
 
     r_color = vec4(t_color, 1.0);
+	
 }
 
-/*
-    o_* -- in from vertex shader
-    u_* -- uniform
-    r_* -- result to output
-    t_* -- temp variable
+/**
+*	o_* -- in from vertex shader
+*	u_* -- uniform
+*	r_* -- result to output
+*	t_* -- temp variable
 */
