@@ -66,12 +66,11 @@ vec3 sharpen() {
 
 vec3 pp(vec3 color) {
 	switch(u_pp_type) {
-	case 1 : return gray(color, vec3(0.2, 0.7, 0.1).rgb); break;
-	case 2 : return invers(color); break;
-	case 3 : return blur(); break;
-	case 4 : return sharpen(); break;
-	case 5 : return edge_det(); break;
-	default: return color;
+	case 1 : return gray(color, vec3(0.2, 0.7, 0.1).rgb);
+	case 2 : return invers(color); 
+	case 3 : return blur(); 
+	case 4 : return sharpen(); 
+	case 5 : return edge_det(); 
 	}
 	return color;
 }
