@@ -122,6 +122,15 @@
     <Filter Include="src\source\preset\shapes">
       <UniqueIdentifier>{7acf4846-966f-4a4e-8dd1-9cf873c6a00a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="resources\shaders\verts">
+      <UniqueIdentifier>{1594afb0-8d80-4b0a-bb6b-6f407ce38052}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="resources\shaders\frags">
+      <UniqueIdentifier>{c979c65b-98b0-45a0-9df3-d583317fa5c0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="resources\shaders\geoms">
+      <UniqueIdentifier>{10117cd7-905f-4322-b428-c614cfb554fd}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="demo\main.cpp">
@@ -525,53 +534,56 @@
     </QtMoc>
   </ItemGroup>
   <ItemGroup>
+    <None Include="resources\shaders\blinn_phong.frag">
+      <Filter>resources\shaders\frags</Filter>
+    </None>
     <None Include="resources\shaders\depth.frag">
-      <Filter>resources\shaders</Filter>
+      <Filter>resources\shaders\frags</Filter>
     </None>
     <None Include="resources\shaders\mvp.vert">
-      <Filter>resources\shaders</Filter>
-    </None>
-    <None Include="resources\shaders\blinn_phong.frag">
-      <Filter>resources\shaders</Filter>
-    </None>
-    <None Include="resources\shaders\solid_color.frag">
-      <Filter>resources\shaders</Filter>
-    </None>
-    <None Include="resources\shaders\post_process.frag">
-      <Filter>resources\shaders</Filter>
-    </None>
-    <None Include="resources\shaders\pick.frag">
-      <Filter>resources\shaders</Filter>
-    </None>
-    <None Include="resources\shaders\vr_mix.frag">
-      <Filter>resources\shaders</Filter>
-    </None>
-    <None Include="resources\shaders\shadertoy_img.frag">
-      <Filter>resources\shaders</Filter>
-    </None>
-    <None Include="resources\shaders\shadertoy_buffer_a.frag">
-      <Filter>resources\shaders</Filter>
-    </None>
-    <None Include="resources\shaders\shadertoy_buffer_b.frag">
-      <Filter>resources\shaders</Filter>
-    </None>
-    <None Include="resources\shaders\shadertoy_buffer_c.frag">
-      <Filter>resources\shaders</Filter>
-    </None>
-    <None Include="resources\shaders\shadertoy_buffer_d.frag">
-      <Filter>resources\shaders</Filter>
+      <Filter>resources\shaders\verts</Filter>
     </None>
     <None Include="resources\shaders\mvp_anim.vert">
-      <Filter>resources\shaders</Filter>
+      <Filter>resources\shaders\verts</Filter>
     </None>
-    <None Include="resources\shaders\single_texture_2d.frag">
-      <Filter>resources\shaders</Filter>
+    <None Include="resources\shaders\normal_visual.geom">
+      <Filter>resources\shaders\geoms</Filter>
+    </None>
+    <None Include="resources\shaders\pick.frag">
+      <Filter>resources\shaders\frags</Filter>
+    </None>
+    <None Include="resources\shaders\post_process.frag">
+      <Filter>resources\shaders\frags</Filter>
     </None>
     <None Include="resources\shaders\scene_2d.vert">
-      <Filter>resources\shaders</Filter>
+      <Filter>resources\shaders\verts</Filter>
+    </None>
+    <None Include="resources\shaders\shadertoy_buffer_a.frag">
+      <Filter>resources\shaders\frags</Filter>
+    </None>
+    <None Include="resources\shaders\shadertoy_buffer_b.frag">
+      <Filter>resources\shaders\frags</Filter>
+    </None>
+    <None Include="resources\shaders\shadertoy_buffer_c.frag">
+      <Filter>resources\shaders\frags</Filter>
+    </None>
+    <None Include="resources\shaders\shadertoy_buffer_d.frag">
+      <Filter>resources\shaders\frags</Filter>
+    </None>
+    <None Include="resources\shaders\shadertoy_img.frag">
+      <Filter>resources\shaders\frags</Filter>
     </None>
     <None Include="resources\shaders\single_texture.frag">
-      <Filter>resources\shaders</Filter>
+      <Filter>resources\shaders\frags</Filter>
+    </None>
+    <None Include="resources\shaders\single_texture_2d.frag">
+      <Filter>resources\shaders\frags</Filter>
+    </None>
+    <None Include="resources\shaders\solid_color.frag">
+      <Filter>resources\shaders\frags</Filter>
+    </None>
+    <None Include="resources\shaders\vr_mix.frag">
+      <Filter>resources\shaders\frags</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>
