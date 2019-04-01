@@ -10,8 +10,6 @@ public:
 	virtual void tick(float time) override { time; }
 	virtual void map_input() override;
 
-	virtual SPTR_Shader	set_main_shader() override;
-
 private:
 
 };

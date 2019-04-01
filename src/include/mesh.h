@@ -4,6 +4,8 @@
 #include "typehelper.h"
 #include <string>
 
+PRE_DECLARE_CLASS(Shader)
+USING_SPTR(Shader)
 PRE_DECLARE_CLASS(Material)
 USING_SPTR(Material)
 PRE_DECLARE_CLASS(RenderData)
@@ -26,7 +28,7 @@ public:
 	virtual ~Mesh();
 
 	virtual void tick(float time);
-	virtual void draw(const std::string& shader);
+	virtual void draw(SPTR_Shader shader);
 
 	void add_render_data(SPTR_RenderData rd);
 

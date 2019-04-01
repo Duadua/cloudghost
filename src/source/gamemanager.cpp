@@ -96,7 +96,12 @@ void GameManager::init() {
 	}
 
 	main_camera = set_main_camera();	// 绑定主相机
-	main_shader = set_main_shader();	// 绑定主shader
+
+	// init shader stack 
+	{
+		stack_shaders = CREATE_CLASS(ShaderStack);
+		stack_shaders->push(AssetManager_ins().get_shader("default"));
+	}
 
 	// init uniform block 
 	{
@@ -190,84 +195,84 @@ void GameManager::scene_pass() {
 
 	draw_init();
 
-	auto s_shader = AssetManager_ins().get_shader("scene2d");
-	if (s_shader != nullptr) {
-		s_shader->use();
-		if (scene_texture != nullptr) { scene_texture->bind(0); }
-		s_shader->set_int("u_texture", 0);
-	}
+	stack_shaders->push(AssetManager_ins().get_shader("scene2d")); {
+		if (stack_shaders->top()) {
+			stack_shaders->use();
+			if (scene_texture != nullptr) { scene_texture->bind(0); }
+			stack_shaders->top()->set_int("u_texture", 0);
+		}
 
-	draw_scene(s_shader->get_name());
+		draw_scene(stack_shaders->top());
+
+	} stack_shaders->pop();
 
 }
 void GameManager::pick_pass() {
-	pick_rt->use();
-	uint t_fpm = front_polygon_mode;
-	front_polygon_mode = GL_FILL;
-	draw_init();
 
-	ub_matrices->fill_data(0, CMatrix4x4::data_size(), main_camera->get_camera_component()->get_view_mat().data());
+	pick_rt->use(); {
+		uint t_fpm = front_polygon_mode;
+		front_polygon_mode = GL_FILL;
+		draw_init();
 
-	auto p_shader = AssetManager_ins().get_shader("pick");
-	if (p_shader != nullptr) {
-		p_shader->use();
-		p_shader->set_vec3("u_view_pos", main_camera->get_root_component()->get_location());
-		p_shader->set_uint("u_object_id", 0);
-		p_shader->set_uint("u_component_id", 0);
-	}
+		ub_matrices->fill_data(0, CMatrix4x4::data_size(), main_camera->get_camera_component()->get_view_mat().data());
 
-	glStencilMask(0x00);
-	draw_all_objs(p_shader->get_name());
-	glStencilMask(0xff);
+		stack_shaders->push(AssetManager_ins().get_shader("pick")); {
+			if (stack_shaders->top()) {
+				stack_shaders->top()->use();
+				stack_shaders->top()->set_vec3("u_view_pos", main_camera->get_root_component()->get_location());
+				stack_shaders->top()->set_uint("u_object_id", 0);
+				stack_shaders->top()->set_uint("u_component_id", 0);
+			}
 
-	if (b_mouse_clicked) {
-		b_mouse_clicked = false;
-		uint data[3] = { 0 };
-        glReadPixels(static_cast<int>(mouse_clicked_x), static_cast<int>(mouse_clicked_y), 1, 1, GL_RGB_INTEGER, GL_UNSIGNED_INT, &data);
-		cur_pick_object_id = data[0];
-		cur_pick_component_id = data[1];
-	}
-	front_polygon_mode = t_fpm;
-	pick_rt->un_use();
+			glStencilMask(0x00);
+			draw_all_objs(stack_shaders->top());
+			glStencilMask(0xff);
+
+		} stack_shaders->pop();
+
+		if (b_mouse_clicked) {
+			b_mouse_clicked = false;
+			uint data[3] = { 0 };
+			glReadPixels(static_cast<int>(mouse_clicked_x), static_cast<int>(mouse_clicked_y), 1, 1, GL_RGB_INTEGER, GL_UNSIGNED_INT, &data);
+			cur_pick_object_id = data[0];
+			cur_pick_component_id = data[1];
+		}
+
+		front_polygon_mode = t_fpm;
+
+	} pick_rt->un_use();
 
 }
 void GameManager::base_pass() {
 
-	ub_matrices->fill_data(0, CMatrix4x4::data_size(), main_camera->get_camera_component()->get_view_mat().data());
+	scene_rt->use(); {
+		draw_init();
 
-	if (main_shader != nullptr) {
-		main_shader->use();
-		//main_shader->set_mat4("u_view", main_camera->get_camera_component()->get_view_mat());
-		main_shader->set_vec3("u_view_pos", main_camera->get_root_component()->get_location());
-
-	}
-	
-	auto t_shader = AssetManager_ins().get_shader("solid_color");
-	if (t_shader != nullptr) {
-		t_shader->use();
-		t_shader->set_vec3("u_view_pos", main_camera->get_root_component()->get_location());
-		t_shader->set_vec4("u_solid_color", border_color.rgba_f());
-	}
-
-	scene_rt->use();
-	draw_init();
-
-	// draw all objects
-	{
+		// draw all objects
+		if (stack_shaders->top()) {
+			stack_shaders->top()->use();
+			stack_shaders->top()->set_vec3("u_view_pos", main_camera->get_root_component()->get_location());
+		}
 		glStencilMask(0xff);							// 允许写入模板缓冲
-		draw_all_objs(main_shader->get_name());
-	}
+		draw_all_objs(stack_shaders->top());
 
-	// draw border
-	{
-		glStencilFunc(GL_NOTEQUAL, 1, 0xff);			// 之前置 1 了的 不通过
-		glStencilMask(0x00);							// 不允许写入模板缓冲
-		//glDisable(GL_DEPTH_TEST);
-		draw_border(t_shader->get_name());
-		//glEnable(GL_DEPTH_TEST);
-		glStencilMask(0xff);							// 重新允许写入模板缓冲
-	}
-	scene_rt->un_use();
+		// draw border
+		stack_shaders->push(AssetManager_ins().get_shader("solid_color")); {
+			if (stack_shaders->top()) {
+				stack_shaders->top()->use();
+				stack_shaders->top()->set_vec3("u_view_pos", main_camera->get_root_component()->get_location());
+				stack_shaders->top()->set_vec4("u_solid_color", border_color.rgba_f());
+			}
+			glStencilFunc(GL_NOTEQUAL, 1, 0xff);			// 之前置 1 了的 不通过
+			glStencilMask(0x00);							// 不允许写入模板缓冲
+			//glDisable(GL_DEPTH_TEST);
+			draw_border(stack_shaders->top());
+			//glEnable(GL_DEPTH_TEST);
+			glStencilMask(0xff);							// 重新允许写入模板缓冲
+
+		} stack_shaders->pop();
+
+	} scene_rt->un_use();
 	
 	// update scene texture
 	if (scene_rt->get_attach_textures().size() > 0) {
@@ -275,20 +280,23 @@ void GameManager::base_pass() {
 	}
 }
 void GameManager::post_process_pass() {
-	pp_rt->use();
-	draw_init();
 
-	auto p_shader = AssetManager_ins().get_shader("pp");
-	if (p_shader != nullptr) {
-		p_shader->use();
-		if (scene_texture != nullptr) { scene_texture->bind(0); }
-		p_shader->set_int("u_texture", 0);
-		p_shader->set_int("u_pp_type", pp_type);
-	}
+	pp_rt->use(); {
+		draw_init();
 
-	draw_scene(p_shader->get_name());
+		stack_shaders->push(AssetManager_ins().get_shader("pp")); {
+			if (stack_shaders->top()) {
+				stack_shaders->top()->use();
+				if (scene_texture != nullptr) { scene_texture->bind(0); }
+				stack_shaders->top()->set_int("u_texture", 0);
+				stack_shaders->top()->set_int("u_pp_type", pp_type);
+			}
 
-	pp_rt->un_use();
+			draw_scene(stack_shaders->top());
+
+		} stack_shaders->pop();
+
+	} pp_rt->un_use();
 
 	// update scene texture
 	if (pp_rt->get_attach_textures().size() > 0) {
@@ -298,9 +306,7 @@ void GameManager::post_process_pass() {
 void GameManager::vr_pass() {
 
 	// get left and right pic pass
-	{
-		vr_rt->use();
-
+	vr_rt->use(); {
 		// left eyes scene
 		{
 			glDrawBuffer(GL_COLOR_ATTACHMENT0);
@@ -312,27 +318,28 @@ void GameManager::vr_pass() {
 
 			ub_matrices->fill_data(0, CMatrix4x4::data_size(), main_camera->get_camera_component()->get_view_mat().data());
 
-			if (main_shader != nullptr) {
-				main_shader->use();
-				main_shader->set_vec3("u_view_pos", main_camera->get_root_component()->get_location());
-			}
-			auto t_shader = AssetManager_ins().get_shader("solid_color");
-			if (t_shader != nullptr) {
-				t_shader->use();
-				t_shader->set_vec3("u_view_pos", main_camera->get_root_component()->get_location());
-			}
-
 			// draw all objects
+			if (stack_shaders->top()) {
+				stack_shaders->top()->use();
+				stack_shaders->top()->set_vec3("u_view_pos", main_camera->get_root_component()->get_location());
+			}
 			glStencilMask(0xff);							// 允许写入模板缓冲
-			draw_all_objs(main_shader->get_name());
+			draw_all_objs(stack_shaders->top());
 
 			// draw border
-			glStencilFunc(GL_NOTEQUAL, 1, 0xff);			// 之前置 1 了的 不通过
-			glStencilMask(0x00);							// 不允许写入模板缓冲
-																//glDisable(GL_DEPTH_TEST);
-			draw_border(t_shader->get_name());
-			//glEnable(GL_DEPTH_TEST);
-			glStencilMask(0xff);							// 重新允许写入模板缓冲
+			stack_shaders->push(AssetManager_ins().get_shader("solid_color")); {
+				if (stack_shaders->top()) {
+					stack_shaders->top()->use();
+					stack_shaders->top()->set_vec3("u_view_pos", main_camera->get_root_component()->get_location());
+				}
+				glStencilFunc(GL_NOTEQUAL, 1, 0xff);			// 之前置 1 了的 不通过
+				glStencilMask(0x00);							// 不允许写入模板缓冲
+																	//glDisable(GL_DEPTH_TEST);
+				draw_border(stack_shaders->top());
+				//glEnable(GL_DEPTH_TEST);
+				glStencilMask(0xff);							// 重新允许写入模板缓冲
+
+			} stack_shaders->pop();
 
 			main_camera->get_root_component()->set_location(t_old_location);
 		}
@@ -345,57 +352,57 @@ void GameManager::vr_pass() {
 			auto t_old_location = main_camera->get_root_component()->get_location();
 			auto t_new_location = t_old_location + main_camera->get_camera_component()->get_right_axis() * -vr_delta;
 			main_camera->get_root_component()->set_location(t_new_location);
-			
+
 			ub_matrices->fill_data(0, CMatrix4x4::data_size(), main_camera->get_camera_component()->get_view_mat().data());
 
-			if (main_shader != nullptr) {
-				main_shader->use();
-				main_shader->set_vec3("u_view_pos", main_camera->get_root_component()->get_location());
-			}
-			auto t_shader = AssetManager_ins().get_shader("solid_color");
-			if (t_shader != nullptr) {
-				t_shader->use();
-				t_shader->set_vec3("u_view_pos", main_camera->get_root_component()->get_location());
-			}
-
 			// draw all objects
+			if (stack_shaders->top()) {
+				stack_shaders->top()->use();
+				stack_shaders->top()->set_vec3("u_view_pos", main_camera->get_root_component()->get_location());
+			}
 			glStencilMask(0xff);							// 允许写入模板缓冲
-			draw_all_objs(main_shader->get_name());
+			draw_all_objs(stack_shaders->top());
 
 			// draw border
-			glStencilFunc(GL_NOTEQUAL, 1, 0xff);			// 之前置 1 了的 不通过
-			glStencilMask(0x00);							// 不允许写入模板缓冲
-																//glDisable(GL_DEPTH_TEST);
-			draw_border(t_shader->get_name());
-			//glEnable(GL_DEPTH_TEST);
-			glStencilMask(0xff);							// 重新允许写入模板缓冲
+			stack_shaders->push(AssetManager_ins().get_shader("solid_color")); {
+				if (stack_shaders->top()) {
+					stack_shaders->top()->use();
+					stack_shaders->top()->set_vec3("u_view_pos", main_camera->get_root_component()->get_location());
+				}
+				glStencilFunc(GL_NOTEQUAL, 1, 0xff);			// 之前置 1 了的 不通过
+				glStencilMask(0x00);							// 不允许写入模板缓冲
+																	//glDisable(GL_DEPTH_TEST);
+				draw_border(stack_shaders->top());
+				//glEnable(GL_DEPTH_TEST);
+				glStencilMask(0xff);							// 重新允许写入模板缓冲
+
+			} stack_shaders->pop();
 
 			main_camera->get_root_component()->set_location(t_old_location);
 
 		}
 
-		vr_rt->un_use();
-	}
+	} vr_rt->un_use();
 
 	// mix pass -- mix left and right pic
-	{
-		vr_rt_mix->use();
+	vr_rt_mix->use(); {
 		draw_init();
 
-		auto m_shader = AssetManager_ins().get_shader("vr_mix");
-		if (m_shader != nullptr && vr_rt->get_attach_textures().size() >= 2) {
-			auto t_left = vr_rt->get_attach_textures()[0].texture;
-			auto t_right = vr_rt->get_attach_textures()[1].texture;
-			if (t_left != nullptr) { t_left->bind(0); }
-			if (t_right != nullptr) { t_right->bind(1); }
-			m_shader->use();
-			m_shader->set_int("u_texture_left", 0);
-			m_shader->set_int("u_texture_right", 1);
-		}
-		draw_scene(m_shader->get_name());
+		stack_shaders->push(AssetManager_ins().get_shader("vr_mix")); {
+			if (stack_shaders->top() && vr_rt->get_attach_textures().size() >= 2) {
+				auto t_left = vr_rt->get_attach_textures()[0].texture;
+				auto t_right = vr_rt->get_attach_textures()[1].texture;
+				if (t_left != nullptr) { t_left->bind(0); }
+				if (t_right != nullptr) { t_right->bind(1); }
+				stack_shaders->top()->use();
+				stack_shaders->top()->set_int("u_texture_left", 0);
+				stack_shaders->top()->set_int("u_texture_right", 1);
+			}
+			draw_scene(stack_shaders->top());
 
-		vr_rt_mix->un_use();
-	}
+		} stack_shaders->pop();
+
+	} vr_rt_mix->un_use();
 
 	if (vr_rt_mix->get_attach_textures().size() > 0) {
 		scene_texture = vr_rt_mix->get_attach_textures()[0].texture;
@@ -403,35 +410,40 @@ void GameManager::vr_pass() {
 }
 void GameManager::shader_toy_pass() {
 
-	// get time
-	//float t_time = 0.001f * TimeManager_ins().cur_runtime_msconds();
-	float t_time = TimeManager_ins().cur_runtime_seconds();
-
 	for (uint i = 0; i < 4; ++i) {
 		auto stbr = shader_toy_buffer_rts[i];
-		stbr->use();
+
+		stbr->use(); {
+			draw_init();
+
+			std::string t_name = "shader_toy_buffer_" + StringHelper_ins().char_to_string(static_cast<char>(i + 'a'));
+
+			stack_shaders->push(AssetManager_ins().get_shader(t_name)); {
+				if (stack_shaders->top()) {
+					stack_shaders->top()->set_vec3("iResolution", CVector3D(viewport_info.width, viewport_info.heigh, 0.0f));
+
+				}
+				draw_scene(stack_shaders->top());
+
+			} stack_shaders->pop();
+
+		} stbr->un_use();
+	}
+
+	shader_toy_rt->use(); {
 		draw_init();
-        std::string t_name = "shader_toy_buffer_" + StringHelper_ins().char_to_string(static_cast<char>(i + 'a'));
-		auto t_shader = AssetManager_ins().get_shader(t_name);
-		if (t_shader != nullptr) {
-			t_shader->set_vec3("iResolution", CVector3D(viewport_info.width, viewport_info.heigh, 0.0f));
+	
+		stack_shaders->push(AssetManager_ins().get_shader("shader_toy_img")); {
+			if (stack_shaders->top()) {
+				stack_shaders->top()->use();
+				stack_shaders->top()->set_vec3("iResolution", CVector3D(viewport_info.width, viewport_info.heigh, 0.0f));
+				stack_shaders->top()->set_float("iTime", TimeManager_ins().cur_runtime_seconds());
+			}
+			draw_scene(stack_shaders->top());
 
-		}
-		draw_scene(t_shader->get_name());
-
-		stbr->un_use();
-	}
-
-	shader_toy_rt->use();
-	draw_init();
-	auto t_shader = AssetManager_ins().get_shader("shader_toy_img");
-	if (t_shader != nullptr) {
-		t_shader->use();
-		t_shader->set_vec3("iResolution", CVector3D(viewport_info.width, viewport_info.heigh, 0.0f));
-		t_shader->set_float("iTime", t_time);
-	}
-	draw_scene(t_shader->get_name());
-	shader_toy_rt->un_use();
+		} stack_shaders->pop();
+	
+	} shader_toy_rt->un_use();
 
 	if (shader_toy_rt->get_attach_textures().size() > 0) {
 		scene_texture = shader_toy_rt->get_attach_textures()[0].texture;
@@ -439,7 +451,7 @@ void GameManager::shader_toy_pass() {
 
 }
 
-void GameManager::draw_scene(const std::string& shader) {
+void GameManager::draw_scene(SPTR_Shader shader) {
 	glDisable(GL_DEPTH_TEST);
 	static auto s_mesh = AssetManager_ins().get_mesh("rect");
 	if (s_mesh != nullptr) {
@@ -449,7 +461,7 @@ void GameManager::draw_scene(const std::string& shader) {
 	}
 	glEnable(GL_DEPTH_TEST);
 }
-void GameManager::draw_all_objs(const std::string& shader) {
+void GameManager::draw_all_objs(SPTR_Shader shader) {
 	set_depth_test();
 	set_polygon_mode(front_polygon_mode, back_polygon_mode);
 	for (auto go : game_objects) {
@@ -466,7 +478,7 @@ void GameManager::draw_all_objs(const std::string& shader) {
 	}
 	set_polygon_mode();
 }
-void GameManager::draw_border(const std::string& shader) {
+void GameManager::draw_border(SPTR_Shader shader) {
 	set_polygon_mode(front_polygon_mode, back_polygon_mode);
 	for (auto go : game_objects) {
 		if (go.second->get_id() == cur_pick_object_id) {
@@ -579,7 +591,6 @@ SPTR_CameraObject GameManager::set_main_camera() {
 
     return std::dynamic_pointer_cast<CameraObject>(free_camera);
 }
-SPTR_Shader	GameManager::set_main_shader() { return AssetManager_ins().get_shader("default"); }
 
 void GameManager::set_depth_test(bool enable, uint depth_func, uint depth_mask) {
 	if (enable) { glEnable(GL_DEPTH_TEST); }
@@ -653,7 +664,7 @@ void GameManager::main_tick(float time) {
 		(*it).second->_tick(time);
 	}
 }
-void GameManager::main_draw(const std::string& shader) {
+void GameManager::main_draw(SPTR_Shader shader) {
 	for (auto it = game_objects.begin(); it != game_objects.end(); ++it) {
 		(*it).second->_draw(shader);
 	}

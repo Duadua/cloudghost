@@ -3,6 +3,9 @@
 #include "cmath.h"
 #include "scenecomponent.h"
 
+PRE_DECLARE_CLASS(Shader)
+USING_SPTR(Shader)
+
 // base light
 class LightComponent : public SceneComponent {
 	DECLARE_CLASS(LightComponent)
@@ -10,7 +13,7 @@ public:
 	LightComponent();
 	virtual ~LightComponent() override {}
 
-    virtual bool use(const std::string& shader) { if(shader.size() > 0) {} return false; }
+	virtual bool use(SPTR_Shader shader) { if (shader) { return true; } return false; }
 
     GET_SET(CVector3D, color)
     GET_SET(float, intensity)
@@ -37,7 +40,7 @@ public:
 	DirectLightComponent();
     virtual ~DirectLightComponent() override {}
 
-	virtual bool use(const std::string& shader) override;
+	virtual bool use(SPTR_Shader shader) override;
 
 private:
 
@@ -55,7 +58,7 @@ public:
 	PointLightComponent ();
     virtual ~PointLightComponent() override {}
 
-	virtual bool use(const std::string& shader) override;
+	virtual bool use(SPTR_Shader shader) override;
 	
     GET(float, att_raduis)
 	void set_att_radius(float t_att_radius);
@@ -85,7 +88,7 @@ public:
 	SpotLightComponent ();
     virtual ~SpotLightComponent() override {}
 
-	virtual bool use(const std::string& shader) override;
+	virtual bool use(SPTR_Shader shader) override;
 	
     GET(float, att_raduis)
 	void set_att_radius(float t_att_radius);

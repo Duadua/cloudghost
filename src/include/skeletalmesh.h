@@ -6,6 +6,8 @@
 
 PRE_DECLARE_CLASS(Skeleton)
 USING_SPTR(Skeleton)
+PRE_DECLARE_CLASS(Shader)
+USING_SPTR(Shader)
 
 struct Bone {
 	CMatrix4x4 mat_offset;
@@ -24,7 +26,7 @@ public:
 	//void set_bones(const std::vector<Bone>& b);
 	virtual ~SkeletalMesh() override {}
 
-	virtual void draw(const std::string& shader) override;
+	virtual void draw(SPTR_Shader shader) override;
 
 	Bone& get_bone(int id);
 	void update_bone_mat(int id, const CMatrix4x4& mat);

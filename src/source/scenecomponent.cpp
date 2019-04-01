@@ -14,7 +14,7 @@ void SceneComponent::_tick(float time) {
 	for (auto cc : child_components) { cc->_tick(time); }
 	tick(time);
 }
-void SceneComponent::_draw(const std::string& shader) {
+void SceneComponent::_draw(SPTR_Shader shader) {
 	for (auto cc : child_components) { cc->_draw(shader); }
 	draw(shader);
 }

@@ -4,6 +4,8 @@
 #include "typehelper.h"
 #include <memory>
 
+PRE_DECLARE_CLASS(Shader)
+USING_SPTR(Shader)
 PRE_DECLARE_CLASS(SceneComponent)
 USING_SPTR(SceneComponent)
 
@@ -21,11 +23,11 @@ public:
 	virtual void bind_input() {}
 	virtual void begin_play() {}
 	virtual void tick(float time) { time; }
-	virtual void draw(const std::string& shader) { shader; }
+	virtual void draw(SPTR_Shader shader) { shader; }
 
 	void _begin_play();						// inner begin_play
 	void _tick(float time);					// inner tick
-	void _draw(const std::string& shader);	// inner draw
+	void _draw(SPTR_Shader shader);			// inner draw
 
 protected:
 	SPTR_SceneComponent root_component;

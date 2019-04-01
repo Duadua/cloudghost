@@ -3,6 +3,8 @@
 #include "scenecomponent.h"
 #include <string>
 
+PRE_DECLARE_CLASS(Shader)
+USING_SPTR(Shader)
 PRE_DECLARE_CLASS(SkeletalMesh)
 USING_SPTR(SkeletalMesh)
 PRE_DECLARE_CLASS(AnimSequence)
@@ -18,7 +20,7 @@ public:
 
 	virtual void begin_play() override;
 	virtual void tick(float time) override;
-	virtual void draw(const std::string& shader) override;
+	virtual void draw(SPTR_Shader shader) override;
 
 	GET_SET(SPTR_SkeletalMesh, mesh)
 	GET_SET(SPTR_AnimSequence, anim)

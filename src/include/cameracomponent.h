@@ -2,9 +2,11 @@
 
 #include "scenecomponent.h"
 
+PRE_DECLARE_CLASS(Shader)
+USING_SPTR(Shader)
 PRE_DECLARE_CLASS(Mesh)
-PRE_DECLARE_CLASS(CameraData)
 USING_SPTR(Mesh)
+PRE_DECLARE_CLASS(CameraData)
 USING_SPTR(CameraData)
 
 class CameraComponent : public SceneComponent {
@@ -13,7 +15,7 @@ public:
 	CameraComponent();
     ~CameraComponent() override;
 	
-    virtual void draw(const std::string& shader) override;
+    virtual void draw(SPTR_Shader shader) override;
  
 	CMatrix4x4 get_view_mat();
 	CMatrix4x4 get_proj_mat();

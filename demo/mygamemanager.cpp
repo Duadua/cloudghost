@@ -146,11 +146,12 @@ void MyGameManager::begin_play() {
 		t_m->get_render_datas()[2]->set_material_name("");
 	}*/
 
+	stack_shaders->push(AssetManager_ins().get_shader("default"));
 	// use direct light
 	{
 		auto d_light = CREATE_CLASS(DirectLightObject);
 		d_light->get_light_component()->set_intensity(2.0f);
-        d_light->use(main_shader->get_name());
+        d_light->use(stack_shaders->top());
 	}
 
 	// use point light
@@ -164,7 +165,7 @@ void MyGameManager::begin_play() {
 		p_light->get_root_component()->set_location(3.0f, 6.0f, 15.0f);
 		p_light->get_light_component()->set_att_radius(50.0f);
 		p_light->get_light_component()->set_color(CVector3D(1.0f, 0.0f, 0.0f));
-		p_light->use(main_shader->get_name());
+		p_light->use(stack_shaders->top());
 	}
 	
 	// use spot light
@@ -177,8 +178,10 @@ void MyGameManager::begin_play() {
 		s_light->get_light_component()->set_inner(15.0f);
 		s_light->get_light_component()->set_outer(20.0f);
 
-		s_light->use(main_shader->get_name());
+		s_light->use(stack_shaders->top());
 	}
+
+	stack_shaders->pop();
 
 	 //vr_delta = 0.05f;
 
@@ -352,13 +355,3 @@ void MyGameManager::map_input() {
 	InputManager_ins().map_axis("move_up", is);
 }
 
-SPTR_Shader	MyGameManager::set_main_shader() {
-	auto t_shader = AssetManager_ins().get_shader("");
-	if (t_shader == nullptr) { return GameManager::set_main_shader(); }
-	t_shader->use();
-	t_shader->set_vec4("u_solid_color", CVector4D(CColor(221, 161, 18).rgba_f()));
-	t_shader->set_int("u_texture", 0);
-	AssetManager_ins().get_texture("texture_default.png")->bind();
-
-	return t_shader;
-}

@@ -1,7 +1,7 @@
 #include "lightobject.h"
 #include "lightcomponent.h"
 
-bool LightObject::use(const std::string& shader) {
+bool LightObject::use(SPTR_Shader shader) {
 	auto t_lc = std::dynamic_pointer_cast<LightComponent>(root_component);
 	if (t_lc == nullptr) return false;
 	return t_lc->use(shader);

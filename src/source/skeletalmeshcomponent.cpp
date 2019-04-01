@@ -36,14 +36,13 @@ void SkeletalMeshComponent::tick(float time) {
 	
 	if(anim_player) anim_player->play(time);
 }
-void SkeletalMeshComponent::draw(const std::string& shader) {
+void SkeletalMeshComponent::draw(SPTR_Shader shader) {
 	if (mesh != nullptr) {
-		auto t_shader = AssetManager_ins().get_shader(shader);
-		if (t_shader != nullptr) {
+		if (shader != nullptr) {
 			if (is_border) {
-				t_shader->set_mat4("u_model", get_transform().scale(1.1f));
+				shader->set_mat4("u_model", get_transform().scale(1.1f));
 			}
-			else t_shader->set_mat4("u_model", get_transform());
+			else shader->set_mat4("u_model", get_transform());
 		}
 		mesh->draw(shader);
 	}

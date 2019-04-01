@@ -3,6 +3,9 @@
 #include "cmath.h"
 #include "component.h"
 
+PRE_DECLARE_CLASS(Shader)
+USING_SPTR(Shader)
+
 DECLARE_AUTO_PTR(SceneComponent)
 class SceneComponent : public Component, public std::enable_shared_from_this<SceneComponent> {
 	DECLARE_CLASS(SceneComponent)
@@ -12,11 +15,11 @@ public:
 
 	virtual void begin_play() {}
 	virtual void tick(float time) { time; }
-	virtual void draw(const std::string& shader) { shader; }
+	virtual void draw(SPTR_Shader shader) { shader; }
 
 	void _begin_play();
 	void _tick(float time);
-	void _draw(const std::string& shader);
+	void _draw(SPTR_Shader shader);
 
 	void attach_to(SPTR_SceneComponent parent);
 	

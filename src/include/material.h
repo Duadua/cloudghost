@@ -4,6 +4,9 @@
 #include "reflex.h"
 #include <string>
 
+PRE_DECLARE_CLASS(Shader)
+USING_SPTR(Shader)
+
 DECLARE_AUTO_PTR(Material)
 class Material : public CObject {
 	DECLARE_CLASS(Material)
@@ -13,8 +16,8 @@ public:
 	void copy_from(const SPTR_Material b);
 	~Material() {}
 
-	void use(const std::string& shader);
-	static void un_use(const std::string& shader);
+	void use(SPTR_Shader shader);
+	static void un_use(SPTR_Shader shader);
 
     GET_SET(std::string, name)
 

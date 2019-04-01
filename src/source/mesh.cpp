@@ -17,7 +17,7 @@ Mesh::~Mesh() {}
 
 void Mesh::tick(float time) { time; }
 
-void Mesh::draw(const std::string& shader) {
+void Mesh::draw(SPTR_Shader shader) {
 	for (auto rd : render_datas) { 
 		auto t_material = rd.material;
 		if (t_material == nullptr && rd.rd->get_material_name().compare("") != 0) { t_material = AssetManager_ins().get_material(rd.rd->get_material_name()); }

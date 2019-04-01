@@ -13,12 +13,11 @@ SkeletalMesh::SkeletalMesh(const SkeletalMesh& b) : Mesh(b) { skeleton = b.skele
 void SkeletalMesh::copy_from(const SPTR_SkeletalMesh b) { Mesh::copy_from(b); skeleton = b->skeleton; bones.assign(b->bones.begin(), b->bones.end()); }
 //void SkeletalMesh::set_bones(const std::vector<Bone>& b) { bones.assign(b.begin(), b.end()); }
 
-void SkeletalMesh::draw(const std::string& shader) {
-	auto t_shader = AssetManager_ins().get_shader(shader);
-	if (t_shader) {
+void SkeletalMesh::draw(SPTR_Shader shader) {
+	if (shader) {
 		// 更新 骨骼变换矩阵
 		for (int i = 0; i < bones.size(); ++i) {
-			t_shader->set_mat4("u_bones[" + StringHelper_ins().int_to_string(i) + "]", bones[i].mat_finall);
+			shader->set_mat4("u_bones[" + StringHelper_ins().int_to_string(i) + "]", bones[i].mat_finall);
 		}
 	}
 	for (auto rd : render_datas) {

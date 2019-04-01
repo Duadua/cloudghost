@@ -2,6 +2,8 @@
 
 #include "gameobject.h"
 
+PRE_DECLARE_CLASS(Shader)
+USING_SPTR(Shader)
 PRE_DECLARE_CLASS(LightComponent)
 USING_SPTR(LightComponent)
 PRE_DECLARE_CLASS(DirectLightComponent)
@@ -27,7 +29,7 @@ public:
 
 	LightType get_light_type() { return light_type; }
 
-    bool use(const std::string& shader);
+    bool use(SPTR_Shader shader);
 
 protected:
 

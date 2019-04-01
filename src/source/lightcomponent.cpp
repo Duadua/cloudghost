@@ -41,22 +41,21 @@ DirectLightComponent::DirectLightComponent() {
 
 }
 
-bool DirectLightComponent::use(const std::string& shader) {
+bool DirectLightComponent::use(SPTR_Shader shader) {
 
-	auto t_shader = AssetManager_ins().get_shader(shader);
-	if (t_shader == nullptr) return false;
+	if (shader == nullptr) return false;
 
 	// get uniform name in shader 
 	std::string t_name = "u_direct_light[" + StringHelper_ins().int_to_string(direct_light_num) + "]";
 
 	// bind uniform value for t_shader
-	t_shader->use();
-	t_shader->set_vec3(t_name + ".color", color);
-	t_shader->set_float(t_name + ".intensity", intensity);
-	t_shader->set_vec3(t_name + ".k", k);
-	t_shader->set_vec3(t_name + ".dirction", get_dirction());
+	shader->use();
+	shader->set_vec3(t_name + ".color", color);
+	shader->set_float(t_name + ".intensity", intensity);
+	shader->set_vec3(t_name + ".k", k);
+	shader->set_vec3(t_name + ".dirction", get_dirction());
 	
-    t_shader->set_int("u_direct_light_num", ++direct_light_num);
+    shader->set_int("u_direct_light_num", ++direct_light_num);
 
 	return true;
 
@@ -75,24 +74,23 @@ PointLightComponent::PointLightComponent() {
 	set_att_radius(50.0f);
 }
 
-bool PointLightComponent::use(const std::string& shader) {
-	auto t_shader = AssetManager_ins().get_shader(shader);
-	if (t_shader == nullptr) return false;
+bool PointLightComponent::use(SPTR_Shader shader) {
+	if (shader == nullptr) return false;
 
 	// get uniform name in shader 
 	std::string t_name = "u_point_light[" + StringHelper_ins().int_to_string(point_light_num) + "]";
 
 	// bind uniform value for t_shader
-	t_shader->use();
-	t_shader->set_vec3(t_name + ".color", color);
-	t_shader->set_float(t_name + ".intensity", intensity);
-	t_shader->set_vec3(t_name + ".k", k);
-	t_shader->set_vec3(t_name + ".position", location);
-	t_shader->set_float(t_name + ".att_ka", att_ka);
-	t_shader->set_float(t_name + ".att_kb", att_kb);
-	t_shader->set_float(t_name + ".att_kc", att_kc);
+	shader->use();
+	shader->set_vec3(t_name + ".color", color);
+	shader->set_float(t_name + ".intensity", intensity);
+	shader->set_vec3(t_name + ".k", k);
+	shader->set_vec3(t_name + ".position", location);
+	shader->set_float(t_name + ".att_ka", att_ka);
+	shader->set_float(t_name + ".att_kb", att_kb);
+	shader->set_float(t_name + ".att_kc", att_kc);
 
-	t_shader->set_int("u_point_light_num", ++point_light_num);
+	shader->set_int("u_point_light_num", ++point_light_num);
 
 	return true;
 }
@@ -125,28 +123,27 @@ SpotLightComponent::SpotLightComponent() {
 	outer = 45.0f;
 }
 
-bool SpotLightComponent::use(const std::string& shader) {
-	auto t_shader = AssetManager_ins().get_shader(shader);
-	if (t_shader == nullptr) return false;
+bool SpotLightComponent::use(SPTR_Shader shader) {
+	if (shader == nullptr) return false;
 
 	// get uniform name in shader 
 	std::string t_name = "u_spot_light[" + StringHelper_ins().int_to_string(spot_light_num) + "]";
 
 	// bind uniform value for t_shader
-	t_shader->use();
-	t_shader->set_vec3(t_name + ".color", color);
-	t_shader->set_float(t_name + ".intensity", intensity);
-	t_shader->set_vec3(t_name + ".k", k);
-	t_shader->set_vec3(t_name + ".position", location);
-	t_shader->set_vec3(t_name + ".dirction", get_dirction());
-	t_shader->set_float(t_name + ".att_ka", att_ka);
-	t_shader->set_float(t_name + ".att_kb", att_kb);
-	t_shader->set_float(t_name + ".att_kc", att_kc);
+	shader->use();
+	shader->set_vec3(t_name + ".color", color);
+	shader->set_float(t_name + ".intensity", intensity);
+	shader->set_vec3(t_name + ".k", k);
+	shader->set_vec3(t_name + ".position", location);
+	shader->set_vec3(t_name + ".dirction", get_dirction());
+	shader->set_float(t_name + ".att_ka", att_ka);
+	shader->set_float(t_name + ".att_kb", att_kb);
+	shader->set_float(t_name + ".att_kc", att_kc);
 
-	t_shader->set_float(t_name + ".inner", std::cos(CMath_ins().deg_to_rad(inner)));
-	t_shader->set_float(t_name + ".outer", std::cos(CMath_ins().deg_to_rad(outer)));
+	shader->set_float(t_name + ".inner", std::cos(CMath_ins().deg_to_rad(inner)));
+	shader->set_float(t_name + ".outer", std::cos(CMath_ins().deg_to_rad(outer)));
 
-	t_shader->set_int("u_spot_light_num", ++spot_light_num);
+	shader->set_int("u_spot_light_num", ++spot_light_num);
 
 	return true;
 }

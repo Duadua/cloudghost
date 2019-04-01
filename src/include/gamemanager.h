@@ -8,6 +8,8 @@
 
 PRE_DECLARE_CLASS(Shader)
 USING_SPTR(Shader)
+PRE_DECLARE_CLASS(ShaderStack)
+USING_SPTR(ShaderStack)
 PRE_DECLARE_CLASS(RenderTarget)
 USING_SPTR(RenderTarget)
 PRE_DECLARE_CLASS(GameObject)
@@ -58,7 +60,6 @@ public:
 	virtual void map_input() = 0;							// 绑定输入
 
 	virtual SPTR_CameraObject	set_main_camera() = 0;		// 设置主相机 
-	virtual SPTR_Shader			set_main_shader() = 0;		// 设置主Shader
 };
 
 // 这是一个子类代理单例 -- 所以不能继承 Singleton
@@ -79,7 +80,6 @@ public:
 	virtual void map_input() override {}
 
 	virtual SPTR_CameraObject	set_main_camera() override;
-	virtual SPTR_Shader			set_main_shader() override;
 
 public:
 	GameManager();
@@ -106,8 +106,8 @@ protected:
     GET(ViewportInfo, viewport_info)
 
 	SPTR_CameraObject main_camera;
-	SPTR_Shader main_shader;
 
+	SPTR_ShaderStack stack_shaders;
 	SPTR_UniformBuffer ub_matrices;
 
 	// ui shading setting
@@ -135,7 +135,7 @@ private:
 	void main_bind_input();
 	void main_begin_play();
 	void main_tick(float time);
-	void main_draw(const std::string& shader);
+	void main_draw(SPTR_Shader shader);
 
 	// default init
 	void map_input_default();
@@ -162,9 +162,9 @@ private:
 	void init_vr_rt();
 	void init_shader_toy_rt();
 
-	void draw_scene(const std::string& shader);
-	void draw_all_objs(const std::string& shader);
-	void draw_border(const std::string& shader);
+	void draw_scene(SPTR_Shader shader);
+	void draw_all_objs(SPTR_Shader shader);
+	void draw_border(SPTR_Shader shader);
 
 	void draw_init();
 

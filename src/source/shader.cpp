@@ -143,12 +143,16 @@ void Shader::set_unifom_buffer(const std::string& n, uint idx) {
 
 IMPLEMENT_CLASS(ShaderStack)
 
+ShaderStack::ShaderStack() {
+	while (!shaders.empty()) { shaders.pop(); }
+}
+
 SPTR_ShaderStack ShaderStack::push(const SPTR_Shader shader) {
 	shaders.push(shader); use();
 	return shared_from_this();
 }
 SPTR_ShaderStack ShaderStack::pop() {
-	if (!shaders.empty()) shaders.pop(); use();
+	if (!shaders.empty()) shaders.pop(); 
 	return shared_from_this();
 }
 

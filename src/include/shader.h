@@ -52,9 +52,11 @@ private:
 // =================================================================
 
 DECLARE_AUTO_PTR(ShaderStack)
-class ShaderStack : public CObject, std::enable_shared_from_this<ShaderStack> {
+class ShaderStack : public CObject, public std::enable_shared_from_this<ShaderStack> {
 	DECLARE_CLASS(ShaderStack)
 public:
+	ShaderStack();
+	~ShaderStack() {}
 
 	SPTR_ShaderStack push(const SPTR_Shader shader);
 	SPTR_ShaderStack pop();
