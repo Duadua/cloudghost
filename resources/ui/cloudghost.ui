@@ -127,6 +127,8 @@ QMenu::item:pressed {
     <addaction name="separator"/>
     <addaction name="menu_polygon_mode"/>
     <addaction name="separator"/>
+    <addaction name="action_normal_visual"/>
+    <addaction name="separator"/>
     <addaction name="action_rb_3d"/>
     <addaction name="menu_eye_delta"/>
     <addaction name="separator"/>
@@ -334,6 +336,14 @@ QMenu::item:pressed {
    </property>
    <property name="shortcut">
     <string>Ctrl+S, Ctrl+D</string>
+   </property>
+  </action>
+  <action name="action_normal_visual">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>显示法线</string>
    </property>
   </action>
  </widget>

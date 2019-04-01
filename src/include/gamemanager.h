@@ -97,6 +97,7 @@ public:									// used for qt ui
     GET_SET(float, vr_delta)
     GET_SET(PostProcessType, pp_type)
     GET_SET(bool, b_use_shader_toy)
+	GET_SET(bool, b_normal_visual)
 
 protected:
 	static GameManager* instance;
@@ -124,6 +125,8 @@ protected:
 
 	bool b_use_shader_toy;
 
+	bool b_normal_visual;			// 法线是否可视化
+
 	// gl state
 	void set_depth_test(bool enable = true, uint depth_func = GL_LESS, uint depth_mask = GL_TRUE);
 	void set_stencil_test(bool enable = false, uint func = GL_EQUAL, uint ref = 1, uint mask = 0xff, uint fail = GL_KEEP, uint zfail = GL_KEEP, uint zpass = GL_KEEP);
@@ -150,9 +153,11 @@ private:
 	SPTR_RenderTarget shader_toy_rt;
 	SPTR_RenderTarget shader_toy_buffer_rts[4];
 	SPTR_Texture2D scene_texture;
+
 	void scene_pass();
 	void pick_pass();					// 拾取阶段
 	void base_pass();
+	void normal_visual_pass();			// 法线可视化
 	void post_process_pass();
 	void vr_pass();
 	void shader_toy_pass();

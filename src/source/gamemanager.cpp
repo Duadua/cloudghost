@@ -32,6 +32,7 @@ void GameManager::_init() {
 		vr_delta = 0.1f;
 		pp_type = PostProcessType::NOPE;
 		b_use_shader_toy = false;
+		b_normal_visual = false;
 	}
 }
 
@@ -66,6 +67,7 @@ void GameManager::init() {
 		AssetManager_ins().load_shader("pp", "resources/shaders/scene_2d.vert", "resources/shaders/post_process.frag");
 		AssetManager_ins().load_shader("pick", "resources/shaders/mvp_anim.vert", "resources/shaders/pick.frag");
 		AssetManager_ins().load_shader("vr_mix", "resources/shaders/scene_2d.vert", "resources/shaders/vr_mix.frag");
+		AssetManager_ins().load_shader("normal_visual", "resources/shaders/mvp_anim.vert", "resources/shaders/solid_color.frag", "resources/shaders/normal_visual.geom");
 
 		AssetManager_ins().load_shader("shader_toy_img", "resources/shaders/scene_2d.vert", "resources/shaders/shadertoy_img.frag");
 		AssetManager_ins().load_shader("shader_toy_buffer_a", "resources/shaders/scene_2d.vert", "resources/shaders/shadertoy_buffer_a.frag");
@@ -272,12 +274,25 @@ void GameManager::base_pass() {
 
 		} stack_shaders->pop();
 
+		// 法线可视化
+		if (b_normal_visual) { normal_visual_pass(); }
+
 	} scene_rt->un_use();
 	
 	// update scene texture
 	if (scene_rt->get_attach_textures().size() > 0) {
 		scene_texture = scene_rt->get_attach_textures()[0].texture;
 	}
+}
+void GameManager::normal_visual_pass() {
+	stack_shaders->push(AssetManager_ins().get_shader("normal_visual")); {
+		if (stack_shaders->top()) {
+			stack_shaders->top()->use();
+			stack_shaders->top()->set_vec4("u_solid_color", CVector4D(0.0f, 1.0f, 1.0f, 1.0f));
+		}
+		draw_all_objs(stack_shaders->top());
+	} stack_shaders->pop();
+
 }
 void GameManager::post_process_pass() {
 
@@ -341,6 +356,9 @@ void GameManager::vr_pass() {
 
 			} stack_shaders->pop();
 
+			// normal visual
+			if (b_normal_visual) { normal_visual_pass(); }
+
 			main_camera->get_root_component()->set_location(t_old_location);
 		}
 
@@ -377,6 +395,9 @@ void GameManager::vr_pass() {
 				glStencilMask(0xff);							// 重新允许写入模板缓冲
 
 			} stack_shaders->pop();
+
+			// normal visual
+			if (b_normal_visual) { normal_visual_pass(); }
 
 			main_camera->get_root_component()->set_location(t_old_location);
 
