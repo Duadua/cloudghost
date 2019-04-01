@@ -9,9 +9,11 @@ out O_VS {
 	vec2 tex_coord;
 } o_vs;
 
+layout (std140) uniform Matrices {
+	mat4 u_view;
+	mat4 u_projection;
+};
 uniform mat4 u_model;
-uniform mat4 u_view;
-uniform mat4 u_projection;
 
 void main() {
 	
@@ -35,4 +37,10 @@ void main() {
 *	打包了发送到下一个着色器的数据
 *	在下一个着色器接收需定义一个相同名称的 in 接口块
 *	in O_VS { ... } i_fs; -- 块名(O_VS) 需一样, 但是实例名随意 
+*/
+
+/**
+*	uniform 块布局
+*	layout (std140) uniform xxx {};
+*	std140 -- 特定的布局结构 -- 4字节对齐
 */

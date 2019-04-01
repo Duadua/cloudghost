@@ -6,7 +6,9 @@
 #include "texture2d.h"
 #include "gameobject.h"
 #include "freecamera.h"
+#include "cameradata.h"
 #include "rendertarget.h"
+#include "uniformbuffer.h"
 #include "cameracomponent.h"
 
 #include "timemanager.h"
@@ -93,6 +95,18 @@ void GameManager::init() {
 		
 	}
 
+	// init uniform block 
+	{
+		ub_matrices = CREATE_CLASS(UniformBuffer);
+		ub_matrices->init(2 * 16 * sizeof(float), 0);
+
+		// bind shader to uniform block
+		for (auto shader : AssetManager_ins().map_shaders) {
+			auto t_shader = shader.second;
+			if (t_shader) { t_shader->set_unifom_buffer("Matrices", 0); }
+		}
+	}
+
 	main_camera = set_main_camera();	// 绑定主相机
 	main_shader = set_main_shader();	// 绑定主shader
 
@@ -104,7 +118,6 @@ void GameManager::init() {
 		map_input();						
 		main_bind_input();
 	}
-
 
 	// gl state init
 	{
@@ -187,10 +200,11 @@ void GameManager::pick_pass() {
 	front_polygon_mode = GL_FILL;
 	draw_init();
 
+	ub_matrices->fill_data(0, 16 * sizeof(float), main_camera->get_camera_component()->get_view_mat().data());
+
 	auto p_shader = AssetManager_ins().get_shader("pick");
 	if (p_shader != nullptr) {
 		p_shader->use();
-		p_shader->set_mat4("u_view", main_camera->get_camera_component()->get_view_mat());
 		p_shader->set_vec3("u_view_pos", main_camera->get_root_component()->get_location());
 		p_shader->set_uint("u_object_id", 0);
 		p_shader->set_uint("u_component_id", 0);
@@ -213,16 +227,18 @@ void GameManager::pick_pass() {
 }
 void GameManager::base_pass() {
 
+	ub_matrices->fill_data(0, 16 * sizeof(float), main_camera->get_camera_component()->get_view_mat().data());
+
 	if (main_shader != nullptr) {
 		main_shader->use();
-		main_shader->set_mat4("u_view", main_camera->get_camera_component()->get_view_mat());
+		//main_shader->set_mat4("u_view", main_camera->get_camera_component()->get_view_mat());
 		main_shader->set_vec3("u_view_pos", main_camera->get_root_component()->get_location());
+
 	}
 	
 	auto t_shader = AssetManager_ins().get_shader("solid_color");
 	if (t_shader != nullptr) {
 		t_shader->use();
-		t_shader->set_mat4("u_view", main_camera->get_camera_component()->get_view_mat());
 		t_shader->set_vec3("u_view_pos", main_camera->get_root_component()->get_location());
 		t_shader->set_vec4("u_solid_color", border_color.rgba_f());
 	}
@@ -287,15 +303,16 @@ void GameManager::vr_pass() {
 			auto t_old_location = main_camera->get_root_component()->get_location();
 			auto t_new_location = t_old_location + main_camera->get_camera_component()->get_right_axis() * vr_delta;
 			main_camera->get_root_component()->set_location(t_new_location);
+
+			ub_matrices->fill_data(0, 16 * sizeof(float), main_camera->get_camera_component()->get_view_mat().data());
+
 			if (main_shader != nullptr) {
 				main_shader->use();
-				main_shader->set_mat4("u_view", main_camera->get_camera_component()->get_view_mat());
 				main_shader->set_vec3("u_view_pos", main_camera->get_root_component()->get_location());
 			}
 			auto t_shader = AssetManager_ins().get_shader("solid_color");
 			if (t_shader != nullptr) {
 				t_shader->use();
-				t_shader->set_mat4("u_view", main_camera->get_camera_component()->get_view_mat());
 				t_shader->set_vec3("u_view_pos", main_camera->get_root_component()->get_location());
 			}
 
@@ -322,16 +339,16 @@ void GameManager::vr_pass() {
 			auto t_old_location = main_camera->get_root_component()->get_location();
 			auto t_new_location = t_old_location + main_camera->get_camera_component()->get_right_axis() * -vr_delta;
 			main_camera->get_root_component()->set_location(t_new_location);
+			
+			ub_matrices->fill_data(0, 16 * sizeof(float), main_camera->get_camera_component()->get_view_mat().data());
 
 			if (main_shader != nullptr) {
 				main_shader->use();
-				main_shader->set_mat4("u_view", main_camera->get_camera_component()->get_view_mat());
 				main_shader->set_vec3("u_view_pos", main_camera->get_root_component()->get_location());
 			}
 			auto t_shader = AssetManager_ins().get_shader("solid_color");
 			if (t_shader != nullptr) {
 				t_shader->use();
-				t_shader->set_mat4("u_view", main_camera->get_camera_component()->get_view_mat());
 				t_shader->set_vec3("u_view_pos", main_camera->get_root_component()->get_location());
 			}
 
@@ -530,27 +547,15 @@ void GameManager::resize(uint w, uint h) {
 	viewport_info.heigh = h;
     glViewport(0, 0, static_cast<GLsizei>(w), static_cast<GLsizei>(h));
 
-	CMatrix4x4 projection;
-    float t_ratio = static_cast<float>(w) / (h == 0 ? 1 : h);
-	projection.perspective(45.0f, t_ratio, 0.1f, 1000.0f);
 	//projection.frustum(-0.1f, 0.1f, -0.1f / t, 0.1f / t, 0.1f, 100.0f);
 	//projection.ortho(-10.0f, 10.0f, -10.0f / t, 10.0f / t, 0.01f, 1000.0f);
 	//projection.ortho(20.0f, t, 0.01f, 100.0f);
 	//projection.ortho_2d(0.0f, 20.0f, 0.0f / t, 20.0f /t);
-
-	if (main_shader != nullptr) {
-		main_shader->use();
-		main_shader->set_mat4("u_projection", projection);
-	}
-	auto t_s = AssetManager_ins().get_shader("solid_color");
-	if (t_s != nullptr) {
-		t_s->use();
-		t_s->set_mat4("u_projection", projection);
-	}
-	auto p_s = AssetManager_ins().get_shader("pick");
-	if (p_s != nullptr) {
-		p_s->use();
-		p_s->set_mat4("u_projection", projection);
+	
+	if (main_camera) {
+		main_camera->get_camera_component()->get_camera_data()->get_frustum().width = w;
+		main_camera->get_camera_component()->get_camera_data()->get_frustum().heigh = h;
+		ub_matrices->fill_data(16 * sizeof(float), 16 * sizeof(float), main_camera->get_camera_component()->get_proj_mat().data());
 	}
 
 	init_rt();

@@ -13,9 +13,11 @@ out O_VS {
 	vec2 tex_coord;
 } o_vs;
 
+layout (std140) uniform Matrices {
+	mat4 u_view;
+	mat4 u_projection;
+};
 uniform mat4 u_model;
-uniform mat4 u_view;
-uniform mat4 u_projection;
 uniform mat4 u_bones[MAX_BONES];
 
 void main() {

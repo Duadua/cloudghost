@@ -1,12 +1,15 @@
 #include "shader.h"
 #include "texture2d.h"
+#include "cameradata.h"
 #include "freecamera.h"
 #include "inputmanager.h"
 #include "assetmanager.h"
 #include "mygamemanager.h"
 #include "meshcomponent.h"
+#include "uniformbuffer.h"
 #include "lightobject.h"
 #include "lightcomponent.h"
+#include "cameracomponent.h"
 #include "skeletalmeshcomponent.h"
 
 #include "cubeobject.h"
@@ -145,7 +148,7 @@ void MyGameManager::begin_play() {
 	}*/
 
 	// shader 静态参数赋值
-    CMatrix4x4 projection;
+    /*CMatrix4x4 projection;
     float ratio  = 1.0f * get_viewport_info().heigh / get_viewport_info().width;
     projection.perspective(45.0f, ratio, 0.1f, 1000.0f);
 	if (main_shader != nullptr) {
@@ -166,7 +169,16 @@ void MyGameManager::begin_play() {
 		p_s->use();
 		p_s->set_mat4("u_projection", projection);
 	}
-	
+	*/
+
+	if (main_camera) {
+		main_camera->get_camera_component()->get_camera_data()->get_frustum().width = get_viewport_info().heigh;
+		main_camera->get_camera_component()->get_camera_data()->get_frustum().heigh = get_viewport_info().width;
+		c_debuger() << std::to_string(64);
+		c_debuger() << std::to_string(sizeof(main_camera->get_camera_component()->get_proj_mat().data()));
+		ub_matrices->fill_data(16*sizeof(float), 16*sizeof(float), main_camera->get_camera_component()->get_proj_mat().data());
+	}
+
 
 	// use direct light
 	{

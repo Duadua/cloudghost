@@ -7,6 +7,13 @@ CameraData::~CameraData() {}
 
 CMatrix4x4 CameraData::get_view_mat() { return look_at(); }
 
+CMatrix4x4 CameraData::get_proj_mat() {
+	CMatrix4x4 res;
+	float t_ratio = static_cast<float>(frustum.width) / (frustum.heigh == 0 ? 1 : frustum.heigh);
+	res.perspective(frustum.fov, t_ratio, frustum.near, frustum.far);
+	return res;
+}
+
 void CameraData::update(CVector3D l, CVector3D r) {
 	location = l;
 	rotation = r;

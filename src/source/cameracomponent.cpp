@@ -15,6 +15,7 @@ CMatrix4x4 CameraComponent::get_view_mat() {
 	camera_data->update(get_location(), get_rotation());
 	return camera_data->get_view_mat();
 }
+CMatrix4x4 CameraComponent::get_proj_mat() { return camera_data->get_proj_mat(); }
 
 CVector3D CameraComponent::get_right_axis() {
 	camera_data->update(get_location(), get_rotation());

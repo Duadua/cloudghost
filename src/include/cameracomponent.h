@@ -16,8 +16,10 @@ public:
     virtual void draw(const std::string& shader) override;
  
 	CMatrix4x4 get_view_mat();
+	CMatrix4x4 get_proj_mat();
 
-    GET_SET(float, camera_speed)
+	GET_SET(float, camera_speed)
+	GET_SET(SPTR_CameraData, camera_data)
 
 	CVector3D get_right_axis();
 

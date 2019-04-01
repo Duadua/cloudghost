@@ -33,6 +33,8 @@ public:
 
 	void set_mat4(const std::string& n, const CMatrix4x4& value);
 
+	void set_unifom_buffer(const std::string& n, uint idx);
+
 private:
 	uint compile_shader(const std::string& code, uint type);
 	void link_shaders();

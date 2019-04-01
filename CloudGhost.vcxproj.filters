@@ -313,6 +313,9 @@
     <ClCompile Include="src\source\cdebugerwidget.cpp">
       <Filter>src\source\ui</Filter>
     </ClCompile>
+    <ClCompile Include="src\source\uniformbuffer.cpp">
+      <Filter>src\source\core\renders</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <QtUic Include="resources\ui\cloudghost.ui">
@@ -495,6 +498,9 @@
       <Filter>math\include</Filter>
     </ClInclude>
     <ClInclude Include="src\include\animplayer.h">
+      <Filter>src\include\core\renders</Filter>
+    </ClInclude>
+    <ClInclude Include="src\include\uniformbuffer.h">
       <Filter>src\include\core\renders</Filter>
     </ClInclude>
   </ItemGroup>

@@ -134,6 +134,11 @@ void Shader::set_mat4(const std::string& n, const CMatrix4x4& value) {
 	glUniformMatrix4fv(location, 1, GL_FALSE, value.data());
 }
 
+void Shader::set_unifom_buffer(const std::string& n, uint idx) {
+	uint u_block_idx = glGetUniformBlockIndex(shader_id, n.c_str());
+	glUniformBlockBinding(shader_id, u_block_idx, idx);
+}
+
 // ==========================================================================================
 
 IMPLEMENT_CLASS(ShaderStack)

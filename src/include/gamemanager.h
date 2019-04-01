@@ -16,7 +16,8 @@ PRE_DECLARE_CLASS(CameraObject)
 USING_SPTR(CameraObject)
 PRE_DECLARE_CLASS(Texture2D)
 USING_SPTR(Texture2D)
-
+PRE_DECLARE_CLASS(UniformBuffer)
+USING_SPTR(UniformBuffer)
 
 #define GL_LESS					0x0201
 #define GL_TRUE					1
@@ -106,6 +107,8 @@ protected:
 
 	SPTR_CameraObject main_camera;
 	SPTR_Shader main_shader;
+
+	SPTR_UniformBuffer ub_matrices;
 
 	// ui shading setting
 	CColor background_color;
