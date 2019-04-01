@@ -6,7 +6,6 @@
 #include "assetmanager.h"
 #include "mygamemanager.h"
 #include "meshcomponent.h"
-#include "uniformbuffer.h"
 #include "lightobject.h"
 #include "lightcomponent.h"
 #include "cameracomponent.h"
@@ -146,39 +145,6 @@ void MyGameManager::begin_play() {
 		auto t_m = AssetManager_ins().get_mesh(mccc->get_mesh());
 		t_m->get_render_datas()[2]->set_material_name("");
 	}*/
-
-	// shader 静态参数赋值
-    /*CMatrix4x4 projection;
-    float ratio  = 1.0f * get_viewport_info().heigh / get_viewport_info().width;
-    projection.perspective(45.0f, ratio, 0.1f, 1000.0f);
-	if (main_shader != nullptr) {
-		main_shader->use();
-		main_shader->set_mat4("u_projection", projection);
-		//main_shader->set_float("u_near", 0.1f);
-		//main_shader->set_float("u_far", 100.0f);
-	}
-
-	auto t_s = AssetManager_ins().get_shader("solid_color");
-	if (t_s != nullptr) {
-		t_s->use();
-		t_s->set_mat4("u_projection", projection);
-	}
-
-	auto p_s = AssetManager_ins().get_shader("pick");
-	if (p_s != nullptr) {
-		p_s->use();
-		p_s->set_mat4("u_projection", projection);
-	}
-	*/
-
-	if (main_camera) {
-		main_camera->get_camera_component()->get_camera_data()->get_frustum().width = get_viewport_info().heigh;
-		main_camera->get_camera_component()->get_camera_data()->get_frustum().heigh = get_viewport_info().width;
-		c_debuger() << std::to_string(64);
-		c_debuger() << std::to_string(sizeof(main_camera->get_camera_component()->get_proj_mat().data()));
-		ub_matrices->fill_data(16*sizeof(float), 16*sizeof(float), main_camera->get_camera_component()->get_proj_mat().data());
-	}
-
 
 	// use direct light
 	{

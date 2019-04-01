@@ -75,7 +75,9 @@ public:
 	CMatrix4x4 inverse() const;										// 逆矩阵
 	CMatrix4x4 transpose() const;									// 转置矩阵			
 
-	inline const float* data() const { return *m; }
+	const float* data() const { return *m; }
+	static const uint data_size() { return col_size * row_size * sizeof(float); }
+
 private:
 	float m[col_size][row_size];									// 列主序 -- m[i][j] -- 第 i 列 第 j 行
 

@@ -95,10 +95,19 @@ void GameManager::init() {
 		
 	}
 
+	main_camera = set_main_camera();	// 绑定主相机
+	main_shader = set_main_shader();	// 绑定主shader
+
 	// init uniform block 
 	{
 		ub_matrices = CREATE_CLASS(UniformBuffer);
-		ub_matrices->init(2 * 16 * sizeof(float), 0);
+		ub_matrices->init(2 * CMatrix4x4::data_size(), 0);
+
+		if (main_camera) {
+			main_camera->get_camera_component()->get_camera_data()->get_frustum().width = get_viewport_info().heigh;
+			main_camera->get_camera_component()->get_camera_data()->get_frustum().heigh = get_viewport_info().width;
+			ub_matrices->fill_data(CMatrix4x4::data_size(), CMatrix4x4::data_size(), main_camera->get_camera_component()->get_proj_mat().data());
+		}
 
 		// bind shader to uniform block
 		for (auto shader : AssetManager_ins().map_shaders) {
@@ -106,9 +115,6 @@ void GameManager::init() {
 			if (t_shader) { t_shader->set_unifom_buffer("Matrices", 0); }
 		}
 	}
-
-	main_camera = set_main_camera();	// 绑定主相机
-	main_shader = set_main_shader();	// 绑定主shader
 
 	// init input map
 	{
@@ -200,7 +206,7 @@ void GameManager::pick_pass() {
 	front_polygon_mode = GL_FILL;
 	draw_init();
 
-	ub_matrices->fill_data(0, 16 * sizeof(float), main_camera->get_camera_component()->get_view_mat().data());
+	ub_matrices->fill_data(0, CMatrix4x4::data_size(), main_camera->get_camera_component()->get_view_mat().data());
 
 	auto p_shader = AssetManager_ins().get_shader("pick");
 	if (p_shader != nullptr) {
@@ -227,7 +233,7 @@ void GameManager::pick_pass() {
 }
 void GameManager::base_pass() {
 
-	ub_matrices->fill_data(0, 16 * sizeof(float), main_camera->get_camera_component()->get_view_mat().data());
+	ub_matrices->fill_data(0, CMatrix4x4::data_size(), main_camera->get_camera_component()->get_view_mat().data());
 
 	if (main_shader != nullptr) {
 		main_shader->use();
@@ -304,7 +310,7 @@ void GameManager::vr_pass() {
 			auto t_new_location = t_old_location + main_camera->get_camera_component()->get_right_axis() * vr_delta;
 			main_camera->get_root_component()->set_location(t_new_location);
 
-			ub_matrices->fill_data(0, 16 * sizeof(float), main_camera->get_camera_component()->get_view_mat().data());
+			ub_matrices->fill_data(0, CMatrix4x4::data_size(), main_camera->get_camera_component()->get_view_mat().data());
 
 			if (main_shader != nullptr) {
 				main_shader->use();
@@ -340,7 +346,7 @@ void GameManager::vr_pass() {
 			auto t_new_location = t_old_location + main_camera->get_camera_component()->get_right_axis() * -vr_delta;
 			main_camera->get_root_component()->set_location(t_new_location);
 			
-			ub_matrices->fill_data(0, 16 * sizeof(float), main_camera->get_camera_component()->get_view_mat().data());
+			ub_matrices->fill_data(0, CMatrix4x4::data_size(), main_camera->get_camera_component()->get_view_mat().data());
 
 			if (main_shader != nullptr) {
 				main_shader->use();
@@ -555,7 +561,7 @@ void GameManager::resize(uint w, uint h) {
 	if (main_camera) {
 		main_camera->get_camera_component()->get_camera_data()->get_frustum().width = w;
 		main_camera->get_camera_component()->get_camera_data()->get_frustum().heigh = h;
-		ub_matrices->fill_data(16 * sizeof(float), 16 * sizeof(float), main_camera->get_camera_component()->get_proj_mat().data());
+		ub_matrices->fill_data(CMatrix4x4::data_size(), CMatrix4x4::data_size(), main_camera->get_camera_component()->get_proj_mat().data());
 	}
 
 	init_rt();
