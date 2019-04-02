@@ -41,6 +41,7 @@ void GameManager::_init() {
 		b_explode = false;
 
 		b_msaa = true;
+		b_msaa_custom = true;
 	}
 }
 
@@ -77,6 +78,7 @@ void GameManager::init() {
 		AssetManager_ins().load_shader("vr_mix", "resources/shaders/scene_2d.vert", "resources/shaders/vr_mix.frag");
 		AssetManager_ins().load_shader("normal_visual", "resources/shaders/mvp_anim.vert", "resources/shaders/solid_color.frag", "resources/shaders/normal_visual.geom");
 		AssetManager_ins().load_shader("explode", "resources/shaders/mvp_anim.vert", "resources/shaders/blinn_phong.frag", "resources/shaders/explode.geom");
+		AssetManager_ins().load_shader("msaa", "resources/shaders/scene_2d.vert", "resources/shaders/msaa.frag");
 
 		AssetManager_ins().load_shader("shader_toy_img", "resources/shaders/scene_2d.vert", "resources/shaders/shadertoy_img.frag");
 		AssetManager_ins().load_shader("shader_toy_buffer_a", "resources/shaders/scene_2d.vert", "resources/shaders/shadertoy_buffer_a.frag");
@@ -293,7 +295,26 @@ void GameManager::base_pass() {
 	} if (b_msaa) { msaa_rt->un_use(); } else { scene_rt->un_use(); }
 
 	// blit msaa_rt to scene_rt -- color buffer is stored in scene_texture -- use inner msaa alogrithm
-	if (b_msaa) { blit(msaa_rt, scene_rt, viewport_info.width, viewport_info.heigh); }
+	if (b_msaa) { 
+		if (!b_msaa_custom) { blit(msaa_rt, scene_rt, viewport_info.width, viewport_info.heigh); } // opengl 自带抗锯齿
+		else {
+			scene_rt->use(); {
+				draw_init();
+				stack_shaders->push(AssetManager_ins().get_shader("msaa")); {
+					if (stack_shaders->top() && msaa_vr_rt->get_attach_textures().size() > 0) {
+						auto t_texture = msaa_rt->get_attach_textures()[0].texture;
+						if (t_texture) { t_texture->bind(0); }
+						stack_shaders->top()->use();
+						stack_shaders->top()->set_int("u_texture_msaa", 0);
+						stack_shaders->top()->set_int("u_msaa_num", 4);
+					}
+					draw_scene(stack_shaders->top());
+				} stack_shaders->pop();
+			} scene_rt->un_use();
+
+		} // 自定义抗锯齿
+
+	}
 	
 	// update scene texture
 	if (scene_rt->get_attach_textures().size() > 0) {
@@ -423,8 +444,45 @@ void GameManager::vr_pass() {
 	} if (b_msaa) { msaa_vr_rt->un_use(); } else { vr_rt->un_use(); }
 
 	if(b_msaa) {
-		blit(msaa_vr_rt, vr_rt, viewport_info.width, viewport_info.heigh);
-		blit(msaa_vr_rt, vr_rt, viewport_info.width, viewport_info.heigh, 1, 1);
+		if (!b_msaa_custom) {
+			blit(msaa_vr_rt, vr_rt, viewport_info.width, viewport_info.heigh);
+			blit(msaa_vr_rt, vr_rt, viewport_info.width, viewport_info.heigh, 1, 1);
+		} // opengl 自带抗锯齿
+		else {
+			vr_rt->use(); {
+				// left eye
+				{
+					glDrawBuffer(GL_COLOR_ATTACHMENT0);
+					draw_init();
+					stack_shaders->push(AssetManager_ins().get_shader("msaa")); {
+						if (stack_shaders->top() && msaa_vr_rt->get_attach_textures().size() > 0) {
+							auto t_texture = msaa_vr_rt->get_attach_textures()[0].texture;
+							if (t_texture) { t_texture->bind(0); }
+							stack_shaders->top()->use();
+							stack_shaders->top()->set_int("u_texture_msaa", 0);
+							stack_shaders->top()->set_int("u_msaa_num", 4);
+						}
+						draw_scene(stack_shaders->top());
+					} stack_shaders->pop();
+				}
+				// right eye
+				{
+					glDrawBuffer(GL_COLOR_ATTACHMENT1);
+					draw_init();
+					stack_shaders->push(AssetManager_ins().get_shader("msaa")); {
+						if (stack_shaders->top() && msaa_vr_rt->get_attach_textures().size() > 1) {
+							auto t_texture = msaa_vr_rt->get_attach_textures()[1].texture;
+							if (t_texture) { t_texture->bind(0); }
+							stack_shaders->top()->use();
+							stack_shaders->top()->set_int("u_texture_msaa", 0);
+							stack_shaders->top()->set_int("u_msaa_num", 4);
+						}
+						draw_scene(stack_shaders->top());
+					} stack_shaders->pop();
+				}
+			} vr_rt->un_use();
+
+		} // 自定义抗锯齿
 	}
 
 	// mix pass -- mix left and right pic

@@ -132,6 +132,7 @@ protected:
 	bool b_explode;					// 爆炸效果
 
 	bool b_msaa;					// 是否开启多重采样抗锯齿
+	bool b_msaa_custom;				// 是否使用自定义的抗锯齿算法
 
 	// gl state
 	void set_depth_test(bool enable = true, uint depth_func = GL_LESS, uint depth_mask = GL_TRUE);
