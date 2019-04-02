@@ -25,6 +25,7 @@ USING_SPTR(Texture2D)
 #define GL_RGB				0x1907
 #define GL_BGRA				0x80E1
 #define GL_UNSIGNED_BYTE	0x1401
+#define GL_TEXTURE_2D		0x0DE1
 
 SINGLETON_CLASS(AssetManager) {
 	SINGLETON(AssetManager)
@@ -64,7 +65,7 @@ public:
 	bool load_texture(const std::string& path, SourceType source_type = SourceType::BY_FILE);
 	bool load_texture_x(const std::string& path);			// load texture by stbi
 	SPTR_Texture2D get_texture(const std::string& key);
-	SPTR_Texture2D gen_blank_texture(const std::string& key, uint width, uint heigh, uint internal_format = GL_RGB, uint format = GL_RGB, uint data_type = GL_UNSIGNED_BYTE);		// 创建空白的 texutre2D -- for RT
+	SPTR_Texture2D gen_blank_texture(const std::string& key, uint width, uint heigh, uint internal_format = GL_RGB, uint format = GL_RGB, uint data_type = GL_UNSIGNED_BYTE, uint type = GL_TEXTURE_2D);		// 创建空白的 texutre2D -- for RT
 
 };
 SINGLETON_X(AssetManager)

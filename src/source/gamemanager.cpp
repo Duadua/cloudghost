@@ -548,7 +548,7 @@ void GameManager::init_pick_rt() {
 	if(pick_rt != nullptr) pick_rt.reset();
 	pick_rt = CREATE_CLASS(RenderTarget);
 	if (pick_rt != nullptr) {
-		pick_rt->add_attach_texture(GL_COLOR_ATTACHMENT0, viewport_info.width, viewport_info.heigh, GL_RGB32UI, GL_RGB_INTEGER, GL_UNSIGNED_INT)
+		pick_rt->add_attach_texture(GL_COLOR_ATTACHMENT0, viewport_info.width, viewport_info.heigh, GL_TEXTURE_2D, GL_RGB32UI, GL_RGB_INTEGER, GL_UNSIGNED_INT)
 			->add_attach_renderbuffer(viewport_info.width, viewport_info.heigh)
 			->init();
 	}

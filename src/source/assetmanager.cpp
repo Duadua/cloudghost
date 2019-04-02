@@ -489,11 +489,11 @@ SPTR_Texture2D AssetManager::get_texture(const std::string& key) {
 	return map_textures[key];
 		
 }
-SPTR_Texture2D AssetManager::gen_blank_texture(const std::string& key, uint width, uint heigh, uint internal_format, uint format, uint data_type) {
+SPTR_Texture2D AssetManager::gen_blank_texture(const std::string& key, uint width, uint heigh, uint internal_format, uint format, uint data_type, uint type) {
 	if (map_textures.count(key)) { c_debuger() << "[asset][texture][gen] already gen texture " + key; return false; }
 	auto t_texture = CREATE_CLASS(Texture2D);
 	t_texture->set_name(key);
-	t_texture->gen(width, heigh, internal_format, format, data_type);
+	t_texture->gen(width, heigh, internal_format, format, data_type, type);
 	map_textures[key] = t_texture;
 	return map_textures[key];
 }

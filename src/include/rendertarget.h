@@ -13,6 +13,7 @@ USING_SPTR(Texture2D)
 #define GL_RGB						0x1907
 #define GL_UNSIGNED_BYTE			0x1401
 #define GL_FRAMEBUFFER				0x8D40
+#define GL_TEXTURE_2D				0x0DE1
 
 struct TextureBuffer {
 	SPTR_Texture2D texture;
@@ -26,7 +27,7 @@ public:
 	RenderBuffer();
 	~RenderBuffer() {}
 	
-	void init(uint w, uint h, uint at_type = GL_DEPTH_STENCIL_ATTACHMENT, uint fmt = GL_DEPTH24_STENCIL8);
+	void init(uint w, uint h, uint at_type = GL_DEPTH_STENCIL_ATTACHMENT, uint fmt = GL_DEPTH24_STENCIL8, bool b_m = false);
 
 	SPTR_RenderBuffer use();
 	SPTR_RenderBuffer un_use();
@@ -42,6 +43,8 @@ private:
 	uint width;
 	uint heigh;
 
+	bool b_multisample;				// 是否为多重采样缓冲附件
+
 };
 
 // =====================================================================================
@@ -54,12 +57,13 @@ public:
 	RenderTarget();
 	~RenderTarget() {}
 
-	SPTR_RenderTarget add_attach_texture(uint at_type, uint width, uint heigh, uint internal_format = GL_RGB, uint format = GL_RGB, uint data_type = GL_UNSIGNED_BYTE);
-	SPTR_RenderTarget add_attach_renderbuffer(uint w, uint h, uint at_type = GL_DEPTH_STENCIL_ATTACHMENT, uint fmt = GL_DEPTH24_STENCIL8);
+	SPTR_RenderTarget add_attach_texture(uint at_type, uint width, uint heigh, uint type = GL_TEXTURE_2D, uint internal_format = GL_RGB, uint format = GL_RGB, uint data_type = GL_UNSIGNED_BYTE);
+	SPTR_RenderTarget add_attach_renderbuffer(uint w, uint h, bool b_multisample = false, uint at_type = GL_DEPTH_STENCIL_ATTACHMENT, uint fmt = GL_DEPTH24_STENCIL8);
 
 	bool init(uint tg = GL_FRAMEBUFFER);
 	bool init_normal(uint w, uint h);						// 一个颜色纹理附件 一个深度模板渲染缓冲附件
 	bool init_simple(uint w, uint h);						// 只有一个颜色纹理附件
+	bool init_normal_multisample(uint w, uint h);			// 多重采样 fbo
 
 	SPTR_RenderTarget use();
 	SPTR_RenderTarget un_use();
