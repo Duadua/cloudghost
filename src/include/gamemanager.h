@@ -130,6 +130,7 @@ protected:
 	bool b_normal_visual;			// 法线是否可视化
 	bool b_explode;					// 爆炸效果
 
+	bool b_msaa;					// 是否开启多重采样抗锯齿
 
 	// gl state
 	void set_depth_test(bool enable = true, uint depth_func = GL_LESS, uint depth_mask = GL_TRUE);
@@ -156,7 +157,9 @@ private:
 	SPTR_RenderTarget vr_rt_mix;
 	SPTR_RenderTarget shader_toy_rt;
 	SPTR_RenderTarget shader_toy_buffer_rts[4];
+	SPTR_RenderTarget msaa_rt;
 	SPTR_Texture2D scene_texture;
+	
 
 	void scene_pass();
 	void pick_pass();					// 拾取阶段
@@ -170,6 +173,7 @@ private:
 	void init_pick_rt();
 	void init_vr_rt();
 	void init_shader_toy_rt();
+	void init_msaa_rt();
 
 	void draw_scene(SPTR_Shader shader);
 	void draw_all_objs(SPTR_Shader shader);

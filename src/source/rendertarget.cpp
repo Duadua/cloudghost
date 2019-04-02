@@ -112,3 +112,20 @@ SPTR_RenderTarget RenderTarget::un_use() {
 	return shared_from_this();
 }
 
+SPTR_RenderTarget RenderTarget::use_r() {
+	glBindFramebuffer(GL_READ_FRAMEBUFFER, id);
+	return shared_from_this();
+}
+SPTR_RenderTarget RenderTarget::un_use_r() {
+	glBindFramebuffer(GL_READ_FRAMEBUFFER, 0);
+	return shared_from_this();
+}
+SPTR_RenderTarget RenderTarget::use_w() {
+	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, id);
+	return shared_from_this();
+}
+SPTR_RenderTarget RenderTarget::un_use_w() {
+	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
+	return shared_from_this();
+}
+

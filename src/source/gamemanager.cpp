@@ -26,14 +26,21 @@ void GameManager::_init() {
 	{
 		background_color = CColor(205, 220, 232);
 		border_color = CColor(221, 161, 18);
+
 		front_polygon_mode = GL_FILL;
 		back_polygon_mode = GL_FILL;
+
 		b_use_vr = false;
 		vr_delta = 0.1f;
+
 		pp_type = PostProcessType::NOPE;
+
 		b_use_shader_toy = false;
+
 		b_normal_visual = false;
 		b_explode = false;
+
+		b_msaa = true;
 	}
 }
 
@@ -202,7 +209,7 @@ void GameManager::scene_pass() {
 	stack_shaders->push(AssetManager_ins().get_shader("scene2d")); {
 		if (stack_shaders->top()) {
 			stack_shaders->use();
-			if (scene_texture != nullptr) { scene_texture->bind(0); }
+			if (scene_texture) { scene_texture->bind(0); }
 			stack_shaders->top()->set_int("u_texture", 0);
 		}
 
@@ -249,7 +256,7 @@ void GameManager::pick_pass() {
 }
 void GameManager::base_pass() {
 
-	scene_rt->use(); {
+	if (b_msaa) { msaa_rt->use(); } else { scene_rt->use(); } {
 		draw_init();
 
 		// draw all objects
@@ -283,7 +290,14 @@ void GameManager::base_pass() {
 		// 法线可视化
 		if (b_normal_visual) { normal_visual_pass(); }
 
-	} scene_rt->un_use();
+	} if (b_msaa) { msaa_rt->un_use(); } else { scene_rt->un_use(); }
+
+	// blit msaa_rt to scene_rt -- color buffer is stored in scene_texture -- use inner msaa alogrithm
+	if (b_msaa) {
+		msaa_rt->use_r();
+		scene_rt->use_w();
+		glBlitFramebuffer(0, 0, viewport_info.width, viewport_info.heigh, 0, 0, viewport_info.width, viewport_info.heigh, GL_COLOR_BUFFER_BIT, GL_NEAREST);
+	}
 	
 	// update scene texture
 	if (scene_rt->get_attach_textures().size() > 0) {
@@ -308,7 +322,7 @@ void GameManager::post_process_pass() {
 		stack_shaders->push(AssetManager_ins().get_shader("pp")); {
 			if (stack_shaders->top()) {
 				stack_shaders->top()->use();
-				if (scene_texture != nullptr) { scene_texture->bind(0); }
+				if (scene_texture) { scene_texture->bind(0); }
 				stack_shaders->top()->set_int("u_texture", 0);
 				stack_shaders->top()->set_int("u_pp_type", pp_type);
 			}
@@ -419,8 +433,8 @@ void GameManager::vr_pass() {
 			if (stack_shaders->top() && vr_rt->get_attach_textures().size() >= 2) {
 				auto t_left = vr_rt->get_attach_textures()[0].texture;
 				auto t_right = vr_rt->get_attach_textures()[1].texture;
-				if (t_left != nullptr) { t_left->bind(0); }
-				if (t_right != nullptr) { t_right->bind(1); }
+				if (t_left) { t_left->bind(0); }
+				if (t_right) { t_right->bind(1); }
 				stack_shaders->top()->use();
 				stack_shaders->top()->set_int("u_texture_left", 0);
 				stack_shaders->top()->set_int("u_texture_right", 1);
@@ -481,7 +495,7 @@ void GameManager::shader_toy_pass() {
 void GameManager::draw_scene(SPTR_Shader shader) {
 	glDisable(GL_DEPTH_TEST);
 	static auto s_mesh = AssetManager_ins().get_mesh("rect");
-	if (s_mesh != nullptr) {
+	if (s_mesh) {
 		s_mesh->set_use_default_mt(false);
 		s_mesh->draw(shader);
 		s_mesh->set_use_default_mt(true);
@@ -524,17 +538,17 @@ void GameManager::draw_init() {
 }
 
 void GameManager::init_rt() {
-	if (scene_rt != nullptr) scene_rt.reset();
+	if (scene_rt) scene_rt.reset();
 	scene_rt = CREATE_CLASS(RenderTarget);
-	if (scene_rt != nullptr) {
+	if (scene_rt) {
 		if (!scene_rt->init_normal(viewport_info.width, viewport_info.heigh)) {
 			c_debuger() << "create rt fail";
 		}
 	}
 
-	if (pp_rt != nullptr) pp_rt.reset();
+	if (pp_rt) pp_rt.reset();
 	pp_rt = CREATE_CLASS(RenderTarget);
-	if (pp_rt != nullptr) {
+	if (pp_rt) {
 		if (!pp_rt->init_normal(viewport_info.width, viewport_info.heigh)) {
 			c_debuger() << "create rt fail";
 		}
@@ -543,42 +557,48 @@ void GameManager::init_rt() {
 	init_pick_rt();
 	init_vr_rt();
 	init_shader_toy_rt();
+	init_msaa_rt();
 }
 void GameManager::init_pick_rt() {
-	if(pick_rt != nullptr) pick_rt.reset();
+	if(pick_rt) pick_rt.reset();
 	pick_rt = CREATE_CLASS(RenderTarget);
-	if (pick_rt != nullptr) {
+	if (pick_rt) {
 		pick_rt->add_attach_texture(GL_COLOR_ATTACHMENT0, viewport_info.width, viewport_info.heigh, GL_TEXTURE_2D, GL_RGB32UI, GL_RGB_INTEGER, GL_UNSIGNED_INT)
 			->add_attach_renderbuffer(viewport_info.width, viewport_info.heigh)
 			->init();
 	}
 }
 void GameManager::init_vr_rt() {
-	if (vr_rt != nullptr) vr_rt.reset();
+	if (vr_rt) vr_rt.reset();
 	vr_rt = CREATE_CLASS(RenderTarget);
-	if (vr_rt != nullptr) {
+	if (vr_rt) {
 		vr_rt->add_attach_texture(GL_COLOR_ATTACHMENT0, viewport_info.width, viewport_info.heigh)
 			->add_attach_texture(GL_COLOR_ATTACHMENT1, viewport_info.width, viewport_info.heigh)
 			->add_attach_renderbuffer(viewport_info.width, viewport_info.heigh)
 			->init();
 	}
 
-	if (vr_rt_mix != nullptr) vr_rt_mix.reset();
+	if (vr_rt_mix) vr_rt_mix.reset();
 	vr_rt_mix = CREATE_CLASS(RenderTarget);
-	if (vr_rt_mix != nullptr) {
+	if (vr_rt_mix) {
 		vr_rt_mix->init_normal(viewport_info.width, viewport_info.heigh);
 	}
 }
 void GameManager::init_shader_toy_rt() {
-	if (shader_toy_rt != nullptr) shader_toy_rt.reset();
+	if (shader_toy_rt) shader_toy_rt.reset();
 	shader_toy_rt = CREATE_CLASS(RenderTarget);
-	if (shader_toy_rt != nullptr) { shader_toy_rt->init_simple(viewport_info.width, viewport_info.heigh); }
+	if (shader_toy_rt) { shader_toy_rt->init_simple(viewport_info.width, viewport_info.heigh); }
 
 	for (auto& stbr : shader_toy_buffer_rts) {
-		if (stbr != nullptr) stbr.reset();
+		if (stbr) stbr.reset();
 		stbr = CREATE_CLASS(RenderTarget);
-		if (stbr != nullptr) { stbr->init_simple(viewport_info.width, viewport_info.heigh); }
+		if (stbr) { stbr->init_simple(viewport_info.width, viewport_info.heigh); }
 	}
+}
+void GameManager::init_msaa_rt() {
+	if (msaa_rt) msaa_rt.reset();
+	msaa_rt = CREATE_CLASS(RenderTarget);
+	if (msaa_rt) { msaa_rt->init_normal_multisample(viewport_info.width, viewport_info.heigh); }
 }
 
 // ===========================================================================

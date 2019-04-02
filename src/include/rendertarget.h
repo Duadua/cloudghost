@@ -67,6 +67,10 @@ public:
 
 	SPTR_RenderTarget use();
 	SPTR_RenderTarget un_use();
+	SPTR_RenderTarget use_r();
+	SPTR_RenderTarget un_use_r();
+	SPTR_RenderTarget use_w();
+	SPTR_RenderTarget un_use_w();
 
     GET(std::vector<TextureBuffer>, attach_textures)
     GET(std::vector<SPTR_RenderBuffer>, attach_renderbuffers)
