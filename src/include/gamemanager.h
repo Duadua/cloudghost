@@ -159,8 +159,8 @@ private:
 	SPTR_RenderTarget shader_toy_rt;
 	SPTR_RenderTarget shader_toy_buffer_rts[4];
 	SPTR_RenderTarget msaa_rt;
+	SPTR_RenderTarget msaa_vr_rt;						// 3d 模式下的 msaa 
 	SPTR_Texture2D scene_texture;
-	
 
 	void scene_pass();
 	void pick_pass();					// 拾取阶段

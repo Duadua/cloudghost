@@ -67,10 +67,13 @@ public:
 
 	SPTR_RenderTarget use();
 	SPTR_RenderTarget un_use();
-	SPTR_RenderTarget use_r();
+	SPTR_RenderTarget use_r(uint cid = 0);					// cid -- 颜色附件的 id
 	SPTR_RenderTarget un_use_r();
-	SPTR_RenderTarget use_w();
+	SPTR_RenderTarget use_w(uint cid = 0);
 	SPTR_RenderTarget un_use_w();
+
+	// rt 的块传送 -- 可以把 msaa 转为正常纹理
+	friend void blit(SPTR_RenderTarget a, SPTR_RenderTarget b, uint w, uint h, uint a_cid = 0, uint b_cid = 0);
 
     GET(std::vector<TextureBuffer>, attach_textures)
     GET(std::vector<SPTR_RenderBuffer>, attach_renderbuffers)

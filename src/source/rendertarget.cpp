@@ -112,16 +112,18 @@ SPTR_RenderTarget RenderTarget::un_use() {
 	return shared_from_this();
 }
 
-SPTR_RenderTarget RenderTarget::use_r() {
+SPTR_RenderTarget RenderTarget::use_r(uint cid) {
 	glBindFramebuffer(GL_READ_FRAMEBUFFER, id);
+	glReadBuffer(GL_COLOR_ATTACHMENT0 + cid);
 	return shared_from_this();
 }
 SPTR_RenderTarget RenderTarget::un_use_r() {
 	glBindFramebuffer(GL_READ_FRAMEBUFFER, 0);
 	return shared_from_this();
 }
-SPTR_RenderTarget RenderTarget::use_w() {
+SPTR_RenderTarget RenderTarget::use_w(uint cid) {
 	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, id);
+	glDrawBuffer(GL_COLOR_ATTACHMENT0 + cid);
 	return shared_from_this();
 }
 SPTR_RenderTarget RenderTarget::un_use_w() {
@@ -129,3 +131,10 @@ SPTR_RenderTarget RenderTarget::un_use_w() {
 	return shared_from_this();
 }
 
+void blit(SPTR_RenderTarget a, SPTR_RenderTarget b, uint w, uint h, uint a_cid, uint b_cid) {
+	a->use_r(a_cid);
+	b->use_w(b_cid);
+	glBlitFramebuffer(0, 0, w, h, 0, 0, w, h, GL_COLOR_BUFFER_BIT, GL_NEAREST);
+	a->un_use_r();
+	b->un_use_w();
+}

@@ -293,11 +293,7 @@ void GameManager::base_pass() {
 	} if (b_msaa) { msaa_rt->un_use(); } else { scene_rt->un_use(); }
 
 	// blit msaa_rt to scene_rt -- color buffer is stored in scene_texture -- use inner msaa alogrithm
-	if (b_msaa) {
-		msaa_rt->use_r();
-		scene_rt->use_w();
-		glBlitFramebuffer(0, 0, viewport_info.width, viewport_info.heigh, 0, 0, viewport_info.width, viewport_info.heigh, GL_COLOR_BUFFER_BIT, GL_NEAREST);
-	}
+	if (b_msaa) { blit(msaa_rt, scene_rt, viewport_info.width, viewport_info.heigh); }
 	
 	// update scene texture
 	if (scene_rt->get_attach_textures().size() > 0) {
@@ -341,7 +337,8 @@ void GameManager::post_process_pass() {
 void GameManager::vr_pass() {
 
 	// get left and right pic pass
-	vr_rt->use(); {
+	if (b_msaa) { msaa_vr_rt->use(); } else { vr_rt->use(); } {
+
 		// left eyes scene
 		{
 			glDrawBuffer(GL_COLOR_ATTACHMENT0);
@@ -423,7 +420,12 @@ void GameManager::vr_pass() {
 
 		}
 
-	} vr_rt->un_use();
+	} if (b_msaa) { msaa_vr_rt->un_use(); } else { vr_rt->un_use(); }
+
+	if(b_msaa) {
+		blit(msaa_vr_rt, vr_rt, viewport_info.width, viewport_info.heigh);
+		blit(msaa_vr_rt, vr_rt, viewport_info.width, viewport_info.heigh, 1, 1);
+	}
 
 	// mix pass -- mix left and right pic
 	vr_rt_mix->use(); {
@@ -575,6 +577,15 @@ void GameManager::init_vr_rt() {
 		vr_rt->add_attach_texture(GL_COLOR_ATTACHMENT0, viewport_info.width, viewport_info.heigh)
 			->add_attach_texture(GL_COLOR_ATTACHMENT1, viewport_info.width, viewport_info.heigh)
 			->add_attach_renderbuffer(viewport_info.width, viewport_info.heigh)
+			->init();
+	}
+
+	if (msaa_vr_rt) msaa_vr_rt.reset();
+	msaa_vr_rt = CREATE_CLASS(RenderTarget);
+	if (msaa_vr_rt) {
+		msaa_vr_rt->add_attach_texture(GL_COLOR_ATTACHMENT0, viewport_info.width, viewport_info.heigh, GL_TEXTURE_2D_MULTISAMPLE)
+			->add_attach_texture(GL_COLOR_ATTACHMENT1, viewport_info.width, viewport_info.heigh, GL_TEXTURE_2D_MULTISAMPLE)
+			->add_attach_renderbuffer(viewport_info.width, viewport_info.heigh, true)
 			->init();
 	}
 
