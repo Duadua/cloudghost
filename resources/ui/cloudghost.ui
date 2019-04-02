@@ -128,6 +128,7 @@ QMenu::item:pressed {
     <addaction name="menu_polygon_mode"/>
     <addaction name="separator"/>
     <addaction name="action_normal_visual"/>
+    <addaction name="action_explode"/>
     <addaction name="separator"/>
     <addaction name="action_rb_3d"/>
     <addaction name="menu_eye_delta"/>
@@ -344,6 +345,14 @@ QMenu::item:pressed {
    </property>
    <property name="text">
     <string>显示法线</string>
+   </property>
+  </action>
+  <action name="action_explode">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>爆炸效果</string>
    </property>
   </action>
  </widget>

@@ -116,56 +116,36 @@ void MyGameManager::begin_play() {
 		}
 	}
 
-	// 生成 gameobject
-	/*
-	{
-		auto cube_object = CREATE_CLASS(GameObject);
-		add_game_object("cube01", cube_object);
-		// gameobject 的 root
-		auto mc = CREATE_CLASS(MeshComponent);
-		mc->set_mesh("cube");
-		cube_object->set_root_component(mc);
-		auto t_ms = AssetManager_ins().get_mesh(mc->get_mesh());
-		t_ms->get_render_datas()[0]->set_material_name("cube_wood");
-
-		// gameobject 的另一个显示组件
-		auto mcc = CREATE_CLASS(MeshComponent);
-		mcc->set_mesh("cone");
-		mcc->attach_to(mc);
-		mcc->set_location(2.0f, 0.0f, 0.0f);
-		mcc->set_scale(0.5f, 0.5f, 0.5f);
-		//auto t_m = AssetManager_ins().get_mesh(mcc->get_mesh());
-		//t_m->get_render_datas()[0]->set_material_name("cube_wood");
-
-		auto mccc = CREATE_CLASS(MeshComponent);
-		mccc->set_mesh("cylinder");
-		mccc->attach_to(mcc);
-		mccc->set_location(0.0f, 3.0f, 0.0f);
-		mccc->set_scale(1.5f, 1.5f, 1.5f);
-		auto t_m = AssetManager_ins().get_mesh(mccc->get_mesh());
-		t_m->get_render_datas()[2]->set_material_name("");
-	}*/
-
-	stack_shaders->push(AssetManager_ins().get_shader("default"));
 	// use direct light
 	{
 		auto d_light = CREATE_CLASS(DirectLightObject);
 		d_light->get_light_component()->set_intensity(2.0f);
-        d_light->use(stack_shaders->top());
+
+		for (auto shader : AssetManager_ins().map_shaders) {
+			auto t_shader = shader.second;
+			d_light->use(t_shader);
+		}
 	}
 
 	// use point light
 	{
-		auto p_light = CREATE_CLASS(PointLightObject);
-		p_light->get_light_component()->set_intensity(3.0f);
-		//p_light->use(main_shader->get_name());
+		//auto p_light = CREATE_CLASS(PointLightObject);
+		//p_light->get_light_component()->set_intensity(3.0f);
+		/*for (auto shader : AssetManager_ins().map_shaders) {
+			auto t_shader = shader.second;
+			p_light->use(t_shader);
+		}*/
 	}
 	{
 		auto p_light = CREATE_CLASS(PointLightObject);
 		p_light->get_root_component()->set_location(3.0f, 6.0f, 15.0f);
 		p_light->get_light_component()->set_att_radius(50.0f);
 		p_light->get_light_component()->set_color(CVector3D(1.0f, 0.0f, 0.0f));
-		p_light->use(stack_shaders->top());
+
+		for (auto shader : AssetManager_ins().map_shaders) {
+			auto t_shader = shader.second;
+			p_light->use(t_shader);
+		}
 	}
 	
 	// use spot light
@@ -178,10 +158,11 @@ void MyGameManager::begin_play() {
 		s_light->get_light_component()->set_inner(15.0f);
 		s_light->get_light_component()->set_outer(20.0f);
 
-		s_light->use(stack_shaders->top());
+		for (auto shader : AssetManager_ins().map_shaders) {
+			auto t_shader = shader.second;
+			s_light->use(t_shader);
+		}
 	}
-
-	stack_shaders->pop();
 
 	 //vr_delta = 0.05f;
 

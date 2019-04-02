@@ -75,6 +75,10 @@ void CMainWindow::init_ui() {
 		{
 			connect(ui.action_normal_visual, SIGNAL(triggered()), this, SLOT(trigger_normal_visual()));
 		}
+		// explode
+		{
+			connect(ui.action_explode, SIGNAL(triggered()), this, SLOT(trigger_explode()));
+		}
 
 		// red_blue_3d
 		{
@@ -233,6 +237,7 @@ void CMainWindow::trigger_bd_color_ok() {
 }
 
 void CMainWindow::trigger_normal_visual() { GameManager_ins().set_b_normal_visual(!GameManager_ins().get_b_normal_visual()); }
+void CMainWindow::trigger_explode() { GameManager_ins().set_b_explode(!GameManager_ins().get_b_explode()); }
 
 void CMainWindow::trigger_rb_3d() { GameManager_ins().set_b_use_vr(!GameManager_ins().get_b_use_vr()); }
 void CMainWindow::trigger_eye_delta_init() {

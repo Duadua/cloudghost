@@ -585,6 +585,9 @@
     <None Include="resources\shaders\vr_mix.frag">
       <Filter>resources\shaders\frags</Filter>
     </None>
+    <None Include="resources\shaders\explode.geom">
+      <Filter>resources\shaders\geoms</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Text Include="resources\models\txt\cube.txt">

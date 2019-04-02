@@ -47,6 +47,7 @@ public slots:
 	void trigger_bd_color_ok();
 
 	void trigger_normal_visual();
+	void trigger_explode();
 
 	void trigger_rb_3d();
 	void trigger_eye_delta_init();

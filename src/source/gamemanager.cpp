@@ -33,6 +33,7 @@ void GameManager::_init() {
 		pp_type = PostProcessType::NOPE;
 		b_use_shader_toy = false;
 		b_normal_visual = false;
+		b_explode = false;
 	}
 }
 
@@ -68,6 +69,7 @@ void GameManager::init() {
 		AssetManager_ins().load_shader("pick", "resources/shaders/mvp_anim.vert", "resources/shaders/pick.frag");
 		AssetManager_ins().load_shader("vr_mix", "resources/shaders/scene_2d.vert", "resources/shaders/vr_mix.frag");
 		AssetManager_ins().load_shader("normal_visual", "resources/shaders/mvp_anim.vert", "resources/shaders/solid_color.frag", "resources/shaders/normal_visual.geom");
+		AssetManager_ins().load_shader("explode", "resources/shaders/mvp_anim.vert", "resources/shaders/blinn_phong.frag", "resources/shaders/explode.geom");
 
 		AssetManager_ins().load_shader("shader_toy_img", "resources/shaders/scene_2d.vert", "resources/shaders/shadertoy_img.frag");
 		AssetManager_ins().load_shader("shader_toy_buffer_a", "resources/shaders/scene_2d.vert", "resources/shaders/shadertoy_buffer_a.frag");
@@ -102,7 +104,7 @@ void GameManager::init() {
 	// init shader stack 
 	{
 		stack_shaders = CREATE_CLASS(ShaderStack);
-		stack_shaders->push(AssetManager_ins().get_shader("default"));
+		stack_shaders->push(AssetManager_ins().get_shader("default"));	// default shader
 	}
 
 	// init uniform block 
@@ -251,12 +253,16 @@ void GameManager::base_pass() {
 		draw_init();
 
 		// draw all objects
-		if (stack_shaders->top()) {
-			stack_shaders->top()->use();
-			stack_shaders->top()->set_vec3("u_view_pos", main_camera->get_root_component()->get_location());
-		}
-		glStencilMask(0xff);							// 允许写入模板缓冲
-		draw_all_objs(stack_shaders->top());
+		if (b_explode) { stack_shaders->push(AssetManager_ins().get_shader("explode")); } {
+			if (stack_shaders->top()) {
+				stack_shaders->top()->use();
+				stack_shaders->top()->set_vec3("u_view_pos", main_camera->get_root_component()->get_location());
+
+				if (b_explode) { stack_shaders->top()->set_float("u_time", TimeManager_ins().cur_runtime_seconds()); }
+			}
+			glStencilMask(0xff);							// 允许写入模板缓冲
+			draw_all_objs(stack_shaders->top());
+		} if (b_explode) { stack_shaders->pop(); }
 
 		// draw border
 		stack_shaders->push(AssetManager_ins().get_shader("solid_color")); {

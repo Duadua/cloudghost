@@ -98,6 +98,7 @@ public:									// used for qt ui
     GET_SET(PostProcessType, pp_type)
     GET_SET(bool, b_use_shader_toy)
 	GET_SET(bool, b_normal_visual)
+	GET_SET(bool, b_explode)
 
 protected:
 	static GameManager* instance;
@@ -125,7 +126,10 @@ protected:
 
 	bool b_use_shader_toy;
 
+	// 几何着色器效果
 	bool b_normal_visual;			// 法线是否可视化
+	bool b_explode;					// 爆炸效果
+
 
 	// gl state
 	void set_depth_test(bool enable = true, uint depth_func = GL_LESS, uint depth_mask = GL_TRUE);
