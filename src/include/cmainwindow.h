@@ -55,6 +55,8 @@ public slots:
 	void trigger_polygon_mode(QAction* act);
 	void trigger_select_pp(QAction* act);
 
+	void trigger_msaa();
+
 	void trigger_shader_toy();
 
 	void trigger_guide();

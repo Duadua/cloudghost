@@ -99,6 +99,7 @@ public:									// used for qt ui
     GET_SET(bool, b_use_shader_toy)
 	GET_SET(bool, b_normal_visual)
 	GET_SET(bool, b_explode)
+	GET_SET(bool, b_msaa)
 
 protected:
 	static GameManager* instance;

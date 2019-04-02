@@ -116,6 +116,11 @@ void CMainWindow::init_ui() {
 			ui.action_pp_normal->setChecked(true);
 			connect(ag, SIGNAL(triggered(QAction*)), this, SLOT(trigger_select_pp(QAction*)));
 		}
+		
+		// msaa
+		{
+			connect(ui.action_msaa, SIGNAL(triggered()), this, SLOT(trigger_msaa()));
+		}
 
 		
 	}
@@ -285,6 +290,8 @@ void CMainWindow::trigger_select_pp(QAction* act) {
 		GameManager_ins().set_pp_type(PostProcessType::REAL_RB);
 	}
 }
+
+void CMainWindow::trigger_msaa() { GameManager_ins().set_b_msaa(!GameManager_ins().get_b_msaa()); }
 
 void CMainWindow::trigger_shader_toy() {
 	GameManager_ins().set_b_use_shader_toy(!GameManager_ins().get_b_use_shader_toy());
