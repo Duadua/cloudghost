@@ -34,6 +34,8 @@ private:
 
 	CSpinWidget* ui_eye_delta;
 
+	CSpinWidget* ui_gamma_value;
+
 	CTextWidget* ui_about;
 	CTextWidget* ui_guide;
 
@@ -54,6 +56,10 @@ public slots:
 	void trigger_eye_delta(int v);
 	void trigger_polygon_mode(QAction* act);
 	void trigger_select_pp(QAction* act);
+
+	void trigger_gamma();
+	void trigger_gamma_init();
+	void trigger_gamma_value(int v);
 
 	void trigger_msaa();
 

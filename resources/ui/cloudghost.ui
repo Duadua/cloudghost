@@ -108,6 +108,9 @@ QMenu::item:pressed {
      <addaction name="action_pm_point"/>
     </widget>
     <widget class="QMenu" name="menu_eye_delta">
+     <property name="enabled">
+      <bool>false</bool>
+     </property>
      <property name="title">
       <string>双眼视距</string>
      </property>
@@ -139,10 +142,11 @@ QMenu::item:pressed {
     <addaction name="menu_eye_delta"/>
     <addaction name="separator"/>
     <addaction name="menu_post_process"/>
-    <addaction name="action_msaa"/>
     <addaction name="separator"/>
     <addaction name="action_gamma"/>
     <addaction name="menu_gamma_value"/>
+    <addaction name="separator"/>
+    <addaction name="action_msaa"/>
    </widget>
    <widget class="QMenu" name="menu_shadertoy">
     <property name="title">

@@ -116,6 +116,20 @@ void CMainWindow::init_ui() {
 			ui.action_pp_normal->setChecked(true);
 			connect(ag, SIGNAL(triggered(QAction*)), this, SLOT(trigger_select_pp(QAction*)));
 		}
+
+		// gamma
+		{
+			connect(ui.action_gamma, SIGNAL(triggered()), this, SLOT(trigger_gamma()));
+
+			// 生成菜单栏 spinbox
+			ui_gamma_value = new CSpinWidget(this);
+			connect(ui_gamma_value, SIGNAL(value_changed(int)), this, SLOT(trigger_gamma_value(int)));
+
+			QWidgetAction *ui_action_gamma = new QWidgetAction(this);
+			ui_action_gamma->setDefaultWidget(ui_gamma_value);
+			ui.menu_gamma_value->addAction(ui_action_gamma);
+			connect(ui.menu_gamma_value, SIGNAL(aboutToShow()), this, SLOT(trigger_gamma_init()));
+		}
 		
 		// msaa
 		{
@@ -244,7 +258,11 @@ void CMainWindow::trigger_bd_color_ok() {
 void CMainWindow::trigger_normal_visual() { GameManager_ins().set_b_normal_visual(!GameManager_ins().get_b_normal_visual()); }
 void CMainWindow::trigger_explode() { GameManager_ins().set_b_explode(!GameManager_ins().get_b_explode()); }
 
-void CMainWindow::trigger_rb_3d() { GameManager_ins().set_b_use_vr(!GameManager_ins().get_b_use_vr()); }
+void CMainWindow::trigger_rb_3d() { 
+	GameManager_ins().set_b_use_vr(!GameManager_ins().get_b_use_vr()); 
+	if (GameManager_ins().get_b_use_vr()) { ui.menu_eye_delta->setEnabled(true); }
+	else { ui.menu_eye_delta->setEnabled(false); }
+}
 void CMainWindow::trigger_eye_delta_init() {
 	ui_eye_delta->set_value(static_cast<int>(GameManager_ins().get_vr_delta()*200 + 0.5f));
 }
@@ -289,6 +307,19 @@ void CMainWindow::trigger_select_pp(QAction* act) {
 	else if (act->objectName().compare("action_pp_real_rb3d") == 0) {
 		GameManager_ins().set_pp_type(PostProcessType::REAL_RB);
 	}
+}
+
+void CMainWindow::trigger_gamma() {
+	GameManager_ins().set_b_gamma(!GameManager_ins().get_b_gamma());
+	if (GameManager_ins().get_b_gamma()) { ui.menu_gamma_value->setEnabled(true); } // 如果打开了 gamma
+	else { ui.menu_gamma_value->setEnabled(false); }
+
+}
+void CMainWindow::trigger_gamma_init() {
+	ui_gamma_value->set_value(static_cast<int>(GameManager_ins().get_v_gamma() * 10 + 0.5f));
+}
+void CMainWindow::trigger_gamma_value(int v) {
+	GameManager_ins().set_v_gamma(CMath_ins().linear_lerp(0.4f, 5.0f, v*0.1f));
 }
 
 void CMainWindow::trigger_msaa() { GameManager_ins().set_b_msaa(!GameManager_ins().get_b_msaa()); }

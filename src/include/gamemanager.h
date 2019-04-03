@@ -96,6 +96,8 @@ public:									// used for qt ui
     GET_SET(bool, b_use_vr)
     GET_SET(float, vr_delta)
     GET_SET(PostProcessType, pp_type)
+	GET_SET(bool, b_gamma)
+	GET_SET(float, v_gamma)
     GET_SET(bool, b_use_shader_toy)
 	GET_SET(bool, b_normal_visual)
 	GET_SET(bool, b_explode)
