@@ -134,6 +134,9 @@ protected:
 	bool b_msaa;					// 是否开启多重采样抗锯齿
 	bool b_msaa_custom;				// 是否使用自定义的抗锯齿算法
 
+	bool b_gamma;					// 是否进行 gamma 校正
+	float v_gamma;					// gamma 校正系数 -- 默认 2.2
+
 	// gl state
 	void set_depth_test(bool enable = true, uint depth_func = GL_LESS, uint depth_mask = GL_TRUE);
 	void set_stencil_test(bool enable = false, uint func = GL_EQUAL, uint ref = 1, uint mask = 0xff, uint fail = GL_KEEP, uint zfail = GL_KEEP, uint zpass = GL_KEEP);
@@ -154,6 +157,7 @@ private:
 	// render pipe
 	SPTR_RenderTarget scene_rt;
 	SPTR_RenderTarget pp_rt;
+	SPTR_RenderTarget gamma_rt;
 	SPTR_RenderTarget pick_rt;
 	SPTR_RenderTarget vr_rt;
 	SPTR_RenderTarget vr_rt_mix;
@@ -168,6 +172,7 @@ private:
 	void base_pass();
 	void normal_visual_pass();			// 法线可视化
 	void post_process_pass();
+	void gamma_pass();					// gamma 校正
 	void vr_pass();
 	void shader_toy_pass();
 

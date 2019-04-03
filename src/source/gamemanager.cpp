@@ -35,6 +35,9 @@ void GameManager::_init() {
 
 		pp_type = PostProcessType::NOPE;
 
+		b_gamma = true;
+		v_gamma = 2.2f;
+
 		b_use_shader_toy = false;
 
 		b_normal_visual = false;
@@ -74,6 +77,7 @@ void GameManager::init() {
 		AssetManager_ins().load_shader("single_texture", "resources/shaders/mvp_anim.vert", "resources/shaders/single_texture.frag");
 		AssetManager_ins().load_shader("scene2d", "resources/shaders/scene_2d.vert", "resources/shaders/single_texture_2d.frag");
 		AssetManager_ins().load_shader("pp", "resources/shaders/scene_2d.vert", "resources/shaders/post_process.frag");
+		AssetManager_ins().load_shader("gamma", "resources/shaders/scene_2d.vert", "resources/shaders/gamma.frag");
 		AssetManager_ins().load_shader("pick", "resources/shaders/mvp_anim.vert", "resources/shaders/pick.frag");
 		AssetManager_ins().load_shader("vr_mix", "resources/shaders/scene_2d.vert", "resources/shaders/vr_mix.frag");
 		AssetManager_ins().load_shader("normal_visual", "resources/shaders/mvp_anim.vert", "resources/shaders/solid_color.frag", "resources/shaders/normal_visual.geom");
@@ -152,6 +156,9 @@ void GameManager::init() {
 		set_cull_face();
 
 		glEnable(GL_PROGRAM_POINT_SIZE);
+
+		//glEnable(GL_FRAMEBUFFER_SRGB);
+
 	}
 	
 	// init rt
@@ -189,16 +196,17 @@ void GameManager::draw() {
 			// pass 2
 			if (b_use_vr) { vr_pass(); }
 			else { base_pass(); }
-			//base_pass();
 		}
 		else {
 			shader_toy_pass();		// render_shader_toy
 		}
 		
 		// pass 3
-		if (pp_type != PostProcessType::NOPE && !(pp_type == PostProcessType::GRAY && b_use_vr)) {
-			post_process_pass();
-		}
+		//if (pp_type != PostProcessType::NOPE && !(pp_type == PostProcessType::GRAY && b_use_vr)) {
+		if (pp_type != PostProcessType::NOPE) { post_process_pass(); }
+
+		// pass 4
+		if (b_gamma) gamma_pass();
 
 	}
 }
@@ -329,6 +337,31 @@ void GameManager::normal_visual_pass() {
 		}
 		draw_all_objs(stack_shaders->top());
 	} stack_shaders->pop();
+
+}
+void GameManager::gamma_pass() {
+
+	gamma_rt->use(); {
+		draw_init();
+
+		stack_shaders->push(AssetManager_ins().get_shader("gamma")); {
+			if (stack_shaders->top()) {
+				stack_shaders->top()->use();
+				if (scene_texture) { scene_texture->bind(0); }
+				stack_shaders->top()->set_int("u_texture", 0);
+				stack_shaders->top()->set_float("u_gamma", v_gamma);
+			}
+
+			draw_scene(stack_shaders->top());
+
+		} stack_shaders->pop();
+
+	} gamma_rt->un_use();
+
+	// update scene texture
+	if (gamma_rt->get_attach_textures().size() > 0) {
+		scene_texture = gamma_rt->get_attach_textures()[0].texture;
+	}
 
 }
 void GameManager::post_process_pass() {
@@ -610,6 +643,14 @@ void GameManager::init_rt() {
 	pp_rt = CREATE_CLASS(RenderTarget);
 	if (pp_rt) {
 		if (!pp_rt->init_normal(viewport_info.width, viewport_info.heigh)) {
+			c_debuger() << "create rt fail";
+		}
+	}
+
+	if (gamma_rt) gamma_rt.reset();
+	gamma_rt = CREATE_CLASS(RenderTarget);
+	if (gamma_rt) {
+		if (!gamma_rt->init_normal(viewport_info.width, viewport_info.heigh)) {
 			c_debuger() << "create rt fail";
 		}
 	}

@@ -116,7 +116,7 @@ SPTR_Mesh AssetManager::load_mesh_x(const std::string& key, const std::string& p
 			if (md.material.name.compare("") != 0) {
 				if (md.material.map_ka.compare("") != 0) { load_texture_x(md.material.map_ka); }
 				if (md.material.map_kd.compare("") != 0) { load_texture_x(md.material.map_kd); }
-				if (md.material.map_ks.compare("") != 0) { load_texture_x(md.material.map_ks); }
+				if (md.material.map_ks.compare("") != 0) { load_texture_x(md.material.map_ks, false); }
 
 				auto t_mt = CREATE_CLASS(Material);
 				t_mt->set_name(md.material.name);
@@ -217,7 +217,7 @@ SPTR_SkeletalMesh AssetManager::load_mesh_skeletal(const std::string& key, const
 			if (md.material.name.compare("") != 0) {
 				if (md.material.map_ka.compare("") != 0) { load_texture_x(md.material.map_ka); }
 				if (md.material.map_kd.compare("") != 0) { load_texture_x(md.material.map_kd); }
-				if (md.material.map_ks.compare("") != 0) { load_texture_x(md.material.map_ks); }
+				if (md.material.map_ks.compare("") != 0) { load_texture_x(md.material.map_ks, false); }
 
 				auto t_mt = CREATE_CLASS(Material);
 				t_mt->set_name(md.material.name);
@@ -398,7 +398,7 @@ SPTR_Material AssetManager::get_material(const std::string& key) {
 	return t_mi;
 }
 
-bool AssetManager::load_texture(const std::string& path, SourceType source_type) {
+bool AssetManager::load_texture(const std::string& path, SourceType source_type, bool b_srgb) {
 	std::string t_name = FileHelper_ins().get_name_of_file(path);			// 获得文件名
 	// if (map_textures.count(t_name)) { c_debuger() << "[asset][texture][load] already loaded texture " + t_name; return false; }
 	if (map_textures.count(t_name)) { return false; }
@@ -443,14 +443,15 @@ bool AssetManager::load_texture(const std::string& path, SourceType source_type)
 	// 传给 texture
 	auto t_texture = CREATE_CLASS(Texture2D);
 	t_texture->set_name(t_name);
-	t_texture->set_internal_format(GL_BGRA);
-	t_texture->set_image_format(GL_BGRA);
+	if (b_srgb) { t_texture->set_internal_format(GL_SRGB_ALPHA); }
+	else { t_texture->set_internal_format(GL_RGBA); }
+	t_texture->set_image_format(GL_RGBA);
 	t_texture->init(width, heigh, t_res);
 	map_textures[t_name] = t_texture;
 
 	return true;
 }
-bool AssetManager::load_texture_x(const std::string& path) {
+bool AssetManager::load_texture_x(const std::string& path, bool b_srgb) {
 	std::string t_name = FileHelper_ins().get_name_of_file(path);			// 获得文件名
 	// if (map_textures.count(t_name)) { c_debuger() << "[asset][texture][load] already loaded texture " + t_name; return false; }
 	if (map_textures.count(t_name)) { return false; }
@@ -471,9 +472,15 @@ bool AssetManager::load_texture_x(const std::string& path) {
 	auto t_texture = CREATE_CLASS(Texture2D);
 	t_texture->set_name(t_name);
 	if (channel == 1) { t_texture->set_internal_format(GL_RED); t_texture->set_image_format(GL_RED); }
-	else if (channel == 3) { t_texture->set_internal_format(GL_RGB); t_texture->set_image_format(GL_RGB); }
+	else if (channel == 3) { 
+		if (b_srgb) { t_texture->set_internal_format(GL_SRGB); }
+		else t_texture->set_internal_format(GL_RGB); 
+		t_texture->set_image_format(GL_RGB); 
+	}
 	else if (channel == 4) {
-		t_texture->set_internal_format(GL_RGBA); t_texture->set_image_format(GL_RGBA);
+		if (b_srgb) { t_texture->set_internal_format(GL_SRGB_ALPHA); }
+		else { t_texture->set_internal_format(GL_RGBA); }
+		t_texture->set_image_format(GL_RGBA);
 		t_texture->set_wrap_s(GL_CLAMP_TO_EDGE); t_texture->set_wrap_t(GL_CLAMP_TO_EDGE);
 	}
 	t_texture->init(width, heigh, t_res);

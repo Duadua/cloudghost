@@ -122,6 +122,11 @@ QMenu::item:pressed {
       <string>边框颜色</string>
      </property>
     </widget>
+    <widget class="QMenu" name="menu_gamma_value">
+     <property name="title">
+      <string>校正参数</string>
+     </property>
+    </widget>
     <addaction name="menu_bg_color"/>
     <addaction name="menu_bd_color"/>
     <addaction name="separator"/>
@@ -135,6 +140,9 @@ QMenu::item:pressed {
     <addaction name="separator"/>
     <addaction name="menu_post_process"/>
     <addaction name="action_msaa"/>
+    <addaction name="separator"/>
+    <addaction name="action_gamma"/>
+    <addaction name="menu_gamma_value"/>
    </widget>
    <widget class="QMenu" name="menu_shadertoy">
     <property name="title">
@@ -365,6 +373,17 @@ QMenu::item:pressed {
    </property>
    <property name="text">
     <string>抗锯齿</string>
+   </property>
+  </action>
+  <action name="action_gamma">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>伽马校正</string>
    </property>
   </action>
  </widget>

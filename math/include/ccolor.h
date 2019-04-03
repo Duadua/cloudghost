@@ -14,6 +14,7 @@ public:
 	~CColor() {} 
 
 	crgb get_uint() const { return argb; }
+	crgb get_rgba() const { return CColor(r(), g(), a(), b()).argb; }
 
 	// set rgba -- [0 ,, 255]
     void reset(uint r, uint g, uint b, uint a = 0xffu);

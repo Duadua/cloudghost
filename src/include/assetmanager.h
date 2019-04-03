@@ -62,8 +62,8 @@ public:
 	SPTR_Material get_material_o(const std::string& key);
 	SPTR_Material get_material(const std::string& key);
 
-	bool load_texture(const std::string& path, SourceType source_type = SourceType::BY_FILE);
-	bool load_texture_x(const std::string& path);			// load texture by stbi
+	bool load_texture(const std::string& path, SourceType source_type = SourceType::BY_FILE, bool b_srgb = true);
+	bool load_texture_x(const std::string& path, bool b_srgb = true);			// load texture by stbi
 	SPTR_Texture2D get_texture(const std::string& key);
 	SPTR_Texture2D gen_blank_texture(const std::string& key, uint width, uint heigh, uint internal_format = GL_RGB, uint format = GL_RGB, uint data_type = GL_UNSIGNED_BYTE, uint type = GL_TEXTURE_2D);		// 创建空白的 texutre2D -- for RT
 
