@@ -12,8 +12,8 @@ public:
 	Texture2D();
 	~Texture2D() {}
 
-	void init(uint w, uint h, SPTR_uchar data, uint t = GL_TEXTURE_2D);
-	void gen(uint w, uint h, uint in_fmt, uint fmt, uint d_type, uint t = GL_TEXTURE_2D);
+	void init(uint w, uint h, SPTR_uchar data, uint t = GL_TEXTURE_2D, uint msaa_num = 4);
+	void gen(uint w, uint h, uint in_fmt, uint fmt, uint d_type, uint t = GL_TEXTURE_2D, uint msaa_num = 4);
 
 	void bind(uint tid = 0) const;
 	static void un_bind(uint tid = 0);

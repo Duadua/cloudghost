@@ -8,7 +8,7 @@ IMPLEMENT_CLASS(RenderBuffer)
 
 RenderBuffer::RenderBuffer() :attach_type(GL_DEPTH_STENCIL_ATTACHMENT), b_multisample(false) { }
 
-void RenderBuffer::init(uint w, uint h, uint at_type, uint fmt, bool b_m) {
+void RenderBuffer::init(uint w, uint h, uint at_type, uint fmt, bool b_m, uint msaa_num) {
 	attach_type = at_type;
 	format = fmt;
 	width = w;
@@ -24,7 +24,7 @@ void RenderBuffer::init(uint w, uint h, uint at_type, uint fmt, bool b_m) {
 				static_cast<GLsizei>(width), static_cast<GLsizei>(heigh));
 		}
 		else {
-			glRenderbufferStorageMultisample(GL_RENDERBUFFER, 4, format, 
+			glRenderbufferStorageMultisample(GL_RENDERBUFFER, msaa_num, format, 
 				static_cast<GLsizei>(width), static_cast<GLsizei>(heigh));
 		}
 
@@ -44,8 +44,7 @@ SPTR_RenderBuffer RenderBuffer::un_use() {
 
 IMPLEMENT_CLASS(RenderTarget)
 
-RenderTarget::RenderTarget() : target(GL_FRAMEBUFFER) {
-}
+RenderTarget::RenderTarget() : target(GL_FRAMEBUFFER), msaa_level(2) { }
 
 bool RenderTarget::init(uint tg) {
 	target = tg;
@@ -87,7 +86,7 @@ bool RenderTarget::init_normal_multisample(uint w, uint h) {
 
 SPTR_RenderTarget RenderTarget::add_attach_texture(uint at_type, uint width, uint heigh, uint type, uint internal_format, uint format, uint data_type) {
 	auto t_texture = CREATE_CLASS(Texture2D);
-	t_texture->gen(width, heigh, internal_format, format, data_type, type);
+	t_texture->gen(width, heigh, internal_format, format, data_type, type, get_msaa_num());
 	if (t_texture != nullptr) {
 		TextureBuffer t_tb;
 		t_tb.attach_type = at_type;
@@ -98,7 +97,7 @@ SPTR_RenderTarget RenderTarget::add_attach_texture(uint at_type, uint width, uin
 }
 SPTR_RenderTarget RenderTarget::add_attach_renderbuffer(uint w, uint h, bool b_multisample, uint at_type, uint fmt) {
 	auto t_rb = CREATE_CLASS(RenderBuffer);
-	t_rb->init(w, h, at_type, fmt, b_multisample);
+	t_rb->init(w, h, at_type, fmt, b_multisample, get_msaa_num());
 	if (t_rb != nullptr) { attach_renderbuffers.push_back(t_rb); }
 	return shared_from_this();
 }

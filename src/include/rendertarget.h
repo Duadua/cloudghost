@@ -27,7 +27,7 @@ public:
 	RenderBuffer();
 	~RenderBuffer() {}
 	
-	void init(uint w, uint h, uint at_type = GL_DEPTH_STENCIL_ATTACHMENT, uint fmt = GL_DEPTH24_STENCIL8, bool b_m = false);
+	void init(uint w, uint h, uint at_type = GL_DEPTH_STENCIL_ATTACHMENT, uint fmt = GL_DEPTH24_STENCIL8, bool b_m = false, uint msaa_num = 4);
 
 	SPTR_RenderBuffer use();
 	SPTR_RenderBuffer un_use();
@@ -67,6 +67,7 @@ public:
 
 	SPTR_RenderTarget use();
 	SPTR_RenderTarget un_use();
+
 	SPTR_RenderTarget use_r(uint cid = 0);					// cid -- 颜色附件的 id
 	SPTR_RenderTarget un_use_r();
 	SPTR_RenderTarget use_w(uint cid = 0);
@@ -78,6 +79,9 @@ public:
     GET(std::vector<TextureBuffer>, attach_textures)
     GET(std::vector<SPTR_RenderBuffer>, attach_renderbuffers)
 
+	uint get_msaa_num() { return CMath_ins().pow(2u, msaa_level); }
+	void set_msaa_level(uint l) { l = CMath_ins().clamp(l, 2u, 4u); msaa_level = l; }
+
 private:
 	uint id;
 	uint target;			// GL_FRAMEBUFFER GL_READ_FRAMEBUFFER GL_DRAW_FRAMEBUFFER
@@ -85,6 +89,7 @@ private:
 	std::vector<TextureBuffer> attach_textures;
 	std::vector<SPTR_RenderBuffer>  attach_renderbuffers;
 
+	uint msaa_level;		// msaa 等级 [2 ,, 4] -- 2^(msaa_level) 个采样点
 };
 
 

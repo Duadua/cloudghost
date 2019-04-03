@@ -21,7 +21,7 @@ Texture2D::Texture2D() : type(GL_TEXTURE_2D), name(""), width(0), heigh(0),
 
 }
 
-void Texture2D::init(uint w, uint h, SPTR_uchar data, uint t) {
+void Texture2D::init(uint w, uint h, SPTR_uchar data, uint t, uint msaa_num) {
 	width = w; heigh = h; type = t;
 	glGenTextures(1, &id);
 
@@ -44,13 +44,13 @@ void Texture2D::init(uint w, uint h, SPTR_uchar data, uint t) {
 			*/
 		} 
 		else if(type == GL_TEXTURE_2D_MULTISAMPLE) {
-			glTexImage2DMultisample(type, 4, static_cast<GLint>(internal_format), static_cast<GLsizei>(width), static_cast<GLsizei>(heigh), GL_TRUE);
+			glTexImage2DMultisample(type, msaa_num, static_cast<GLint>(internal_format), static_cast<GLsizei>(width), static_cast<GLsizei>(heigh), GL_TRUE);
 		}
 
 	} glBindTexture(type, 0);
 }
 
-void Texture2D::gen(uint w, uint h, uint in_fmt, uint fmt, uint d_type, uint t) {
+void Texture2D::gen(uint w, uint h, uint in_fmt, uint fmt, uint d_type, uint t, uint msaa_num) {
 	width = w; heigh = h;
 	internal_format = in_fmt;
 	image_format = fmt;
@@ -69,7 +69,7 @@ void Texture2D::gen(uint w, uint h, uint in_fmt, uint fmt, uint d_type, uint t) 
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, static_cast<GLint>(filter_max));
 		}
 		else if(type == GL_TEXTURE_2D_MULTISAMPLE) {
-			glTexImage2DMultisample(type, 4, static_cast<GLint>(internal_format), static_cast<GLsizei>(width), static_cast<GLsizei>(heigh), GL_TRUE);
+			glTexImage2DMultisample(type, msaa_num, static_cast<GLint>(internal_format), static_cast<GLsizei>(width), static_cast<GLsizei>(heigh), GL_TRUE);
 		}
 
 	} glBindTexture(type, 0);
