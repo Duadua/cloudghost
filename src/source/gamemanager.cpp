@@ -45,6 +45,11 @@ void GameManager::_init() {
 
 		b_msaa = true;
 		b_msaa_custom = true;
+
+		b_hdr = true;
+		hdr_type = HDR_Type::REINHARD;
+		hdr_exposure = 1.0f;
+
 	}
 }
 
@@ -83,6 +88,7 @@ void GameManager::init() {
 		AssetManager_ins().load_shader("normal_visual", "resources/shaders/mvp_anim.vert", "resources/shaders/solid_color.frag", "resources/shaders/normal_visual.geom");
 		AssetManager_ins().load_shader("explode", "resources/shaders/mvp_anim.vert", "resources/shaders/blinn_phong.frag", "resources/shaders/explode.geom");
 		AssetManager_ins().load_shader("msaa", "resources/shaders/scene_2d.vert", "resources/shaders/msaa.frag");
+		AssetManager_ins().load_shader("hdr", "resources/shaders/scene_2d.vert", "resources/shaders/hdr.frag");
 
 		AssetManager_ins().load_shader("shader_toy_img", "resources/shaders/scene_2d.vert", "resources/shaders/shadertoy_img.frag");
 		AssetManager_ins().load_shader("shader_toy_buffer_a", "resources/shaders/scene_2d.vert", "resources/shaders/shadertoy_buffer_a.frag");
@@ -196,18 +202,24 @@ void GameManager::draw() {
 			// pass 2
 			if (b_use_vr) { vr_pass(); }
 			else { base_pass(); }
+
+			// pass 3
+			if (pp_type != PostProcessType::NOPE) { post_process_pass(); }
+
+			// pass 4
+			if (b_hdr) hdr_pass();
+
+			// pass 5
+			if (b_gamma) gamma_pass();
+
 		}
 		else {
 			shader_toy_pass();		// render_shader_toy
+
+			if (pp_type != PostProcessType::NOPE) { post_process_pass(); }
+
+			if (b_gamma) gamma_pass();
 		}
-		
-		// pass 3
-		//if (pp_type != PostProcessType::NOPE && !(pp_type == PostProcessType::GRAY && b_use_vr)) {
-		if (pp_type != PostProcessType::NOPE) { post_process_pass(); }
-
-		// pass 4
-		if (b_gamma) gamma_pass();
-
 	}
 }
 
@@ -265,8 +277,13 @@ void GameManager::pick_pass() {
 
 }
 void GameManager::base_pass() {
+	
+	// switch hdr rt
+	auto t_scene_rt = scene_rt;
+	auto t_msaa_rt = msaa_rt;
+	if (b_hdr) { t_scene_rt = hdr_scene_rt; t_msaa_rt = hdr_msaa_rt; }
 
-	if (b_msaa) { msaa_rt->use(); } else { scene_rt->use(); } {
+	if (b_msaa) { t_msaa_rt->use(); } else { t_scene_rt->use(); } {
 		draw_init();
 
 		// draw all objects
@@ -300,17 +317,17 @@ void GameManager::base_pass() {
 		// 法线可视化
 		if (b_normal_visual) { normal_visual_pass(); }
 
-	} if (b_msaa) { msaa_rt->un_use(); } else { scene_rt->un_use(); }
+	} if (b_msaa) { t_msaa_rt->un_use(); } else { t_scene_rt->un_use(); }
 
 	// blit msaa_rt to scene_rt -- color buffer is stored in scene_texture -- use inner msaa alogrithm
 	if (b_msaa) { 
-		if (!b_msaa_custom) { blit(msaa_rt, scene_rt, viewport_info.width, viewport_info.heigh); } // opengl 自带抗锯齿
+		if (!b_msaa_custom) { blit(t_msaa_rt, t_scene_rt, viewport_info.width, viewport_info.heigh); } // opengl 自带抗锯齿
 		else {
-			scene_rt->use(); {
+			t_scene_rt->use(); {
 				draw_init();
 				stack_shaders->push(AssetManager_ins().get_shader("msaa")); {
-					if (stack_shaders->top() && msaa_vr_rt->get_attach_textures().size() > 0) {
-						auto t_texture = msaa_rt->get_attach_textures()[0].texture;
+					if (stack_shaders->top() && t_msaa_rt->get_attach_textures().size() > 0) {
+						auto t_texture = t_msaa_rt->get_attach_textures()[0].texture;
 						if (t_texture) { t_texture->bind(0); }
 						stack_shaders->top()->use();
 						stack_shaders->top()->set_int("u_texture_msaa", 0);
@@ -318,15 +335,15 @@ void GameManager::base_pass() {
 					}
 					draw_scene(stack_shaders->top());
 				} stack_shaders->pop();
-			} scene_rt->un_use();
+			} t_scene_rt->un_use();
 
 		} // 自定义抗锯齿
 
 	}
 	
 	// update scene texture
-	if (scene_rt->get_attach_textures().size() > 0) {
-		scene_texture = scene_rt->get_attach_textures()[0].texture;
+	if (t_scene_rt->get_attach_textures().size() > 0) {
+		scene_texture = t_scene_rt->get_attach_textures()[0].texture;
 	}
 }
 void GameManager::normal_visual_pass() {
@@ -374,7 +391,7 @@ void GameManager::post_process_pass() {
 				stack_shaders->top()->use();
 				if (scene_texture) { scene_texture->bind(0); }
 				stack_shaders->top()->set_int("u_texture", 0);
-				stack_shaders->top()->set_int("u_pp_type", pp_type);
+				stack_shaders->top()->set_int("u_pp_type", static_cast<int>(pp_type));
 			}
 
 			draw_scene(stack_shaders->top());
@@ -386,6 +403,31 @@ void GameManager::post_process_pass() {
 	// update scene texture
 	if (pp_rt->get_attach_textures().size() > 0) {
 		scene_texture = pp_rt->get_attach_textures()[0].texture;
+	}
+}
+void GameManager::hdr_pass() {
+
+	hdr_rt->use(); {
+		draw_init();
+
+		stack_shaders->push(AssetManager_ins().get_shader("hdr")); {
+			if (stack_shaders->top()) {
+				stack_shaders->top()->use();
+				if (scene_texture) { scene_texture->bind(0); }
+				stack_shaders->top()->set_int("u_texture", 0);
+				stack_shaders->top()->set_int("u_type", static_cast<int>(hdr_type));
+				stack_shaders->top()->set_float("u_exposure", hdr_exposure);
+			}
+
+			draw_scene(stack_shaders->top());
+
+		} stack_shaders->pop();
+
+	} hdr_rt->un_use();
+
+	// update scene texture
+	if (hdr_rt->get_attach_textures().size() > 0) {
+		scene_texture = hdr_rt->get_attach_textures()[0].texture;
 	}
 }
 void GameManager::vr_pass() {
@@ -659,6 +701,7 @@ void GameManager::init_rt() {
 	init_vr_rt();
 	init_shader_toy_rt();
 	init_msaa_rt();
+	init_hdr_rt();
 }
 void GameManager::init_pick_rt() {
 	if(pick_rt) pick_rt.reset();
@@ -709,6 +752,36 @@ void GameManager::init_msaa_rt() {
 	if (msaa_rt) msaa_rt.reset();
 	msaa_rt = CREATE_CLASS(RenderTarget);
 	if (msaa_rt) { msaa_rt->init_normal_multisample(viewport_info.width, viewport_info.heigh); }
+}
+void GameManager::init_hdr_rt() {
+	if (hdr_rt) hdr_rt.reset();
+	hdr_rt = CREATE_CLASS(RenderTarget);
+	if (hdr_rt) {
+		if (!hdr_rt->init_normal_f(viewport_info.width, viewport_info.heigh)) {
+			c_debuger() << "create rt fail";
+		}
+	}
+
+	if (hdr_scene_rt) hdr_scene_rt.reset();
+	hdr_scene_rt = CREATE_CLASS(RenderTarget);
+	if (hdr_scene_rt) {
+		if (!hdr_scene_rt->init_normal_f(viewport_info.width, viewport_info.heigh)) {
+			c_debuger() << "create rt fail";
+		}
+	}
+
+	if (hdr_pp_rt) hdr_pp_rt.reset();
+	hdr_pp_rt = CREATE_CLASS(RenderTarget);
+	if (hdr_pp_rt) {
+		if (!hdr_pp_rt->init_normal_f(viewport_info.width, viewport_info.heigh)) {
+			c_debuger() << "create rt fail";
+		}
+	}
+
+	if (hdr_msaa_rt) hdr_msaa_rt.reset();
+	hdr_msaa_rt = CREATE_CLASS(RenderTarget);
+	if (hdr_msaa_rt) { hdr_msaa_rt->init_normal_multisample_f(viewport_info.width, viewport_info.heigh); }
+
 }
 
 // ===========================================================================

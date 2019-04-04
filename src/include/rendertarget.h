@@ -57,13 +57,16 @@ public:
 	RenderTarget();
 	~RenderTarget() {}
 
-	SPTR_RenderTarget add_attach_texture(uint at_type, uint width, uint heigh, uint type = GL_TEXTURE_2D, uint internal_format = GL_RGB, uint format = GL_RGB, uint data_type = GL_UNSIGNED_BYTE);
+	SPTR_RenderTarget add_attach_texture(uint at_type, uint width, uint heigh, uint type = GL_TEXTURE_2D, uint internal_format = GL_RGBA, uint format = GL_RGBA, uint data_type = GL_UNSIGNED_BYTE);
 	SPTR_RenderTarget add_attach_renderbuffer(uint w, uint h, bool b_multisample = false, uint at_type = GL_DEPTH_STENCIL_ATTACHMENT, uint fmt = GL_DEPTH24_STENCIL8);
 
 	bool init(uint tg = GL_FRAMEBUFFER);
 	bool init_normal(uint w, uint h);						// 一个颜色纹理附件 一个深度模板渲染缓冲附件
 	bool init_simple(uint w, uint h);						// 只有一个颜色纹理附件
 	bool init_normal_multisample(uint w, uint h);			// 多重采样 fbo
+
+	bool init_normal_f(uint w, uint h);						// 浮点帧缓冲 -- 用于支持 HDR
+	bool init_normal_multisample_f(uint w, uint h);		
 
 	SPTR_RenderTarget use();
 	SPTR_RenderTarget un_use();

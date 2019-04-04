@@ -33,7 +33,7 @@ USING_SPTR(UniformBuffer)
 #define GL_BACK					0x0405
 #define GL_CCW					0x0901
 
-enum PostProcessType {
+enum class PostProcessType {
 	NOPE,					// 原色
 	GRAY,					// 灰度
 	INVERS,					// 反相
@@ -42,6 +42,13 @@ enum PostProcessType {
 	EDGE_DET,				// 边缘检测
 	REAL_RB					// 真_红蓝3D
 	
+};
+
+enum class HDR_Type {
+	NOPE,					// 没有HDR
+	REINHARD,				// Reinhard 算法的 HDR
+	EXPOSURE				// Exposure 曝光
+
 };
 
 struct ViewportInfo {		// 视口信息
@@ -102,6 +109,7 @@ public:									// used for qt ui
 	GET_SET(bool, b_normal_visual)
 	GET_SET(bool, b_explode)
 	GET_SET(bool, b_msaa)
+	GET_SET(bool, b_hdr)
 
 protected:
 	static GameManager* instance;
@@ -139,6 +147,10 @@ protected:
 	bool b_gamma;					// 是否进行 gamma 校正
 	float v_gamma;					// gamma 校正系数 -- 默认 2.2
 
+	bool b_hdr;						// 是否开启 HDR
+	HDR_Type hdr_type;				// HDR 算法类型 -- 默认为 R
+	float hdr_exposure;				// 曝光参数 -- 仅在 EXPOSURE 算法下有效
+
 	// gl state
 	void set_depth_test(bool enable = true, uint depth_func = GL_LESS, uint depth_mask = GL_TRUE);
 	void set_stencil_test(bool enable = false, uint func = GL_EQUAL, uint ref = 1, uint mask = 0xff, uint fail = GL_KEEP, uint zfail = GL_KEEP, uint zpass = GL_KEEP);
@@ -161,12 +173,22 @@ private:
 	SPTR_RenderTarget pp_rt;
 	SPTR_RenderTarget gamma_rt;
 	SPTR_RenderTarget pick_rt;
+
 	SPTR_RenderTarget vr_rt;
 	SPTR_RenderTarget vr_rt_mix;
+
 	SPTR_RenderTarget shader_toy_rt;
 	SPTR_RenderTarget shader_toy_buffer_rts[4];
+
 	SPTR_RenderTarget msaa_rt;
 	SPTR_RenderTarget msaa_vr_rt;						// 3d 模式下的 msaa 
+
+	SPTR_RenderTarget hdr_rt;
+	SPTR_RenderTarget hdr_scene_rt;
+	SPTR_RenderTarget hdr_pp_rt;
+	SPTR_RenderTarget hdr_vr_rt;
+	SPTR_RenderTarget hdr_msaa_rt;
+
 	SPTR_Texture2D scene_texture;
 
 	void scene_pass();
@@ -176,6 +198,7 @@ private:
 	void post_process_pass();
 	void gamma_pass();					// gamma 校正
 	void vr_pass();
+	void hdr_pass();					// hdr
 	void shader_toy_pass();
 
 	void init_rt();
@@ -183,6 +206,7 @@ private:
 	void init_vr_rt();
 	void init_shader_toy_rt();
 	void init_msaa_rt();
+	void init_hdr_rt();
 
 	void draw_scene(SPTR_Shader shader);
 	void draw_all_objs(SPTR_Shader shader);

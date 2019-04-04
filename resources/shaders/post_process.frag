@@ -69,8 +69,8 @@ vec3 real_rb3d(vec3 color) {
 	if(gl_FragCoord.x < 400) { return vec3(color.r, 0.0, 0.0); }	
 	else { return vec3(0.0, 0.0, color.b); }
 }
-vec3 pp(vec3 color) {
-	switch(u_pp_type) {
+vec3 pp(vec3 color, int type) {
+	switch(type) {
 	case 1 : return gray(color, vec3(0.2, 0.7, 0.1).rgb);
 	case 2 : return invers(color); 
 	case 3 : return blur(); 
@@ -83,6 +83,6 @@ vec3 pp(vec3 color) {
 
 void main() {
 
-	vec3 t_c = texture(u_texture, i_fs.tex_coord).rgb;
-	r_color = vec4(pp(t_c), 1.0);
+	vec4 t_c = texture(u_texture, i_fs.tex_coord);
+	r_color = vec4(pp(t_c.rgb, u_pp_type), t_c.a);
 }

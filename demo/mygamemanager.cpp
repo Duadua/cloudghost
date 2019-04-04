@@ -119,7 +119,7 @@ void MyGameManager::begin_play() {
 	// use direct light
 	{
 		auto d_light = CREATE_CLASS(DirectLightObject);
-		d_light->get_light_component()->set_intensity(2.0f);
+		d_light->get_light_component()->set_intensity(0.1f);
 
 		for (auto shader : AssetManager_ins().map_shaders) {
 			auto t_shader = shader.second;
@@ -153,8 +153,8 @@ void MyGameManager::begin_play() {
 		auto s_light = CREATE_CLASS(SpotLightObject);
 		s_light->get_root_component()->set_location(2.0f, 8.0f, 15.0f);
 		s_light->get_root_component()->set_rotation(-45.0f, -90.0f, 0.0f);
-		s_light->get_light_component()->set_color(CVector3D(0.0f, 0.0f, 1.0f));
-		s_light->get_light_component()->set_intensity(10.0f);
+		//s_light->get_light_component()->set_color(CVector3D(0.0f, 0.0f, 1.0f));
+		s_light->get_light_component()->set_intensity(100.0f);
 		s_light->get_light_component()->set_inner(15.0f);
 		s_light->get_light_component()->set_outer(20.0f);
 
