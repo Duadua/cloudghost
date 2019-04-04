@@ -10,16 +10,27 @@ public:
 	CSpinWidget(QWidget *parent = Q_NULLPTR);
 	~CSpinWidget();
 
-	void set_value(int v);
-	void set_min(int m);
-	void set_max(int m);
-	void set_step(int s);
+	void set_precision(int p);
+
+	void set_min(float m);
+	void set_max(float m);
+	void set_range(float min, float max, int p = 0);
+	void set_step(float s);
+
+	void set_value(float v);
+
+public slots:
+	void value_changed_slider(int);
+	void value_changed_edit();
 
 private:
 	Ui::CSpinWidget ui;
 
+	int precision;					// 10^精度
+	int dec;						// 精度
+
 signals:
-	void value_changed(int v);
+	void value_changed(float v);
 };
 
 

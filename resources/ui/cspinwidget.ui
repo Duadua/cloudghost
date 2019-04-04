@@ -6,9 +6,12 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>159</width>
-    <height>46</height>
+    <width>163</width>
+    <height>44</height>
    </rect>
+  </property>
+  <property name="focusPolicy">
+   <enum>Qt::ClickFocus</enum>
   </property>
   <property name="windowTitle">
    <string>CSpinWidget [dua专用]</string>
@@ -18,20 +21,32 @@
   </property>
   <layout class="QHBoxLayout" name="horizontalLayout">
    <item>
-    <widget class="QSpinBox" name="spin">
+    <widget class="QLineEdit" name="hedit">
      <property name="enabled">
       <bool>true</bool>
      </property>
+     <property name="minimumSize">
+      <size>
+       <width>50</width>
+       <height>20</height>
+      </size>
+     </property>
+     <property name="maximumSize">
+      <size>
+       <width>50</width>
+       <height>20</height>
+      </size>
+     </property>
+     <property name="focusPolicy">
+      <enum>Qt::ClickFocus</enum>
+     </property>
      <property name="styleSheet">
-      <string notr="true">QSpinBox {
+      <string notr="true">QLineEdit {
 	background-color: #DDDDDD;
 	border-radius: 5px;
 }
  
-QSpinBox::up-button,QSpinBox::down-button {
-	width:0px;
-}
-QSpinBox:disabled {
+QLineEdit:disabled {
 	background-color: #CCCCCC;
 }</string>
      </property>
@@ -106,6 +121,9 @@ QSlider::handle:horizontal:disabled {
 }
 
 </string>
+     </property>
+     <property name="singleStep">
+      <number>0</number>
      </property>
      <property name="value">
       <number>0</number>

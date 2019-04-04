@@ -53,13 +53,13 @@ public slots:
 
 	void trigger_rb_3d();
 	void trigger_eye_delta_init();
-	void trigger_eye_delta(int v);
+	void trigger_eye_delta(float v);
 	void trigger_polygon_mode(QAction* act);
 	void trigger_select_pp(QAction* act);
 
 	void trigger_gamma();
 	void trigger_gamma_init();
-	void trigger_gamma_value(int v);
+	void trigger_gamma_value(float v);
 
 	void trigger_msaa();
 
