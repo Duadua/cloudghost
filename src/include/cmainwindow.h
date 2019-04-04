@@ -39,6 +39,8 @@ private:
 	CTextWidget* ui_about;
 	CTextWidget* ui_guide;
 
+	CSpinWidget* ui_hdr_exposure;
+
 	void init_ui();
 
 public slots:
@@ -68,4 +70,7 @@ public slots:
 	void trigger_guide();
 	void trigger_about();
 
+	void trigger_select_hdr(QAction* act);
+	void trigger_hdr_exposure_init();
+	void trigger_hdr_exposure_value(float v);
 };

@@ -110,6 +110,8 @@ public:									// used for qt ui
 	GET_SET(bool, b_explode)
 	GET_SET(bool, b_msaa)
 	GET_SET(bool, b_hdr)
+	GET_SET(HDR_Type, hdr_type)
+	GET_SET(float, hdr_exposure)
 
 protected:
 	static GameManager* instance;

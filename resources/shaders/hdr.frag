@@ -17,15 +17,15 @@ vec3 reinhard(vec3 color) {
 	return res;
 }
 
-vec3 exposure(vec3 color, float exp) {
-	vec3 res;
+vec3 exposure(vec3 color, float expo) {
+	vec3 res = vec3(1.0) - exp(-color * expo);
 	return res;	
 }
 
-vec3 hdr(vec3 color, int type, float exp) {
+vec3 hdr(vec3 color, int type, float expo) {
 	switch(type) {
 	case 1 : return reinhard(color);
-	case 2 : return exposure(color, exp);
+	case 2 : return exposure(color, expo);
 	}
 	return color;
 }

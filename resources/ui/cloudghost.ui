@@ -130,6 +130,23 @@ QMenu::item:pressed {
       <string>校正参数</string>
      </property>
     </widget>
+    <widget class="QMenu" name="menu_hdr">
+     <property name="title">
+      <string>HDR</string>
+     </property>
+     <widget class="QMenu" name="menu_hdr_exposure">
+      <property name="enabled">
+       <bool>false</bool>
+      </property>
+      <property name="title">
+       <string>Exposure参数</string>
+      </property>
+     </widget>
+     <addaction name="action_hdr_nope"/>
+     <addaction name="action_hdr_reinhard"/>
+     <addaction name="action_hdr_exposure"/>
+     <addaction name="menu_hdr_exposure"/>
+    </widget>
     <addaction name="menu_bg_color"/>
     <addaction name="menu_bd_color"/>
     <addaction name="separator"/>
@@ -145,6 +162,8 @@ QMenu::item:pressed {
     <addaction name="separator"/>
     <addaction name="action_gamma"/>
     <addaction name="menu_gamma_value"/>
+    <addaction name="separator"/>
+    <addaction name="menu_hdr"/>
     <addaction name="separator"/>
     <addaction name="action_msaa"/>
    </widget>
@@ -388,6 +407,38 @@ QMenu::item:pressed {
    </property>
    <property name="text">
     <string>伽马校正</string>
+   </property>
+  </action>
+  <action name="action_hdr_nope">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>关闭</string>
+   </property>
+  </action>
+  <action name="action_hdr_reinhard">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Reinhard</string>
+   </property>
+  </action>
+  <action name="action_hdr_exposure">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Exposure</string>
+   </property>
+   <property name="iconText">
+    <string>Exposure</string>
+   </property>
+  </action>
+  <action name="actiona">
+   <property name="text">
+    <string>a</string>
    </property>
   </action>
  </widget>

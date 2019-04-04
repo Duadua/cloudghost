@@ -138,6 +138,26 @@ void CMainWindow::init_ui() {
 			connect(ui.action_msaa, SIGNAL(triggered()), this, SLOT(trigger_msaa()));
 		}
 
+		// hdr
+		{
+			auto ag = new QActionGroup(this);
+			ag->addAction(ui.action_hdr_nope);
+			ag->addAction(ui.action_hdr_reinhard);
+			ag->addAction(ui.action_hdr_exposure);
+			ui.action_hdr_reinhard->setChecked(true);
+			connect(ag, SIGNAL(triggered(QAction*)), this, SLOT(trigger_select_hdr(QAction*)));
+
+			ui_hdr_exposure = new CSpinWidget(this);
+			ui_hdr_exposure->set_range(0.1f, 5.0f, 1);
+			connect(ui_hdr_exposure, SIGNAL(value_changed(float)), this, SLOT(trigger_hdr_exposure_value(float)));
+
+			QWidgetAction *ui_action_hdr_exposure = new QWidgetAction(this);
+			ui_action_hdr_exposure->setDefaultWidget(ui_hdr_exposure);
+			ui.menu_hdr_exposure->addAction(ui_action_hdr_exposure);
+			connect(ui.menu_hdr_exposure, SIGNAL(aboutToShow()), this, SLOT(trigger_hdr_exposure_init()));
+			
+		}
+
 		
 	}
 
@@ -324,6 +344,27 @@ void CMainWindow::trigger_shader_toy() {
 
 void CMainWindow::trigger_guide() { ui_guide->setVisible(true); }
 void CMainWindow::trigger_about() { ui_about->setVisible(true); }
+
+void CMainWindow::trigger_select_hdr(QAction* act) {
+	if (act->objectName().compare("action_hdr_nope") == 0) {
+		GameManager_ins().set_b_hdr(false);
+		ui.menu_hdr_exposure->setEnabled(false);
+
+	}
+	else if (act->objectName().compare("action_hdr_reinhard") == 0) {
+		GameManager_ins().set_b_hdr(true);
+		GameManager_ins().set_hdr_type(HDR_Type::REINHARD);
+		ui.menu_hdr_exposure->setEnabled(false);
+
+	}
+	else if (act->objectName().compare("action_hdr_exposure") == 0) {
+		GameManager_ins().set_b_hdr(true);
+		GameManager_ins().set_hdr_type(HDR_Type::EXPOSURE);
+		ui.menu_hdr_exposure->setEnabled(true);
+	}
+}
+void CMainWindow::trigger_hdr_exposure_init() { ui_hdr_exposure->set_value(GameManager_ins().get_hdr_exposure()); }
+void CMainWindow::trigger_hdr_exposure_value(float v) { GameManager_ins().set_hdr_exposure(v); }
 
 
 
