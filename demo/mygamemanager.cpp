@@ -119,7 +119,7 @@ void MyGameManager::begin_play() {
 	// use direct light
 	{
 		auto d_light = CREATE_CLASS(DirectLightObject);
-		d_light->get_light_component()->set_intensity(0.1f);
+		d_light->get_light_component()->set_intensity(1.0f);
 
 		for (auto shader : AssetManager_ins().map_shaders) {
 			auto t_shader = shader.second;

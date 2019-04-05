@@ -382,8 +382,10 @@ void GameManager::gamma_pass() {
 
 }
 void GameManager::post_process_pass() {
+	auto t_pp_rt = pp_rt;
+	if (b_hdr) { t_pp_rt = hdr_pp_rt; }
 
-	pp_rt->use(); {
+	t_pp_rt->use(); {
 		draw_init();
 
 		stack_shaders->push(AssetManager_ins().get_shader("pp")); {
@@ -398,11 +400,11 @@ void GameManager::post_process_pass() {
 
 		} stack_shaders->pop();
 
-	} pp_rt->un_use();
+	} t_pp_rt->un_use();
 
 	// update scene texture
-	if (pp_rt->get_attach_textures().size() > 0) {
-		scene_texture = pp_rt->get_attach_textures()[0].texture;
+	if (t_pp_rt->get_attach_textures().size() > 0) {
+		scene_texture = t_pp_rt->get_attach_textures()[0].texture;
 	}
 }
 void GameManager::hdr_pass() {

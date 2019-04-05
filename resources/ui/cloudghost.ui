@@ -99,22 +99,6 @@ QMenu::item:pressed {
      <addaction name="action_pp_edge_det"/>
      <addaction name="action_pp_real_rb3d"/>
     </widget>
-    <widget class="QMenu" name="menu_polygon_mode">
-     <property name="title">
-      <string>图元模式</string>
-     </property>
-     <addaction name="action_pm_fill"/>
-     <addaction name="action_pm_line"/>
-     <addaction name="action_pm_point"/>
-    </widget>
-    <widget class="QMenu" name="menu_eye_delta">
-     <property name="enabled">
-      <bool>false</bool>
-     </property>
-     <property name="title">
-      <string>双眼视距</string>
-     </property>
-    </widget>
     <widget class="QMenu" name="menu_bg_color">
      <property name="title">
       <string>背景颜色</string>
@@ -150,22 +134,17 @@ QMenu::item:pressed {
     <addaction name="menu_bg_color"/>
     <addaction name="menu_bd_color"/>
     <addaction name="separator"/>
-    <addaction name="menu_polygon_mode"/>
-    <addaction name="separator"/>
     <addaction name="action_normal_visual"/>
     <addaction name="action_explode"/>
     <addaction name="separator"/>
-    <addaction name="action_rb_3d"/>
-    <addaction name="menu_eye_delta"/>
-    <addaction name="separator"/>
     <addaction name="menu_post_process"/>
+    <addaction name="separator"/>
+    <addaction name="action_msaa"/>
     <addaction name="separator"/>
     <addaction name="action_gamma"/>
     <addaction name="menu_gamma_value"/>
     <addaction name="separator"/>
     <addaction name="menu_hdr"/>
-    <addaction name="separator"/>
-    <addaction name="action_msaa"/>
    </widget>
    <widget class="QMenu" name="menu_shadertoy">
     <property name="title">
@@ -193,22 +172,37 @@ QMenu::item:pressed {
     <addaction name="separator"/>
     <addaction name="action_about"/>
    </widget>
+   <widget class="QMenu" name="menu_view">
+    <property name="title">
+     <string>视图</string>
+    </property>
+    <widget class="QMenu" name="menu_polygon_mode">
+     <property name="title">
+      <string>图元模式</string>
+     </property>
+     <addaction name="action_pm_fill"/>
+     <addaction name="action_pm_line"/>
+     <addaction name="action_pm_point"/>
+    </widget>
+    <widget class="QMenu" name="menu_eye_delta">
+     <property name="enabled">
+      <bool>false</bool>
+     </property>
+     <property name="title">
+      <string>双眼视距</string>
+     </property>
+    </widget>
+    <addaction name="menu_polygon_mode"/>
+    <addaction name="separator"/>
+    <addaction name="action_rb_3d"/>
+    <addaction name="menu_eye_delta"/>
+   </widget>
    <addaction name="menu_start"/>
+   <addaction name="menu_view"/>
    <addaction name="menu_shading"/>
    <addaction name="menu_shadertoy"/>
    <addaction name="menu_help"/>
   </widget>
-  <action name="action_rb_3d">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="text">
-    <string>红蓝3D</string>
-   </property>
-   <property name="shortcut">
-    <string>Ctrl+V</string>
-   </property>
-  </action>
   <action name="action_pp_gray">
    <property name="checkable">
     <bool>true</bool>
@@ -318,38 +312,6 @@ QMenu::item:pressed {
     <string>_polygon_line</string>
    </property>
   </action>
-  <action name="action_polygon_mode">
-   <property name="text">
-    <string>_polygon_mode</string>
-   </property>
-  </action>
-  <action name="action_pm_fill">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="checked">
-    <bool>true</bool>
-   </property>
-   <property name="text">
-    <string>填充模式</string>
-   </property>
-  </action>
-  <action name="action_pm_line">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="text">
-    <string>线框模式</string>
-   </property>
-  </action>
-  <action name="action_pm_point">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="text">
-    <string>点元模式</string>
-   </property>
-  </action>
   <action name="action_guide">
    <property name="text">
     <string>操作指南</string>
@@ -437,6 +399,58 @@ QMenu::item:pressed {
    </property>
   </action>
   <action name="actiona">
+   <property name="text">
+    <string>a</string>
+   </property>
+  </action>
+  <action name="action_pm_fill">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>填充模式</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+1</string>
+   </property>
+  </action>
+  <action name="action_pm_line">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>线框模式</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+2</string>
+   </property>
+  </action>
+  <action name="action_pm_point">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>点元模式</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+3</string>
+   </property>
+  </action>
+  <action name="action_rb_3d">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>红蓝3D</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+V</string>
+   </property>
+  </action>
+  <action name="actiona_2">
    <property name="text">
     <string>a</string>
    </property>
