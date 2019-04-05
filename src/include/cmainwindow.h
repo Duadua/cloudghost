@@ -8,6 +8,7 @@ class QResizeEvent;
 class QColorDialog;
 class CSpinWidget;
 class CTextWidget;
+class QActionGroup;
 
 class CMainWindow : public QMainWindow {
 	Q_OBJECT
@@ -32,6 +33,8 @@ private:
 	QColorDialog* ui_bd_color;
 	int ui_bd_color_custom_cnt;
 
+	QActionGroup* ui_skybox_ag;
+
 	CSpinWidget* ui_eye_delta;
 
 	CSpinWidget* ui_gamma_value;
@@ -49,6 +52,9 @@ public slots:
 	void trigger_bg_color_cancel();
 	void trigger_bd_color_init();
 	void trigger_bd_color_ok();
+
+	void trigger_skybox_init();
+	void trigger_skybox(QAction* act);
 
 	void trigger_normal_visual();
 	void trigger_explode();

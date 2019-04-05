@@ -20,6 +20,8 @@ PRE_DECLARE_CLASS(SkyBox)
 USING_SPTR(SkyBox)
 PRE_DECLARE_CLASS(Texture2D)
 USING_SPTR(Texture2D)
+PRE_DECLARE_CLASS(Texture3D)
+USING_SPTR(Texture3D)
 PRE_DECLARE_CLASS(UniformBuffer)
 USING_SPTR(UniformBuffer)
 
@@ -98,6 +100,9 @@ public:
 	void add_game_object(const std::string& key, SPTR_GameObject value);
 
 public:									// used for qt ui
+	SPTR_Texture3D get_skybox();
+	void set_skybox(SPTR_Texture3D tex);
+
     GET_SET(CColor, background_color)
     GET_SET(CColor, border_color)
     GET_SET(uint, front_polygon_mode)
@@ -114,6 +119,7 @@ public:									// used for qt ui
 	GET_SET(bool, b_hdr)
 	GET_SET(HDR_Type, hdr_type)
 	GET_SET(float, hdr_exposure)
+	GET_SET(bool, b_skybox)
 
 protected:
 	static GameManager* instance;
@@ -156,6 +162,8 @@ protected:
 	bool b_hdr;						// 是否开启 HDR
 	HDR_Type hdr_type;				// HDR 算法类型 -- 默认为 R
 	float hdr_exposure;				// 曝光参数 -- 仅在 EXPOSURE 算法下有效
+
+	bool b_skybox;					// 是否渲染天空盒
 
 	// gl state
 	void set_depth_test(bool enable = true, uint depth_func = GL_LESS, uint depth_mask = GL_TRUE);

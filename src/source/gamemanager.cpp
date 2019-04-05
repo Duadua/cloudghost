@@ -58,6 +58,7 @@ void GameManager::_init() {
 		hdr_type = HDR_Type::REINHARD;
 		hdr_exposure = 1.0f;
 
+		b_skybox = true;
 	}
 }
 
@@ -127,7 +128,7 @@ void GameManager::init() {
 		
 		// textures 3d
 		AssetManager_ins().load_texture_3d("resources/textures/skyboxs/lake");
-		AssetManager_ins().load_texture_3d("resources/textures/skyboxs/hill");
+		AssetManager_ins().load_texture_3d("resources/textures/skyboxs/nice");
 		AssetManager_ins().load_texture_3d("resources/textures/skyboxs/stormyday");
 
 		load_asset();						// 加载资源
@@ -345,7 +346,7 @@ void GameManager::base_pass() {
 		if (b_normal_visual) { normal_visual_pass(); }
 
 		// draw sky box -- if have -- 最后画
-		if (sky_box) {
+		if (b_skybox && sky_box) {
 			stack_shaders->push(AssetManager_ins().get_shader("skybox")); {
 				if (stack_shaders->top()) {
 					stack_shaders->top()->use();
@@ -1005,8 +1006,8 @@ void GameManager::mouse_released() {
 	}
 }
 
-
-
+SPTR_Texture3D GameManager::get_skybox() { return sky_box->get_texture(); }
+void GameManager::set_skybox(SPTR_Texture3D tex) { if (sky_box && tex) { sky_box->set_texture(tex); } }
 
 
 

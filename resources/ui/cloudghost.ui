@@ -131,8 +131,15 @@ QMenu::item:pressed {
      <addaction name="action_hdr_exposure"/>
      <addaction name="menu_hdr_exposure"/>
     </widget>
+    <widget class="QMenu" name="menu_skybox">
+     <property name="title">
+      <string>天空盒</string>
+     </property>
+     <addaction name="action_skybox_nope"/>
+    </widget>
     <addaction name="menu_bg_color"/>
     <addaction name="menu_bd_color"/>
+    <addaction name="menu_skybox"/>
     <addaction name="separator"/>
     <addaction name="action_normal_visual"/>
     <addaction name="action_explode"/>
@@ -453,6 +460,14 @@ QMenu::item:pressed {
   <action name="actiona_2">
    <property name="text">
     <string>a</string>
+   </property>
+  </action>
+  <action name="action_skybox_nope">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>无</string>
    </property>
   </action>
  </widget>

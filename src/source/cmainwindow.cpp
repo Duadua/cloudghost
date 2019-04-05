@@ -3,9 +3,12 @@
 #include "cspinwidget.h"
 #include "csubmitwidget.h"
 #include "gamemanager.h"
+#include "assetmanager.h"
 #include "ctextwidget.h"
+#include "texture3d.h"
 
 #include <QColorDialog>
+#include <QActionGroup>
 #include <QWidgetAction>
 
 #include "cdebuger.h"
@@ -69,6 +72,15 @@ void CMainWindow::init_ui() {
 
 			connect(ui_bd_color_submit, SIGNAL(ok()), this, SLOT(trigger_bd_color_ok()));
 			connect(ui_bd_color_submit, SIGNAL(cancel()), this, SLOT(trigger_bg_color_cancel()));
+		}
+
+		// skybox 
+		{
+			connect(ui.menu_skybox, SIGNAL(aboutToShow()), this, SLOT(trigger_skybox_init()));
+			ui_skybox_ag = new QActionGroup(this);
+			ui_skybox_ag->addAction(ui.action_skybox_nope);
+			connect(ui_skybox_ag, SIGNAL(triggered(QAction*)), this, SLOT(trigger_skybox(QAction*)));
+
 		}
 
 		// normal visual
@@ -275,6 +287,29 @@ void CMainWindow::trigger_bd_color_ok() {
 		ui_bd_color->update();
 	}
 
+}
+
+void CMainWindow::trigger_skybox_init() {
+	static bool flag = true;
+	if (flag) {
+		flag = false;
+		for (auto t3d : AssetManager_ins().map_texture3Ds) {
+			auto t_name = t3d.first;
+			auto t_a = new QAction(QString::fromStdString(t_name), this);
+			t_a->setObjectName(QString::fromStdString(t_name));
+			t_a->setCheckable(true);
+			if (t_name.compare(GameManager_ins().get_skybox()->get_name()) == 0) { t_a->setChecked(true); }
+			ui_skybox_ag->addAction(t_a);
+			ui.menu_skybox->addAction(t_a);
+		}
+	}
+}
+void CMainWindow::trigger_skybox(QAction* act) {
+	if (act->objectName().compare("action_skybox_nope") == 0) { GameManager_ins().set_b_skybox(false); }
+	else {
+		auto t_tex = AssetManager_ins().get_texture3D(act->objectName().toStdString());
+		if (t_tex) { GameManager_ins().set_b_skybox(true); GameManager_ins().set_skybox(t_tex); }
+	}
 }
 
 void CMainWindow::trigger_normal_visual() { GameManager_ins().set_b_normal_visual(!GameManager_ins().get_b_normal_visual()); }
