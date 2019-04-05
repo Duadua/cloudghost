@@ -13,6 +13,8 @@
 #include "cmath.h"
 #include "stringhelper.h"
 
+#include "assetmanager.h"
+
 int main(int argc, char *argv[]) {
 	QApplication a(argc, argv);
 		
@@ -87,8 +89,11 @@ int main(int argc, char *argv[]) {
 		0.0f, 0.0f, 8.0f, 3.0f,
 		0.0f, 0.0f, 5.0f, 2.0f
 		);
-	c_debuger() << mat4x4.inverse().to_string();
+	CMatrix3x3 mat3x3( mat4x4.data(), 4, 4 );
+	CMatrix4x4 res(mat3x3.data(), 3, 3);
+	c_debuger() << res.to_string();
 	*/
+	
 	
 	// test quaternion slerp
 	/*{
@@ -107,7 +112,9 @@ int main(int argc, char *argv[]) {
 		c_debuger() << std::to_string(res.w);
 	}
 	*/
+
 	
+  
 	MyGameManager gm;
 	CMainWindow cmw;
 	cmw.show();

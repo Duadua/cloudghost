@@ -3,7 +3,9 @@
 
 #include "mesh.h"
 #include "shader.h"
+#include "skybox.h"
 #include "texture2d.h"
+#include "texture3d.h"
 #include "gameobject.h"
 #include "freecamera.h"
 #include "cameradata.h"
@@ -22,6 +24,12 @@
 #include <GLFW/glfw3.h>
 
 void GameManager::_init() {
+	
+	// inner object init
+	{
+		sky_box = nullptr;
+	}
+
 	// ui setting init
 	{
 		background_color = CColor(205, 220, 232);
@@ -89,6 +97,7 @@ void GameManager::init() {
 		AssetManager_ins().load_shader("explode", "resources/shaders/mvp_anim.vert", "resources/shaders/blinn_phong.frag", "resources/shaders/explode.geom");
 		AssetManager_ins().load_shader("msaa", "resources/shaders/scene_2d.vert", "resources/shaders/msaa.frag");
 		AssetManager_ins().load_shader("hdr", "resources/shaders/scene_2d.vert", "resources/shaders/hdr.frag");
+		AssetManager_ins().load_shader("skybox", "resources/shaders/skybox.vert", "resources/shaders/skybox.frag");
 
 		AssetManager_ins().load_shader("shader_toy_img", "resources/shaders/scene_2d.vert", "resources/shaders/shadertoy_img.frag");
 		AssetManager_ins().load_shader("shader_toy_buffer_a", "resources/shaders/scene_2d.vert", "resources/shaders/shadertoy_buffer_a.frag");
@@ -110,9 +119,16 @@ void GameManager::init() {
 		// material
 		AssetManager_ins().load_materials("resources/materials/txt/default_material.txt");
 		AssetManager_ins().load_materials("resources/materials/txt/single_material.txt");
+
+		// textures
 		//AssetManager_ins().load_texture("resources/textures/txt/texture_default.txt");
 		AssetManager_ins().load_texture_x("resources/textures/texture_default.png");
 		AssetManager_ins().load_texture_x("resources/textures/brickwall_d.jpg");
+		
+		// textures 3d
+		AssetManager_ins().load_texture_3d("resources/textures/skyboxs/lake");
+		AssetManager_ins().load_texture_3d("resources/textures/skyboxs/hill");
+		AssetManager_ins().load_texture_3d("resources/textures/skyboxs/stormyday");
 
 		load_asset();						// 加载资源
 		
@@ -142,6 +158,12 @@ void GameManager::init() {
 			auto t_shader = shader.second;
 			if (t_shader) { t_shader->set_unifom_buffer("Matrices", 0); }
 		}
+	}
+
+	// init sky box
+	{
+		sky_box = CREATE_CLASS(SkyBox);
+		sky_box->set_texture(AssetManager_ins().get_texture3D("stormyday"));
 	}
 
 	// init input map
@@ -189,6 +211,11 @@ void GameManager::draw() {
 	{
 		tick(TimeManager_ins().cur_runtime_msconds());
 		main_tick(TimeManager_ins().cur_runtime_msconds());
+	}
+
+	// fill shader uniform block
+	{
+		ub_matrices->fill_data(0, CMatrix4x4::data_size(), main_camera->get_camera_component()->get_view_mat().data());
 	}
 	
 	// draw
@@ -316,6 +343,22 @@ void GameManager::base_pass() {
 
 		// 法线可视化
 		if (b_normal_visual) { normal_visual_pass(); }
+
+		// draw sky box -- if have -- 最后画
+		if (sky_box) {
+			stack_shaders->push(AssetManager_ins().get_shader("skybox")); {
+				if (stack_shaders->top()) {
+					stack_shaders->top()->use();
+					// 要移除矩阵的移动部分
+					auto t_view = CMatrix4x4(CMatrix3x3(main_camera->get_camera_component()->get_view_mat().data(), 4, 4).data(), 3, 3);
+					stack_shaders->top()->set_mat4("u_view_sky_box", t_view);
+					stack_shaders->top()->set_int("u_texture", 0);
+				}
+				auto t_texture = sky_box->get_texture();
+				if (t_texture) t_texture->bind(0);
+				draw_skybox(stack_shaders->top());
+			} stack_shaders->pop();
+		}
 
 	} if (b_msaa) { t_msaa_rt->un_use(); } else { t_scene_rt->un_use(); }
 
@@ -644,21 +687,22 @@ void GameManager::draw_scene(SPTR_Shader shader) {
 	glEnable(GL_DEPTH_TEST);
 }
 void GameManager::draw_all_objs(SPTR_Shader shader) {
+
 	set_depth_test();
-	set_polygon_mode(front_polygon_mode, back_polygon_mode);
-	for (auto go : game_objects) {
-		if (go.second->get_id() != cur_pick_object_id) { 
-			glStencilFunc(GL_ALWAYS, 0, 0xff); 
-			go.second->_draw(shader);
-		} // 总是通过测试 -- 且通过后置0
-	} // 先画没被选中的 -- 保证最后写入的 1 不被 0 覆盖
-	for (auto go : game_objects) {
-		if (go.second->get_id() == cur_pick_object_id) { 
-			glStencilFunc(GL_ALWAYS, 1, 0xff); 
-			go.second->_draw(shader);
-		} // 总是通过测试 -- 且通过后置1
-	}
-	set_polygon_mode();
+	set_polygon_mode(front_polygon_mode, back_polygon_mode); {
+		for (auto go : game_objects) {
+			if (go.second->get_id() != cur_pick_object_id) {
+				glStencilFunc(GL_ALWAYS, 0, 0xff);
+				go.second->_draw(shader);
+			} // 总是通过测试 -- 且通过后置0
+		} // 先画没被选中的 -- 保证最后写入的 1 不被 0 覆盖
+		for (auto go : game_objects) {
+			if (go.second->get_id() == cur_pick_object_id) {
+				glStencilFunc(GL_ALWAYS, 1, 0xff);
+				go.second->_draw(shader);
+			} // 总是通过测试 -- 且通过后置1
+		}
+	} set_polygon_mode();
 }
 void GameManager::draw_border(SPTR_Shader shader) {
 	set_polygon_mode(front_polygon_mode, back_polygon_mode);
@@ -676,6 +720,13 @@ void GameManager::draw_init() {
 	glClear(GL_COLOR_BUFFER_BIT);
 	if (glIsEnabled(GL_DEPTH_TEST)) { glClear(GL_DEPTH_BUFFER_BIT); }
 	if (glIsEnabled(GL_STENCIL_TEST)) { glClear(GL_STENCIL_BUFFER_BIT); }
+}
+
+void GameManager::draw_skybox(SPTR_Shader shader) {
+	// <= 缓冲区的值时通过 -- 提前深度测试时写入了 1.0 -- 所以要有等于 -- 最后画以提高性能
+	set_depth_test(true, GL_LEQUAL); {
+		sky_box->_draw(shader);
+	} set_depth_test(true);
 }
 
 void GameManager::init_rt() {

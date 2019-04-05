@@ -21,6 +21,8 @@ PRE_DECLARE_CLASS(Material)
 USING_SPTR(Material)
 PRE_DECLARE_CLASS(Texture2D)
 USING_SPTR(Texture2D)
+PRE_DECLARE_CLASS(Texture3D)
+USING_SPTR(Texture3D)
 
 #define GL_RGB				0x1907
 #define GL_BGRA				0x80E1
@@ -37,6 +39,7 @@ public:
 	std::map<std::string, SPTR_AnimSequence> map_anim_sequence;		// 动画序列 资源 -- like ue4
 	std::map<std::string, SPTR_Material> map_materials;
 	std::map<std::string, SPTR_Texture2D> map_textures;
+	std::map<std::string, SPTR_Texture3D> map_texture3Ds;			// cube texture map 
 
 public:
 	SPTR_Shader load_shader(const std::string& key, const std::string& v_path, const std::string& f_path, const std::string& g_path = "", SourceType source_type = SourceType::BY_FILE);
@@ -67,6 +70,8 @@ public:
 	SPTR_Texture2D get_texture(const std::string& key);
 	SPTR_Texture2D gen_blank_texture(const std::string& key, uint width, uint heigh, uint internal_format = GL_RGB, uint format = GL_RGB, uint data_type = GL_UNSIGNED_BYTE, uint type = GL_TEXTURE_2D);		// 创建空白的 texutre2D -- for RT
 
+	bool load_texture_3d(const std::string& path, bool b_srgb = true);			// 需传入目录 -- 包含6张有命名规则的贴图
+	SPTR_Texture3D get_texture3D(const std::string& key);
 };
 SINGLETON_X(AssetManager)
 

@@ -325,6 +325,12 @@
     <ClCompile Include="src\source\uniformbuffer.cpp">
       <Filter>src\source\core\renders</Filter>
     </ClCompile>
+    <ClCompile Include="src\source\texture3d.cpp">
+      <Filter>src\source\core\renders</Filter>
+    </ClCompile>
+    <ClCompile Include="src\source\skybox.cpp">
+      <Filter>src\source\preset</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <QtUic Include="resources\ui\cloudghost.ui">
@@ -512,6 +518,12 @@
     <ClInclude Include="src\include\uniformbuffer.h">
       <Filter>src\include\core\renders</Filter>
     </ClInclude>
+    <ClInclude Include="src\include\texture3d.h">
+      <Filter>src\include\core\renders</Filter>
+    </ClInclude>
+    <ClInclude Include="src\include\skybox.h">
+      <Filter>src\include\preset</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="src\include\cglwidget.h">
@@ -596,6 +608,12 @@
     </None>
     <None Include="resources\shaders\hdr.frag">
       <Filter>resources\shaders\frags</Filter>
+    </None>
+    <None Include="resources\shaders\skybox.frag">
+      <Filter>resources\shaders\frags</Filter>
+    </None>
+    <None Include="resources\shaders\skybox.vert">
+      <Filter>resources\shaders\verts</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>

@@ -54,3 +54,5 @@ private:
 	
 };
 DECLARE_AUTO_PTR(Texture2D)
+
+

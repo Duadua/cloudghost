@@ -25,7 +25,7 @@ std::string FileHelper::get_name_of_file(const std::string& path) {
 	if (t_f >= t_s.size()) { return t_s; }
 	return t_s.substr(t_f + 1);
 }
-void FileHelper::get_all_files_from_dir(std::string& path, std::vector<std::string>& res) {
+void FileHelper::get_all_files_from_dir(const std::string& path, std::vector<std::string>& res) {
 	intptr_t h_file;
 	_finddata_t fd;
 	std::string t_str;

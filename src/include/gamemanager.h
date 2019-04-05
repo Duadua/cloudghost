@@ -16,6 +16,8 @@ PRE_DECLARE_CLASS(GameObject)
 USING_SPTR(GameObject)
 PRE_DECLARE_CLASS(CameraObject)
 USING_SPTR(CameraObject)
+PRE_DECLARE_CLASS(SkyBox)
+USING_SPTR(SkyBox)
 PRE_DECLARE_CLASS(Texture2D)
 USING_SPTR(Texture2D)
 PRE_DECLARE_CLASS(UniformBuffer)
@@ -124,6 +126,8 @@ protected:
 
 	SPTR_ShaderStack stack_shaders;
 	SPTR_UniformBuffer ub_matrices;
+	
+	SPTR_SkyBox sky_box;
 
 	// ui shading setting
 	CColor background_color;
@@ -176,7 +180,7 @@ private:
 	SPTR_RenderTarget gamma_rt;
 	SPTR_RenderTarget pick_rt;
 
-		SPTR_RenderTarget shader_toy_rt;
+	SPTR_RenderTarget shader_toy_rt;
 	SPTR_RenderTarget shader_toy_buffer_rts[4];
 
 	SPTR_RenderTarget msaa_rt;
@@ -215,8 +219,9 @@ private:
 	void draw_scene(SPTR_Shader shader);
 	void draw_all_objs(SPTR_Shader shader);
 	void draw_border(SPTR_Shader shader);
-
 	void draw_init();
+
+	void draw_skybox(SPTR_Shader shader);
 
 private:
 	ViewportInfo viewport_info;

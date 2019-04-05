@@ -4,6 +4,7 @@
 #include <sstream>
 
 CMatrix4x4::CMatrix4x4(const float* d, int cols, int rows) : scaled(1.0f) {
+	set_to_identity();
 	for (int i = 0; i < cols && i < col_size; ++i) { for (int j = 0; j < rows && j < row_size; ++j) {
 			m[i][j] = d[i*cols + j];
 	}}

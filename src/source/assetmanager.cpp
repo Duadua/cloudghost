@@ -10,6 +10,7 @@
 #include "animsequence.h"
 #include "assetmanager.h"
 #include "texture2d.h"
+#include "texture3d.h"
 
 #include "tools/meshloader.h"
 #include "tools/textureloader.h"
@@ -503,5 +504,82 @@ SPTR_Texture2D AssetManager::gen_blank_texture(const std::string& key, uint widt
 	t_texture->gen(width, heigh, internal_format, format, data_type, type);
 	map_textures[key] = t_texture;
 	return map_textures[key];
+}
+
+bool AssetManager::load_texture_3d(const std::string& path, bool b_srgb) {
+	std::string f_name = FileHelper_ins().get_name_of_file(path);			// 获得文件名
+	// if (map_textures.count(f_name)) { c_debuger() << "[asset][texture][load] already loaded texture " + f_name; return false; }
+	if (map_textures.count(f_name)) { return false; }
+
+	static std::string suf_name[6] = { "rt", "lf", "up", "dn", "bk", "ft" };	// 右左上下后前 -- 012345
+
+	std::vector<std::string> t_names;
+	FileHelper_ins().get_all_files_from_dir(path, t_names);
+
+	//for (int i = 0; i < t_names.size(); ++i) { c_debuger() << t_names[i]; }
+
+	std::vector<SPTR_uchar> t_datas(6);
+	std::vector<TextureData> t_texture_datas(6);
+
+	for (int i = 0; i < t_names.size(); ++i) {
+		// load one texture of texture3d
+		for (int j = 0; j < 6; ++j) {
+			if (t_names[i].find("_" + suf_name[j] + ".") != std::string::npos) {
+				std::string t_name = FileHelper_ins().get_name_of_file(t_names[i]);
+				std::string t_suf = FileHelper_ins().get_suff_of_file(t_names[i]);				// 获得文件路径后缀
+
+				int width = 0, heigh = 0, channel = 0;
+				SPTR_uchar t_res = nullptr;
+
+				if (t_suf.compare(".dds") == 0) { t_res = TextureLoader::load_texture_dds(t_names[i], width, heigh, channel); }
+				else { t_res = TextureLoader::load_texture_x(t_names[i], width, heigh, channel); }
+
+				if (t_res == nullptr) {
+					c_debuger() << "[warning][asset][texture3d]load cube texture failed called \"" + t_names[i] + "\"";
+					return false;
+				}
+
+				// fill data
+				t_datas[j] = t_res;
+
+				t_texture_datas[j].type = GL_TEXTURE_CUBE_MAP_POSITIVE_X + j;
+				t_texture_datas[j].name = t_name;
+
+				t_texture_datas[j].width = width;
+				t_texture_datas[j].heigh = heigh;
+
+				if (channel == 1) { t_texture_datas[j].internal_format = GL_RED; t_texture_datas[j].image_format = GL_RED; }
+				else if (channel == 3) {
+					if (b_srgb) { t_texture_datas[j].internal_format = GL_SRGB; }
+					else t_texture_datas[j].internal_format = GL_RGB;
+					t_texture_datas[j].image_format = GL_RGB;
+				}
+				else if (channel == 4) {
+					if (b_srgb) { t_texture_datas[j].internal_format = GL_SRGB_ALPHA; }
+					else { t_texture_datas[j].internal_format = GL_RGBA; }
+					t_texture_datas[j].image_format = GL_RGBA;
+					t_texture_datas[j].wrap_s = GL_CLAMP_TO_EDGE; 
+					t_texture_datas[j].wrap_t = GL_CLAMP_TO_EDGE;
+					t_texture_datas[j].wrap_r = GL_CLAMP_TO_EDGE;
+				}
+
+				break;
+			}
+		}
+	}
+
+	auto res = CREATE_CLASS(Texture3D);
+	res->set_name(f_name);
+	res->init(t_texture_datas, t_datas);
+
+	map_texture3Ds[f_name] = res;
+	return true;
+}
+SPTR_Texture3D AssetManager::get_texture3D(const std::string& key) {
+	if (!map_texture3Ds.count(key)) {
+		c_debuger() << "[warning][asset][texture3D]no cube texture calls \"" + key + "\"";
+		return nullptr;
+	}
+	return map_texture3Ds[key];
 }
 
