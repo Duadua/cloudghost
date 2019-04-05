@@ -176,20 +176,22 @@ private:
 	SPTR_RenderTarget gamma_rt;
 	SPTR_RenderTarget pick_rt;
 
-	SPTR_RenderTarget vr_rt;
-	SPTR_RenderTarget vr_rt_mix;
-
-	SPTR_RenderTarget shader_toy_rt;
+		SPTR_RenderTarget shader_toy_rt;
 	SPTR_RenderTarget shader_toy_buffer_rts[4];
 
 	SPTR_RenderTarget msaa_rt;
-	SPTR_RenderTarget msaa_vr_rt;						// 3d 模式下的 msaa 
 
 	SPTR_RenderTarget hdr_rt;
 	SPTR_RenderTarget hdr_scene_rt;
 	SPTR_RenderTarget hdr_pp_rt;
-	SPTR_RenderTarget hdr_vr_rt;
 	SPTR_RenderTarget hdr_msaa_rt;
+	
+	SPTR_RenderTarget vr_rt;
+	SPTR_RenderTarget vr_rt_mix;
+	SPTR_RenderTarget msaa_vr_rt;						// 3d 模式下的 msaa 
+	SPTR_RenderTarget hdr_vr_rt;
+	SPTR_RenderTarget hdr_vr_rt_mix;
+	SPTR_RenderTarget hdr_msaa_vr_rt;						
 
 	SPTR_Texture2D scene_texture;
 
