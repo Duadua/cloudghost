@@ -523,6 +523,24 @@ void GameManager::vr_pass() {
 			if (b_normal_visual) { normal_visual_pass(); }
 
 			main_camera->get_root_component()->set_location(t_old_location);
+
+			// draw sky box -- if have -- 最后画
+			if (b_skybox && sky_box) {
+				stack_shaders->push(AssetManager_ins().get_shader("skybox")); {
+					if (stack_shaders->top()) {
+						stack_shaders->top()->use();
+						// 要移除矩阵的移动部分
+						auto t_view = CMatrix4x4(CMatrix3x3(main_camera->get_camera_component()->get_view_mat().data(), 4, 4).data(), 3, 3);
+						t_view.translate(main_camera->get_camera_component()->get_right_axis() * -vr_delta);
+						stack_shaders->top()->set_mat4("u_view_sky_box", t_view);
+						stack_shaders->top()->set_int("u_texture", 0);
+					}
+					auto t_texture = sky_box->get_texture();
+					if (t_texture) t_texture->bind(0);
+					draw_skybox(stack_shaders->top());
+				} stack_shaders->pop();
+			}
+
 		}
 
 		// right eyes scene
@@ -563,6 +581,24 @@ void GameManager::vr_pass() {
 			if (b_normal_visual) { normal_visual_pass(); }
 
 			main_camera->get_root_component()->set_location(t_old_location);
+
+			// draw sky box -- if have -- 最后画
+			if (b_skybox && sky_box) {
+				stack_shaders->push(AssetManager_ins().get_shader("skybox")); {
+					if (stack_shaders->top()) {
+						stack_shaders->top()->use();
+						// 要移除矩阵的移动部分
+						auto t_view = CMatrix4x4(CMatrix3x3(main_camera->get_camera_component()->get_view_mat().data(), 4, 4).data(), 3, 3);
+						t_view.translate(main_camera->get_camera_component()->get_right_axis() * vr_delta);
+						stack_shaders->top()->set_mat4("u_view_sky_box", t_view);
+						stack_shaders->top()->set_int("u_texture", 0);
+					}
+					auto t_texture = sky_box->get_texture();
+					if (t_texture) t_texture->bind(0);
+					draw_skybox(stack_shaders->top());
+				} stack_shaders->pop();
+			}
+
 
 		}
 
