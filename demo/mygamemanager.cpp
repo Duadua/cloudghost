@@ -121,10 +121,8 @@ void MyGameManager::begin_play() {
 		auto d_light = CREATE_CLASS(DirectLightObject);
 		d_light->get_light_component()->set_intensity(1.0f);
 
-		for (auto shader : AssetManager_ins().map_shaders) {
-			auto t_shader = shader.second;
-			d_light->use(t_shader);
-		}
+		add_direct_light("d_light", d_light);
+		
 	}
 
 	// use point light

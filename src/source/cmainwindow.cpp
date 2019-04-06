@@ -29,6 +29,39 @@ void CMainWindow::init_ui() {
 	{
 		connect(ui.action_exit, SIGNAL(triggered()), this, SLOT(close()));
 	}
+
+	// init view menu
+	{
+		// polygon_mode 
+		{
+			auto ag = new QActionGroup(this);
+			ag->addAction(ui.action_pm_fill);
+			ag->addAction(ui.action_pm_line);
+			ag->addAction(ui.action_pm_point);
+			connect(ag, SIGNAL(triggered(QAction*)), this, SLOT(trigger_polygon_mode(QAction*)));
+		}
+
+		// red_blue_3d
+		{
+			connect(ui.action_rb_3d, SIGNAL(triggered()), this, SLOT(trigger_rb_3d()));
+
+			// 生成菜单栏 spinbox
+			ui_eye_delta = new CSpinWidget(this);
+			ui_eye_delta->set_range(0.0f, 1.0f, 2);
+			connect(ui_eye_delta, SIGNAL(value_changed(float)), this, SLOT(trigger_eye_delta(float)));
+
+			QWidgetAction *ui_action_eye_delta = new QWidgetAction(this);
+			ui_action_eye_delta->setDefaultWidget(ui_eye_delta);
+			ui.menu_eye_delta->addAction(ui_action_eye_delta);
+			connect(ui.menu_eye_delta, SIGNAL(aboutToShow()), this, SLOT(trigger_eye_delta_init()));
+		}
+		
+		// depth view
+		{
+			connect(ui.action_view_depth, SIGNAL(triggered()), this, SLOT(trigger_view_depth()));
+		}
+	}
+
 	// init shading menu
 	{
 		// bg_color
@@ -92,29 +125,7 @@ void CMainWindow::init_ui() {
 			connect(ui.action_explode, SIGNAL(triggered()), this, SLOT(trigger_explode()));
 		}
 
-		// red_blue_3d
-		{
-			connect(ui.action_rb_3d, SIGNAL(triggered()), this, SLOT(trigger_rb_3d()));
-
-			// 生成菜单栏 spinbox
-			ui_eye_delta = new CSpinWidget(this);
-			ui_eye_delta->set_range(0.0f, 1.0f, 2);
-			connect(ui_eye_delta, SIGNAL(value_changed(float)), this, SLOT(trigger_eye_delta(float)));
-
-			QWidgetAction *ui_action_eye_delta = new QWidgetAction(this);
-			ui_action_eye_delta->setDefaultWidget(ui_eye_delta);
-			ui.menu_eye_delta->addAction(ui_action_eye_delta);
-			connect(ui.menu_eye_delta, SIGNAL(aboutToShow()), this, SLOT(trigger_eye_delta_init()));
-		}
-
-		// polygon_mode 
-		{
-			auto ag = new QActionGroup(this);
-			ag->addAction(ui.action_pm_fill);
-			ag->addAction(ui.action_pm_line);
-			ag->addAction(ui.action_pm_point);
-			connect(ag, SIGNAL(triggered(QAction*)), this, SLOT(trigger_polygon_mode(QAction*)));
-		}
+		
 
 		// post process
 		{
@@ -241,6 +252,31 @@ void CMainWindow::resizeEvent(QResizeEvent *event) {
 
 // =====================================================================================
 
+void CMainWindow::trigger_rb_3d() { 
+	GameManager_ins().set_b_use_vr(!GameManager_ins().get_b_use_vr()); 
+	if (GameManager_ins().get_b_use_vr()) { ui.menu_eye_delta->setEnabled(true); }
+	else { ui.menu_eye_delta->setEnabled(false); }
+}
+void CMainWindow::trigger_eye_delta_init() { ui_eye_delta->set_value(GameManager_ins().get_vr_delta()); }
+void CMainWindow::trigger_eye_delta(float v) { GameManager_ins().set_vr_delta(v); }
+
+void CMainWindow::trigger_polygon_mode(QAction* act) {
+	if (act->objectName().compare("action_pm_fill") == 0) {
+		GameManager_ins().set_front_polygon_mode(GL_FILL);
+		GameManager_ins().set_back_polygon_mode(GL_FILL);
+	}
+	else if (act->objectName().compare("action_pm_line") == 0) {
+		GameManager_ins().set_front_polygon_mode(GL_LINE);
+		GameManager_ins().set_back_polygon_mode(GL_LINE);
+	}
+	else if (act->objectName().compare("action_pm_point") == 0) {
+		GameManager_ins().set_front_polygon_mode(GL_POINT);
+		GameManager_ins().set_back_polygon_mode(GL_POINT);
+	}
+}
+
+void CMainWindow::trigger_view_depth() { GameManager_ins().set_b_depth(!GameManager_ins().get_b_depth()); }
+
 void CMainWindow::trigger_bg_color_init() {
 	QColor c = QColor(
 		GameManager_ins().get_background_color().r(),
@@ -314,30 +350,6 @@ void CMainWindow::trigger_skybox(QAction* act) {
 
 void CMainWindow::trigger_normal_visual() { GameManager_ins().set_b_normal_visual(!GameManager_ins().get_b_normal_visual()); }
 void CMainWindow::trigger_explode() { GameManager_ins().set_b_explode(!GameManager_ins().get_b_explode()); }
-
-void CMainWindow::trigger_rb_3d() { 
-	GameManager_ins().set_b_use_vr(!GameManager_ins().get_b_use_vr()); 
-	if (GameManager_ins().get_b_use_vr()) { ui.menu_eye_delta->setEnabled(true); }
-	else { ui.menu_eye_delta->setEnabled(false); }
-}
-void CMainWindow::trigger_eye_delta_init() { ui_eye_delta->set_value(GameManager_ins().get_vr_delta()); }
-void CMainWindow::trigger_eye_delta(float v) { GameManager_ins().set_vr_delta(v); }
-
-void CMainWindow::trigger_polygon_mode(QAction* act) {
-	if (act->objectName().compare("action_pm_fill") == 0) {
-		GameManager_ins().set_front_polygon_mode(GL_FILL);
-		GameManager_ins().set_back_polygon_mode(GL_FILL);
-	}
-	else if (act->objectName().compare("action_pm_line") == 0) {
-		GameManager_ins().set_front_polygon_mode(GL_LINE);
-		GameManager_ins().set_back_polygon_mode(GL_LINE);
-	}
-	else if (act->objectName().compare("action_pm_point") == 0) {
-		GameManager_ins().set_front_polygon_mode(GL_POINT);
-		GameManager_ins().set_back_polygon_mode(GL_POINT);
-	}
-}
-
 void CMainWindow::trigger_select_pp(QAction* act) {
 	if (act->objectName().compare("action_pp_normal") == 0) {
 		GameManager_ins().set_pp_type(PostProcessType::NOPE);

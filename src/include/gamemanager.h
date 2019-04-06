@@ -16,6 +16,8 @@ PRE_DECLARE_CLASS(GameObject)
 USING_SPTR(GameObject)
 PRE_DECLARE_CLASS(CameraObject)
 USING_SPTR(CameraObject)
+PRE_DECLARE_CLASS(DirectLightObject)
+USING_SPTR(DirectLightObject)
 PRE_DECLARE_CLASS(SkyBox)
 USING_SPTR(SkyBox)
 PRE_DECLARE_CLASS(Texture2D)
@@ -24,6 +26,7 @@ PRE_DECLARE_CLASS(Texture3D)
 USING_SPTR(Texture3D)
 PRE_DECLARE_CLASS(UniformBuffer)
 USING_SPTR(UniformBuffer)
+
 
 #define GL_LESS					0x0201
 #define GL_TRUE					1
@@ -98,6 +101,8 @@ public:
 	static GameManager* get_instance();
 
 	void add_game_object(const std::string& key, SPTR_GameObject value);
+	void add_direct_light(const std::string& key, SPTR_DirectLightObject value);
+
 
 public:									// used for qt ui
 	SPTR_Texture3D get_skybox();
@@ -120,6 +125,7 @@ public:									// used for qt ui
 	GET_SET(HDR_Type, hdr_type)
 	GET_SET(float, hdr_exposure)
 	GET_SET(bool, b_skybox)
+	GET_SET(bool, b_depth)
 
 protected:
 	static GameManager* instance;
@@ -134,6 +140,8 @@ protected:
 	SPTR_UniformBuffer ub_matrices;
 	
 	SPTR_SkyBox sky_box;
+
+	std::map<std::string, SPTR_DirectLightObject> map_direct_lights;
 
 	// ui shading setting
 	CColor background_color;
@@ -165,6 +173,8 @@ protected:
 
 	bool b_skybox;					// 是否渲染天空盒
 
+	bool b_depth;					// 是否渲染当前相机视图下的深度图
+
 	// gl state
 	void set_depth_test(bool enable = true, uint depth_func = GL_LESS, uint depth_mask = GL_TRUE);
 	void set_stencil_test(bool enable = false, uint func = GL_EQUAL, uint ref = 1, uint mask = 0xff, uint fail = GL_KEEP, uint zfail = GL_KEEP, uint zpass = GL_KEEP);
@@ -184,6 +194,8 @@ private:
 	
 	// render pipe
 	SPTR_RenderTarget scene_rt;
+	SPTR_RenderTarget depth_rt;
+	SPTR_RenderTarget msaa_depth_rt;
 	SPTR_RenderTarget pp_rt;
 	SPTR_RenderTarget gamma_rt;
 	SPTR_RenderTarget pick_rt;
@@ -200,22 +212,27 @@ private:
 	
 	SPTR_RenderTarget vr_rt;
 	SPTR_RenderTarget vr_rt_mix;
-	SPTR_RenderTarget msaa_vr_rt;						// 3d 模式下的 msaa 
+	SPTR_RenderTarget msaa_vr_rt;							// 3d 模式下的 msaa 
 	SPTR_RenderTarget hdr_vr_rt;
 	SPTR_RenderTarget hdr_vr_rt_mix;
 	SPTR_RenderTarget hdr_msaa_vr_rt;						
 
-	SPTR_Texture2D scene_texture;
+	std::vector<SPTR_RenderTarget> direct_light_shadow_rts;	// 阴影专用
 
-	void scene_pass();
-	void pick_pass();					// 拾取阶段
+	SPTR_Texture2D scene_texture;
+	SPTR_Texture2D depth_texture;							// 当前相机视图下的深度图
+
+	void scene_pass(SPTR_Texture2D tex);					// 根据传入的贴图绘制屏幕四边形
+	void depth_pass();										// 获得当前相机视图下的深度图
+	void pick_pass();										// 拾取阶段
 	void base_pass();
-	void normal_visual_pass();			// 法线可视化
+	void normal_visual_pass();								// 法线可视化
 	void post_process_pass();
-	void gamma_pass();					// gamma 校正
+	void gamma_pass();										// gamma 校正
 	void vr_pass();
-	void hdr_pass();					// hdr
+	void hdr_pass();										// hdr
 	void shader_toy_pass();
+	void shadow_pass();
 
 	void init_rt();
 	void init_pick_rt();
@@ -223,6 +240,7 @@ private:
 	void init_shader_toy_rt();
 	void init_msaa_rt();
 	void init_hdr_rt();
+	void init_shadow_rt();
 
 	void draw_scene(SPTR_Shader shader);
 	void draw_all_objs(SPTR_Shader shader);

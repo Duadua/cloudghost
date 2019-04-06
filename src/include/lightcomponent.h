@@ -6,6 +6,11 @@
 PRE_DECLARE_CLASS(Shader)
 USING_SPTR(Shader)
 
+const int direct_light_num_max = 1;
+const int point_light_num_max = 16;
+const int spot_light_num_max = 16;
+const int sky_light_num_max = 1;
+
 // base light
 class LightComponent : public SceneComponent {
 	DECLARE_CLASS(LightComponent)

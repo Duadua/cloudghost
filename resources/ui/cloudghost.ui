@@ -203,6 +203,8 @@ QMenu::item:pressed {
     <addaction name="separator"/>
     <addaction name="action_rb_3d"/>
     <addaction name="menu_eye_delta"/>
+    <addaction name="separator"/>
+    <addaction name="action_view_depth"/>
    </widget>
    <addaction name="menu_start"/>
    <addaction name="menu_view"/>
@@ -468,6 +470,17 @@ QMenu::item:pressed {
    </property>
    <property name="text">
     <string>无</string>
+   </property>
+  </action>
+  <action name="action_view_depth">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>深度图</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+4</string>
    </property>
   </action>
  </widget>

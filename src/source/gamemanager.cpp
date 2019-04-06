@@ -9,8 +9,10 @@
 #include "gameobject.h"
 #include "freecamera.h"
 #include "cameradata.h"
+#include "lightobject.h"
 #include "rendertarget.h"
 #include "uniformbuffer.h"
+#include "lightcomponent.h"
 #include "cameracomponent.h"
 
 #include "timemanager.h"
@@ -59,6 +61,8 @@ void GameManager::_init() {
 		hdr_exposure = 1.0f;
 
 		b_skybox = true;
+
+		b_depth = false;
 	}
 }
 
@@ -99,6 +103,7 @@ void GameManager::init() {
 		AssetManager_ins().load_shader("msaa", "resources/shaders/scene_2d.vert", "resources/shaders/msaa.frag");
 		AssetManager_ins().load_shader("hdr", "resources/shaders/scene_2d.vert", "resources/shaders/hdr.frag");
 		AssetManager_ins().load_shader("skybox", "resources/shaders/skybox.vert", "resources/shaders/skybox.frag");
+		AssetManager_ins().load_shader("shadow", "resources/shaders/shadow.vert", "resources/shaders/shadow.frag");
 
 		AssetManager_ins().load_shader("shader_toy_img", "resources/shaders/scene_2d.vert", "resources/shaders/shadertoy_img.frag");
 		AssetManager_ins().load_shader("shader_toy_buffer_a", "resources/shaders/scene_2d.vert", "resources/shaders/shadertoy_buffer_a.frag");
@@ -194,13 +199,25 @@ void GameManager::init() {
 	{
 		init_rt();
 	}
-	
+
 	// begin play
 	{
 		begin_play();						// 设置模型等
 		main_begin_play();					 
 	}
 	
+	// init lights
+	{
+		for (auto t_p : map_direct_lights) {
+			auto t_dlight = t_p.second;
+			if (t_dlight) {
+				for (auto shader : AssetManager_ins().map_shaders) {
+					auto t_shader = shader.second;
+					t_dlight->use(t_shader);
+				}
+			}
+		}
+	}
 
 }
 void GameManager::draw() {
@@ -216,56 +233,124 @@ void GameManager::draw() {
 
 	// fill shader uniform block
 	{
+		ub_matrices->fill_data(CMatrix4x4::data_size(), CMatrix4x4::data_size(), main_camera->get_camera_component()->get_proj_mat().data());
 		ub_matrices->fill_data(0, CMatrix4x4::data_size(), main_camera->get_camera_component()->get_view_mat().data());
 	}
 	
 	// draw
 	{
-		// pass 0
-		scene_pass();			// 渲染到默认缓冲 -- 必须第一个执行
-	
+		auto t_final_tex = scene_texture;
+		if (b_depth) t_final_tex = depth_texture;
+
+		// pass 0 -- 渲染到默认缓冲 -- 必须第一个执行
+		scene_pass(t_final_tex); 						// 显示正常渲染图 
+		
 		if(!b_use_shader_toy) {
-			// pass 1
-			pick_pass();			// 得到拾取贴图 -- 用来判断哪个物体被拾取
-			// pass 2
-			if (b_use_vr) { vr_pass(); }
-			else { base_pass(); }
+			if (!b_use_vr) {
 
-			// pass 3
-			if (pp_type != PostProcessType::NOPE) { post_process_pass(); }
+				if (b_depth) { depth_pass(); }	// 生成当前相机视图下的深度图 -- 得到 depth_texture
 
-			// pass 4
-			if (b_hdr) hdr_pass();
+				// pass 1
+				shadow_pass();				// 生成(各个光源的)阴影贴图  -- 得到 shadow_texture
 
-			// pass 5
-			if (b_gamma) gamma_pass();
+				// pass 2
+				pick_pass();				// 得到拾取贴图 -- 用来判断哪个物体被拾取 -- 得到拾取物体的 id
 
+				// pass 3
+				base_pass();				// 得到 scene_texture
+
+				// pass 4
+				if (pp_type != PostProcessType::NOPE) { post_process_pass(); } // 后处理 -- 输入 scene_texture 得到 scene_texture
+
+				// pass 5
+				if (b_hdr) hdr_pass();		// hdr -- 输入 scene_texture 得到 scene_texture
+
+				// pass 6
+				if (b_gamma) gamma_pass();	// gamma 校正 -- 输入 scene_texture 得到 scene_texture
+			}
+			else {
+				pick_pass();
+				vr_pass();					// 得到 scene_texture
+				if (pp_type != PostProcessType::NOPE) { post_process_pass(); }
+				if (b_hdr) hdr_pass();
+				if (b_gamma) gamma_pass();
+			}
 		}
 		else {
-			shader_toy_pass();		// render_shader_toy
+			shader_toy_pass();		// render_shader_toy -- 也是得到 scene_texture
 
 			if (pp_type != PostProcessType::NOPE) { post_process_pass(); }
 
-			if (b_gamma) gamma_pass();
+			// if (b_gamma) gamma_pass();
 		}
 	}
 }
 
 // render pass
-void GameManager::scene_pass() {
+void GameManager::scene_pass(SPTR_Texture2D tex) {
 
 	draw_init();
 
 	stack_shaders->push(AssetManager_ins().get_shader("scene2d")); {
 		if (stack_shaders->top()) {
 			stack_shaders->use();
-			if (scene_texture) { scene_texture->bind(0); }
+			if (tex) { tex->bind(0); }
+			/*if (direct_light_shadow_rts.size() > 0) {
+				if (direct_light_shadow_rts[0]->get_attach_textures().size() > 0) {
+					auto t_tex = direct_light_shadow_rts[0]->get_attach_textures()[0].texture;
+					if (t_tex) { t_tex->bind(0); }
+				}
+			}*/
 			stack_shaders->top()->set_int("u_texture", 0);
 		}
 
 		draw_scene(stack_shaders->top());
 
 	} stack_shaders->pop();
+
+}
+void GameManager::depth_pass() {
+	auto t_depth_rt = depth_rt;
+	if (b_msaa) { t_depth_rt = msaa_depth_rt; }
+
+	t_depth_rt->use(); {
+		draw_init();
+		stack_shaders->push(AssetManager_ins().get_shader("depth")); {
+			if (stack_shaders->top()) {
+				stack_shaders->top()->use();
+				stack_shaders->top()->set_float("u_near", main_camera->get_camera_component()->get_camera_data()->get_frustum().near);
+				stack_shaders->top()->set_float("u_far", main_camera->get_camera_component()->get_camera_data()->get_frustum().far);
+				// stack_shaders->top()->set_float("u_far", main_camera->get_camera_component()->get_camera_data()->get_frustum().far);
+			}
+			draw_all_objs(stack_shaders->top());
+		} stack_shaders->pop();
+	} t_depth_rt->un_use();
+
+	if (b_msaa) {
+		if (!b_msaa_custom) { blit(t_depth_rt, depth_rt, viewport_info.width, viewport_info.heigh); } // opengl 自带抗锯齿
+		else {
+			depth_rt->use(); {
+				draw_init();
+				stack_shaders->push(AssetManager_ins().get_shader("msaa")); {
+					if (stack_shaders->top() && t_depth_rt->get_attach_textures().size() > 0) {
+						auto t_texture = t_depth_rt->get_attach_textures()[0].texture;
+						if (t_texture) { t_texture->bind(0); }
+						stack_shaders->top()->use();
+						stack_shaders->top()->set_int("u_texture_msaa", 0);
+						stack_shaders->top()->set_int("u_msaa_num", t_depth_rt->get_msaa_num());
+					}
+					draw_scene(stack_shaders->top());
+				} stack_shaders->pop();
+			} depth_rt->un_use();
+
+		} // 自定义抗锯齿
+
+	}
+
+	if (depth_rt->get_attach_textures().size() > 0) {
+		depth_texture = depth_rt->get_attach_textures()[0].texture;
+	}
+
 
 }
 void GameManager::pick_pass() {
@@ -375,7 +460,7 @@ void GameManager::base_pass() {
 						if (t_texture) { t_texture->bind(0); }
 						stack_shaders->top()->use();
 						stack_shaders->top()->set_int("u_texture_msaa", 0);
-						stack_shaders->top()->set_int("u_msaa_num", 4);
+						stack_shaders->top()->set_int("u_msaa_num", t_msaa_rt->get_msaa_num());
 					}
 					draw_scene(stack_shaders->top());
 				} stack_shaders->pop();
@@ -436,6 +521,7 @@ void GameManager::post_process_pass() {
 			if (stack_shaders->top()) {
 				stack_shaders->top()->use();
 				if (scene_texture) { scene_texture->bind(0); }
+				if (b_depth) { if (depth_texture) { depth_texture->bind(0); } } 
 				stack_shaders->top()->set_int("u_texture", 0);
 				stack_shaders->top()->set_int("u_pp_type", static_cast<int>(pp_type));
 			}
@@ -449,6 +535,7 @@ void GameManager::post_process_pass() {
 	// update scene texture
 	if (t_pp_rt->get_attach_textures().size() > 0) {
 		scene_texture = t_pp_rt->get_attach_textures()[0].texture;
+		if (b_depth) { depth_texture = t_pp_rt->get_attach_textures()[0].texture; }
 	}
 }
 void GameManager::hdr_pass() {
@@ -621,7 +708,7 @@ void GameManager::vr_pass() {
 							if (t_texture) { t_texture->bind(0); }
 							stack_shaders->top()->use();
 							stack_shaders->top()->set_int("u_texture_msaa", 0);
-							stack_shaders->top()->set_int("u_msaa_num", 4);
+							stack_shaders->top()->set_int("u_msaa_num", t_msaa_vr_rt->get_msaa_num());
 						}
 						draw_scene(stack_shaders->top());
 					} stack_shaders->pop();
@@ -636,7 +723,7 @@ void GameManager::vr_pass() {
 							if (t_texture) { t_texture->bind(0); }
 							stack_shaders->top()->use();
 							stack_shaders->top()->set_int("u_texture_msaa", 0);
-							stack_shaders->top()->set_int("u_msaa_num", 4);
+							stack_shaders->top()->set_int("u_msaa_num", t_msaa_vr_rt->get_msaa_num());
 						}
 						draw_scene(stack_shaders->top());
 					} stack_shaders->pop();
@@ -712,6 +799,32 @@ void GameManager::shader_toy_pass() {
 	}
 
 }
+void GameManager::shadow_pass() {
+	// direction lights's shadow map
+	int i = 0;
+	for (auto t_p : map_direct_lights) {
+		auto t_dlight = t_p.second;
+		if (t_dlight) {
+			glViewport(0, 0, 1024, 1024); {
+				direct_light_shadow_rts[i]->use(); {
+					glDrawBuffer(GL_NONE);
+					glReadBuffer(GL_NONE);
+					draw_init();
+					stack_shaders->push(AssetManager_ins().get_shader("shadow")); {
+						if (stack_shaders->top()) {
+							stack_shaders->top()->use();
+							// 设置为此光源的 view and proj 矩阵
+							auto t_pv = main_camera->get_camera_component()->get_proj_mat() * main_camera->get_camera_component()->get_view_mat();
+							stack_shaders->top()->set_mat4("u_light_proj_view", t_pv);
+						}
+						draw_all_objs(stack_shaders->top());
+					} stack_shaders->pop();
+				} direct_light_shadow_rts[i]->un_use();
+			} glViewport(0, 0, viewport_info.width, viewport_info.heigh);
+			++i;
+		} // 每一人光源生成一个 shadow map
+	}
+}
 
 void GameManager::draw_scene(SPTR_Shader shader) {
 	glDisable(GL_DEPTH_TEST);
@@ -775,6 +888,21 @@ void GameManager::init_rt() {
 		}
 	}
 
+	if (depth_rt) depth_rt.reset();
+	depth_rt = CREATE_CLASS(RenderTarget);
+	if (depth_rt) {
+		if (!depth_rt->init_normal(viewport_info.width, viewport_info.heigh)) {
+			c_debuger() << "create rt fail";
+		}
+	}
+	if (msaa_depth_rt) msaa_depth_rt.reset();
+	msaa_depth_rt = CREATE_CLASS(RenderTarget);
+	if (msaa_depth_rt) {
+		if (!msaa_depth_rt->init_normal_multisample(viewport_info.width, viewport_info.heigh)) {
+			c_debuger() << "create rt fail";
+		}
+	}
+
 	if (pp_rt) pp_rt.reset();
 	pp_rt = CREATE_CLASS(RenderTarget);
 	if (pp_rt) {
@@ -796,6 +924,7 @@ void GameManager::init_rt() {
 	init_shader_toy_rt();
 	init_msaa_rt();
 	init_hdr_rt();
+	init_shadow_rt();
 }
 void GameManager::init_pick_rt() {
 	if(pick_rt) pick_rt.reset();
@@ -902,6 +1031,18 @@ void GameManager::init_hdr_rt() {
 	if (hdr_msaa_rt) { hdr_msaa_rt->init_normal_multisample_f(viewport_info.width, viewport_info.heigh); }
 
 }
+void GameManager::init_shadow_rt() {
+	direct_light_shadow_rts.resize(direct_light_num_max);
+	for (auto& shadow_rt : direct_light_shadow_rts) {
+		if (shadow_rt) shadow_rt.reset();
+		shadow_rt = CREATE_CLASS(RenderTarget);
+		if (shadow_rt) {
+			shadow_rt->add_attach_texture(GL_DEPTH_ATTACHMENT, 1024, 1024,
+				GL_TEXTURE_2D, GL_DEPTH_COMPONENT, GL_DEPTH_COMPONENT, GL_FLOAT)
+				->init();
+		}
+	}
+}
 
 // ===========================================================================
 
@@ -996,6 +1137,11 @@ GameManager* GameManager::get_instance() {
 void GameManager::add_game_object(const std::string& key, SPTR_GameObject value) {
 	if (game_objects.count(key)) return;
 	game_objects.insert(std::make_pair(key, value));
+}
+void GameManager::add_direct_light(const std::string& key, SPTR_DirectLightObject value) {
+	if (map_direct_lights.count(key)) return;
+	if (map_direct_lights.size() >= direct_light_num_max) return;
+	map_direct_lights.insert(std::make_pair(key, value));
 }
 
 void GameManager::main_bind_input() {
