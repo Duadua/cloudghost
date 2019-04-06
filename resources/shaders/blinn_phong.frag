@@ -105,8 +105,8 @@ vec3 t_view_dir;
 vec3 t_normal;
 material_helper t_material_helper;
 
-void pre_cac() {
-    t_view_dir = normalize(u_view_pos - i_fs.world_pos);
+void pre_cac(vec3 view_pos) {
+    t_view_dir = normalize(view_pos - i_fs.world_pos);
     t_normal = normalize(i_fs.normal);
 
     // init material_helper by uniform material
@@ -205,7 +205,7 @@ vec3 cac_sky_light() {
 
 void main(void) {
 
-    pre_cac();
+    pre_cac(u_view_pos);
 
     //vec3 t_color = u_light_color * blinn_phong(t_normal, t_light_dir, t_view_dir, t_material_helper);
     // t_color = vec3(1.0, 0.0, 0.0);

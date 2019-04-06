@@ -24,6 +24,8 @@ public:
 	GET_SET(SPTR_CameraData, camera_data)
 
 	CVector3D get_right_axis();
+	CVector3D get_front_axis();
+	CVector3D get_world_up();
 
 private:
 

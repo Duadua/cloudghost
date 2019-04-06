@@ -247,7 +247,7 @@ void GameManager::draw() {
 		scene_pass(t_final_tex); 						// 显示正常渲染图 
 		
 		if(!b_use_shader_toy) {
-			if (!b_use_vr || b_depth) {			// 深度图不显示在 vr 模式中
+			if (!b_use_vr) {			// 深度图不显示在 vr 模式中
 
 				if (b_depth) { depth_pass(); }	// 生成当前相机视图下的深度图 -- 得到 depth_texture
 
@@ -273,8 +273,10 @@ void GameManager::draw() {
 				if (b_gamma) gamma_pass();	// gamma 校正 -- 输入 scene_texture 得到 scene_texture
 			}
 			else {
+				//if (b_depth) { vr_depth_pass(); }	// 得到 depth_texture
 				pick_pass();
-				vr_pass();					// 得到 scene_texture
+				vr_base_pass();						// 得到 scene_texture
+				//vr_border_pass();					// 得到 border_texture -- 然后输入 scene_texture -- 得到scene_texture
 				if (pp_type != PostProcessType::NOPE) { post_process_pass(); }
 				if (b_hdr) hdr_pass();
 				if (b_gamma) gamma_pass();
@@ -355,6 +357,32 @@ void GameManager::depth_pass() {
 	}
 
 
+}
+void GameManager::shadow_pass() {
+	// direction lights's shadow map
+	int i = 0;
+	for (auto t_p : map_direct_lights) {
+		auto t_dlight = t_p.second;
+		if (t_dlight) {
+			glViewport(0, 0, 1024, 1024); {
+				direct_light_shadow_rts[i]->use(); {
+					glDrawBuffer(GL_NONE);
+					glReadBuffer(GL_NONE);
+					draw_init();
+					stack_shaders->push(AssetManager_ins().get_shader("shadow")); {
+						if (stack_shaders->top()) {
+							stack_shaders->top()->use();
+							// 设置为此光源的 view and proj 矩阵
+							auto t_pv = main_camera->get_camera_component()->get_proj_mat() * main_camera->get_camera_component()->get_view_mat();
+							stack_shaders->top()->set_mat4("u_light_proj_view", t_pv);
+						}
+						draw_all_objs(stack_shaders->top());
+					} stack_shaders->pop();
+				} direct_light_shadow_rts[i]->un_use();
+			} glViewport(0, 0, viewport_info.width, viewport_info.heigh);
+			++i;
+		} // 每一人光源生成一个 shadow map
+	}
 }
 void GameManager::pick_pass() {
 
@@ -517,41 +545,6 @@ void GameManager::border_pass() {
 	}
 	
 }
-void GameManager::normal_visual_pass() {
-	stack_shaders->push(AssetManager_ins().get_shader("normal_visual")); {
-		if (stack_shaders->top()) {
-			stack_shaders->top()->use();
-			stack_shaders->top()->set_vec4("u_solid_color", CVector4D(0.0f, 1.0f, 1.0f, 1.0f));
-		}
-		draw_all_objs(stack_shaders->top());
-	} stack_shaders->pop();
-
-}
-void GameManager::gamma_pass() {
-
-	gamma_rt->use(); {
-		draw_init();
-
-		stack_shaders->push(AssetManager_ins().get_shader("gamma")); {
-			if (stack_shaders->top()) {
-				stack_shaders->top()->use();
-				if (scene_texture) { scene_texture->bind(0); }
-				stack_shaders->top()->set_int("u_texture", 0);
-				stack_shaders->top()->set_float("u_gamma", v_gamma);
-			}
-
-			draw_scene(stack_shaders->top());
-
-		} stack_shaders->pop();
-
-	} gamma_rt->un_use();
-
-	// update scene texture
-	if (gamma_rt->get_attach_textures().size() > 0) {
-		scene_texture = gamma_rt->get_attach_textures()[0].texture;
-	}
-
-}
 void GameManager::post_process_pass() {
 	auto t_pp_rt = pp_rt;
 	if (b_hdr) { t_pp_rt = hdr_pp_rt; }
@@ -605,201 +598,41 @@ void GameManager::hdr_pass() {
 		scene_texture = hdr_rt->get_attach_textures()[0].texture;
 	}
 }
-void GameManager::vr_pass() {
-	auto t_vr_rt = vr_rt;
-	auto t_msaa_vr_rt = msaa_vr_rt;
-	auto t_vr_rt_mix = vr_rt_mix;
-	if (b_hdr) { t_vr_rt = hdr_vr_rt; t_msaa_vr_rt = hdr_msaa_vr_rt; t_vr_rt_mix = hdr_vr_rt_mix; }
+void GameManager::gamma_pass() {
 
-	// get left and right pic pass
-	if (b_msaa) { t_msaa_vr_rt->use(); } else { t_vr_rt->use(); } {
-
-		// left eyes scene
-		{
-			glDrawBuffer(GL_COLOR_ATTACHMENT0);
-			draw_init();
-
-			auto t_old_location = main_camera->get_root_component()->get_location();
-			auto t_new_location = t_old_location + main_camera->get_camera_component()->get_right_axis() * vr_delta;
-			main_camera->get_root_component()->set_location(t_new_location);
-
-			ub_matrices->fill_data(0, CMatrix4x4::data_size(), main_camera->get_camera_component()->get_view_mat().data());
-
-			// draw all objects
-			if (stack_shaders->top()) {
-				stack_shaders->top()->use();
-				stack_shaders->top()->set_vec3("u_view_pos", main_camera->get_root_component()->get_location());
-			}
-			// glStencilMask(0xff);							// 允许写入模板缓冲
-			draw_all_objs(stack_shaders->top());
-
-			// draw border
-			/*stack_shaders->push(AssetManager_ins().get_shader("solid_color")); {
-				if (stack_shaders->top()) {
-					stack_shaders->top()->use();
-					stack_shaders->top()->set_vec3("u_view_pos", main_camera->get_root_component()->get_location());
-				}
-				glStencilFunc(GL_NOTEQUAL, 1, 0xff);			// 之前置 1 了的 不通过
-				glStencilMask(0x00);							// 不允许写入模板缓冲
-																	//glDisable(GL_DEPTH_TEST);
-				draw_border(stack_shaders->top());
-				//glEnable(GL_DEPTH_TEST);
-				glStencilMask(0xff);							// 重新允许写入模板缓冲
-
-			} stack_shaders->pop();
-			*/
-
-			// normal visual
-			if (b_normal_visual) { normal_visual_pass(); }
-
-			main_camera->get_root_component()->set_location(t_old_location);
-
-			// draw sky box -- if have -- 最后画
-			if (b_skybox && sky_box) {
-				stack_shaders->push(AssetManager_ins().get_shader("skybox")); {
-					if (stack_shaders->top()) {
-						stack_shaders->top()->use();
-						// 要移除矩阵的移动部分
-						auto t_view = CMatrix4x4(CMatrix3x3(main_camera->get_camera_component()->get_view_mat().data(), 4, 4).data(), 3, 3);
-						t_view.translate(main_camera->get_camera_component()->get_right_axis() * -vr_delta);
-						stack_shaders->top()->set_mat4("u_view_sky_box", t_view);
-						stack_shaders->top()->set_int("u_texture", 0);
-					}
-					auto t_texture = sky_box->get_texture();
-					if (t_texture) t_texture->bind(0);
-					draw_skybox(stack_shaders->top());
-				} stack_shaders->pop();
-			}
-
-		}
-
-		// right eyes scene
-		{
-			glDrawBuffer(GL_COLOR_ATTACHMENT1);
-			draw_init();
-
-			auto t_old_location = main_camera->get_root_component()->get_location();
-			auto t_new_location = t_old_location + main_camera->get_camera_component()->get_right_axis() * -vr_delta;
-			main_camera->get_root_component()->set_location(t_new_location);
-
-			ub_matrices->fill_data(0, CMatrix4x4::data_size(), main_camera->get_camera_component()->get_view_mat().data());
-
-			// draw all objects
-			if (stack_shaders->top()) {
-				stack_shaders->top()->use();
-				stack_shaders->top()->set_vec3("u_view_pos", main_camera->get_root_component()->get_location());
-			}
-			//glStencilMask(0xff);							// 允许写入模板缓冲
-			draw_all_objs(stack_shaders->top());
-
-			// draw border
-			/*stack_shaders->push(AssetManager_ins().get_shader("solid_color")); {
-				if (stack_shaders->top()) {
-					stack_shaders->top()->use();
-					stack_shaders->top()->set_vec3("u_view_pos", main_camera->get_root_component()->get_location());
-				}
-				glStencilFunc(GL_NOTEQUAL, 1, 0xff);			// 之前置 1 了的 不通过
-				glStencilMask(0x00);							// 不允许写入模板缓冲
-																	//glDisable(GL_DEPTH_TEST);
-				draw_border(stack_shaders->top());
-				//glEnable(GL_DEPTH_TEST);
-				glStencilMask(0xff);							// 重新允许写入模板缓冲
-
-			} stack_shaders->pop();
-			*/
-
-			// normal visual
-			if (b_normal_visual) { normal_visual_pass(); }
-
-			main_camera->get_root_component()->set_location(t_old_location);
-
-			// draw sky box -- if have -- 最后画
-			if (b_skybox && sky_box) {
-				stack_shaders->push(AssetManager_ins().get_shader("skybox")); {
-					if (stack_shaders->top()) {
-						stack_shaders->top()->use();
-						// 要移除矩阵的移动部分
-						auto t_view = CMatrix4x4(CMatrix3x3(main_camera->get_camera_component()->get_view_mat().data(), 4, 4).data(), 3, 3);
-						t_view.translate(main_camera->get_camera_component()->get_right_axis() * vr_delta);
-						stack_shaders->top()->set_mat4("u_view_sky_box", t_view);
-						stack_shaders->top()->set_int("u_texture", 0);
-					}
-					auto t_texture = sky_box->get_texture();
-					if (t_texture) t_texture->bind(0);
-					draw_skybox(stack_shaders->top());
-				} stack_shaders->pop();
-			}
-
-
-		}
-
-	} if (b_msaa) { t_msaa_vr_rt->un_use(); } else { t_vr_rt->un_use(); }
-
-	if(b_msaa) {
-		if (!b_msaa_custom) {
-			blit(t_msaa_vr_rt, t_vr_rt, viewport_info.width, viewport_info.heigh);
-			blit(t_msaa_vr_rt, t_vr_rt, viewport_info.width, viewport_info.heigh, 1, 1);
-		} // opengl 自带抗锯齿
-		else {
-			t_vr_rt->use(); {
-				// left eye
-				{
-					glDrawBuffer(GL_COLOR_ATTACHMENT0);
-					draw_init();
-					stack_shaders->push(AssetManager_ins().get_shader("msaa")); {
-						if (stack_shaders->top() && t_msaa_vr_rt->get_attach_textures().size() > 0) {
-							auto t_texture = t_msaa_vr_rt->get_attach_textures()[0].texture;
-							if (t_texture) { t_texture->bind(0); }
-							stack_shaders->top()->use();
-							stack_shaders->top()->set_int("u_texture_msaa", 0);
-							stack_shaders->top()->set_int("u_msaa_num", t_msaa_vr_rt->get_msaa_num());
-						}
-						draw_scene(stack_shaders->top());
-					} stack_shaders->pop();
-				}
-				// right eye
-				{
-					glDrawBuffer(GL_COLOR_ATTACHMENT1);
-					draw_init();
-					stack_shaders->push(AssetManager_ins().get_shader("msaa")); {
-						if (stack_shaders->top() && t_msaa_vr_rt->get_attach_textures().size() > 1) {
-							auto t_texture = t_msaa_vr_rt->get_attach_textures()[1].texture;
-							if (t_texture) { t_texture->bind(0); }
-							stack_shaders->top()->use();
-							stack_shaders->top()->set_int("u_texture_msaa", 0);
-							stack_shaders->top()->set_int("u_msaa_num", t_msaa_vr_rt->get_msaa_num());
-						}
-						draw_scene(stack_shaders->top());
-					} stack_shaders->pop();
-				}
-			} t_vr_rt->un_use();
-
-		} // 自定义抗锯齿
-	}
-
-	// mix pass -- mix left and right pic
-	t_vr_rt_mix->use(); {
+	gamma_rt->use(); {
 		draw_init();
 
-		stack_shaders->push(AssetManager_ins().get_shader("vr_mix")); {
-			if (stack_shaders->top() && t_vr_rt->get_attach_textures().size() >= 2) {
-				auto t_left = t_vr_rt->get_attach_textures()[0].texture;
-				auto t_right = t_vr_rt->get_attach_textures()[1].texture;
-				if (t_left) { t_left->bind(0); }
-				if (t_right) { t_right->bind(1); }
+		stack_shaders->push(AssetManager_ins().get_shader("gamma")); {
+			if (stack_shaders->top()) {
 				stack_shaders->top()->use();
-				stack_shaders->top()->set_int("u_texture_left", 0);
-				stack_shaders->top()->set_int("u_texture_right", 1);
+				if (scene_texture) { scene_texture->bind(0); }
+				stack_shaders->top()->set_int("u_texture", 0);
+				stack_shaders->top()->set_float("u_gamma", v_gamma);
 			}
+
 			draw_scene(stack_shaders->top());
 
 		} stack_shaders->pop();
 
-	} t_vr_rt_mix->un_use();
+	} gamma_rt->un_use();
 
-	if (t_vr_rt_mix->get_attach_textures().size() > 0) {
-		scene_texture = t_vr_rt_mix->get_attach_textures()[0].texture;
+	// update scene texture
+	if (gamma_rt->get_attach_textures().size() > 0) {
+		scene_texture = gamma_rt->get_attach_textures()[0].texture;
 	}
+
+}
+
+void GameManager::normal_visual_pass() {
+	stack_shaders->push(AssetManager_ins().get_shader("normal_visual")); {
+		if (stack_shaders->top()) {
+			stack_shaders->top()->use();
+			stack_shaders->top()->set_vec4("u_solid_color", CVector4D(0.0f, 1.0f, 1.0f, 1.0f));
+		}
+		draw_all_objs(stack_shaders->top());
+	} stack_shaders->pop();
+
 }
 void GameManager::shader_toy_pass() {
 
@@ -843,30 +676,174 @@ void GameManager::shader_toy_pass() {
 	}
 
 }
-void GameManager::shadow_pass() {
-	// direction lights's shadow map
-	int i = 0;
-	for (auto t_p : map_direct_lights) {
-		auto t_dlight = t_p.second;
-		if (t_dlight) {
-			glViewport(0, 0, 1024, 1024); {
-				direct_light_shadow_rts[i]->use(); {
-					glDrawBuffer(GL_NONE);
-					glReadBuffer(GL_NONE);
+
+void GameManager::vr_base_pass() {
+	auto t_vr_rt = vr_rt;
+	auto t_vr_msaa_rt = vr_msaa_rt;
+	auto t_vr_mix_rt = vr_mix_rt;
+	if (b_hdr) { t_vr_rt = vr_hdr_rt; t_vr_msaa_rt = vr_hdr_msaa_rt; t_vr_mix_rt = vr_hdr_mix_rt; }
+
+	// get left and right pic pass
+	if (b_msaa) { t_vr_msaa_rt->use(); } else { t_vr_rt->use(); } {
+
+		// left eyes scene
+		{
+			glDrawBuffer(GL_COLOR_ATTACHMENT0);
+			draw_init();
+
+			// cac left view mat
+			CMatrix4x4 t_mat_view;
+			auto t_eye = main_camera->get_root_component()->get_location() 
+				+ main_camera->get_camera_component()->get_right_axis() * vr_delta;
+			auto t_center = main_camera->get_root_component()->get_location()
+				+ main_camera->get_camera_component()->get_front_axis() * 10.0f;
+			auto t_world_up = main_camera->get_camera_component()->get_world_up();
+			t_mat_view.lookAt(t_eye, t_center, t_world_up);
+
+			ub_matrices->fill_data(0, CMatrix4x4::data_size(), t_mat_view.data());
+
+			// draw all objects
+			if (stack_shaders->top()) {
+				stack_shaders->top()->use();
+				stack_shaders->top()->set_vec3("u_view_pos", main_camera->get_root_component()->get_location());
+			}
+			// glStencilMask(0xff);							// 允许写入模板缓冲
+			draw_all_objs(stack_shaders->top());
+
+			// normal visual
+			if (b_normal_visual) { normal_visual_pass(); }
+
+			// draw sky box -- if have -- 最后画
+			if (b_skybox && sky_box) {
+				stack_shaders->push(AssetManager_ins().get_shader("skybox")); {
+					if (stack_shaders->top()) {
+						stack_shaders->top()->use();
+						// 要移除矩阵的移动部分
+						auto t_view = CMatrix4x4(CMatrix3x3(main_camera->get_camera_component()->get_view_mat().data(), 4, 4).data(), 3, 3);
+						t_view.translate(main_camera->get_camera_component()->get_right_axis() * -vr_delta * 0.1f);
+						stack_shaders->top()->set_mat4("u_view_sky_box", t_view);
+						stack_shaders->top()->set_int("u_texture", 0);
+					}
+					auto t_texture = sky_box->get_texture();
+					if (t_texture) t_texture->bind(0);
+					draw_skybox(stack_shaders->top());
+				} stack_shaders->pop();
+			}
+
+		}
+
+		// right eyes scene
+		{
+			glDrawBuffer(GL_COLOR_ATTACHMENT1);
+			draw_init();
+
+			CMatrix4x4 t_mat_view;
+			auto t_eye = main_camera->get_root_component()->get_location()
+				- main_camera->get_camera_component()->get_right_axis() * vr_delta;
+			auto t_center = main_camera->get_root_component()->get_location()
+				+ main_camera->get_camera_component()->get_front_axis() * 10.0f;
+			auto t_world_up = main_camera->get_camera_component()->get_world_up();
+			t_mat_view.lookAt(t_eye, t_center, t_world_up);
+
+			ub_matrices->fill_data(0, CMatrix4x4::data_size(), t_mat_view.data());
+
+			// draw all objects
+			if (stack_shaders->top()) {
+				stack_shaders->top()->use();
+				stack_shaders->top()->set_vec3("u_view_pos", main_camera->get_root_component()->get_location());
+			}
+			//glStencilMask(0xff);							// 允许写入模板缓冲
+			draw_all_objs(stack_shaders->top());
+
+			// normal visual
+			if (b_normal_visual) { normal_visual_pass(); }
+
+			// draw sky box -- if have -- 最后画
+			if (b_skybox && sky_box) {
+				stack_shaders->push(AssetManager_ins().get_shader("skybox")); {
+					if (stack_shaders->top()) {
+						stack_shaders->top()->use();
+						// 要移除矩阵的移动部分
+						auto t_view = CMatrix4x4(CMatrix3x3(main_camera->get_camera_component()->get_view_mat().data(), 4, 4).data(), 3, 3);
+						t_view.translate(main_camera->get_camera_component()->get_right_axis() * vr_delta * 0.1f);
+						stack_shaders->top()->set_mat4("u_view_sky_box", t_view);
+						stack_shaders->top()->set_int("u_texture", 0);
+					}
+					auto t_texture = sky_box->get_texture();
+					if (t_texture) t_texture->bind(0);
+					draw_skybox(stack_shaders->top());
+				} stack_shaders->pop();
+			}
+
+
+		}
+
+	} if (b_msaa) { t_vr_msaa_rt->un_use(); } else { t_vr_rt->un_use(); }
+
+	if(b_msaa) {
+		if (!b_msaa_custom) {
+			blit(t_vr_msaa_rt, t_vr_rt, viewport_info.width, viewport_info.heigh);
+			blit(t_vr_msaa_rt, t_vr_rt, viewport_info.width, viewport_info.heigh, 1, 1);
+		} // opengl 自带抗锯齿
+		else {
+			t_vr_rt->use(); {
+				// left eye
+				{
+					glDrawBuffer(GL_COLOR_ATTACHMENT0);
 					draw_init();
-					stack_shaders->push(AssetManager_ins().get_shader("shadow")); {
-						if (stack_shaders->top()) {
+					stack_shaders->push(AssetManager_ins().get_shader("msaa")); {
+						if (stack_shaders->top() && t_vr_msaa_rt->get_attach_textures().size() > 0) {
+							auto t_texture = t_vr_msaa_rt->get_attach_textures()[0].texture;
+							if (t_texture) { t_texture->bind(0); }
 							stack_shaders->top()->use();
-							// 设置为此光源的 view and proj 矩阵
-							auto t_pv = main_camera->get_camera_component()->get_proj_mat() * main_camera->get_camera_component()->get_view_mat();
-							stack_shaders->top()->set_mat4("u_light_proj_view", t_pv);
+							stack_shaders->top()->set_int("u_texture_msaa", 0);
+							stack_shaders->top()->set_int("u_msaa_num", t_vr_msaa_rt->get_msaa_num());
 						}
-						draw_all_objs(stack_shaders->top());
+						draw_scene(stack_shaders->top());
 					} stack_shaders->pop();
-				} direct_light_shadow_rts[i]->un_use();
-			} glViewport(0, 0, viewport_info.width, viewport_info.heigh);
-			++i;
-		} // 每一人光源生成一个 shadow map
+				}
+				// right eye
+				{
+					glDrawBuffer(GL_COLOR_ATTACHMENT1);
+					draw_init();
+					stack_shaders->push(AssetManager_ins().get_shader("msaa")); {
+						if (stack_shaders->top() && t_vr_msaa_rt->get_attach_textures().size() > 1) {
+							auto t_texture = t_vr_msaa_rt->get_attach_textures()[1].texture;
+							if (t_texture) { t_texture->bind(0); }
+							stack_shaders->top()->use();
+							stack_shaders->top()->set_int("u_texture_msaa", 0);
+							stack_shaders->top()->set_int("u_msaa_num", t_vr_msaa_rt->get_msaa_num());
+						}
+						draw_scene(stack_shaders->top());
+					} stack_shaders->pop();
+				}
+			} t_vr_rt->un_use();
+
+		} // 自定义抗锯齿
+	}
+
+	// mix pass -- mix left and right pic
+	t_vr_mix_rt->use(); {
+		draw_init();
+
+		stack_shaders->push(AssetManager_ins().get_shader("vr_mix")); {
+			if (stack_shaders->top() && t_vr_rt->get_attach_textures().size() >= 2) {
+				auto t_left = t_vr_rt->get_attach_textures()[0].texture;
+				auto t_right = t_vr_rt->get_attach_textures()[1].texture;
+				if (t_left) { t_left->bind(0); }
+				if (t_right) { t_right->bind(1); }
+				stack_shaders->top()->use();
+				stack_shaders->top()->set_int("u_texture_left", 0);
+				stack_shaders->top()->set_int("u_texture_right", 1);
+			}
+			draw_scene(stack_shaders->top());
+
+		} stack_shaders->pop();
+
+	} t_vr_mix_rt->un_use();
+
+	if (t_vr_mix_rt->get_attach_textures().size() > 0) {
+		scene_texture = t_vr_mix_rt->get_attach_textures()[0].texture;
 	}
 }
 
@@ -999,6 +976,7 @@ void GameManager::init_pick_rt() {
 	}
 }
 void GameManager::init_vr_rt() {
+	// init vr rt
 	if (vr_rt) vr_rt.reset();
 	vr_rt = CREATE_CLASS(RenderTarget);
 	if (vr_rt) {
@@ -1008,45 +986,46 @@ void GameManager::init_vr_rt() {
 			->init();
 	}
 
-	if (msaa_vr_rt) msaa_vr_rt.reset();
-	msaa_vr_rt = CREATE_CLASS(RenderTarget);
-	if (msaa_vr_rt) {
-		msaa_vr_rt->add_attach_texture(GL_COLOR_ATTACHMENT0, viewport_info.width, viewport_info.heigh, GL_TEXTURE_2D_MULTISAMPLE)
+	if (vr_msaa_rt) vr_msaa_rt.reset();
+	vr_msaa_rt = CREATE_CLASS(RenderTarget);
+	if (vr_msaa_rt) {
+		vr_msaa_rt->add_attach_texture(GL_COLOR_ATTACHMENT0, viewport_info.width, viewport_info.heigh, GL_TEXTURE_2D_MULTISAMPLE)
 			->add_attach_texture(GL_COLOR_ATTACHMENT1, viewport_info.width, viewport_info.heigh, GL_TEXTURE_2D_MULTISAMPLE)
 			->add_attach_renderbuffer(viewport_info.width, viewport_info.heigh, true)
 			->init();
 	}
 
-	if (vr_rt_mix) vr_rt_mix.reset();
-	vr_rt_mix = CREATE_CLASS(RenderTarget);
-	if (vr_rt_mix) {
-		vr_rt_mix->init_normal(viewport_info.width, viewport_info.heigh);
-	}
-
-	// init rt for hdr
-	if (hdr_vr_rt) hdr_vr_rt.reset();
-	hdr_vr_rt = CREATE_CLASS(RenderTarget);
-	if (hdr_vr_rt) {
-		hdr_vr_rt->add_attach_texture(GL_COLOR_ATTACHMENT0, viewport_info.width, viewport_info.heigh, GL_TEXTURE_2D, GL_RGBA16F)
+	if (vr_hdr_rt) vr_hdr_rt.reset();
+	vr_hdr_rt = CREATE_CLASS(RenderTarget);
+	if (vr_hdr_rt) {
+		vr_hdr_rt->add_attach_texture(GL_COLOR_ATTACHMENT0, viewport_info.width, viewport_info.heigh, GL_TEXTURE_2D, GL_RGBA16F)
 			->add_attach_texture(GL_COLOR_ATTACHMENT1, viewport_info.width, viewport_info.heigh, GL_TEXTURE_2D, GL_RGBA16F)
 			->add_attach_renderbuffer(viewport_info.width, viewport_info.heigh)
 			->init();
 	}
 
-	if (hdr_msaa_vr_rt) hdr_msaa_vr_rt.reset();
-	hdr_msaa_vr_rt = CREATE_CLASS(RenderTarget);
-	if (hdr_msaa_vr_rt) {
-		hdr_msaa_vr_rt->add_attach_texture(GL_COLOR_ATTACHMENT0, viewport_info.width, viewport_info.heigh, GL_TEXTURE_2D_MULTISAMPLE, GL_RGBA16F)
+	if (vr_hdr_msaa_rt) vr_hdr_msaa_rt.reset();
+	vr_hdr_msaa_rt = CREATE_CLASS(RenderTarget);
+	if (vr_hdr_msaa_rt) {
+		vr_hdr_msaa_rt->add_attach_texture(GL_COLOR_ATTACHMENT0, viewport_info.width, viewport_info.heigh, GL_TEXTURE_2D_MULTISAMPLE, GL_RGBA16F)
 			->add_attach_texture(GL_COLOR_ATTACHMENT1, viewport_info.width, viewport_info.heigh, GL_TEXTURE_2D_MULTISAMPLE, GL_RGBA16F)
 			->add_attach_renderbuffer(viewport_info.width, viewport_info.heigh, true)
 			->init();
 	}
 
-	if (hdr_vr_rt_mix) hdr_vr_rt_mix.reset();
-	hdr_vr_rt_mix = CREATE_CLASS(RenderTarget);
-	if (hdr_vr_rt_mix) {
-		hdr_vr_rt_mix->init_normal_f(viewport_info.width, viewport_info.heigh);
+	// init vr mix rt
+	if (vr_mix_rt) vr_mix_rt.reset();
+	vr_mix_rt = CREATE_CLASS(RenderTarget);
+	if (vr_mix_rt) {
+		vr_mix_rt->init_normal(viewport_info.width, viewport_info.heigh);
 	}
+
+	if (vr_hdr_mix_rt) vr_hdr_mix_rt.reset();
+	vr_hdr_mix_rt = CREATE_CLASS(RenderTarget);
+	if (vr_hdr_mix_rt) {
+		vr_hdr_mix_rt->init_normal_f(viewport_info.width, viewport_info.heigh);
+	}
+
 }
 void GameManager::init_shader_toy_rt() {
 	if (shader_toy_rt) shader_toy_rt.reset();

@@ -213,11 +213,11 @@ private:
 	SPTR_RenderTarget hdr_msaa_rt;
 	
 	SPTR_RenderTarget vr_rt;
-	SPTR_RenderTarget vr_rt_mix;
-	SPTR_RenderTarget msaa_vr_rt;							// 3d 模式下的 msaa 
-	SPTR_RenderTarget hdr_vr_rt;
-	SPTR_RenderTarget hdr_vr_rt_mix;
-	SPTR_RenderTarget hdr_msaa_vr_rt;						
+	SPTR_RenderTarget vr_msaa_rt;							// 3d 模式下的 msaa 
+	SPTR_RenderTarget vr_hdr_rt;
+	SPTR_RenderTarget vr_hdr_msaa_rt;						
+	SPTR_RenderTarget vr_mix_rt;
+	SPTR_RenderTarget vr_hdr_mix_rt;
 
 	std::vector<SPTR_RenderTarget> direct_light_shadow_rts;	// 阴影专用
 
@@ -232,7 +232,7 @@ private:
 	void normal_visual_pass();								// 法线可视化
 	void post_process_pass();
 	void gamma_pass();										// gamma 校正
-	void vr_pass();
+	void vr_base_pass();
 	void hdr_pass();										// hdr
 	void shader_toy_pass();
 	void shadow_pass();

@@ -28,6 +28,8 @@ public:
 	Frustum& get_frustum() { return frustum; }
 
 	GET(CVector3D, right)
+	GET(CVector3D, front)
+	GET(CVector3D, world_up)
 
 private:
 

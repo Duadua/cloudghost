@@ -21,3 +21,11 @@ CVector3D CameraComponent::get_right_axis() {
 	camera_data->update(get_location(), get_rotation());
 	return camera_data->get_right();
 }
+CVector3D CameraComponent::get_front_axis() {
+	camera_data->update(get_location(), get_rotation());
+	return camera_data->get_front();
+}
+CVector3D CameraComponent::get_world_up() {
+	camera_data->update(get_location(), get_rotation());
+	return camera_data->get_world_up();
+}
