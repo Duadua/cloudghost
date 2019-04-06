@@ -621,6 +621,9 @@
     <None Include="resources\shaders\shadow.frag">
       <Filter>resources\shaders\frags</Filter>
     </None>
+    <None Include="resources\shaders\border.frag">
+      <Filter>resources\shaders\frags</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Text Include="resources\models\txt\cube.txt">

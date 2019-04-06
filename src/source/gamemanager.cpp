@@ -91,6 +91,7 @@ void GameManager::init() {
 		AssetManager_ins().load_shader("default", "resources/shaders/mvp_anim.vert", "resources/shaders/blinn_phong.frag");
 		//AssetManager_ins().load_shader("default", "resources/shaders/mvp_anim.vert", "resources/shaders/single_texture.frag");
 		AssetManager_ins().load_shader("depth", "resources/shaders/mvp_anim.vert", "resources/shaders/depth.frag");
+		AssetManager_ins().load_shader("border", "resources/shaders/scene_2d.vert", "resources/shaders/border.frag");
 		AssetManager_ins().load_shader("solid_color", "resources/shaders/mvp_anim.vert", "resources/shaders/solid_color.frag");
 		AssetManager_ins().load_shader("single_texture", "resources/shaders/mvp_anim.vert", "resources/shaders/single_texture.frag");
 		AssetManager_ins().load_shader("scene2d", "resources/shaders/scene_2d.vert", "resources/shaders/single_texture_2d.frag");
@@ -184,7 +185,7 @@ void GameManager::init() {
 	// gl state init
 	{
 		set_depth_test(true);
-		set_stencil_test(true, GL_NOTEQUAL, 1, 0xff, GL_KEEP, GL_REPLACE, GL_REPLACE);
+		// set_stencil_test(true, GL_NOTEQUAL, 1, 0xff, GL_KEEP, GL_REPLACE, GL_REPLACE);
 		set_blend(true, GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 		set_polygon_mode(front_polygon_mode, back_polygon_mode);
 		set_cull_face();
@@ -246,7 +247,7 @@ void GameManager::draw() {
 		scene_pass(t_final_tex); 						// 显示正常渲染图 
 		
 		if(!b_use_shader_toy) {
-			if (!b_use_vr) {
+			if (!b_use_vr || b_depth) {			// 深度图不显示在 vr 模式中
 
 				if (b_depth) { depth_pass(); }	// 生成当前相机视图下的深度图 -- 得到 depth_texture
 
@@ -258,6 +259,9 @@ void GameManager::draw() {
 
 				// pass 3
 				base_pass();				// 得到 scene_texture
+
+				// pass 4
+				border_pass();				// 得到 border_texture -- 然后 输入 scene_texture -- 添加边框 -- 最后得到 scene_texture
 
 				// pass 4
 				if (pp_type != PostProcessType::NOPE) { post_process_pass(); } // 后处理 -- 输入 scene_texture 得到 scene_texture
@@ -320,7 +324,6 @@ void GameManager::depth_pass() {
 				stack_shaders->top()->use();
 				stack_shaders->top()->set_float("u_near", main_camera->get_camera_component()->get_camera_data()->get_frustum().near);
 				stack_shaders->top()->set_float("u_far", main_camera->get_camera_component()->get_camera_data()->get_frustum().far);
-				// stack_shaders->top()->set_float("u_far", main_camera->get_camera_component()->get_camera_data()->get_frustum().far);
 			}
 			draw_all_objs(stack_shaders->top());
 		} stack_shaders->pop();
@@ -407,12 +410,12 @@ void GameManager::base_pass() {
 
 				if (b_explode) { stack_shaders->top()->set_float("u_time", TimeManager_ins().cur_runtime_seconds()); }
 			}
-			glStencilMask(0xff);							// 允许写入模板缓冲
+			// glStencilMask(0xff);							// 允许写入模板缓冲
 			draw_all_objs(stack_shaders->top());
 		} if (b_explode) { stack_shaders->pop(); }
 
 		// draw border
-		stack_shaders->push(AssetManager_ins().get_shader("solid_color")); {
+		/*stack_shaders->push(AssetManager_ins().get_shader("solid_color")); {
 			if (stack_shaders->top()) {
 				stack_shaders->top()->use();
 				stack_shaders->top()->set_vec3("u_view_pos", main_camera->get_root_component()->get_location());
@@ -426,6 +429,7 @@ void GameManager::base_pass() {
 			glStencilMask(0xff);							// 重新允许写入模板缓冲
 
 		} stack_shaders->pop();
+		*/
 
 		// 法线可视化
 		if (b_normal_visual) { normal_visual_pass(); }
@@ -474,6 +478,44 @@ void GameManager::base_pass() {
 	if (t_scene_rt->get_attach_textures().size() > 0) {
 		scene_texture = t_scene_rt->get_attach_textures()[0].texture;
 	}
+}
+void GameManager::border_pass() {
+	// 先得到需要加 border 物体的深度图
+	border_depth_rt->use(); {
+		draw_init();
+		stack_shaders->push(AssetManager_ins().get_shader("depth")); {
+			if (stack_shaders->top()) {
+				stack_shaders->top()->use();
+				stack_shaders->top()->set_float("u_near", main_camera->get_camera_component()->get_camera_data()->get_frustum().near);
+				stack_shaders->top()->set_float("u_far", main_camera->get_camera_component()->get_camera_data()->get_frustum().far);
+			}
+			draw_border(stack_shaders->top());
+		} stack_shaders->pop();
+	} border_depth_rt->un_use();
+
+	// 再将上面得到的图随 scene_texture 一起传入, 后处理得最终的 scene_texture
+	border_rt->use(); {
+		stack_shaders->push(AssetManager_ins().get_shader("border")); {
+			if (stack_shaders->top()) {
+				stack_shaders->top()->use();
+				stack_shaders->top()->set_int("u_texture", 0);
+				stack_shaders->top()->set_int("u_border_texture", 1);
+				stack_shaders->top()->set_vec4("u_border_color", border_color.rgba_f());
+			}
+			if (scene_texture) { scene_texture->bind(0); }
+			if (b_depth) { if (depth_texture) { depth_texture->bind(0); } }
+			if (border_depth_rt->get_attach_textures().size() > 0) { 
+				border_depth_rt->get_attach_textures()[0].texture->bind(1); 
+			}
+			draw_scene(stack_shaders->top());
+		} stack_shaders->pop();
+	} border_rt->un_use();
+
+	if (border_rt->get_attach_textures().size() > 0) {
+		scene_texture = border_rt->get_attach_textures()[0].texture;
+		if (b_depth) { depth_texture = border_rt->get_attach_textures()[0].texture; }
+	}
+	
 }
 void GameManager::normal_visual_pass() {
 	stack_shaders->push(AssetManager_ins().get_shader("normal_visual")); {
@@ -588,11 +630,11 @@ void GameManager::vr_pass() {
 				stack_shaders->top()->use();
 				stack_shaders->top()->set_vec3("u_view_pos", main_camera->get_root_component()->get_location());
 			}
-			glStencilMask(0xff);							// 允许写入模板缓冲
+			// glStencilMask(0xff);							// 允许写入模板缓冲
 			draw_all_objs(stack_shaders->top());
 
 			// draw border
-			stack_shaders->push(AssetManager_ins().get_shader("solid_color")); {
+			/*stack_shaders->push(AssetManager_ins().get_shader("solid_color")); {
 				if (stack_shaders->top()) {
 					stack_shaders->top()->use();
 					stack_shaders->top()->set_vec3("u_view_pos", main_camera->get_root_component()->get_location());
@@ -605,6 +647,7 @@ void GameManager::vr_pass() {
 				glStencilMask(0xff);							// 重新允许写入模板缓冲
 
 			} stack_shaders->pop();
+			*/
 
 			// normal visual
 			if (b_normal_visual) { normal_visual_pass(); }
@@ -646,11 +689,11 @@ void GameManager::vr_pass() {
 				stack_shaders->top()->use();
 				stack_shaders->top()->set_vec3("u_view_pos", main_camera->get_root_component()->get_location());
 			}
-			glStencilMask(0xff);							// 允许写入模板缓冲
+			//glStencilMask(0xff);							// 允许写入模板缓冲
 			draw_all_objs(stack_shaders->top());
 
 			// draw border
-			stack_shaders->push(AssetManager_ins().get_shader("solid_color")); {
+			/*stack_shaders->push(AssetManager_ins().get_shader("solid_color")); {
 				if (stack_shaders->top()) {
 					stack_shaders->top()->use();
 					stack_shaders->top()->set_vec3("u_view_pos", main_camera->get_root_component()->get_location());
@@ -663,6 +706,7 @@ void GameManager::vr_pass() {
 				glStencilMask(0xff);							// 重新允许写入模板缓冲
 
 			} stack_shaders->pop();
+			*/
 
 			// normal visual
 			if (b_normal_visual) { normal_visual_pass(); }
@@ -840,27 +884,30 @@ void GameManager::draw_all_objs(SPTR_Shader shader) {
 
 	set_depth_test();
 	set_polygon_mode(front_polygon_mode, back_polygon_mode); {
-		for (auto go : game_objects) {
+		for (auto go : game_objects) { go.second->_draw(shader); }
+
+		/*for (auto go : game_objects) {
 			if (go.second->get_id() != cur_pick_object_id) {
-				glStencilFunc(GL_ALWAYS, 0, 0xff);
+				//glStencilFunc(GL_ALWAYS, 0, 0xff);
 				go.second->_draw(shader);
 			} // 总是通过测试 -- 且通过后置0
 		} // 先画没被选中的 -- 保证最后写入的 1 不被 0 覆盖
 		for (auto go : game_objects) {
 			if (go.second->get_id() == cur_pick_object_id) {
-				glStencilFunc(GL_ALWAYS, 1, 0xff);
+				//glStencilFunc(GL_ALWAYS, 1, 0xff);
 				go.second->_draw(shader);
 			} // 总是通过测试 -- 且通过后置1
 		}
+		*/
 	} set_polygon_mode();
 }
 void GameManager::draw_border(SPTR_Shader shader) {
 	set_polygon_mode(front_polygon_mode, back_polygon_mode);
 	for (auto go : game_objects) {
 		if (go.second->get_id() == cur_pick_object_id) {
-			go.second->get_root_component()->set_all_border(true);
+			//go.second->get_root_component()->set_all_border(true);
 			go.second->_draw(shader);
-			go.second->get_root_component()->set_all_border(false);
+			//go.second->get_root_component()->set_all_border(false);
 		}	// 拾取 -- 绘制边框
 	}
 	set_polygon_mode();
@@ -933,6 +980,22 @@ void GameManager::init_pick_rt() {
 		pick_rt->add_attach_texture(GL_COLOR_ATTACHMENT0, viewport_info.width, viewport_info.heigh, GL_TEXTURE_2D, GL_RGB32UI, GL_RGB_INTEGER, GL_UNSIGNED_INT)
 			->add_attach_renderbuffer(viewport_info.width, viewport_info.heigh)
 			->init();
+	}
+
+	if (border_depth_rt) border_depth_rt.reset();
+	border_depth_rt = CREATE_CLASS(RenderTarget);
+	if (border_depth_rt) {
+		if (!border_depth_rt->init_normal(viewport_info.width, viewport_info.heigh)) {
+			c_debuger() << "create rt fail";
+		}
+	}
+
+	if (border_rt) border_rt.reset();
+	border_rt = CREATE_CLASS(RenderTarget);
+	if (border_rt) {
+		if (!border_rt->init_normal(viewport_info.width, viewport_info.heigh)) {
+			c_debuger() << "create rt fail";
+		}
 	}
 }
 void GameManager::init_vr_rt() {

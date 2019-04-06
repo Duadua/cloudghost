@@ -290,6 +290,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="resources\shaders\blinn_phong.frag" />
+    <None Include="resources\shaders\border.frag" />
     <None Include="resources\shaders\depth.frag" />
     <None Include="resources\shaders\explode.geom" />
     <None Include="resources\shaders\gamma.frag" />

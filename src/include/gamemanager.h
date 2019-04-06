@@ -199,6 +199,8 @@ private:
 	SPTR_RenderTarget pp_rt;
 	SPTR_RenderTarget gamma_rt;
 	SPTR_RenderTarget pick_rt;
+	SPTR_RenderTarget border_depth_rt;
+	SPTR_RenderTarget border_rt;
 
 	SPTR_RenderTarget shader_toy_rt;
 	SPTR_RenderTarget shader_toy_buffer_rts[4];
@@ -226,6 +228,7 @@ private:
 	void depth_pass();										// 获得当前相机视图下的深度图
 	void pick_pass();										// 拾取阶段
 	void base_pass();
+	void border_pass();										// 加轮廓
 	void normal_visual_pass();								// 法线可视化
 	void post_process_pass();
 	void gamma_pass();										// gamma 校正
