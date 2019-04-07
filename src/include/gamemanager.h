@@ -221,6 +221,9 @@ private:
 	SPTR_RenderTarget vr_depth_rt;
 	SPTR_RenderTarget vr_depth_msaa_rt;
 	SPTR_RenderTarget vr_depth_mix_rt;
+	SPTR_RenderTarget vr_border_depth_rt;
+	SPTR_RenderTarget vr_border_mix_rt;
+	SPTR_RenderTarget vr_border_rt;
 
 	std::vector<SPTR_RenderTarget> direct_light_shadow_rts;	// 阴影专用
 
@@ -241,6 +244,7 @@ private:
 
 	void vr_depth_pass();
 	void vr_base_pass();
+	void vr_border_pass();
 
 	void init_rt();
 	void init_pick_rt();

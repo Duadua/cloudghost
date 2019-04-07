@@ -276,7 +276,7 @@ void GameManager::draw() {
 				if (b_depth) { vr_depth_pass(); }	// 得到 depth_texture
 				pick_pass();
 				vr_base_pass();						// 得到 scene_texture
-				//vr_border_pass();					// 得到 border_texture -- 然后输入 scene_texture -- 得到scene_texture
+				vr_border_pass();					// 得到 border_texture -- 然后输入 scene_texture -- 得到scene_texture
 				if (pp_type != PostProcessType::NOPE) { post_process_pass(); }
 				if (b_hdr) hdr_pass();
 				if (b_gamma) gamma_pass();
@@ -974,6 +974,110 @@ void GameManager::vr_base_pass() {
 		scene_texture = t_vr_mix_rt->get_attach_textures()[0].texture;
 	}
 }
+void GameManager::vr_border_pass() {
+	
+	// 先得到需要加 border 物体的深度图
+	vr_border_depth_rt->use(); {
+		// left
+		{
+			glDrawBuffer(GL_COLOR_ATTACHMENT0);
+			draw_init();
+
+			// cac left view mat
+			CMatrix4x4 t_mat_view;
+			auto t_eye = main_camera->get_root_component()->get_location()
+				+ main_camera->get_camera_component()->get_right_axis() * vr_delta;
+			auto t_center = main_camera->get_root_component()->get_location()
+				+ main_camera->get_camera_component()->get_front_axis() * vr_delta*40.0f;
+			if (CMath_ins().fcmp(vr_delta, 0.0f) == 0) { t_center = main_camera->get_camera_component()->get_front_axis(); }
+			auto t_world_up = main_camera->get_camera_component()->get_world_up();
+			t_mat_view.lookAt(t_eye, t_center, t_world_up);
+
+			ub_matrices->fill_data(0, CMatrix4x4::data_size(), t_mat_view.data());
+
+			stack_shaders->push(AssetManager_ins().get_shader("depth")); {
+				if (stack_shaders->top()) {
+					stack_shaders->top()->use();
+					stack_shaders->top()->set_float("u_near", main_camera->get_camera_component()->get_camera_data()->get_frustum().near);
+					stack_shaders->top()->set_float("u_far", main_camera->get_camera_component()->get_camera_data()->get_frustum().far);
+				}
+				draw_border(stack_shaders->top());
+			} stack_shaders->pop();
+		}
+
+		// right
+		{
+			glDrawBuffer(GL_COLOR_ATTACHMENT1);
+			draw_init();
+
+			// cac left view mat
+			CMatrix4x4 t_mat_view;
+			auto t_eye = main_camera->get_root_component()->get_location()
+				- main_camera->get_camera_component()->get_right_axis() * vr_delta;
+			auto t_center = main_camera->get_root_component()->get_location()
+				+ main_camera->get_camera_component()->get_front_axis() * vr_delta*40.0f;
+			if (CMath_ins().fcmp(vr_delta, 0.0f) == 0) { t_center = main_camera->get_camera_component()->get_front_axis(); }
+			auto t_world_up = main_camera->get_camera_component()->get_world_up();
+			t_mat_view.lookAt(t_eye, t_center, t_world_up);
+
+			ub_matrices->fill_data(0, CMatrix4x4::data_size(), t_mat_view.data());
+
+			stack_shaders->push(AssetManager_ins().get_shader("depth")); {
+				if (stack_shaders->top()) {
+					stack_shaders->top()->use();
+					stack_shaders->top()->set_float("u_near", main_camera->get_camera_component()->get_camera_data()->get_frustum().near);
+					stack_shaders->top()->set_float("u_far", main_camera->get_camera_component()->get_camera_data()->get_frustum().far);
+				}
+				draw_border(stack_shaders->top());
+			} stack_shaders->pop();
+		}
+		
+	} vr_border_depth_rt->un_use();
+
+	// mix vr border depth
+	vr_border_mix_rt->use(); {
+		draw_init();
+
+		stack_shaders->push(AssetManager_ins().get_shader("vr_mix")); {
+			if (stack_shaders->top() && vr_border_depth_rt->get_attach_textures().size() >= 2) {
+				auto t_left = vr_border_depth_rt->get_attach_textures()[0].texture;
+				auto t_right = vr_border_depth_rt->get_attach_textures()[1].texture;
+				if (t_left) { t_left->bind(0); }
+				if (t_right) { t_right->bind(1); }
+				stack_shaders->top()->use();
+				stack_shaders->top()->set_int("u_texture_left", 0);
+				stack_shaders->top()->set_int("u_texture_right", 1);
+			}
+			draw_scene(stack_shaders->top());
+
+		} stack_shaders->pop();
+
+	} vr_border_mix_rt->un_use();
+
+	// 再将上面得到的图随 scene_texture 一起传入, 后处理得最终的 scene_texture
+	vr_border_rt->use(); {
+		stack_shaders->push(AssetManager_ins().get_shader("border")); {
+			if (stack_shaders->top()) {
+				stack_shaders->top()->use();
+				stack_shaders->top()->set_int("u_texture", 0);
+				stack_shaders->top()->set_int("u_border_texture", 1);
+				stack_shaders->top()->set_vec4("u_border_color", border_color.rgba_f());
+			}
+			if (scene_texture) { scene_texture->bind(0); }
+			if (b_depth) { if (depth_texture) { depth_texture->bind(0); } }
+			if (vr_border_mix_rt->get_attach_textures().size() > 0) {
+				vr_border_mix_rt->get_attach_textures()[0].texture->bind(1);
+			}
+			draw_scene(stack_shaders->top());
+		} stack_shaders->pop();
+	} vr_border_rt->un_use();
+
+	if (vr_border_rt->get_attach_textures().size() > 0) {
+		scene_texture = vr_border_rt->get_attach_textures()[0].texture;
+		if (b_depth) { depth_texture = vr_border_rt->get_attach_textures()[0].texture; }
+	}
+	
+}
 
 void GameManager::draw_scene(SPTR_Shader shader) {
 	glDisable(GL_DEPTH_TEST);
@@ -1209,6 +1313,26 @@ void GameManager::init_vr_rt() {
 	if (vr_depth_mix_rt) vr_depth_mix_rt.reset();
 	vr_depth_mix_rt = CREATE_CLASS(RenderTarget);
 	if (vr_depth_mix_rt) { vr_depth_mix_rt->init_normal(viewport_info.width, viewport_info.heigh); }
+
+	// init vr border rt
+	if (vr_border_depth_rt) vr_border_depth_rt.reset();
+	vr_border_depth_rt = CREATE_CLASS(RenderTarget);
+	if (vr_border_depth_rt) {
+		vr_border_depth_rt->add_attach_texture(GL_COLOR_ATTACHMENT0, viewport_info.width, viewport_info.heigh, GL_TEXTURE_2D, GL_RGBA16F)
+			->add_attach_texture(GL_COLOR_ATTACHMENT1, viewport_info.width, viewport_info.heigh, GL_TEXTURE_2D, GL_RGBA16F)
+			->add_attach_renderbuffer(viewport_info.width, viewport_info.heigh)
+			->init();
+	}
+	if (vr_border_mix_rt) vr_border_mix_rt.reset();
+	vr_border_mix_rt = CREATE_CLASS(RenderTarget);
+	if (vr_border_mix_rt) {
+		vr_border_mix_rt->init_normal_f(viewport_info.width, viewport_info.heigh);
+	}
+	if (vr_border_rt) vr_border_rt.reset();
+	vr_border_rt = CREATE_CLASS(RenderTarget);
+	if (vr_border_rt) {
+		vr_border_rt->init_normal_f(viewport_info.width, viewport_info.heigh);
+	}
 
 	// init vr mix rt
 	if (vr_mix_rt) vr_mix_rt.reset();

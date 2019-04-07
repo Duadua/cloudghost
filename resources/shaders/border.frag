@@ -45,7 +45,11 @@ void main() {
 
 	vec3 t_b = edge_det();
 	vec4 t_c = texture(u_texture, i_fs.tex_coord);
-	if(t_b.r > 0.9) { t_c = u_border_color; }			// 轮廓着色
+
+	if(t_b.r > 0.9) { t_c.r = u_border_color.r; }			// 轮廓着色
+	if(t_b.g > 0.9) { t_c.g = u_border_color.g; }			// 轮廓着色
+	if(t_b.b > 0.9) { t_c.b = u_border_color.b; }			// 轮廓着色
+
 
 	r_color = t_c;
 
