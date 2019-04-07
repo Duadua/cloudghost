@@ -217,7 +217,9 @@ void CMainWindow::init_ui() {
 			ui_about->setWindowTitle(QString::fromUtf8("关于"));
 			std::string str = "[作者]\tDua\n[时间]\t2019.03.30\n[清单]\t已支持的功能\n\t";
 			str += "[图元生成]\n\t[资源导入]\n\t[事件分发]\n\t[数学库]\n\t[BlinnPhong直接光照]\n\t[拾取]\n\t";
-			str += "[后期处理]\n\t[红蓝3D]\n\t[骨骼动画]\n\t[shadertoy]\n";
+			str += "[后期处理]\n\t[红蓝3D]\n\t[骨骼动画]\n\t[shadertoy]\n\t";
+			str += "[法线可视化]\n\t[抗锯齿(MSAA)]\n\t[gamma校正]\n\t[HDR(tonemap)]\n\t";
+			str += "[天空盒]\n\t[深度图]\n\t[阴影(shadowmap)]\n";
 			str += "[说明]\t持续更新中, 有好的bug或者好的建议\n\t欢迎与本人联系, 共同学习, 共同进步。\n\t兴趣是最好的老师。\n";
 			str += "[声明]\t水平有限, 仅供学习和参考, \n\t不得进行任何商业用途, \n\t否则产生的一切后果将由使用者本人承担\n";
 			str += "[邮箱]\t270389972@qq.com\n";
