@@ -195,7 +195,7 @@ private:
 	// render pipe
 	SPTR_RenderTarget scene_rt;
 	SPTR_RenderTarget depth_rt;
-	SPTR_RenderTarget msaa_depth_rt;
+	SPTR_RenderTarget depth_msaa_rt;
 	SPTR_RenderTarget pp_rt;
 	SPTR_RenderTarget gamma_rt;
 	SPTR_RenderTarget pick_rt;
@@ -218,6 +218,9 @@ private:
 	SPTR_RenderTarget vr_hdr_msaa_rt;						
 	SPTR_RenderTarget vr_mix_rt;
 	SPTR_RenderTarget vr_hdr_mix_rt;
+	SPTR_RenderTarget vr_depth_rt;
+	SPTR_RenderTarget vr_depth_msaa_rt;
+	SPTR_RenderTarget vr_depth_mix_rt;
 
 	std::vector<SPTR_RenderTarget> direct_light_shadow_rts;	// 阴影专用
 
@@ -226,16 +229,18 @@ private:
 
 	void scene_pass(SPTR_Texture2D tex);					// 根据传入的贴图绘制屏幕四边形
 	void depth_pass();										// 获得当前相机视图下的深度图
+	void shadow_pass();
 	void pick_pass();										// 拾取阶段
 	void base_pass();
 	void border_pass();										// 加轮廓
-	void normal_visual_pass();								// 法线可视化
 	void post_process_pass();
-	void gamma_pass();										// gamma 校正
-	void vr_base_pass();
 	void hdr_pass();										// hdr
+	void gamma_pass();										// gamma 校正
+	void normal_visual_pass();								// 法线可视化
 	void shader_toy_pass();
-	void shadow_pass();
+
+	void vr_depth_pass();
+	void vr_base_pass();
 
 	void init_rt();
 	void init_pick_rt();

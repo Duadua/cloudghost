@@ -273,7 +273,7 @@ void GameManager::draw() {
 				if (b_gamma) gamma_pass();	// gamma 校正 -- 输入 scene_texture 得到 scene_texture
 			}
 			else {
-				//if (b_depth) { vr_depth_pass(); }	// 得到 depth_texture
+				if (b_depth) { vr_depth_pass(); }	// 得到 depth_texture
 				pick_pass();
 				vr_base_pass();						// 得到 scene_texture
 				//vr_border_pass();					// 得到 border_texture -- 然后输入 scene_texture -- 得到scene_texture
@@ -317,7 +317,7 @@ void GameManager::scene_pass(SPTR_Texture2D tex) {
 }
 void GameManager::depth_pass() {
 	auto t_depth_rt = depth_rt;
-	if (b_msaa) { t_depth_rt = msaa_depth_rt; }
+	if (b_msaa) { t_depth_rt = depth_msaa_rt; }
 
 	t_depth_rt->use(); {
 		draw_init();
@@ -677,6 +677,132 @@ void GameManager::shader_toy_pass() {
 
 }
 
+void GameManager::vr_depth_pass() {
+	auto t_depth_rt = vr_depth_rt;
+	if (b_msaa) { t_depth_rt = vr_depth_msaa_rt; }
+
+	t_depth_rt->use(); {
+		// left
+		{
+			glDrawBuffer(GL_COLOR_ATTACHMENT0);
+			draw_init();
+
+			// cac left view mat
+			CMatrix4x4 t_mat_view;
+			auto t_eye = main_camera->get_root_component()->get_location()
+				+ main_camera->get_camera_component()->get_right_axis() * vr_delta;
+			auto t_center = main_camera->get_root_component()->get_location()
+				+ main_camera->get_camera_component()->get_front_axis() * vr_delta*40.0f;
+			if (CMath_ins().fcmp(vr_delta, 0.0f) == 0) { t_center = main_camera->get_camera_component()->get_front_axis(); }
+			auto t_world_up = main_camera->get_camera_component()->get_world_up();
+			t_mat_view.lookAt(t_eye, t_center, t_world_up);
+
+			ub_matrices->fill_data(0, CMatrix4x4::data_size(), t_mat_view.data());
+
+			stack_shaders->push(AssetManager_ins().get_shader("depth")); {
+				if (stack_shaders->top()) {
+					stack_shaders->top()->use();
+					stack_shaders->top()->set_float("u_near", main_camera->get_camera_component()->get_camera_data()->get_frustum().near);
+					stack_shaders->top()->set_float("u_far", main_camera->get_camera_component()->get_camera_data()->get_frustum().far);
+				}
+				draw_all_objs(stack_shaders->top());
+			} stack_shaders->pop();
+		}
+		// right
+		{
+			glDrawBuffer(GL_COLOR_ATTACHMENT1);
+			draw_init();
+
+			// cac left view mat
+			CMatrix4x4 t_mat_view;
+			auto t_eye = main_camera->get_root_component()->get_location()
+				- main_camera->get_camera_component()->get_right_axis() * vr_delta;
+			auto t_center = main_camera->get_root_component()->get_location()
+				+ main_camera->get_camera_component()->get_front_axis() * vr_delta*40.0f;
+			if (CMath_ins().fcmp(vr_delta, 0.0f) == 0) { t_center = main_camera->get_camera_component()->get_front_axis(); }
+			auto t_world_up = main_camera->get_camera_component()->get_world_up();
+			t_mat_view.lookAt(t_eye, t_center, t_world_up);
+
+			ub_matrices->fill_data(0, CMatrix4x4::data_size(), t_mat_view.data());
+
+			stack_shaders->push(AssetManager_ins().get_shader("depth")); {
+				if (stack_shaders->top()) {
+					stack_shaders->top()->use();
+					stack_shaders->top()->set_float("u_near", main_camera->get_camera_component()->get_camera_data()->get_frustum().near);
+					stack_shaders->top()->set_float("u_far", main_camera->get_camera_component()->get_camera_data()->get_frustum().far);
+				}
+				draw_all_objs(stack_shaders->top());
+			} stack_shaders->pop();
+		}
+	} t_depth_rt->un_use();
+
+	if (b_msaa) {
+		if (!b_msaa_custom) {
+			blit(t_depth_rt, vr_depth_rt, viewport_info.width, viewport_info.heigh);
+			blit(t_depth_rt, vr_depth_rt, viewport_info.width, viewport_info.heigh, 1, 1);
+		} // opengl 自带抗锯齿
+		else {
+			vr_depth_rt->use(); {
+				// left eye
+				{
+					glDrawBuffer(GL_COLOR_ATTACHMENT0);
+					draw_init();
+					stack_shaders->push(AssetManager_ins().get_shader("msaa")); {
+						if (stack_shaders->top() && vr_depth_msaa_rt->get_attach_textures().size() > 0) {
+							auto t_texture = vr_depth_msaa_rt->get_attach_textures()[0].texture;
+							if (t_texture) { t_texture->bind(0); }
+							stack_shaders->top()->use();
+							stack_shaders->top()->set_int("u_texture_msaa", 0);
+							stack_shaders->top()->set_int("u_msaa_num", vr_depth_msaa_rt->get_msaa_num());
+						}
+						draw_scene(stack_shaders->top());
+					} stack_shaders->pop();
+				}
+				// right eye
+				{
+					glDrawBuffer(GL_COLOR_ATTACHMENT1);
+					draw_init();
+					stack_shaders->push(AssetManager_ins().get_shader("msaa")); {
+						if (stack_shaders->top() && vr_depth_msaa_rt->get_attach_textures().size() > 1) {
+							auto t_texture = vr_depth_msaa_rt->get_attach_textures()[1].texture;
+							if (t_texture) { t_texture->bind(0); }
+							stack_shaders->top()->use();
+							stack_shaders->top()->set_int("u_texture_msaa", 0);
+							stack_shaders->top()->set_int("u_msaa_num", vr_depth_msaa_rt->get_msaa_num());
+						}
+						draw_scene(stack_shaders->top());
+					} stack_shaders->pop();
+				}
+			} vr_depth_rt->un_use();
+
+		} // 自定义抗锯齿
+	}
+
+	// mix vr depth rt
+	vr_depth_mix_rt->use(); {
+		draw_init();
+
+		stack_shaders->push(AssetManager_ins().get_shader("vr_mix")); {
+			if (stack_shaders->top() && vr_depth_rt->get_attach_textures().size() >= 2) {
+				auto t_left = vr_depth_rt->get_attach_textures()[0].texture;
+				auto t_right = vr_depth_rt->get_attach_textures()[1].texture;
+				if (t_left) { t_left->bind(0); }
+				if (t_right) { t_right->bind(1); }
+				stack_shaders->top()->use();
+				stack_shaders->top()->set_int("u_texture_left", 0);
+				stack_shaders->top()->set_int("u_texture_right", 1);
+			}
+			draw_scene(stack_shaders->top());
+
+		} stack_shaders->pop();
+
+	} vr_depth_mix_rt->un_use();
+
+	if (vr_depth_mix_rt->get_attach_textures().size() > 0) {
+		depth_texture = vr_depth_mix_rt->get_attach_textures()[0].texture;
+	}
+
+}
 void GameManager::vr_base_pass() {
 	auto t_vr_rt = vr_rt;
 	auto t_vr_msaa_rt = vr_msaa_rt;
@@ -921,10 +1047,10 @@ void GameManager::init_rt() {
 			c_debuger() << "create rt fail";
 		}
 	}
-	if (msaa_depth_rt) msaa_depth_rt.reset();
-	msaa_depth_rt = CREATE_CLASS(RenderTarget);
-	if (msaa_depth_rt) {
-		if (!msaa_depth_rt->init_normal_multisample(viewport_info.width, viewport_info.heigh)) {
+	if (depth_msaa_rt) depth_msaa_rt.reset();
+	depth_msaa_rt = CREATE_CLASS(RenderTarget);
+	if (depth_msaa_rt) {
+		if (!depth_msaa_rt->init_normal_multisample(viewport_info.width, viewport_info.heigh)) {
 			c_debuger() << "create rt fail";
 		}
 	}
@@ -952,6 +1078,18 @@ void GameManager::init_rt() {
 	init_hdr_rt();
 	init_shadow_rt();
 }
+void GameManager::init_shadow_rt() {
+	direct_light_shadow_rts.resize(direct_light_num_max);
+	for (auto& shadow_rt : direct_light_shadow_rts) {
+		if (shadow_rt) shadow_rt.reset();
+		shadow_rt = CREATE_CLASS(RenderTarget);
+		if (shadow_rt) {
+			shadow_rt->add_attach_texture(GL_DEPTH_ATTACHMENT, 1024, 1024,
+				GL_TEXTURE_2D, GL_DEPTH_COMPONENT, GL_DEPTH_COMPONENT, GL_FLOAT)
+				->init();
+		}
+	}
+}
 void GameManager::init_pick_rt() {
 	if(pick_rt) pick_rt.reset();
 	pick_rt = CREATE_CLASS(RenderTarget);
@@ -964,7 +1102,7 @@ void GameManager::init_pick_rt() {
 	if (border_depth_rt) border_depth_rt.reset();
 	border_depth_rt = CREATE_CLASS(RenderTarget);
 	if (border_depth_rt) {
-		if (!border_depth_rt->init_normal(viewport_info.width, viewport_info.heigh)) {
+		if (!border_depth_rt->init_normal_f(viewport_info.width, viewport_info.heigh)) {
 			c_debuger() << "create rt fail";
 		}
 	}
@@ -972,11 +1110,47 @@ void GameManager::init_pick_rt() {
 	if (border_rt) border_rt.reset();
 	border_rt = CREATE_CLASS(RenderTarget);
 	if (border_rt) {
-		if (!border_rt->init_normal(viewport_info.width, viewport_info.heigh)) {
+		if (!border_rt->init_normal_f(viewport_info.width, viewport_info.heigh)) {
 			c_debuger() << "create rt fail";
 		}
 	}
 }
+void GameManager::init_msaa_rt() {
+	if (msaa_rt) msaa_rt.reset();
+	msaa_rt = CREATE_CLASS(RenderTarget);
+	if (msaa_rt) { msaa_rt->init_normal_multisample(viewport_info.width, viewport_info.heigh); }
+}
+void GameManager::init_hdr_rt() {
+	if (hdr_rt) hdr_rt.reset();
+	hdr_rt = CREATE_CLASS(RenderTarget);
+	if (hdr_rt) {
+		if (!hdr_rt->init_normal_f(viewport_info.width, viewport_info.heigh)) {
+			c_debuger() << "create rt fail";
+		}
+	}
+
+	if (hdr_scene_rt) hdr_scene_rt.reset();
+	hdr_scene_rt = CREATE_CLASS(RenderTarget);
+	if (hdr_scene_rt) {
+		if (!hdr_scene_rt->init_normal_f(viewport_info.width, viewport_info.heigh)) {
+			c_debuger() << "create rt fail";
+		}
+	}
+
+	if (hdr_pp_rt) hdr_pp_rt.reset();
+	hdr_pp_rt = CREATE_CLASS(RenderTarget);
+	if (hdr_pp_rt) {
+		if (!hdr_pp_rt->init_normal_f(viewport_info.width, viewport_info.heigh)) {
+			c_debuger() << "create rt fail";
+		}
+	}
+
+	if (hdr_msaa_rt) hdr_msaa_rt.reset();
+	hdr_msaa_rt = CREATE_CLASS(RenderTarget);
+	if (hdr_msaa_rt) { hdr_msaa_rt->init_normal_multisample_f(viewport_info.width, viewport_info.heigh); }
+
+}
+
 void GameManager::init_vr_rt() {
 	// init vr rt
 	if (vr_rt) vr_rt.reset();
@@ -1015,6 +1189,27 @@ void GameManager::init_vr_rt() {
 			->init();
 	}
 
+	// init vr depth rt
+	if (vr_depth_rt) vr_depth_rt.reset();
+	vr_depth_rt = CREATE_CLASS(RenderTarget);
+	if (vr_depth_rt) {
+		vr_depth_rt->add_attach_texture(GL_COLOR_ATTACHMENT0, viewport_info.width, viewport_info.heigh)
+			->add_attach_texture(GL_COLOR_ATTACHMENT1, viewport_info.width, viewport_info.heigh)
+			->add_attach_renderbuffer(viewport_info.width, viewport_info.heigh)
+			->init();
+	}
+	if (vr_depth_msaa_rt) vr_depth_msaa_rt.reset();
+	vr_depth_msaa_rt = CREATE_CLASS(RenderTarget);
+	if (vr_depth_msaa_rt) {
+		vr_depth_msaa_rt->add_attach_texture(GL_COLOR_ATTACHMENT0, viewport_info.width, viewport_info.heigh, GL_TEXTURE_2D_MULTISAMPLE)
+			->add_attach_texture(GL_COLOR_ATTACHMENT1, viewport_info.width, viewport_info.heigh, GL_TEXTURE_2D_MULTISAMPLE)
+			->add_attach_renderbuffer(viewport_info.width, viewport_info.heigh, true)
+			->init();
+	}
+	if (vr_depth_mix_rt) vr_depth_mix_rt.reset();
+	vr_depth_mix_rt = CREATE_CLASS(RenderTarget);
+	if (vr_depth_mix_rt) { vr_depth_mix_rt->init_normal(viewport_info.width, viewport_info.heigh); }
+
 	// init vr mix rt
 	if (vr_mix_rt) vr_mix_rt.reset();
 	vr_mix_rt = CREATE_CLASS(RenderTarget);
@@ -1029,6 +1224,7 @@ void GameManager::init_vr_rt() {
 	}
 
 }
+
 void GameManager::init_shader_toy_rt() {
 	if (shader_toy_rt) shader_toy_rt.reset();
 	shader_toy_rt = CREATE_CLASS(RenderTarget);
@@ -1038,53 +1234,6 @@ void GameManager::init_shader_toy_rt() {
 		if (stbr) stbr.reset();
 		stbr = CREATE_CLASS(RenderTarget);
 		if (stbr) { stbr->init_simple(viewport_info.width, viewport_info.heigh); }
-	}
-}
-void GameManager::init_msaa_rt() {
-	if (msaa_rt) msaa_rt.reset();
-	msaa_rt = CREATE_CLASS(RenderTarget);
-	if (msaa_rt) { msaa_rt->init_normal_multisample(viewport_info.width, viewport_info.heigh); }
-}
-void GameManager::init_hdr_rt() {
-	if (hdr_rt) hdr_rt.reset();
-	hdr_rt = CREATE_CLASS(RenderTarget);
-	if (hdr_rt) {
-		if (!hdr_rt->init_normal_f(viewport_info.width, viewport_info.heigh)) {
-			c_debuger() << "create rt fail";
-		}
-	}
-
-	if (hdr_scene_rt) hdr_scene_rt.reset();
-	hdr_scene_rt = CREATE_CLASS(RenderTarget);
-	if (hdr_scene_rt) {
-		if (!hdr_scene_rt->init_normal_f(viewport_info.width, viewport_info.heigh)) {
-			c_debuger() << "create rt fail";
-		}
-	}
-
-	if (hdr_pp_rt) hdr_pp_rt.reset();
-	hdr_pp_rt = CREATE_CLASS(RenderTarget);
-	if (hdr_pp_rt) {
-		if (!hdr_pp_rt->init_normal_f(viewport_info.width, viewport_info.heigh)) {
-			c_debuger() << "create rt fail";
-		}
-	}
-
-	if (hdr_msaa_rt) hdr_msaa_rt.reset();
-	hdr_msaa_rt = CREATE_CLASS(RenderTarget);
-	if (hdr_msaa_rt) { hdr_msaa_rt->init_normal_multisample_f(viewport_info.width, viewport_info.heigh); }
-
-}
-void GameManager::init_shadow_rt() {
-	direct_light_shadow_rts.resize(direct_light_num_max);
-	for (auto& shadow_rt : direct_light_shadow_rts) {
-		if (shadow_rt) shadow_rt.reset();
-		shadow_rt = CREATE_CLASS(RenderTarget);
-		if (shadow_rt) {
-			shadow_rt->add_attach_texture(GL_DEPTH_ATTACHMENT, 1024, 1024,
-				GL_TEXTURE_2D, GL_DEPTH_COMPONENT, GL_DEPTH_COMPONENT, GL_FLOAT)
-				->init();
-		}
 	}
 }
 
