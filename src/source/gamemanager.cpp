@@ -696,7 +696,8 @@ void GameManager::vr_base_pass() {
 			auto t_eye = main_camera->get_root_component()->get_location() 
 				+ main_camera->get_camera_component()->get_right_axis() * vr_delta;
 			auto t_center = main_camera->get_root_component()->get_location()
-				+ main_camera->get_camera_component()->get_front_axis() * 10.0f;
+				+ main_camera->get_camera_component()->get_front_axis() * vr_delta*40.0f;
+			if (CMath_ins().fcmp(vr_delta, 0.0f) == 0) { t_center = main_camera->get_camera_component()->get_front_axis(); }
 			auto t_world_up = main_camera->get_camera_component()->get_world_up();
 			t_mat_view.lookAt(t_eye, t_center, t_world_up);
 
@@ -720,7 +721,7 @@ void GameManager::vr_base_pass() {
 						stack_shaders->top()->use();
 						// 要移除矩阵的移动部分
 						auto t_view = CMatrix4x4(CMatrix3x3(main_camera->get_camera_component()->get_view_mat().data(), 4, 4).data(), 3, 3);
-						t_view.translate(main_camera->get_camera_component()->get_right_axis() * -vr_delta * 0.1f);
+						t_view.translate(main_camera->get_camera_component()->get_right_axis() * vr_delta * 0.1f);
 						stack_shaders->top()->set_mat4("u_view_sky_box", t_view);
 						stack_shaders->top()->set_int("u_texture", 0);
 					}
@@ -741,7 +742,8 @@ void GameManager::vr_base_pass() {
 			auto t_eye = main_camera->get_root_component()->get_location()
 				- main_camera->get_camera_component()->get_right_axis() * vr_delta;
 			auto t_center = main_camera->get_root_component()->get_location()
-				+ main_camera->get_camera_component()->get_front_axis() * 10.0f;
+				+ main_camera->get_camera_component()->get_front_axis() * vr_delta*40.0f;
+			if (CMath_ins().fcmp(vr_delta, 0.0f) == 0) { t_center = main_camera->get_camera_component()->get_front_axis(); }
 			auto t_world_up = main_camera->get_camera_component()->get_world_up();
 			t_mat_view.lookAt(t_eye, t_center, t_world_up);
 
@@ -765,7 +767,7 @@ void GameManager::vr_base_pass() {
 						stack_shaders->top()->use();
 						// 要移除矩阵的移动部分
 						auto t_view = CMatrix4x4(CMatrix3x3(main_camera->get_camera_component()->get_view_mat().data(), 4, 4).data(), 3, 3);
-						t_view.translate(main_camera->get_camera_component()->get_right_axis() * vr_delta * 0.1f);
+						t_view.translate(main_camera->get_camera_component()->get_right_axis() * -vr_delta * 0.1f);
 						stack_shaders->top()->set_mat4("u_view_sky_box", t_view);
 						stack_shaders->top()->set_int("u_texture", 0);
 					}
