@@ -31,17 +31,11 @@ layout (std140) uniform Matrices {
 uniform mat4 u_model;
 uniform mat4 u_bones[MAX_BONES];
 
-uniform mat4 u_direct_light_proj_view[max_direct_light_num];
-uniform int         u_direct_light_num;                         // default is 0
+uniform mat4		u_direct_light_proj_view[max_direct_light_num];
+uniform int         u_direct_light_num;								// default is 0
 uniform int         u_point_light_num;
 uniform int         u_spot_light_num;
 uniform int         u_sky_light_num;
-
-void cac_light_pv() {
-	for(int i = 0; i < u_direct_light_num; ++i) {
-		o_vs.direct_light_pv_pos[i] = u_direct_light_proj_view[i] * vec4(o_vs.world_pos, 1.0);
-	}
-}
 
 void main() {
 	mat4 t_bone_mat	 = mat4(1.0f);
@@ -62,7 +56,10 @@ void main() {
 
 	o_np.normal = normalize(vec3(u_projection * vec4(o_vs.normal, 0.0)));		// 几何着色器在 裁剪空间计算
 
-	cac_light_pv();
+	for(int i = 0; i < u_direct_light_num; ++i) {
+		o_vs.direct_light_pv_pos[i] = u_direct_light_proj_view[i] * t_model * vec4(a_pos, 1.0f);
+		//if(o_vs.direct_light_pv_pos[i].xyz == o_vs.world_pos) { o_vs.direct_light_pv_pos[i].z = 0.0; }
+	}
 
     gl_Position = u_projection * u_view * t_model * vec4(a_pos, 1.0f);
 

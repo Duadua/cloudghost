@@ -230,8 +230,8 @@ void GameManager::draw() {
 	// draw
 	{
 		auto t_final_tex = scene_texture;
-		if (b_depth) t_final_tex = depth_texture;
-		//t_final_tex = direct_light_shadow_rts[0]->get_attach_textures()[0].texture;
+		if (b_depth && !b_use_shader_toy) t_final_tex = depth_texture;
+		// t_final_tex = direct_light_shadow_rts[0]->get_attach_textures()[0].texture;
 
 		// pass 0 -- 渲染到默认缓冲 -- 必须第一个执行
 		scene_pass(t_final_tex); 						// 显示正常渲染图 
@@ -264,6 +264,7 @@ void GameManager::draw() {
 			}
 			else {
 				if (b_depth) { vr_depth_pass(); }	// 得到 depth_texture
+				shadow_pass();				
 				pick_pass();
 				vr_base_pass();						// 得到 scene_texture
 				vr_border_pass();					// 得到 border_texture -- 然后输入 scene_texture -- 得到scene_texture
@@ -348,7 +349,7 @@ void GameManager::shadow_pass() {
 	for (auto t_p : map_direct_lights) {
 		auto t_dlight = t_p.second;
 		if (t_dlight) {
-			glViewport(0, 0, 1024, 1024); {
+			glViewport(0, 0, 1024, 1024); /*set_cull_face(true, GL_BACK);*/ {
 				direct_light_shadow_rts[i]->use(); {
 					glDrawBuffer(GL_NONE);
 					glReadBuffer(GL_NONE);
@@ -358,15 +359,15 @@ void GameManager::shadow_pass() {
 							stack_shaders->top()->use();
 							// 设置为此光源的 view and proj 矩阵
 							CMatrix4x4 t_view, t_proj;
-							t_proj.ortho(-20.0f, 20.0f, -20.0f, 20.0f, 0.1f, 30.0f);
-							t_view.lookAt(-20.0f * t_dlight->get_root_component()->get_front_axis(), CVector3D(0.0f), CVector3D(0.0f, 1.0f, 0.0f));
+							t_proj.ortho(-20.0f, 20.0f, -20.0f, 20.0f, 0.1f, 20.0f);
+							t_view.lookAt(-10.0f * t_dlight->get_root_component()->get_front_axis(), CVector3D(0.0f), CVector3D(0.0f, 1.0f, 0.0f));
 							t_dlight->get_light_component()->set_mat_proj_view(t_proj * t_view);
 							stack_shaders->top()->set_mat4("u_light_proj_view", t_dlight->get_light_component()->get_mat_proj_view());
 						}
 						draw_all_objs(stack_shaders->top());
 					} stack_shaders->pop();
 				} direct_light_shadow_rts[i]->un_use();
-			} glViewport(0, 0, viewport_info.width, viewport_info.heigh);
+			} /*set_cull_face();*/ glViewport(0, 0, viewport_info.width, viewport_info.heigh);
 			++i;
 		} // 每一人光源生成一个 shadow map
 	}
@@ -1116,9 +1117,27 @@ void GameManager::draw_lights(SPTR_Shader shader) {
 		for (auto t_p : map_direct_lights) {
 			auto t_light = t_p.second;
 			if (t_light) {
-				t_light->get_light_component()->set_id(t_id++);
+				t_light->get_light_component()->set_id(t_id);
 				t_light->use(shader);
+
+				// set shadow
+				std::string t_name = "u_direct_light_proj_view["
+					+ StringHelper_ins().int_to_string(t_light->get_light_component()->get_id()) + "]";
+				shader->set_mat4(t_name, t_light->get_light_component()->get_mat_proj_view());
+			
+				if (direct_light_shadow_rts.size() > t_id) {
+					auto t_v = direct_light_shadow_rts[t_id];
+					if (t_v && t_v->get_attach_textures().size() > 0) {
+						t_v->get_attach_textures()[0].texture->bind(3 + t_id);
+						std::string t_rt_name = "u_direct_shadow_map[" 
+							+ StringHelper_ins().int_to_string(3+t_id) + "]";
+						shader->use();
+						shader->set_int("u_direct_shadow_map", 3 + t_id);
+					}
+				}
+				++t_id;
 			}
+			
 		} shader->set_int("u_direct_light_num", t_id);
 	}
 	// point light
