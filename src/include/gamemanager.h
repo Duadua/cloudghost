@@ -18,6 +18,10 @@ PRE_DECLARE_CLASS(CameraObject)
 USING_SPTR(CameraObject)
 PRE_DECLARE_CLASS(DirectLightObject)
 USING_SPTR(DirectLightObject)
+PRE_DECLARE_CLASS(PointLightObject)
+USING_SPTR(PointLightObject)
+PRE_DECLARE_CLASS(SpotLightObject)
+USING_SPTR(SpotLightObject)
 PRE_DECLARE_CLASS(SkyBox)
 USING_SPTR(SkyBox)
 PRE_DECLARE_CLASS(Texture2D)
@@ -102,6 +106,8 @@ public:
 
 	void add_game_object(const std::string& key, SPTR_GameObject value);
 	void add_direct_light(const std::string& key, SPTR_DirectLightObject value);
+	void add_point_light(const std::string& key, SPTR_PointLightObject value);
+	void add_spots_light(const std::string& key, SPTR_SpotLightObject value);
 
 
 public:									// used for qt ui
@@ -141,7 +147,9 @@ protected:
 	
 	SPTR_SkyBox sky_box;
 
-	std::map<std::string, SPTR_DirectLightObject> map_direct_lights;
+	std::map<std::string, SPTR_DirectLightObject>	map_direct_lights;
+	std::map<std::string, SPTR_PointLightObject>	map_point_lights;
+	std::map<std::string, SPTR_SpotLightObject>		map_spots_lights;
 
 	// ui shading setting
 	CColor background_color;
@@ -257,6 +265,7 @@ private:
 	void draw_scene(SPTR_Shader shader);
 	void draw_all_objs(SPTR_Shader shader);
 	void draw_border(SPTR_Shader shader);
+	void draw_lights(SPTR_Shader shader);
 	void draw_init();
 
 	void draw_skybox(SPTR_Shader shader);

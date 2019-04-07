@@ -89,6 +89,7 @@ void GameManager::init() {
 	{
 		// shader
 		AssetManager_ins().load_shader("default", "resources/shaders/mvp_anim.vert", "resources/shaders/blinn_phong.frag");
+		AssetManager_ins().load_shader("default_shadow", "resources/shaders/mvp_anim_shadow.vert", "resources/shaders/blinn_phong_shadow.frag");
 		//AssetManager_ins().load_shader("default", "resources/shaders/mvp_anim.vert", "resources/shaders/single_texture.frag");
 		AssetManager_ins().load_shader("depth", "resources/shaders/mvp_anim.vert", "resources/shaders/depth.frag");
 		AssetManager_ins().load_shader("border", "resources/shaders/scene_2d.vert", "resources/shaders/border.frag");
@@ -146,7 +147,8 @@ void GameManager::init() {
 	// init shader stack 
 	{
 		stack_shaders = CREATE_CLASS(ShaderStack);
-		stack_shaders->push(AssetManager_ins().get_shader("default"));	// default shader
+		//stack_shaders->push(AssetManager_ins().get_shader("default"));		// default shader
+		stack_shaders->push(AssetManager_ins().get_shader("default_shadow"));	// default shader with shadow
 	}
 
 	// init uniform block 
@@ -206,19 +208,6 @@ void GameManager::init() {
 		begin_play();						// 设置模型等
 		main_begin_play();					 
 	}
-	
-	// init lights
-	{
-		for (auto t_p : map_direct_lights) {
-			auto t_dlight = t_p.second;
-			if (t_dlight) {
-				for (auto shader : AssetManager_ins().map_shaders) {
-					auto t_shader = shader.second;
-					t_dlight->use(t_shader);
-				}
-			}
-		}
-	}
 
 }
 void GameManager::draw() {
@@ -242,6 +231,7 @@ void GameManager::draw() {
 	{
 		auto t_final_tex = scene_texture;
 		if (b_depth) t_final_tex = depth_texture;
+		//t_final_tex = direct_light_shadow_rts[0]->get_attach_textures()[0].texture;
 
 		// pass 0 -- 渲染到默认缓冲 -- 必须第一个执行
 		scene_pass(t_final_tex); 						// 显示正常渲染图 
@@ -301,12 +291,6 @@ void GameManager::scene_pass(SPTR_Texture2D tex) {
 		if (stack_shaders->top()) {
 			stack_shaders->use();
 			if (tex) { tex->bind(0); }
-			/*if (direct_light_shadow_rts.size() > 0) {
-				if (direct_light_shadow_rts[0]->get_attach_textures().size() > 0) {
-					auto t_tex = direct_light_shadow_rts[0]->get_attach_textures()[0].texture;
-					if (t_tex) { t_tex->bind(0); }
-				}
-			}*/
 			stack_shaders->top()->set_int("u_texture", 0);
 		}
 
@@ -373,8 +357,11 @@ void GameManager::shadow_pass() {
 						if (stack_shaders->top()) {
 							stack_shaders->top()->use();
 							// 设置为此光源的 view and proj 矩阵
-							auto t_pv = main_camera->get_camera_component()->get_proj_mat() * main_camera->get_camera_component()->get_view_mat();
-							stack_shaders->top()->set_mat4("u_light_proj_view", t_pv);
+							CMatrix4x4 t_view, t_proj;
+							t_proj.ortho(-20.0f, 20.0f, -20.0f, 20.0f, 0.1f, 30.0f);
+							t_view.lookAt(-20.0f * t_dlight->get_root_component()->get_front_axis(), CVector3D(0.0f), CVector3D(0.0f, 1.0f, 0.0f));
+							t_dlight->get_light_component()->set_mat_proj_view(t_proj * t_view);
+							stack_shaders->top()->set_mat4("u_light_proj_view", t_dlight->get_light_component()->get_mat_proj_view());
 						}
 						draw_all_objs(stack_shaders->top());
 					} stack_shaders->pop();
@@ -435,10 +422,9 @@ void GameManager::base_pass() {
 			if (stack_shaders->top()) {
 				stack_shaders->top()->use();
 				stack_shaders->top()->set_vec3("u_view_pos", main_camera->get_root_component()->get_location());
-
 				if (b_explode) { stack_shaders->top()->set_float("u_time", TimeManager_ins().cur_runtime_seconds()); }
 			}
-			// glStencilMask(0xff);							// 允许写入模板缓冲
+			draw_lights(stack_shaders->top());			// set light uniform for shader
 			draw_all_objs(stack_shaders->top());
 		} if (b_explode) { stack_shaders->pop(); }
 
@@ -834,7 +820,7 @@ void GameManager::vr_base_pass() {
 				stack_shaders->top()->use();
 				stack_shaders->top()->set_vec3("u_view_pos", main_camera->get_root_component()->get_location());
 			}
-			// glStencilMask(0xff);							// 允许写入模板缓冲
+			draw_lights(stack_shaders->top());			// set light uniform for shader
 			draw_all_objs(stack_shaders->top());
 
 			// normal visual
@@ -879,8 +865,9 @@ void GameManager::vr_base_pass() {
 			if (stack_shaders->top()) {
 				stack_shaders->top()->use();
 				stack_shaders->top()->set_vec3("u_view_pos", main_camera->get_root_component()->get_location());
+				
 			}
-			//glStencilMask(0xff);							// 允许写入模板缓冲
+			draw_lights(stack_shaders->top());			// set light uniform for shader
 			draw_all_objs(stack_shaders->top());
 
 			// normal visual
@@ -1120,6 +1107,43 @@ void GameManager::draw_border(SPTR_Shader shader) {
 		}	// 拾取 -- 绘制边框
 	}
 	set_polygon_mode();
+}
+void GameManager::draw_lights(SPTR_Shader shader) {
+	if (!shader) { return; }
+	// direct light
+	{
+		int t_id = 0;
+		for (auto t_p : map_direct_lights) {
+			auto t_light = t_p.second;
+			if (t_light) {
+				t_light->get_light_component()->set_id(t_id++);
+				t_light->use(shader);
+			}
+		} shader->set_int("u_direct_light_num", t_id);
+	}
+	// point light
+	{
+		int t_id = 0;
+		for (auto t_p : map_point_lights) {
+			auto t_light = t_p.second;
+			if (t_light) {
+				t_light->get_light_component()->set_id(t_id++);
+				t_light->use(shader);
+			}
+		} shader->set_int("u_point_light_num", t_id);
+	}
+	// spots light
+	{
+		int t_id = 0;
+		for (auto t_p : map_spots_lights) {
+			auto t_light = t_p.second;
+			if (t_light) {
+				t_light->get_light_component()->set_id(t_id++);
+				t_light->use(shader);
+			}
+		} shader->set_int("u_spot_light_num", t_id);
+	}
+
 }
 void GameManager::draw_init() {
 	glClearColor(background_color.r_f(), background_color.g_f(), background_color.b_f(), background_color.a_f());
@@ -1459,6 +1483,16 @@ void GameManager::add_direct_light(const std::string& key, SPTR_DirectLightObjec
 	if (map_direct_lights.count(key)) return;
 	if (map_direct_lights.size() >= direct_light_num_max) return;
 	map_direct_lights.insert(std::make_pair(key, value));
+}
+void GameManager::add_point_light(const std::string& key, SPTR_PointLightObject value) {
+	if (map_point_lights.count(key)) return;
+	if (map_point_lights.size() >= point_light_num_max) return;
+	map_point_lights.insert(std::make_pair(key, value));
+}
+void GameManager::add_spots_light(const std::string& key, SPTR_SpotLightObject value) {
+	if (map_spots_lights.count(key)) return;
+	if (map_spots_lights.size() >= spot_light_num_max) return;
+	map_spots_lights.insert(std::make_pair(key, value));
 }
 
 void GameManager::main_bind_input() {

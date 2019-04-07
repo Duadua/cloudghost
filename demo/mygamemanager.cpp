@@ -119,6 +119,7 @@ void MyGameManager::begin_play() {
 	// use direct light
 	{
 		auto d_light = CREATE_CLASS(DirectLightObject);
+		d_light->get_root_component()->set_rotation(-45.0f, -30.0f, 0.0f);
 		d_light->get_light_component()->set_intensity(1.0f);
 
 		add_direct_light("d_light", d_light);
@@ -139,11 +140,7 @@ void MyGameManager::begin_play() {
 		p_light->get_root_component()->set_location(3.0f, 6.0f, 15.0f);
 		p_light->get_light_component()->set_att_radius(50.0f);
 		p_light->get_light_component()->set_color(CVector3D(1.0f, 0.0f, 0.0f));
-
-		for (auto shader : AssetManager_ins().map_shaders) {
-			auto t_shader = shader.second;
-			p_light->use(t_shader);
-		}
+		add_point_light("p_light", p_light);
 	}
 	
 	// use spot light
@@ -156,13 +153,8 @@ void MyGameManager::begin_play() {
 		s_light->get_light_component()->set_inner(15.0f);
 		s_light->get_light_component()->set_outer(20.0f);
 
-		for (auto shader : AssetManager_ins().map_shaders) {
-			auto t_shader = shader.second;
-			s_light->use(t_shader);
-		}
+		add_spots_light("s_light", s_light);
 	}
-
-	 //vr_delta = 0.05f;
 
 }
 

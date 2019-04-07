@@ -44,6 +44,11 @@ public:
 	CVector3D get_rotation();
 	CVector3D get_scale();
 
+	CVector3D get_front_axis();
+	CVector3D get_right_axis();
+	CVector3D get_up_axis();
+	CVector3D get_world_up();
+
     GET_SET(bool, is_border)
 	void set_all_border(bool border);			// 设置 此 MC 和 其子MC 都为 border
 
@@ -62,4 +67,12 @@ protected:
 	CVector3D location;
 	CVector3D rotation;
 	CVector3D scale;
+
+	// axis
+	void update_rotation();			// to update axis and world_up
+	CVector3D front_axis;
+	CVector3D right_axis;
+	CVector3D up_axis;
+	CVector3D world_up;
+
 };

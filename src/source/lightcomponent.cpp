@@ -6,7 +6,7 @@
 IMPLEMENT_CLASS(LightComponent)
 
 LightComponent::LightComponent() {
-
+	id = 0;
 	color = CVector3D(1.0f);								// default color
 	intensity = 1.0f;										// default intensity
 	k = CVector3D(0.2f, 0.6f, 0.2f);
@@ -32,10 +32,7 @@ CVector3D LightComponent::get_dirction() {
 
 IMPLEMENT_CLASS(DirectLightComponent)
 
-int DirectLightComponent::direct_light_num = 0;
-
 DirectLightComponent::DirectLightComponent() {
-	++direct_light_num;
 	rotation = CVector3D(-46.0f, 0.0f, 0.0f);		// 初始方向
 	//k = CVector3D(1.0f, 1.0f, 1.0f);
 	k = CVector3D(0.2f, 0.6f, 0.2f);
@@ -46,7 +43,7 @@ bool DirectLightComponent::use(SPTR_Shader shader) {
 	if (shader == nullptr) return false;
 
 	// get uniform name in shader 
-	std::string t_name = "u_direct_light[" + StringHelper_ins().int_to_string(direct_light_num-1) + "]";
+	std::string t_name = "u_direct_light[" + StringHelper_ins().int_to_string(id) + "]";
 
 	// bind uniform value for t_shader
 	shader->use();
@@ -54,8 +51,6 @@ bool DirectLightComponent::use(SPTR_Shader shader) {
 	shader->set_float(t_name + ".intensity", intensity);
 	shader->set_vec3(t_name + ".k", k);
 	shader->set_vec3(t_name + ".dirction", get_dirction());
-	
-    shader->set_int("u_direct_light_num", direct_light_num);
 
 	return true;
 
@@ -65,10 +60,7 @@ bool DirectLightComponent::use(SPTR_Shader shader) {
 
 IMPLEMENT_CLASS(PointLightComponent)
 
-int PointLightComponent::point_light_num = 0;
-
 PointLightComponent::PointLightComponent() { 
-	++point_light_num;
 	location = CVector3D(0.0f, 1.0f, 0.0f);
 	k = CVector3D(0.1f, 0.9f, 1.0f);
 
@@ -79,7 +71,7 @@ bool PointLightComponent::use(SPTR_Shader shader) {
 	if (shader == nullptr) return false;
 
 	// get uniform name in shader 
-	std::string t_name = "u_point_light[" + StringHelper_ins().int_to_string(point_light_num-1) + "]";
+	std::string t_name = "u_point_light[" + StringHelper_ins().int_to_string(id) + "]";
 
 	// bind uniform value for t_shader
 	shader->use();
@@ -90,8 +82,6 @@ bool PointLightComponent::use(SPTR_Shader shader) {
 	shader->set_float(t_name + ".att_ka", att_ka);
 	shader->set_float(t_name + ".att_kb", att_kb);
 	shader->set_float(t_name + ".att_kc", att_kc);
-
-	shader->set_int("u_point_light_num", point_light_num);
 
 	return true;
 }
@@ -110,10 +100,7 @@ void PointLightComponent::update_att() {
 
 IMPLEMENT_CLASS(SpotLightComponent)
 
-int SpotLightComponent::spot_light_num = 0;
-
 SpotLightComponent::SpotLightComponent() {
-	++spot_light_num;
 	location = CVector3D(0.0f, 1.0f, 0.0f);			// init location
 	rotation = CVector3D(-90.0f, 0.0f, 0.0f);		// init dirction
 	k = CVector3D(0.0f, 1.0f, 1.0f);
@@ -129,7 +116,7 @@ bool SpotLightComponent::use(SPTR_Shader shader) {
 	if (shader == nullptr) return false;
 
 	// get uniform name in shader 
-	std::string t_name = "u_spot_light[" + StringHelper_ins().int_to_string(spot_light_num-1) + "]";
+	std::string t_name = "u_spot_light[" + StringHelper_ins().int_to_string(id) + "]";
 
 	// bind uniform value for t_shader
 	shader->use();
@@ -144,8 +131,6 @@ bool SpotLightComponent::use(SPTR_Shader shader) {
 
 	shader->set_float(t_name + ".inner", std::cos(CMath_ins().deg_to_rad(inner)));
 	shader->set_float(t_name + ".outer", std::cos(CMath_ins().deg_to_rad(outer)));
-
-	shader->set_int("u_spot_light_num", spot_light_num);
 
 	return true;
 }

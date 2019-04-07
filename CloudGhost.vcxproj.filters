@@ -624,6 +624,12 @@
     <None Include="resources\shaders\border.frag">
       <Filter>resources\shaders\frags</Filter>
     </None>
+    <None Include="resources\shaders\blinn_phong_shadow.frag">
+      <Filter>resources\shaders\frags</Filter>
+    </None>
+    <None Include="resources\shaders\mvp_anim_shadow.vert">
+      <Filter>resources\shaders\verts</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Text Include="resources\models\txt\cube.txt">

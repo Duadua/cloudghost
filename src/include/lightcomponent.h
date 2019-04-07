@@ -20,17 +20,20 @@ public:
 
 	virtual bool use(SPTR_Shader shader) { if (shader) { return true; } return false; }
 
-    GET_SET(CVector3D, color)
-    GET_SET(float, intensity)
-    GET_SET(CVector3D, k)
-
+	GET_SET(int , id)
+	GET_SET(CVector3D, color)
+	GET_SET(float, intensity)
+	GET_SET(CVector3D, k)
+	GET_SET(CMatrix4x4, mat_proj_view)
 	CVector3D get_dirction();					// from rotation  -- 初始方向 (0.0, 0.0, 1.0)
 
 protected:
+	int id;
 	CVector3D color;
 	float intensity;
 	CVector3D k;								// 各分量占比 -- ambient / diffuse / specular
 
+	CMatrix4x4 mat_proj_view;					// 此光源的 T 矩阵 -- 阴影用
 private:
 
 };
@@ -48,8 +51,6 @@ public:
 	virtual bool use(SPTR_Shader shader) override;
 
 private:
-
-    static int direct_light_num;
 
 };
 DECLARE_AUTO_PTR(DirectLightComponent)
@@ -78,8 +79,6 @@ private:
 	float att_kb;
 	float att_kc;
 	
-    static int point_light_num;
-
 
 };
 DECLARE_AUTO_PTR(PointLightComponent)
@@ -115,8 +114,6 @@ private:
 	float inner;
 	float outer;
 	
-    static int spot_light_num;
-
 };
 DECLARE_AUTO_PTR(SpotLightComponent)
 

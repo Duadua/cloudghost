@@ -3,7 +3,7 @@
 
 IMPLEMENT_CLASS(SceneComponent)
 
-SceneComponent::SceneComponent() : is_border(false), scale(CVector3D(1.0f, 1.0f, 1.0f)) {}
+SceneComponent::SceneComponent() : is_border(false), scale(CVector3D(1.0f, 1.0f, 1.0f)), world_up(0.0f, 1.0f, 0.0f) {}
 SceneComponent::~SceneComponent() {}
 
 void SceneComponent::_begin_play() { 
@@ -85,3 +85,35 @@ void SceneComponent::set_all_border(bool border) {
 	is_border = border;
 	for (auto cc : child_components) { cc->set_all_border(border); }
 }
+
+CVector3D SceneComponent::get_front_axis() { update_rotation(); return front_axis; }
+CVector3D SceneComponent::get_right_axis() { update_rotation(); return right_axis; }
+CVector3D SceneComponent::get_up_axis() { update_rotation(); return up_axis; }
+CVector3D SceneComponent::get_world_up() { update_rotation(); return world_up; }
+
+void SceneComponent::update_rotation() {
+	float yaw = CMath_ins().deg_to_rad(rotation.y());
+	float pitch = CMath_ins().deg_to_rad(rotation.x());
+	float roll = CMath_ins().deg_to_rad(rotation.z());
+
+	// 计算 world_up
+	world_up.set_z(0.0f);
+	world_up.set_x(std::sin(roll));
+	world_up.set_y(std::cos(roll));
+	world_up.normalize();
+
+	// 计算 front -- 初始方向 (0.0, 0.0, 0.0)
+	front_axis.set_x(std::sin(yaw) * std::cos(pitch));
+	front_axis.set_z(std::cos(yaw) * std::cos(pitch));
+	front_axis.set_y(std::sin(pitch));
+	front_axis.normalize();
+
+	// 计算 right
+	right_axis = front_axis.cross(world_up);
+	right_axis.normalize();
+
+	// 计算 up
+	up_axis = right_axis.cross(front_axis);
+	up_axis.normalize();
+}
+
