@@ -1129,10 +1129,10 @@ void GameManager::draw_lights(SPTR_Shader shader) {
 					auto t_v = direct_light_shadow_rts[t_id];
 					if (t_v && t_v->get_attach_textures().size() > 0) {
 						t_v->get_attach_textures()[0].texture->bind(3 + t_id);
-						std::string t_rt_name = "u_direct_shadow_map[" 
-							+ StringHelper_ins().int_to_string(3+t_id) + "]";
+						std::string t_rt_name = "u_direct_shadow_map_" 
+							+ StringHelper_ins().int_to_string(t_id);
 						shader->use();
-						shader->set_int("u_direct_shadow_map", 3 + t_id);
+						shader->set_int(t_rt_name, 3 + t_id);
 					}
 				}
 				++t_id;
