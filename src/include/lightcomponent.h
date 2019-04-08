@@ -7,8 +7,8 @@ PRE_DECLARE_CLASS(Shader)
 USING_SPTR(Shader)
 
 const int direct_light_num_max = 1;
-const int point_light_num_max = 16;
-const int spot_light_num_max = 16;
+const int point_light_num_max = 4;
+const int spot_light_num_max = 4;
 const int sky_light_num_max = 1;
 
 // base light
@@ -24,7 +24,6 @@ public:
 	GET_SET(CVector3D, color)
 	GET_SET(float, intensity)
 	GET_SET(CVector3D, k)
-	GET_SET(CMatrix4x4, mat_proj_view)
 	CVector3D get_dirction();					// from rotation  -- 初始方向 (0.0, 0.0, 1.0)
 
 protected:
@@ -33,7 +32,6 @@ protected:
 	float intensity;
 	CVector3D k;								// 各分量占比 -- ambient / diffuse / specular
 
-	CMatrix4x4 mat_proj_view;					// 此光源的 T 矩阵 -- 阴影用
 private:
 
 };
@@ -50,12 +48,33 @@ public:
 
 	virtual bool use(SPTR_Shader shader) override;
 
-private:
+	GET_SET(CMatrix4x4, mat_proj_view)
 
+private:
+	CMatrix4x4 mat_proj_view;					// 此光源的 T 矩阵 -- 阴影用
 };
 DECLARE_AUTO_PTR(DirectLightComponent)
 
 // =======================================================
+
+
+// 6 个方向的轴 -- shadowmap 用
+const CVector3D point_front[6] = {
+	CVector3D( 1.0f, 0.0f, 0.0f),
+	CVector3D(-1.0f, 0.0f, 0.0f),
+	CVector3D( 0.0f, 1.0f, 0.0f),
+	CVector3D( 0.0f,-1.0f, 0.0f),
+	CVector3D( 0.0f, 0.0f, 1.0f),
+	CVector3D( 0.0f, 0.0f,-1.0f)
+};
+const CVector3D point_world_up[6] = {
+	CVector3D( 0.0f,-1.0f, 0.0f),
+	CVector3D( 0.0f,-1.0f, 0.0f),
+	CVector3D( 0.0f, 0.0f, 1.0f),
+	CVector3D( 0.0f, 0.0f,-1.0f),
+	CVector3D( 0.0f,-1.0f, 0.0f),
+	CVector3D( 0.0f,-1.0f, 0.0f)
+};
 
 // point light
 class PointLightComponent : public LightComponent{
@@ -70,6 +89,9 @@ public:
 	void set_att_radius(float t_att_radius);
 	void update_att();			// 由衰减半径更新 参数
 
+	CMatrix4x4 get_mat_proj_view(int id);
+	void set_mat_proj_view(int id, const CMatrix4x4& mat);
+
 private:
 
 	float att_raduis;			// 衰减半径
@@ -78,7 +100,9 @@ private:
 	float att_ka;
 	float att_kb;
 	float att_kc;
-	
+
+	// shadow map 用 T变换
+	std::vector<CMatrix4x4> mat_proj_views;			// 6个方向的
 
 };
 DECLARE_AUTO_PTR(PointLightComponent)

@@ -3,8 +3,8 @@
 
 // light num 
 const int max_direct_light_num	= 1;
-const int max_point_light_num	= 16;
-const int max_spot_light_num	= 16;
+const int max_point_light_num	= 4;
+const int max_spot_light_num	= 4;
 const int max_sky_light_num	    = 1;
 
 layout (location = 0) in vec3 a_pos;

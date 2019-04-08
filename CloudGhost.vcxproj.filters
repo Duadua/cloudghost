@@ -630,6 +630,15 @@
     <None Include="resources\shaders\mvp_anim_shadow.vert">
       <Filter>resources\shaders\verts</Filter>
     </None>
+    <None Include="resources\shaders\shadow_point.frag">
+      <Filter>resources\shaders\frags</Filter>
+    </None>
+    <None Include="resources\shaders\shadow_point.vert">
+      <Filter>resources\shaders\verts</Filter>
+    </None>
+    <None Include="resources\shaders\shadow_point.geom">
+      <Filter>resources\shaders\geoms</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Text Include="resources\models\txt\cube.txt">

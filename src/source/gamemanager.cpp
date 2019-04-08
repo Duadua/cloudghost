@@ -106,6 +106,7 @@ void GameManager::init() {
 		AssetManager_ins().load_shader("hdr", "resources/shaders/scene_2d.vert", "resources/shaders/hdr.frag");
 		AssetManager_ins().load_shader("skybox", "resources/shaders/skybox.vert", "resources/shaders/skybox.frag");
 		AssetManager_ins().load_shader("shadow", "resources/shaders/shadow.vert", "resources/shaders/shadow.frag");
+		AssetManager_ins().load_shader("shadow_point", "resources/shaders/shadow_point.vert", "resources/shaders/shadow_point.frag", "resources/shaders/shadow_point.geom");
 
 		AssetManager_ins().load_shader("shader_toy_img", "resources/shaders/scene_2d.vert", "resources/shaders/shadertoy_img.frag");
 		AssetManager_ins().load_shader("shader_toy_buffer_a", "resources/shaders/scene_2d.vert", "resources/shaders/shadertoy_buffer_a.frag");
@@ -345,31 +346,75 @@ void GameManager::depth_pass() {
 }
 void GameManager::shadow_pass() {
 	// direction lights's shadow map
-	int i = 0;
-	for (auto t_p : map_direct_lights) {
-		auto t_dlight = t_p.second;
-		if (t_dlight) {
-			glViewport(0, 0, 1024, 1024); /*set_cull_face(true, GL_BACK);*/ {
-				direct_light_shadow_rts[i]->use(); {
-					glDrawBuffer(GL_NONE);
-					glReadBuffer(GL_NONE);
-					draw_init();
-					stack_shaders->push(AssetManager_ins().get_shader("shadow")); {
-						if (stack_shaders->top()) {
-							stack_shaders->top()->use();
-							// 设置为此光源的 view and proj 矩阵
-							CMatrix4x4 t_view, t_proj;
-							t_proj.ortho(-20.0f, 20.0f, -20.0f, 20.0f, 0.1f, 20.0f);
-							t_view.lookAt(-10.0f * t_dlight->get_root_component()->get_front_axis(), CVector3D(0.0f), CVector3D(0.0f, 1.0f, 0.0f));
-							t_dlight->get_light_component()->set_mat_proj_view(t_proj * t_view);
-							stack_shaders->top()->set_mat4("u_light_proj_view", t_dlight->get_light_component()->get_mat_proj_view());
-						}
-						draw_all_objs(stack_shaders->top());
-					} stack_shaders->pop();
-				} direct_light_shadow_rts[i]->un_use();
-			} /*set_cull_face();*/ glViewport(0, 0, viewport_info.width, viewport_info.heigh);
-			++i;
-		} // 每一人光源生成一个 shadow map
+	{
+		int i = 0;
+		for (auto t_p : map_direct_lights) {
+			auto t_dlight = t_p.second;
+			if (t_dlight) {
+				glViewport(0, 0, 1024, 1024); /*set_cull_face(true, GL_BACK);*/ {
+					direct_light_shadow_rts[i]->use(); {
+						glDrawBuffer(GL_NONE);
+						glReadBuffer(GL_NONE);
+						draw_init();
+						stack_shaders->push(AssetManager_ins().get_shader("shadow")); {
+							if (stack_shaders->top()) {
+								stack_shaders->top()->use();
+								// 设置为此光源的 view and proj 矩阵
+								CMatrix4x4 t_view, t_proj;
+								t_proj.ortho(-20.0f, 20.0f, -20.0f, 20.0f, 0.1f, 20.0f);
+								t_view.lookAt(-10.0f * t_dlight->get_root_component()->get_front_axis(), CVector3D(0.0f), CVector3D(0.0f, 1.0f, 0.0f));
+								t_dlight->get_light_component()->set_mat_proj_view(t_proj * t_view);
+								stack_shaders->top()->set_mat4("u_light_proj_view", t_dlight->get_light_component()->get_mat_proj_view());
+							}
+							draw_all_objs(stack_shaders->top());
+						} stack_shaders->pop();
+					} direct_light_shadow_rts[i]->un_use();
+				} /*set_cull_face();*/ glViewport(0, 0, viewport_info.width, viewport_info.heigh);
+				++i;
+			} // 每一个光源生成一个 shadow map
+		}
+	}
+
+	// point lights's shadow map
+	{
+		int i = 0;
+		for (auto t_p : map_point_lights) {
+			auto t_light = t_p.second;
+			if (t_light) {
+				glViewport(0, 0, 1024, 1024); {
+					point_light_shadow_rts[i]->use(); {
+						glDrawBuffer(GL_NONE);
+						glReadBuffer(GL_NONE);
+						draw_init();
+						stack_shaders->push(AssetManager_ins().get_shader("shadow_point")); {
+							if (stack_shaders->top()) {
+								stack_shaders->top()->use();
+								// 设置为此光源的 view and proj 矩阵
+								CMatrix4x4 t_proj;
+								t_proj.perspective(90.0f, 1.0f * 1024 / 1024, 0.1f, 30.0f);
+								auto t_loc = t_light->get_root_component()->get_location();
+								// 6个方向
+								for (int j = 0; j < 6; ++j) {
+									CMatrix4x4 t_view;
+									t_view.lookAt(t_loc, t_loc + point_front[j], point_world_up[j]);
+									t_light->get_light_component()->set_mat_proj_view(j, t_proj*t_view);
+									stack_shaders->top()->set_mat4("u_light_proj_view["
+										+ StringHelper_ins().int_to_string(j) + "]", 
+										t_light->get_light_component()->get_mat_proj_view(j));
+										
+								}
+								stack_shaders->top()->set_float("u_near", 0.1f);
+								stack_shaders->top()->set_float("u_far", 30.0f);
+								stack_shaders->top()->set_vec3("u_light_pos", t_loc);
+							}
+							draw_all_objs(stack_shaders->top());
+						} stack_shaders->pop();
+					} point_light_shadow_rts[i]->un_use();
+				} glViewport(0, 0, viewport_info.width, viewport_info.heigh);
+				
+				++i;
+			}
+		} // 每一个点光源生成一个 cube map -- 作为 point shadow map
 	}
 }
 void GameManager::pick_pass() {
@@ -460,7 +505,8 @@ void GameManager::base_pass() {
 					stack_shaders->top()->set_int("u_texture", 0);
 				}
 				auto t_texture = sky_box->get_texture();
-				if (t_texture) t_texture->bind(0);
+				//if (t_texture) t_texture->bind(0);
+				point_light_shadow_rts[0]->get_attach_texture_3ds()[0].texture->bind(0);
 				draw_skybox(stack_shaders->top());
 			} stack_shaders->pop();
 		}
@@ -1226,6 +1272,7 @@ void GameManager::init_rt() {
 	init_shadow_rt();
 }
 void GameManager::init_shadow_rt() {
+	// direct light
 	direct_light_shadow_rts.resize(direct_light_num_max);
 	for (auto& shadow_rt : direct_light_shadow_rts) {
 		if (shadow_rt) shadow_rt.reset();
@@ -1236,6 +1283,19 @@ void GameManager::init_shadow_rt() {
 				->init();
 		}
 	}
+
+	// point light
+	point_light_shadow_rts.resize(point_light_num_max);
+	for (auto& shadow_rt : point_light_shadow_rts) {
+		if (shadow_rt) shadow_rt.reset();
+		shadow_rt = CREATE_CLASS(RenderTarget);
+		if (shadow_rt) {
+			shadow_rt->add_attach_texture_3d(GL_DEPTH_ATTACHMENT, 1024, 1024,
+				GL_TEXTURE_CUBE_MAP, GL_DEPTH_COMPONENT, GL_DEPTH_COMPONENT, GL_FLOAT)
+				->init();
+		}
+	}
+
 }
 void GameManager::init_pick_rt() {
 	if(pick_rt) pick_rt.reset();

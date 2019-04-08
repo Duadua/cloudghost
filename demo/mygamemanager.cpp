@@ -137,8 +137,10 @@ void MyGameManager::begin_play() {
 	}
 	{
 		auto p_light = CREATE_CLASS(PointLightObject);
-		p_light->get_root_component()->set_location(3.0f, 6.0f, 15.0f);
-		p_light->get_light_component()->set_att_radius(50.0f);
+		p_light->get_root_component()->set_location(0.0f, 10.0f, 0.0f);
+		//p_light->get_root_component()->set_location(3.0f, 6.0f, 15.0f);
+		//p_light->get_light_component()->set_att_radius(50.0f);
+		p_light->get_light_component()->set_intensity(10.0f);
 		p_light->get_light_component()->set_color(CVector3D(1.0f, 0.0f, 0.0f));
 		add_point_light("p_light", p_light);
 	}

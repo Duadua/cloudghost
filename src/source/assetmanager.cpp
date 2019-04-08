@@ -582,4 +582,11 @@ SPTR_Texture3D AssetManager::get_texture3D(const std::string& key) {
 	}
 	return map_texture3Ds[key];
 }
-
+SPTR_Texture3D AssetManager::gen_blank_texture_3d(const std::string& key, uint width, uint heigh, uint internal_format, uint format, uint data_type, uint type) {
+	if (map_texture3Ds.count(key)) { c_debuger() << "[asset][texture_3d][gen] already gen texture_3d " + key; return false; }
+	auto t_texture = CREATE_CLASS(Texture3D);
+	t_texture->set_name(key);
+	t_texture->gen(width, heigh, internal_format, format, data_type, type);
+	map_texture3Ds[key] = t_texture;
+	return map_texture3Ds[key];
+}

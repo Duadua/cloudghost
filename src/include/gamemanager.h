@@ -234,6 +234,7 @@ private:
 	SPTR_RenderTarget vr_border_rt;
 
 	std::vector<SPTR_RenderTarget> direct_light_shadow_rts;	// 阴影专用
+	std::vector<SPTR_RenderTarget> point_light_shadow_rts;	// 点光源阴影
 
 	SPTR_Texture2D scene_texture;
 	SPTR_Texture2D depth_texture;							// 当前相机视图下的深度图

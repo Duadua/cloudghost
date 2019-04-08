@@ -28,6 +28,7 @@ USING_SPTR(Texture3D)
 #define GL_BGRA				0x80E1
 #define GL_UNSIGNED_BYTE	0x1401
 #define GL_TEXTURE_2D		0x0DE1
+#define GL_TEXTURE_CUBE_MAP 0x8513
 
 SINGLETON_CLASS(AssetManager) {
 	SINGLETON(AssetManager)
@@ -72,6 +73,7 @@ public:
 
 	bool load_texture_3d(const std::string& path, bool b_srgb = true);			// 需传入目录 -- 包含6张有命名规则的贴图
 	SPTR_Texture3D get_texture3D(const std::string& key);
+	SPTR_Texture3D gen_blank_texture_3d(const std::string& key, uint width, uint heigh, uint internal_format = GL_RGB, uint format = GL_RGB, uint data_type = GL_UNSIGNED_BYTE, uint type = GL_TEXTURE_CUBE_MAP);
 };
 SINGLETON_X(AssetManager)
 

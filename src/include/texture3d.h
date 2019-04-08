@@ -3,6 +3,8 @@
 #include "cmath.h"
 #include "reflex.h"
 
+#define GL_TEXTURE_CUBE_MAP 0x8513
+
 struct TextureData {
 	uint type;						// GL_TEXTURE_CUBE_MAP
 	std::string name;
@@ -32,7 +34,7 @@ public:
 	~Texture3D() {}
 
 	void init(std::vector<TextureData> texure_datas, std::vector<SPTR_uchar> dts);
-	//void gen(uint w, uint h, uint in_fmt, uint fmt, uint d_type, uint t = GL_TEXTURE_2D, uint msaa_num = 4);
+	void gen(uint w, uint h, uint in_fmt, uint fmt, uint d_type, uint t = GL_TEXTURE_CUBE_MAP);
 
 	void bind(uint tid = 0) const;
 	static void un_bind(uint tid = 0);

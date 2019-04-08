@@ -2,6 +2,7 @@
 #include "lightcomponent.h"
 #include "stringhelper.h"
 #include "assetmanager.h"
+#include <cassert>
 
 IMPLEMENT_CLASS(LightComponent)
 
@@ -65,6 +66,8 @@ PointLightComponent::PointLightComponent() {
 	k = CVector3D(0.1f, 0.9f, 1.0f);
 
 	set_att_radius(50.0f);
+
+	mat_proj_views.resize(6);
 }
 
 bool PointLightComponent::use(SPTR_Shader shader) {
@@ -95,6 +98,9 @@ void PointLightComponent::update_att() {
 	att_kb = 4.5f / att_raduis;
 	att_kc = 75.0f / att_raduis / att_raduis;
 }
+
+CMatrix4x4 PointLightComponent::get_mat_proj_view(int tid) { assert(tid >= 0 && tid < 6); return mat_proj_views[tid]; }
+void PointLightComponent::set_mat_proj_view(int tid, const CMatrix4x4& mat) { assert(tid >= 0 && tid < 6); mat_proj_views[tid] = mat; }
 
 // =======================================================
 

@@ -2,6 +2,7 @@
 #include <GL/glew.h>
 
 #include "texture2d.h"
+#include "texture3d.h"
 #include "rendertarget.h"
 
 IMPLEMENT_CLASS(RenderBuffer)
@@ -56,6 +57,9 @@ bool RenderTarget::init(uint tg) {
 		for (auto tbo : attach_textures) {
 			glFramebufferTexture2D(target, tbo.attach_type, tbo.texture->get_type(), tbo.texture->get_id(), 0);
 		} // bind texture attachment
+		for (auto tbo : attach_texture_3ds) {
+			glFramebufferTexture(target, tbo.attach_type, tbo.texture->get_id(), 0);
+		} // bind texture_3d attachment
 		for (auto rbo : attach_renderbuffers) {
 			glFramebufferRenderbuffer(target, rbo->get_attach_type(), GL_RENDERBUFFER, rbo->get_id());
 		} // bind renderbuffer attachment
@@ -104,6 +108,17 @@ SPTR_RenderTarget RenderTarget::add_attach_texture(uint at_type, uint width, uin
 		t_tb.attach_type = at_type;
 		t_tb.texture = t_texture;
 		attach_textures.push_back(t_tb);
+	}
+	return shared_from_this();
+}
+SPTR_RenderTarget RenderTarget::add_attach_texture_3d(uint at_type, uint width, uint heigh, uint type, uint internal_format, uint format, uint data_type) {
+	auto t_texture = CREATE_CLASS(Texture3D);
+	t_texture->gen(width, heigh, internal_format, format, data_type, type);
+	if (t_texture != nullptr) {
+		TextureBuffer3D t_tb;
+		t_tb.attach_type = at_type;
+		t_tb.texture = t_texture;
+		attach_texture_3ds.push_back(t_tb);
 	}
 	return shared_from_this();
 }
