@@ -171,12 +171,89 @@ void cac_point_shadow_one() {
 }
 
 void cac_point_shadow_two() {
+	vec3 pos_to_light =  i_fs.world_pos - u_point_light[1].position; 
 
+    //float closest_depth = texture(u_point_shadow_map_1, pos_to_light).r;
+    //closest_depth = clamp(closest_depth, 0.0, 1.0);
+    //closest_depth *= u_far;
+
+    float cur_depth = length(pos_to_light);
+
+    float bias = 0.05; 
+    //point_shadows[1] = cur_depth > closest_depth + bias  ? 1.0 : 0.0;	
+
+    // use pcf
+    point_shadows[1] = 0.0;
+    float samples = 4.0;
+    float offset = 0.1;
+    for(float x = -offset; x < offset; x += offset / (samples * 0.5)) {
+        for(float y = -offset; y < offset; y += offset / (samples * 0.5)) {
+            for(float z = -offset; z < offset; z += offset / (samples * 0.5)) {
+                float closest_depth = texture(u_point_shadow_map_1, pos_to_light + vec3(x, y, z)).r; 
+                closest_depth = clamp(closest_depth, 0.0, 1.0);
+                closest_depth *= u_far;   // Undo mapping [0;1]
+                if(cur_depth > closest_depth + bias) point_shadows[1] += 1.0;
+            }
+        }
+    }
+    point_shadows[1] /= (samples * samples * samples);
 }
 void cac_point_shadow_three() {
+	vec3 pos_to_light =  i_fs.world_pos - u_point_light[2].position; 
+
+    //float closest_depth = texture(u_point_shadow_map_2, pos_to_light).r;
+    //closest_depth = clamp(closest_depth, 0.0, 1.0);
+    //closest_depth *= u_far;
+
+    float cur_depth = length(pos_to_light);
+
+    float bias = 0.05; 
+    //point_shadows[2] = cur_depth > closest_depth + bias  ? 1.0 : 0.0;	
+
+    // use pcf
+    point_shadows[2] = 0.0;
+    float samples = 4.0;
+    float offset = 0.1;
+    for(float x = -offset; x < offset; x += offset / (samples * 0.5)) {
+        for(float y = -offset; y < offset; y += offset / (samples * 0.5)) {
+            for(float z = -offset; z < offset; z += offset / (samples * 0.5)) {
+                float closest_depth = texture(u_point_shadow_map_2, pos_to_light + vec3(x, y, z)).r; 
+                closest_depth = clamp(closest_depth, 0.0, 1.0);
+                closest_depth *= u_far;   // Undo mapping [0;1]
+                if(cur_depth > closest_depth + bias) point_shadows[2] += 1.0;
+            }
+        }
+    }
+    point_shadows[2] /= (samples * samples * samples);
 
 }
 void cac_point_shadow_four() {
+	vec3 pos_to_light =  i_fs.world_pos - u_point_light[3].position; 
+
+    //float closest_depth = texture(u_point_shadow_map_3, pos_to_light).r;
+    //closest_depth = clamp(closest_depth, 0.0, 1.0);
+    //closest_depth *= u_far;
+
+    float cur_depth = length(pos_to_light);
+
+    float bias = 0.05; 
+    //point_shadows[3] = cur_depth > closest_depth + bias  ? 1.0 : 0.0;	
+
+    // use pcf
+    point_shadows[3] = 0.0;
+    float samples = 4.0;
+    float offset = 0.1;
+    for(float x = -offset; x < offset; x += offset / (samples * 0.5)) {
+        for(float y = -offset; y < offset; y += offset / (samples * 0.5)) {
+            for(float z = -offset; z < offset; z += offset / (samples * 0.5)) {
+                float closest_depth = texture(u_point_shadow_map_0, pos_to_light + vec3(x, y, z)).r; 
+                closest_depth = clamp(closest_depth, 0.0, 1.0);
+                closest_depth *= u_far;   // Undo mapping [0;1]
+                if(cur_depth > closest_depth + bias) point_shadows[3] += 1.0;
+            }
+        }
+    }
+    point_shadows[3] /= (samples * samples * samples);
 
 }
 void cac_shadows() {
@@ -321,7 +398,7 @@ void main(void) {
     t_color += cac_sky_light();
 
     r_color = vec4(t_color, 1.0);
-    // r_color = vec4(vec3(1.0 - point_shadows[0]), 1.0);
+    // r_color = vec4(vec3(1.0 - point_shadows[1]), 1.0);
 }
 
 /**

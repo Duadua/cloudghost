@@ -129,12 +129,12 @@ void MyGameManager::begin_play() {
 
 	// use point light
 	{
-		//auto p_light = CREATE_CLASS(PointLightObject);
-		//p_light->get_light_component()->set_intensity(3.0f);
-		/*for (auto shader : AssetManager_ins().map_shaders) {
-			auto t_shader = shader.second;
-			p_light->use(t_shader);
-		}*/
+		auto p_light = CREATE_CLASS(PointLightObject);
+		p_light->get_root_component()->set_location(-5.0f, 5.0f, 3.0f);
+		p_light->get_light_component()->set_color(CVector3D(0.0f, 0.5f, 1.0f));
+		p_light->get_light_component()->set_att_radius(10.0f);
+		p_light->get_light_component()->set_intensity(50.0f);
+		add_point_light("p_light0", p_light);
 	}
 	{
 		auto p_light = CREATE_CLASS(PointLightObject);
@@ -143,7 +143,7 @@ void MyGameManager::begin_play() {
 		p_light->get_light_component()->set_att_radius(50.0f);
 		p_light->get_light_component()->set_intensity(100.0f);
 		p_light->get_light_component()->set_color(CVector3D(0.7f, 0.3f, 0.0f));
-		add_point_light("p_light", p_light);
+		add_point_light("p_light1", p_light);
 	}
 	
 	// use spot light

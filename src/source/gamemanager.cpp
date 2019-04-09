@@ -504,7 +504,7 @@ void GameManager::base_pass() {
 				}
 				auto t_texture = sky_box->get_texture();
 				if (t_texture) t_texture->bind(0);
-				//point_light_shadow_rts[0]->get_attach_texture_3ds()[0].texture->bind(0);
+				// point_light_shadow_rts[1]->get_attach_texture_3ds()[0].texture->bind(0);
 				draw_skybox(stack_shaders->top());
 			} stack_shaders->pop();
 		}
