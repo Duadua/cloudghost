@@ -141,7 +141,7 @@ void MyGameManager::begin_play() {
 		//p_light->get_root_component()->set_location(0.0f, 3.0f, 3.0f);
 		p_light->get_root_component()->set_location(3.0f, 6.0f, 15.0f);
 		p_light->get_light_component()->set_att_radius(50.0f);
-		p_light->get_light_component()->set_intensity(50.0f);
+		p_light->get_light_component()->set_intensity(100.0f);
 		p_light->get_light_component()->set_color(CVector3D(0.7f, 0.3f, 0.0f));
 		add_point_light("p_light", p_light);
 	}
