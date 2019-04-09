@@ -148,7 +148,7 @@ void GameManager::init() {
 	// init shader stack 
 	{
 		stack_shaders = CREATE_CLASS(ShaderStack);
-		//stack_shaders->push(AssetManager_ins().get_shader("default"));		// default shader
+		// stack_shaders->push(AssetManager_ins().get_shader("default"));		// default shader
 		stack_shaders->push(AssetManager_ins().get_shader("default_shadow"));	// default shader with shadow
 	}
 
@@ -391,7 +391,7 @@ void GameManager::shadow_pass() {
 								stack_shaders->top()->use();
 								// 设置为此光源的 view and proj 矩阵
 								CMatrix4x4 t_proj;
-								t_proj.perspective(90.0f, 1.0f * 1024 / 1024, 0.1f, 30.0f);
+								t_proj.perspective(90.0f, 1.0f, 0.1f, 100.0f);
 								auto t_loc = t_light->get_root_component()->get_location();
 								// 6个方向
 								for (int j = 0; j < 6; ++j) {
@@ -401,10 +401,8 @@ void GameManager::shadow_pass() {
 									stack_shaders->top()->set_mat4("u_light_proj_view["
 										+ StringHelper_ins().int_to_string(j) + "]", 
 										t_light->get_light_component()->get_mat_proj_view(j));
-										
 								}
-								stack_shaders->top()->set_float("u_near", 0.1f);
-								stack_shaders->top()->set_float("u_far", 30.0f);
+								stack_shaders->top()->set_float("u_far", 100.0f);
 								stack_shaders->top()->set_vec3("u_light_pos", t_loc);
 							}
 							draw_all_objs(stack_shaders->top());
@@ -505,8 +503,8 @@ void GameManager::base_pass() {
 					stack_shaders->top()->set_int("u_texture", 0);
 				}
 				auto t_texture = sky_box->get_texture();
-				//if (t_texture) t_texture->bind(0);
-				point_light_shadow_rts[0]->get_attach_texture_3ds()[0].texture->bind(0);
+				if (t_texture) t_texture->bind(0);
+				//point_light_shadow_rts[0]->get_attach_texture_3ds()[0].texture->bind(0);
 				draw_skybox(stack_shaders->top());
 			} stack_shaders->pop();
 		}
@@ -1188,15 +1186,41 @@ void GameManager::draw_lights(SPTR_Shader shader) {
 	}
 	// point light
 	{
+		{
+			auto t_t3d = CREATE_CLASS(Texture3D);
+			std::vector<TextureData> datas(6);
+			std::vector<SPTR_uchar> ds(6);
+			t_t3d->init(datas, ds);
+			t_t3d->bind(4);
+			std::string t_rt_name = "u_point_shadow_map_0";
+			shader->use();
+			shader->set_int(t_rt_name, 4);
+		}
+
 		int t_id = 0;
 		for (auto t_p : map_point_lights) {
 			auto t_light = t_p.second;
 			if (t_light) {
-				t_light->get_light_component()->set_id(t_id++);
+				t_light->get_light_component()->set_id(t_id);
 				t_light->use(shader);
+
+				// set shadow
+				if (point_light_shadow_rts.size() > t_id) {
+					auto t_v = point_light_shadow_rts[t_id];
+					if (t_v && t_v->get_attach_texture_3ds().size() > 0) {
+						t_v->get_attach_texture_3ds()[0].texture->bind(4 + t_id);
+						std::string t_rt_name = "u_point_shadow_map_"
+							+ StringHelper_ins().int_to_string(t_id);
+						shader->use();
+						shader->set_int(t_rt_name, 4 + t_id);
+						shader->set_float("u_far", 100.0f);
+					}
+				}
+				++t_id;
 			}
 		} shader->set_int("u_point_light_num", t_id);
 	}
+
 	// spots light
 	{
 		int t_id = 0;

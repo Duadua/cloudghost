@@ -113,7 +113,7 @@ void pre_cac(vec3 view_pos) {
     t_material_helper.ka = u_material.ka;
     t_material_helper.kd = u_material.kd;
     t_material_helper.ks = u_material.ks;
-    t_material_helper.shininess = u_material.shininess;
+    t_material_helper.shininess = clamp(u_material.shininess, 32.0, 128.0);
     if(u_material.has_map_ka) t_material_helper.map_ka_color = texture(u_material.map_ka, i_fs.tex_coord);
     else t_material_helper.map_ka_color = vec4(1.0);
     if(u_material.has_map_kd) t_material_helper.map_kd_color = texture(u_material.map_kd, i_fs.tex_coord);
@@ -183,6 +183,10 @@ vec3 cac_sky_light_one(SkyLight light) {
 }
 vec3 cac_direct_light() {
     vec3 res = vec3(0.0, 0.0, 0.0);
+
+    vec3 i_ambient = 0.1 * t_material_helper.ka * t_material_helper.map_ka_color.rgb * cac_ambient();    
+    res += i_ambient;
+
     for(int i = 0; i < u_direct_light_num; ++i) { res += cac_direct_light_one(u_direct_light[i]); }
     return res;
 }

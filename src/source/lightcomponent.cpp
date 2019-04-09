@@ -10,7 +10,8 @@ LightComponent::LightComponent() {
 	id = 0;
 	color = CVector3D(1.0f);								// default color
 	intensity = 1.0f;										// default intensity
-	k = CVector3D(0.2f, 0.6f, 0.2f);
+	k = CVector3D(1.0f, 1.0f, 1.0f);
+	//k = CVector3D(0.2f, 0.6f, 0.2f);
 }
 
 CVector3D LightComponent::get_dirction() {
@@ -35,8 +36,8 @@ IMPLEMENT_CLASS(DirectLightComponent)
 
 DirectLightComponent::DirectLightComponent() {
 	rotation = CVector3D(-46.0f, 0.0f, 0.0f);		// 初始方向
-	//k = CVector3D(1.0f, 1.0f, 1.0f);
-	k = CVector3D(0.2f, 0.6f, 0.2f);
+	k = CVector3D(1.0f, 1.0f, 1.0f);
+	//k = CVector3D(0.2f, 0.6f, 0.2f);
 }
 
 bool DirectLightComponent::use(SPTR_Shader shader) {
@@ -63,7 +64,6 @@ IMPLEMENT_CLASS(PointLightComponent)
 
 PointLightComponent::PointLightComponent() { 
 	location = CVector3D(0.0f, 1.0f, 0.0f);
-	k = CVector3D(0.1f, 0.9f, 1.0f);
 
 	set_att_radius(50.0f);
 
@@ -109,7 +109,6 @@ IMPLEMENT_CLASS(SpotLightComponent)
 SpotLightComponent::SpotLightComponent() {
 	location = CVector3D(0.0f, 1.0f, 0.0f);			// init location
 	rotation = CVector3D(-90.0f, 0.0f, 0.0f);		// init dirction
-	k = CVector3D(0.0f, 1.0f, 1.0f);
 
 	set_att_radius(50.0f);							// init raduis
 

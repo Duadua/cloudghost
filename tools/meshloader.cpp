@@ -779,6 +779,8 @@ bool MeshLoader::load_mesh_x(const std::string& path, std::vector<MeshData>& mds
 
 					float t_sh;
 					aiGetMaterialFloat(t_mt, AI_MATKEY_SHININESS, &t_sh);
+					if (t_sh < 16.0f) t_sh = 16.0f;
+					if (t_sh > 128.0f) t_sh = 128.0f;
 					md.material.shininess = t_sh;
 
 					// load texture
@@ -923,12 +925,14 @@ bool MeshLoader::load_mesh_skeletal(const std::string& path, std::vector<Skeleta
 					aiGetMaterialColor(t_mt, AI_MATKEY_COLOR_DIFFUSE, &t_kd);
 					md.material.kd = CVector3D(static_cast<float>(t_kd.r), static_cast<float>(t_kd.g), static_cast<float>(t_kd.b));
 
-					aiColor4D t_ks(1.0f, 1.0f, 1.0f, 1.0f);
+					aiColor4D t_ks(0.0f, 0.0f, 0.0f, 0.0f);
 					aiGetMaterialColor(t_mt, AI_MATKEY_COLOR_SPECULAR, &t_ks);
 					md.material.ks = CVector3D(static_cast<float>(t_ks.r), static_cast<float>(t_ks.g), static_cast<float>(t_ks.b));
 
 					float t_sh;
 					aiGetMaterialFloat(t_mt, AI_MATKEY_SHININESS, &t_sh);
+					if (t_sh < 16.0f) t_sh = 16.0f;
+					if (t_sh > 128.0f) t_sh = 128.0f;
 					md.material.shininess = t_sh;
 
 					// load texture

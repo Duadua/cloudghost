@@ -9,7 +9,8 @@ in O_VS {
 uniform samplerCube	u_texture;
 
 void main() {
-	r_color = texture(u_texture, i_fs.tex_coord);
+	vec3 tex = normalize(i_fs.tex_coord);
+	r_color = texture(u_texture, vec3(tex.x, tex.y, tex.z));
 }
 
 
