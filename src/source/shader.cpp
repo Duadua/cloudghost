@@ -145,6 +145,7 @@ IMPLEMENT_CLASS(ShaderStack)
 
 ShaderStack::ShaderStack() {
 	while (!shaders.empty()) { shaders.pop(); }
+	shader_default = nullptr;
 }
 
 SPTR_ShaderStack ShaderStack::push(const SPTR_Shader shader) {
@@ -157,12 +158,13 @@ SPTR_ShaderStack ShaderStack::pop() {
 }
 
 SPTR_Shader ShaderStack::top() const {
-	if (shaders.empty()) return nullptr;
+	if (shaders.empty()) return shader_default;
 	return shaders.top();
 }
 
 SPTR_ShaderStack ShaderStack::use() {
-	if (!shaders.empty() && shaders.top()) shaders.top()->use();
+	if (shaders.empty()) { if (shader_default) shader_default->use(); }
+	else { if (shaders.top()) shaders.top()->use(); }
 	return shared_from_this();
 }
 

@@ -65,8 +65,12 @@ public:
 
 	SPTR_ShaderStack use();
 
+	GET_SET(SPTR_Shader, shader_default)
+
 private:
 	std::stack<SPTR_Shader> shaders;
+	SPTR_Shader shader_default;
+
 };
 
 

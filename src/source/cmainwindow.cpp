@@ -6,6 +6,7 @@
 #include "assetmanager.h"
 #include "ctextwidget.h"
 #include "texture3d.h"
+#include "shader.h"
 
 #include <QColorDialog>
 #include <QActionGroup>
@@ -356,7 +357,16 @@ void CMainWindow::trigger_skybox(QAction* act) {
 	}
 }
 
-void CMainWindow::trigger_shadow() { GameManager_ins().set_b_shadow(!GameManager_ins().get_b_shadow()); }
+void CMainWindow::trigger_shadow() { 
+	auto t_shader = GameManager_ins().get_default_shader();
+	if (t_shader && t_shader->get_name().compare("default") == 0) {
+		GameManager_ins().set_default_shader(AssetManager_ins().get_shader("default_shadow"));
+	}
+	else {
+		GameManager_ins().set_default_shader(AssetManager_ins().get_shader("default"));
+	}
+	// GameManager_ins().set_b_shadow(!GameManager_ins().get_b_shadow()); 
+}
 
 void CMainWindow::trigger_normal_visual() { GameManager_ins().set_b_normal_visual(!GameManager_ins().get_b_normal_visual()); }
 void CMainWindow::trigger_explode() { GameManager_ins().set_b_explode(!GameManager_ins().get_b_explode()); }

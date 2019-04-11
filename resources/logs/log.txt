@@ -1,21 +1,21 @@
 # =========================
-[20:39:51][dua][c_debuger] start at [2019.04.11]
+[21:09:14][dua][c_debuger] start at [2019.04.11]
 # =========================
-[20:39:51][yep][mesh]load mesh success
+[21:09:14][yep][mesh]load mesh success
 resources/models/static/Elf_Mansion/Elf_Mansion.fbx
 # =========================
-[20:39:53][yep][mesh]load mesh success
+[21:09:16][yep][mesh]load mesh success
 resources/models/static/Street/Street_environment_V01.obj
 # =========================
-[20:39:53][yep][skeletal_mesh]load skeletal_mesh success
+[21:09:16][yep][skeletal_mesh]load skeletal_mesh success
 resources/models/animation/Riven18/riven18.FBX
 # =========================
-[20:39:53][yep][animation]load animation success
+[21:09:16][yep][animation]load animation success
 resources/models/animation/Riven18/riven18_idle1.FBX
 # =========================
-[20:39:53][yep][asset][anim] load animation sequence success call riven18_idle1
+[21:09:16][yep][asset][anim] load animation sequence success call riven18_idle1
 # =========================
-[20:39:53][yep][animation]load animation success
+[21:09:16][yep][animation]load animation success
 resources/models/animation/Riven18/riven18_dance.FBX
 # =========================
-[20:39:53][yep][asset][anim] load animation sequence success call riven18_dance
+[21:09:17][yep][asset][anim] load animation sequence success call riven18_dance

@@ -150,7 +150,10 @@ void GameManager::init() {
 	{
 		stack_shaders = CREATE_CLASS(ShaderStack);
 		// stack_shaders->push(AssetManager_ins().get_shader("default"));		// default shader
-		stack_shaders->push(AssetManager_ins().get_shader("default_shadow"));	// default shader with shadow
+		//stack_shaders->push(AssetManager_ins().get_shader("default_shadow"));	// default shader with shadow
+
+		//stack_shaders->set_shader_default(AssetManager_ins().get_shader("default"));
+		stack_shaders->set_shader_default(AssetManager_ins().get_shader("default_shadow"));
 	}
 
 	// init uniform block 
@@ -1680,6 +1683,6 @@ void GameManager::mouse_released() {
 SPTR_Texture3D GameManager::get_skybox() { return sky_box->get_texture(); }
 void GameManager::set_skybox(SPTR_Texture3D tex) { if (sky_box && tex) { sky_box->set_texture(tex); } }
 
-
-
+void GameManager::set_default_shader(SPTR_Shader shader) { stack_shaders->set_shader_default(shader); }
+SPTR_Shader GameManager::get_default_shader() { return stack_shaders->get_shader_default(); }
 

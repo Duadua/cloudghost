@@ -62,6 +62,13 @@ enum class HDR_Type {
 
 };
 
+enum class LightingMode {
+	Blinn_Phong,			// Blinn_Phont 光照 -- 默认
+	Texture_Only,			// 纯贴图
+	Light_Only,				// 纯光照
+
+};
+
 struct ViewportInfo {		// 视口信息
 	uint width;
 	uint heigh;
@@ -109,10 +116,11 @@ public:
 	void add_point_light(const std::string& key, SPTR_PointLightObject value);
 	void add_spots_light(const std::string& key, SPTR_SpotLightObject value);
 
-
 public:									// used for qt ui
 	SPTR_Texture3D get_skybox();
 	void set_skybox(SPTR_Texture3D tex);
+	void set_default_shader(SPTR_Shader shader);
+	SPTR_Shader get_default_shader();
 
     GET_SET(CColor, background_color)
     GET_SET(CColor, border_color)
