@@ -61,6 +61,16 @@ void CMainWindow::init_ui() {
 		{
 			connect(ui.action_view_depth, SIGNAL(triggered()), this, SLOT(trigger_view_depth()));
 		}
+
+		// light mode 
+		{
+			auto ag = new QActionGroup(this);
+			ag->addAction(ui.action_view_phong);
+			ag->addAction(ui.action_view_tex_only);
+			ag->addAction(ui.action_view_light_only);
+			ui.action_view_phong->setChecked(true);
+			connect(ag, SIGNAL(triggered(QAction*)), this, SLOT(trigger_view_light_mode(QAction*)));
+		}
 	}
 
 	// init shading menu
@@ -286,6 +296,24 @@ void CMainWindow::trigger_polygon_mode(QAction* act) {
 
 void CMainWindow::trigger_view_depth() { GameManager_ins().set_b_depth(!GameManager_ins().get_b_depth()); }
 
+void CMainWindow::trigger_view_light_mode(QAction* act) {
+	if (act->objectName().compare("action_view_phong") == 0) { 
+		GameManager_ins().set_default_shader(AssetManager_ins().get_shader("default_shadow"));
+		ui.action_gamma->setChecked(true);
+		GameManager_ins().set_b_gamma(true);
+	}
+	else if (act->objectName().compare("action_view_tex_only") == 0) { 
+		GameManager_ins().set_default_shader(AssetManager_ins().get_shader("default_texture_only"));
+		ui.action_gamma->setChecked(true);
+		GameManager_ins().set_b_gamma(true);
+	}
+	else if (act->objectName().compare("action_view_light_only") == 0) { 
+		GameManager_ins().set_default_shader(AssetManager_ins().get_shader("default_light_only"));
+		ui.action_gamma->setChecked(false);
+		GameManager_ins().set_b_gamma(false);
+	}
+}
+
 void CMainWindow::trigger_bg_color_init() {
 	QColor c = QColor(
 		GameManager_ins().get_background_color().r(),
@@ -358,14 +386,13 @@ void CMainWindow::trigger_skybox(QAction* act) {
 }
 
 void CMainWindow::trigger_shadow() { 
-	auto t_shader = GameManager_ins().get_default_shader();
+	/*auto t_shader = GameManager_ins().get_default_shader();
 	if (t_shader && t_shader->get_name().compare("default") == 0) {
 		GameManager_ins().set_default_shader(AssetManager_ins().get_shader("default_shadow"));
 	}
-	else {
-		GameManager_ins().set_default_shader(AssetManager_ins().get_shader("default"));
-	}
-	// GameManager_ins().set_b_shadow(!GameManager_ins().get_b_shadow()); 
+	else { GameManager_ins().set_default_shader(AssetManager_ins().get_shader("default")); }
+	*/
+	GameManager_ins().set_b_shadow(!GameManager_ins().get_b_shadow()); 
 }
 
 void CMainWindow::trigger_normal_visual() { GameManager_ins().set_b_normal_visual(!GameManager_ins().get_b_normal_visual()); }

@@ -91,6 +91,8 @@ void GameManager::init() {
 		// shader
 		AssetManager_ins().load_shader("default", "resources/shaders/mvp_anim.vert", "resources/shaders/blinn_phong.frag");
 		AssetManager_ins().load_shader("default_shadow", "resources/shaders/mvp_anim_shadow.vert", "resources/shaders/blinn_phong_shadow.frag");
+		AssetManager_ins().load_shader("default_texture_only", "resources/shaders/mvp_anim.vert", "resources/shaders/texture_only.frag");
+		AssetManager_ins().load_shader("default_light_only", "resources/shaders/mvp_anim_shadow.vert", "resources/shaders/blinn_phong_light_only.frag");
 		//AssetManager_ins().load_shader("default", "resources/shaders/mvp_anim.vert", "resources/shaders/single_texture.frag");
 		AssetManager_ins().load_shader("depth", "resources/shaders/mvp_anim.vert", "resources/shaders/depth.frag");
 		AssetManager_ins().load_shader("border", "resources/shaders/scene_2d.vert", "resources/shaders/border.frag");

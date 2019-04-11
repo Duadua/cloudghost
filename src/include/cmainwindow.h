@@ -52,6 +52,7 @@ public slots:
 	void trigger_eye_delta(float v);
 	void trigger_polygon_mode(QAction* act);
 	void trigger_view_depth();
+	void trigger_view_light_mode(QAction* act);
 
 	void trigger_bg_color_init();
 	void trigger_bg_color_ok();

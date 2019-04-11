@@ -639,6 +639,12 @@
     <None Include="resources\shaders\shadow_point.geom">
       <Filter>resources\shaders\geoms</Filter>
     </None>
+    <None Include="resources\shaders\texture_only.frag">
+      <Filter>resources\shaders\frags</Filter>
+    </None>
+    <None Include="resources\shaders\blinn_phong_light_only.frag">
+      <Filter>resources\shaders\frags</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Text Include="resources\models\txt\cube.txt">

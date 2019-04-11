@@ -290,6 +290,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="resources\shaders\blinn_phong.frag" />
+    <None Include="resources\shaders\blinn_phong_light_only.frag" />
     <None Include="resources\shaders\blinn_phong_shadow.frag" />
     <None Include="resources\shaders\border.frag" />
     <None Include="resources\shaders\depth.frag" />
@@ -319,6 +320,7 @@
     <None Include="resources\shaders\skybox.frag" />
     <None Include="resources\shaders\skybox.vert" />
     <None Include="resources\shaders\solid_color.frag" />
+    <None Include="resources\shaders\texture_only.frag" />
     <None Include="resources\shaders\vr_mix.frag" />
   </ItemGroup>
   <ItemGroup>
