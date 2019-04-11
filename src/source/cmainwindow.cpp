@@ -17,7 +17,7 @@ CMainWindow::CMainWindow(QWidget *parent) : QMainWindow(parent), gl_view(nullptr
 	// init ui
 	{ init_ui(); }
 
-	init_gl_view(geometry().left() + 50, geometry().top() + 60, geometry().width() - 100, geometry().height() -100);
+	//init_gl_view(geometry().left() + 50, geometry().top() + 60, geometry().width() - 100, geometry().height() -100);
 
 }
 
@@ -25,7 +25,7 @@ void CMainWindow::init_ui() {
 	ui.setupUi(this);
 	setWindowIcon(QIcon(":/cloudghost/icon/ui/icon.ico"));
 
-	// init start menu
+	// init file menu
 	{
 		connect(ui.action_exit, SIGNAL(triggered()), this, SLOT(close()));
 	}
@@ -253,8 +253,9 @@ void CMainWindow::init_gl_view(int a, int b, int w, int h) {
 
 void CMainWindow::resizeEvent(QResizeEvent *event) {
     if(event != nullptr) {}
-	if (gl_view == nullptr) return;
+	/*if (gl_view == nullptr) return;
 	gl_view->resize( geometry().width() - 100, geometry().height() - 100);
+	*/
 }
 
 // =====================================================================================

@@ -13,3 +13,5 @@ public:
 private:
 
 };
+
+MyGameManager gm;

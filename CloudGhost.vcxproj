@@ -131,7 +131,6 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="demo\flowsphere.cpp" />
-    <ClCompile Include="demo\main.cpp" />
     <ClCompile Include="demo\mansion.cpp" />
     <ClCompile Include="demo\mygamemanager.cpp" />
     <ClCompile Include="demo\plane.cpp" />
@@ -171,6 +170,7 @@
     <ClCompile Include="src\source\inputmanager.cpp" />
     <ClCompile Include="src\source\lightcomponent.cpp" />
     <ClCompile Include="src\source\lightobject.cpp" />
+    <ClCompile Include="src\source\main.cpp" />
     <ClCompile Include="src\source\material.cpp" />
     <ClCompile Include="src\source\mesh.cpp" />
     <ClCompile Include="src\source\meshcomponent.cpp" />

@@ -133,9 +133,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="demo\main.cpp">
-      <Filter>demo</Filter>
-    </ClCompile>
     <ClCompile Include="demo\mygamemanager.cpp">
       <Filter>demo</Filter>
     </ClCompile>
@@ -330,6 +327,9 @@
     </ClCompile>
     <ClCompile Include="src\source\skybox.cpp">
       <Filter>src\source\preset</Filter>
+    </ClCompile>
+    <ClCompile Include="src\source\main.cpp">
+      <Filter>src\source\core</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
