@@ -41,7 +41,7 @@ void GameManager::_init() {
 		back_polygon_mode = GL_FILL;
 
 		b_use_vr = false;
-		vr_delta = 0.1f;
+		vr_delta = 6.0f;
 
 		pp_type = PostProcessType::NOPE;
 
@@ -232,7 +232,7 @@ void GameManager::draw() {
 	{
 		auto t_final_tex = scene_texture;
 		if (b_depth && !b_use_shader_toy) t_final_tex = depth_texture;
-		// t_final_tex = direct_light_shadow_rts[0]->get_attach_textures()[0].texture;
+		//t_final_tex = direct_light_shadow_rts[0]->get_attach_textures()[0].texture;
 
 		// pass 0 -- 渲染到默认缓冲 -- 必须第一个执行
 		scene_pass(t_final_tex); 						// 显示正常渲染图 
@@ -504,7 +504,7 @@ void GameManager::base_pass() {
 				}
 				auto t_texture = sky_box->get_texture();
 				if (t_texture) t_texture->bind(0);
-				// point_light_shadow_rts[1]->get_attach_texture_3ds()[0].texture->bind(0);
+				//point_light_shadow_rts[0]->get_attach_texture_3ds()[0].texture->bind(0);
 				draw_skybox(stack_shaders->top());
 			} stack_shaders->pop();
 		}
@@ -542,6 +542,8 @@ void GameManager::border_pass() {
 	// 先得到需要加 border 物体的深度图
 	border_depth_rt->use(); {
 		draw_init();
+		glClearColor(1.0f, 1.0f, 1.0f, 1.0f);		// 此时背景色不应受 bg color 影响
+		glClear(GL_COLOR_BUFFER_BIT);
 		stack_shaders->push(AssetManager_ins().get_shader("depth")); {
 			if (stack_shaders->top()) {
 				stack_shaders->top()->use();
@@ -554,6 +556,7 @@ void GameManager::border_pass() {
 
 	// 再将上面得到的图随 scene_texture 一起传入, 后处理得最终的 scene_texture
 	border_rt->use(); {
+		draw_init();
 		stack_shaders->push(AssetManager_ins().get_shader("border")); {
 			if (stack_shaders->top()) {
 				stack_shaders->top()->use();
@@ -721,10 +724,10 @@ void GameManager::vr_depth_pass() {
 			// cac left view mat
 			CMatrix4x4 t_mat_view;
 			auto t_eye = main_camera->get_root_component()->get_location()
-				+ main_camera->get_camera_component()->get_right_axis() * vr_delta;
+				+ main_camera->get_camera_component()->get_right_axis() * vr_delta*0.01f;
 			auto t_center = main_camera->get_root_component()->get_location()
-				+ main_camera->get_camera_component()->get_front_axis() * vr_delta*40.0f;
-			if (CMath_ins().fcmp(vr_delta, 0.0f) == 0) { t_center = main_camera->get_camera_component()->get_front_axis(); }
+				+ main_camera->get_camera_component()->get_front_axis() * vr_delta*0.65f;
+			if (CMath_ins().fcmp(vr_delta, 0.0f) == 0) { t_center = t_eye + main_camera->get_camera_component()->get_front_axis(); }
 			auto t_world_up = main_camera->get_camera_component()->get_world_up();
 			t_mat_view.lookAt(t_eye, t_center, t_world_up);
 
@@ -747,10 +750,10 @@ void GameManager::vr_depth_pass() {
 			// cac left view mat
 			CMatrix4x4 t_mat_view;
 			auto t_eye = main_camera->get_root_component()->get_location()
-				- main_camera->get_camera_component()->get_right_axis() * vr_delta;
+				- main_camera->get_camera_component()->get_right_axis() * vr_delta*0.01f;
 			auto t_center = main_camera->get_root_component()->get_location()
-				+ main_camera->get_camera_component()->get_front_axis() * vr_delta*40.0f;
-			if (CMath_ins().fcmp(vr_delta, 0.0f) == 0) { t_center = main_camera->get_camera_component()->get_front_axis(); }
+				+ main_camera->get_camera_component()->get_front_axis() * vr_delta*0.65f;
+			if (CMath_ins().fcmp(vr_delta, 0.0f) == 0) { t_center = t_eye + main_camera->get_camera_component()->get_front_axis(); }
 			auto t_world_up = main_camera->get_camera_component()->get_world_up();
 			t_mat_view.lookAt(t_eye, t_center, t_world_up);
 
@@ -851,10 +854,10 @@ void GameManager::vr_base_pass() {
 			// cac left view mat
 			CMatrix4x4 t_mat_view;
 			auto t_eye = main_camera->get_root_component()->get_location() 
-				+ main_camera->get_camera_component()->get_right_axis() * vr_delta;
+				+ main_camera->get_camera_component()->get_right_axis() * vr_delta*0.01f;
 			auto t_center = main_camera->get_root_component()->get_location()
-				+ main_camera->get_camera_component()->get_front_axis() * vr_delta*40.0f;
-			if (CMath_ins().fcmp(vr_delta, 0.0f) == 0) { t_center = main_camera->get_camera_component()->get_front_axis(); }
+				+ main_camera->get_camera_component()->get_front_axis() * vr_delta*0.65f;
+			if (CMath_ins().fcmp(vr_delta, 0.0f) == 0) { t_center = t_eye + main_camera->get_camera_component()->get_front_axis(); }
 			auto t_world_up = main_camera->get_camera_component()->get_world_up();
 			t_mat_view.lookAt(t_eye, t_center, t_world_up);
 
@@ -878,7 +881,7 @@ void GameManager::vr_base_pass() {
 						stack_shaders->top()->use();
 						// 要移除矩阵的移动部分
 						auto t_view = CMatrix4x4(CMatrix3x3(main_camera->get_camera_component()->get_view_mat().data(), 4, 4).data(), 3, 3);
-						t_view.translate(main_camera->get_camera_component()->get_right_axis() * vr_delta * 0.1f);
+						t_view.translate(main_camera->get_camera_component()->get_right_axis() * 0.01f);
 						stack_shaders->top()->set_mat4("u_view_sky_box", t_view);
 						stack_shaders->top()->set_int("u_texture", 0);
 					}
@@ -897,10 +900,10 @@ void GameManager::vr_base_pass() {
 
 			CMatrix4x4 t_mat_view;
 			auto t_eye = main_camera->get_root_component()->get_location()
-				- main_camera->get_camera_component()->get_right_axis() * vr_delta;
+				- main_camera->get_camera_component()->get_right_axis() * vr_delta * 0.01f;
 			auto t_center = main_camera->get_root_component()->get_location()
-				+ main_camera->get_camera_component()->get_front_axis() * vr_delta*40.0f;
-			if (CMath_ins().fcmp(vr_delta, 0.0f) == 0) { t_center = main_camera->get_camera_component()->get_front_axis(); }
+				+ main_camera->get_camera_component()->get_front_axis() * vr_delta*0.65f;
+			if (CMath_ins().fcmp(vr_delta, 0.0f) == 0) { t_center = t_eye + main_camera->get_camera_component()->get_front_axis(); }
 			auto t_world_up = main_camera->get_camera_component()->get_world_up();
 			t_mat_view.lookAt(t_eye, t_center, t_world_up);
 
@@ -925,7 +928,7 @@ void GameManager::vr_base_pass() {
 						stack_shaders->top()->use();
 						// 要移除矩阵的移动部分
 						auto t_view = CMatrix4x4(CMatrix3x3(main_camera->get_camera_component()->get_view_mat().data(), 4, 4).data(), 3, 3);
-						t_view.translate(main_camera->get_camera_component()->get_right_axis() * -vr_delta * 0.1f);
+						t_view.translate(main_camera->get_camera_component()->get_right_axis() * -0.01f);
 						stack_shaders->top()->set_mat4("u_view_sky_box", t_view);
 						stack_shaders->top()->set_int("u_texture", 0);
 					}
@@ -1018,10 +1021,10 @@ void GameManager::vr_border_pass() {
 			// cac left view mat
 			CMatrix4x4 t_mat_view;
 			auto t_eye = main_camera->get_root_component()->get_location()
-				+ main_camera->get_camera_component()->get_right_axis() * vr_delta;
+				+ main_camera->get_camera_component()->get_right_axis() * vr_delta * 0.01f;
 			auto t_center = main_camera->get_root_component()->get_location()
-				+ main_camera->get_camera_component()->get_front_axis() * vr_delta*40.0f;
-			if (CMath_ins().fcmp(vr_delta, 0.0f) == 0) { t_center = main_camera->get_camera_component()->get_front_axis(); }
+				+ main_camera->get_camera_component()->get_front_axis() * vr_delta*0.65f;
+			if (CMath_ins().fcmp(vr_delta, 0.0f) == 0) { t_center = t_eye + main_camera->get_camera_component()->get_front_axis(); }
 			auto t_world_up = main_camera->get_camera_component()->get_world_up();
 			t_mat_view.lookAt(t_eye, t_center, t_world_up);
 
@@ -1045,10 +1048,10 @@ void GameManager::vr_border_pass() {
 			// cac left view mat
 			CMatrix4x4 t_mat_view;
 			auto t_eye = main_camera->get_root_component()->get_location()
-				- main_camera->get_camera_component()->get_right_axis() * vr_delta;
+				- main_camera->get_camera_component()->get_right_axis() * vr_delta*0.01f;
 			auto t_center = main_camera->get_root_component()->get_location()
-				+ main_camera->get_camera_component()->get_front_axis() * vr_delta*40.0f;
-			if (CMath_ins().fcmp(vr_delta, 0.0f) == 0) { t_center = main_camera->get_camera_component()->get_front_axis(); }
+				+ main_camera->get_camera_component()->get_front_axis() * vr_delta*0.65f;
+			if (CMath_ins().fcmp(vr_delta, 0.0f) == 0) { t_center = t_eye + main_camera->get_camera_component()->get_front_axis(); }
 			auto t_world_up = main_camera->get_camera_component()->get_world_up();
 			t_mat_view.lookAt(t_eye, t_center, t_world_up);
 
@@ -1305,6 +1308,16 @@ void GameManager::init_shadow_rt() {
 			shadow_rt->add_attach_texture(GL_DEPTH_ATTACHMENT, 1024, 1024,
 				GL_TEXTURE_2D, GL_DEPTH_COMPONENT, GL_DEPTH_COMPONENT, GL_FLOAT)
 				->init();
+			// set border
+			auto t_tex = shadow_rt->get_attach_textures()[0].texture;
+			if (t_tex) {
+				t_tex->use(); {
+					glTexParameteri(t_tex->get_type(), GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
+					glTexParameteri(t_tex->get_type(), GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
+					GLfloat t_border_color[] = { 1.0, 1.0, 1.0, 1.0 };
+					glTexParameterfv(t_tex->get_type(), GL_TEXTURE_BORDER_COLOR, t_border_color);
+				} t_tex->un_use();
+			}
 		}
 	}
 
@@ -1317,6 +1330,17 @@ void GameManager::init_shadow_rt() {
 			shadow_rt->add_attach_texture_3d(GL_DEPTH_ATTACHMENT, 1024, 1024,
 				GL_TEXTURE_CUBE_MAP, GL_DEPTH_COMPONENT, GL_DEPTH_COMPONENT, GL_FLOAT)
 				->init();
+			// set border -- cube map needn't
+			/*auto t_tex = shadow_rt->get_attach_texture_3ds()[0].texture;
+			if (t_tex) {
+				t_tex->use(); {
+					glTexParameteri(t_tex->get_type(), GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
+					glTexParameteri(t_tex->get_type(), GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
+					glTexParameteri(t_tex->get_type(), GL_TEXTURE_WRAP_R, GL_CLAMP_TO_BORDER);
+					GLfloat t_border_color[] = { 1.0, 1.0, 1.0, 1.0 };
+					glTexParameterfv(t_tex->get_type(), GL_TEXTURE_BORDER_COLOR, t_border_color);
+				} t_tex->un_use();
+			}*/
 		}
 	}
 

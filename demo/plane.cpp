@@ -12,7 +12,7 @@ PlaneObject::PlaneObject() {
 
 	auto mc = CREATE_CLASS(SceneComponent);
 	mc->attach_to(rt);
-	mc->set_scale(5.0f);
+	mc->set_scale(0.5f);
 
 	auto mc1 = CREATE_CLASS(MeshComponent);
 	mc1->attach_to(mc);

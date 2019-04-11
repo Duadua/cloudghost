@@ -60,6 +60,9 @@ void Texture3D::gen(uint w, uint h, uint in_fmt, uint fmt, uint d_type, uint t) 
 
 }
 
+void Texture3D::use() { glBindTexture(type, id); }
+void Texture3D::un_use() { glBindTexture(type, 0); }
+
 void Texture3D::bind(uint tid) const { 
 	glActiveTexture(GL_TEXTURE0 + tid);
 	glBindTexture(type, id);

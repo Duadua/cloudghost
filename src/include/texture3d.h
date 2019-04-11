@@ -36,6 +36,9 @@ public:
 	void init(std::vector<TextureData> texure_datas, std::vector<SPTR_uchar> dts);
 	void gen(uint w, uint h, uint in_fmt, uint fmt, uint d_type, uint t = GL_TEXTURE_CUBE_MAP);
 
+	void use();
+	void un_use();
+
 	void bind(uint tid = 0) const;
 	static void un_bind(uint tid = 0);
 

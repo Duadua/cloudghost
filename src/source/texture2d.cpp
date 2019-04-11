@@ -75,6 +75,9 @@ void Texture2D::gen(uint w, uint h, uint in_fmt, uint fmt, uint d_type, uint t, 
 	} glBindTexture(type, 0);
 }
 
+void Texture2D::use() { glBindTexture(type, id); }
+void Texture2D::un_use() { glBindTexture(type, 0); }
+
 void Texture2D::bind(uint tid) const {
 	glActiveTexture(GL_TEXTURE0 + tid);
 	glBindTexture(type, id);

@@ -47,7 +47,7 @@ void CMainWindow::init_ui() {
 
 			// 生成菜单栏 spinbox
 			ui_eye_delta = new CSpinWidget(this);
-			ui_eye_delta->set_range(0.0f, 1.0f, 2);
+			ui_eye_delta->set_range(0.1f, 100.0f, 2);
 			connect(ui_eye_delta, SIGNAL(value_changed(float)), this, SLOT(trigger_eye_delta(float)));
 
 			QWidgetAction *ui_action_eye_delta = new QWidgetAction(this);

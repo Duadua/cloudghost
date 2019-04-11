@@ -127,8 +127,8 @@ void cac_direct_shadow() {
     float cur_depth = proj_pos.z;								// 获得当前深度
     if(cur_depth > 1.0) cur_depth = 0.0;                        // 深度图以外的无阴影
 
-    //float bias = 0.005;                                         // 阴影偏移 -- 解决阴影失真问题
-    float bias = max(0.05 * (1.0 - dot(t_normal, t_view_dir)), 0.005);
+    float bias = 0.005;                                         // 阴影偏移 -- 解决阴影失真问题
+    //float bias = max(0.05 * (1.0 - dot(t_normal, t_view_dir)), 0.005);
     //direct_shadows[0] = cur_depth > closest_depth + bias  ? 1.0 : 0.0;	// 检查当前片元是否在阴影中 -- 在阴影中 -- 返回 1.0, 否则返回 0.0
 
     // use pcf
@@ -141,6 +141,14 @@ void cac_direct_shadow() {
     direct_shadows[0] /= 9.0;
 
 }
+const int point_shadow_sample_num = 20; 
+vec3 point_shadow_sampler_offsets[point_shadow_sample_num] = vec3[] (
+   vec3( 1,  1,  1), vec3( 1, -1,  1), vec3(-1, -1,  1), vec3(-1,  1,  1), 
+   vec3( 1,  1, -1), vec3( 1, -1, -1), vec3(-1, -1, -1), vec3(-1,  1, -1),
+   vec3( 1,  1,  0), vec3( 1, -1,  0), vec3(-1, -1,  0), vec3(-1,  1,  0),
+   vec3( 1,  0,  1), vec3(-1,  0,  1), vec3( 1,  0, -1), vec3(-1,  0, -1),
+   vec3( 0,  1,  1), vec3( 0, -1,  1), vec3( 0, -1, -1), vec3( 0,  1, -1)
+);
 void cac_point_shadow_one() {
     vec3 pos_to_light =  i_fs.world_pos - u_point_light[0].position; 
 
@@ -149,13 +157,14 @@ void cac_point_shadow_one() {
     //closest_depth *= u_far;
 
     float cur_depth = length(pos_to_light);
+    if(cur_depth > u_far) cur_depth = 0.0;                        // 深度图以外的无阴影
 
     float bias = 0.05; 
     //point_shadows[0] = cur_depth > closest_depth + bias  ? 1.0 : 0.0;	
 
     // use pcf
     point_shadows[0] = 0.0;
-    float samples = 4.0;
+    float samples = 3.0;
     float offset = 0.1;
     for(float x = -offset; x < offset; x += offset / (samples * 0.5)) {
         for(float y = -offset; y < offset; y += offset / (samples * 0.5)) {
@@ -168,6 +177,15 @@ void cac_point_shadow_one() {
         }
     }
     point_shadows[0] /= (samples * samples * samples);
+    /*point_shadows[0] = 0.0;
+    float disk_radius = (1.0 + (length(u_view_pos - i_fs.world_pos) / u_far)) / 25.0;
+    for(int i = 0; i < point_shadow_sample_num; ++i) {
+        float closest_depth = texture(u_point_shadow_map_0, pos_to_light + point_shadow_sampler_offsets[i] * disk_radius).r;
+        closest_depth *= u_far;   // Undo mapping [0;1]
+        if(cur_depth > closest_depth + bias) point_shadows[0] += 1.0;
+    }
+    point_shadows[0] /= float(point_shadow_sample_num);
+    */
 }
 
 void cac_point_shadow_two() {
@@ -178,13 +196,14 @@ void cac_point_shadow_two() {
     //closest_depth *= u_far;
 
     float cur_depth = length(pos_to_light);
+    if(cur_depth > u_far) cur_depth = 0.0;                        // 深度图以外的无阴影
 
     float bias = 0.05; 
     //point_shadows[1] = cur_depth > closest_depth + bias  ? 1.0 : 0.0;	
 
     // use pcf
     point_shadows[1] = 0.0;
-    float samples = 4.0;
+    float samples = 3.0;
     float offset = 0.1;
     for(float x = -offset; x < offset; x += offset / (samples * 0.5)) {
         for(float y = -offset; y < offset; y += offset / (samples * 0.5)) {
@@ -206,13 +225,14 @@ void cac_point_shadow_three() {
     //closest_depth *= u_far;
 
     float cur_depth = length(pos_to_light);
+    if(cur_depth > u_far) cur_depth = 0.0;                        // 深度图以外的无阴影
 
     float bias = 0.05; 
     //point_shadows[2] = cur_depth > closest_depth + bias  ? 1.0 : 0.0;	
 
     // use pcf
     point_shadows[2] = 0.0;
-    float samples = 4.0;
+    float samples = 3.0;
     float offset = 0.1;
     for(float x = -offset; x < offset; x += offset / (samples * 0.5)) {
         for(float y = -offset; y < offset; y += offset / (samples * 0.5)) {
@@ -235,13 +255,14 @@ void cac_point_shadow_four() {
     //closest_depth *= u_far;
 
     float cur_depth = length(pos_to_light);
+    if(cur_depth > u_far) cur_depth = 0.0;                        // 深度图以外的无阴影
 
     float bias = 0.05; 
     //point_shadows[3] = cur_depth > closest_depth + bias  ? 1.0 : 0.0;	
 
     // use pcf
     point_shadows[3] = 0.0;
-    float samples = 4.0;
+    float samples = 3.0;
     float offset = 0.1;
     for(float x = -offset; x < offset; x += offset / (samples * 0.5)) {
         for(float y = -offset; y < offset; y += offset / (samples * 0.5)) {
@@ -398,7 +419,7 @@ void main(void) {
     t_color += cac_sky_light();
 
     r_color = vec4(t_color, 1.0);
-    // r_color = vec4(vec3(1.0 - point_shadows[1]), 1.0);
+    //r_color = vec4(vec3(1.0 - point_shadows[0]), 1.0);
 }
 
 /**

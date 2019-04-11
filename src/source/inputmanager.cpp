@@ -118,7 +118,7 @@ void InputManager::exec_action() {
 void InputManager::map_axis(const QString& key, InputState is) { axis_maps[key].append(is); }
 void InputManager::bind_axis(const QString& key, DELEGATE_ICLASS(InputAxis) ia) { input_axis[key] = ia; }
 void InputManager::exec_axis(float delta) {
-	delta = 1.0f;
+	delta = 0.1f;
 	for (auto it = input_axis.cbegin(); it != input_axis.cend(); ++it) {	// 对每一个绑定的动作
 		if (!axis_maps.count(it.key())) continue;							// map 里没有相应的键位绑定
 		for (auto itt = axis_maps[it.key()].begin(); itt != axis_maps[it.key()].end(); ++itt) {
@@ -148,7 +148,8 @@ void InputManager::exec_axis(float delta) {
 				case InputAxisType::NONE: flag = false; break;
 				default: flag = false; break;
 				}
-				if(flag) (*it)->invoke(offset);
+				if(flag) (*it)->invoke(offset * delta);
+				//if(flag) (*it)->invoke(offset * TimeManager_ins().get_delta_tick_msconds() * 0.05f);
 			} // 如果与当前的键位状态相同， 则执行
 		} // 遍历所有的键位绑定
 	}
@@ -174,7 +175,7 @@ void InputManager::exec_axis_mouse_move(float delta) {
 					break;
 				default: flag = false; break;
 				}
-				if (flag) (*it)->invoke(offset);
+				if (flag) (*it)->invoke(offset * delta);
 			} // 如果与当前的键位状态相同， 则执行
 		} // 遍历所有的键位绑定
 	}
@@ -184,7 +185,7 @@ void InputManager::exec_axis_mouse_move(float delta) {
 
 }
 void InputManager::exec_axis_mouse_wheel(float delta) {
-	delta = 1.0f;
+	delta = 0.01f;
 	for (auto it = input_axis.cbegin(); it != input_axis.cend(); ++it) {	// 对每一个绑定的动作
 		if (!axis_maps.count(it.key())) continue;							// map 里没有相应的键位绑定
 		for (auto itt = axis_maps[it.key()].begin(); itt != axis_maps[it.key()].end(); ++itt) {
@@ -200,7 +201,7 @@ void InputManager::exec_axis_mouse_wheel(float delta) {
 					break;
 				default: flag = false; break;
 				}
-				if(flag) (*it)->invoke(offset);
+				if(flag) (*it)->invoke(offset * delta);
 			} // 如果与当前的键位状态相同， 则执行
 		} // 遍历所有的键位绑定
 	}
@@ -219,7 +220,7 @@ void InputManager::exec_axis_key_pressing(float delta) {
 					break;
 				default: flag = false; break;
 				}
-				if(flag) (*it)->invoke(offset * delta*0.1f);
+				if(flag) (*it)->invoke(offset * delta * 0.01f);
 			} // 如果与当前的键位状态相同， 则执行
 		} // 遍历所有的键位绑定
 	}
@@ -334,7 +335,7 @@ InputData::InputData() {
 	mouse_move_delta_x = 0.0f;
 	mouse_move_delta_y = 0.0f;
 	mouse_wheel_delta = 0.0f;
-	mouse_sensitivity = 1.0f;
+	mouse_sensitivity = 1.0f;			// 厘米
 
 	mouse_pressed_count = 0;
 	mouse_move_ignore_count = 0;

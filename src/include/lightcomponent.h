@@ -122,8 +122,10 @@ public:
 	void set_att_radius(float t_att_radius);
 	void update_att();			// 由衰减半径更新 参数
 
-    GET_SET(float, inner)
-    GET_SET(float, outer)
+	void set_inner(float in) { inner = in; if (outer < inner) outer = inner; }
+	void set_outer(float ot) { outer = ot; if (inner > outer) inner = outer; }
+	GET(float, inner)
+	GET(float, outer)
 
 private:
 
