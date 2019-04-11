@@ -324,7 +324,6 @@
     <None Include="resources\shaders\vr_mix.frag" />
   </ItemGroup>
   <ItemGroup>
-    <Text Include="resources\logs\log.txt" />
     <Text Include="resources\materials\txt\cube_material.txt" />
     <Text Include="resources\materials\txt\default_material.txt" />
     <Text Include="resources\materials\txt\single_material.txt" />
@@ -336,6 +335,9 @@
     <Text Include="resources\models\txt\sphere.txt" />
     <Text Include="resources\models\txt\triangle_regular.txt" />
     <Text Include="resources\models\txt\triangle_right.txt" />
+    <Text Include="resources\texts\about.txt" />
+    <Text Include="resources\texts\guide.txt" />
+    <Text Include="resources\texts\log.txt" />
     <Text Include="resources\textures\txt\texture_default.txt" />
     <Text Include="resources\textures\txt\texture_gradua_red.txt" />
     <Text Include="resources\textures\txt\texture_solide_gray.txt" />

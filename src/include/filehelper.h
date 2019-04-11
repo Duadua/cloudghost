@@ -14,7 +14,8 @@ public:
 	std::string get_name_of_file(const std::string& path);
 	void get_all_files_from_dir(const std::string& path, std::vector<std::string>& res);
 
-	std::string load_txt(const std::string& path);
+	std::string load_txt(const std::string& path);			// binary
+	std::string load_string(const std::string& path);		// string
 	bool		save_txt(const std::string& path, const std::string& source);
 
 private:

@@ -59,9 +59,6 @@
     <Filter Include="resources\textures\txt">
       <UniqueIdentifier>{a918e3d4-485e-42fe-8652-017d8cf682f1}</UniqueIdentifier>
     </Filter>
-    <Filter Include="resources\logs">
-      <UniqueIdentifier>{5fa81130-129b-45bc-a992-ad1cb506a503}</UniqueIdentifier>
-    </Filter>
     <Filter Include="src\include\core">
       <UniqueIdentifier>{fd93f3e0-2ab5-4cbe-8591-a044d2033dfb}</UniqueIdentifier>
     </Filter>
@@ -130,6 +127,9 @@
     </Filter>
     <Filter Include="resources\shaders\geoms">
       <UniqueIdentifier>{10117cd7-905f-4322-b428-c614cfb554fd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="resources\texts">
+      <UniqueIdentifier>{5fa81130-129b-45bc-a992-ad1cb506a503}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -692,8 +692,14 @@
     <Text Include="resources\materials\txt\default_material.txt">
       <Filter>resources\materials\txt</Filter>
     </Text>
-    <Text Include="resources\logs\log.txt">
-      <Filter>resources\logs</Filter>
+    <Text Include="resources\texts\log.txt">
+      <Filter>resources\texts</Filter>
+    </Text>
+    <Text Include="resources\texts\guide.txt">
+      <Filter>resources\texts</Filter>
+    </Text>
+    <Text Include="resources\texts\about.txt">
+      <Filter>resources\texts</Filter>
     </Text>
   </ItemGroup>
   <ItemGroup>

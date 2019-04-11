@@ -21,7 +21,7 @@ void CDebuger::_init() {
 void CDebuger::log(std::string str) {
 #ifdef C_DEBUG
 	data += "# =========================\n" + TimeManager_ins().cur_time_data().get_time() + str + "\n";
-	save("resources/logs/log.txt");
+	save("resources/texts/log.txt");
 #endif // C_DEBUG
 
 #ifdef C_DEBUG_QT
@@ -33,7 +33,7 @@ CDebuger& CDebuger::operator << (const std::string& str) {
 #ifdef C_DEBUG
 	ss << "# =========================\n" + TimeManager_ins().cur_time_data().get_time() + str + "\n";
 	data = ss.str();
-	save("resources/logs/log.txt");
+	save("resources/texts/log.txt");
 #endif // C_DEBUG
 
 #ifdef C_DEBUG_QT
