@@ -60,22 +60,6 @@ std::string FileHelper::load_txt(const std::string& path) {
 	catch (std::ifstream::failure e) { res = ""; }
 	return res;
 }
-std::string FileHelper::load_string(const std::string& path) {
-	std::ifstream ifs;
-	ifs.open(path, std::ios::in);
-	if (!ifs.is_open()) { return ""; }
-
-	uint t_size;
-	ifs.seekg(0, std::ios::end);
-	t_size = static_cast<uint>(ifs.tellg());								// 以获得内容大小
-	auto t_data = StringHelper_ins().make_shared_array<uchar>(t_size + 1);	// 以开辟相应容量的存储空间
-
-	ifs.seekg(0, std::ios::beg);											// 跳到文件头
-	ifs.read(reinterpret_cast<char*>(t_data.get()), t_size);
-	
-	std::string res(reinterpret_cast<char*>(t_data.get()), t_size);
-	return res;
-}
 
 bool FileHelper::save_txt(const std::string& path, const std::string& source) {
 	std::ofstream fs;
