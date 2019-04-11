@@ -132,6 +132,7 @@ public:									// used for qt ui
 	GET_SET(float, hdr_exposure)
 	GET_SET(bool, b_skybox)
 	GET_SET(bool, b_depth)
+	GET_SET(bool, b_shadow)
 
 protected:
 	static GameManager* instance;
@@ -182,6 +183,7 @@ protected:
 	bool b_skybox;					// 是否渲染天空盒
 
 	bool b_depth;					// 是否渲染当前相机视图下的深度图
+	bool b_shadow;					// 是否显示阴影
 
 	// gl state
 	void set_depth_test(bool enable = true, uint depth_func = GL_LESS, uint depth_mask = GL_TRUE);

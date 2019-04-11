@@ -63,6 +63,7 @@ void GameManager::_init() {
 		b_skybox = true;
 
 		b_depth = false;
+		b_shadow = true;
 	}
 }
 
@@ -238,34 +239,34 @@ void GameManager::draw() {
 		scene_pass(t_final_tex); 						// 显示正常渲染图 
 		
 		if(!b_use_shader_toy) {
-			if (!b_use_vr) {			// 深度图不显示在 vr 模式中
+			if (!b_use_vr) {						
 
-				if (b_depth) { depth_pass(); }	// 生成当前相机视图下的深度图 -- 得到 depth_texture
+				if (b_depth) { depth_pass(); }		// 生成当前相机视图下的深度图 -- 得到 depth_texture
 
 				// pass 1
-				shadow_pass();				// 生成(各个光源的)阴影贴图  -- 得到 shadow_texture
+				if (b_shadow) { shadow_pass(); }	// 生成(各个光源的)阴影贴图  -- 得到 shadow_texture
 
 				// pass 2
-				pick_pass();				// 得到拾取贴图 -- 用来判断哪个物体被拾取 -- 得到拾取物体的 id
+				pick_pass();						// 得到拾取贴图 -- 用来判断哪个物体被拾取 -- 得到拾取物体的 id
 
 				// pass 3
-				base_pass();				// 得到 scene_texture
+				base_pass();						// 得到 scene_texture
 
 				// pass 4
-				border_pass();				// 得到 border_texture -- 然后 输入 scene_texture -- 添加边框 -- 最后得到 scene_texture
+				border_pass();						// 得到 border_texture -- 然后 输入 scene_texture -- 添加边框 -- 最后得到 scene_texture
 
 				// pass 4
 				if (pp_type != PostProcessType::NOPE) { post_process_pass(); } // 后处理 -- 输入 scene_texture 得到 scene_texture
 
 				// pass 5
-				if (b_hdr) hdr_pass();		// hdr -- 输入 scene_texture 得到 scene_texture
+				if (b_hdr) hdr_pass();				// hdr -- 输入 scene_texture 得到 scene_texture
 
 				// pass 6
-				if (b_gamma) gamma_pass();	// gamma 校正 -- 输入 scene_texture 得到 scene_texture
+				if (b_gamma) gamma_pass();			// gamma 校正 -- 输入 scene_texture 得到 scene_texture
 			}
 			else {
 				if (b_depth) { vr_depth_pass(); }	// 得到 depth_texture
-				shadow_pass();				
+				if (b_shadow) { shadow_pass(); }
 				pick_pass();
 				vr_base_pass();						// 得到 scene_texture
 				vr_border_pass();					// 得到 border_texture -- 然后输入 scene_texture -- 得到scene_texture
@@ -1158,6 +1159,8 @@ void GameManager::draw_border(SPTR_Shader shader) {
 }
 void GameManager::draw_lights(SPTR_Shader shader) {
 	if (!shader) { return; }
+	shader->set_bool("u_b_shadow", b_shadow);
+
 	// direct light
 	{
 		int t_id = 0;
@@ -1168,20 +1171,23 @@ void GameManager::draw_lights(SPTR_Shader shader) {
 				t_light->use(shader);
 
 				// set shadow
-				std::string t_name = "u_direct_light_proj_view["
-					+ StringHelper_ins().int_to_string(t_light->get_light_component()->get_id()) + "]";
-				shader->set_mat4(t_name, t_light->get_light_component()->get_mat_proj_view());
-			
-				if (direct_light_shadow_rts.size() > t_id) {
-					auto t_v = direct_light_shadow_rts[t_id];
-					if (t_v && t_v->get_attach_textures().size() > 0) {
-						t_v->get_attach_textures()[0].texture->bind(3 + t_id);
-						std::string t_rt_name = "u_direct_shadow_map_" 
-							+ StringHelper_ins().int_to_string(t_id);
-						shader->use();
-						shader->set_int(t_rt_name, 3 + t_id);
+				if (b_shadow) {
+					std::string t_name = "u_direct_light_proj_view["
+						+ StringHelper_ins().int_to_string(t_light->get_light_component()->get_id()) + "]";
+					shader->set_mat4(t_name, t_light->get_light_component()->get_mat_proj_view());
+
+					if (direct_light_shadow_rts.size() > t_id) {
+						auto t_v = direct_light_shadow_rts[t_id];
+						if (t_v && t_v->get_attach_textures().size() > 0) {
+							t_v->get_attach_textures()[0].texture->bind(3 + t_id);
+							std::string t_rt_name = "u_direct_shadow_map_"
+								+ StringHelper_ins().int_to_string(t_id);
+							shader->use();
+							shader->set_int(t_rt_name, 3 + t_id);
+						}
 					}
 				}
+				else { Texture2D::un_bind(3 + t_id); }
 				++t_id;
 			}
 			
@@ -1208,16 +1214,21 @@ void GameManager::draw_lights(SPTR_Shader shader) {
 				t_light->use(shader);
 
 				// set shadow
-				if (point_light_shadow_rts.size() > t_id) {
-					auto t_v = point_light_shadow_rts[t_id];
-					if (t_v && t_v->get_attach_texture_3ds().size() > 0) {
-						t_v->get_attach_texture_3ds()[0].texture->bind(4 + t_id);
-						std::string t_rt_name = "u_point_shadow_map_"
-							+ StringHelper_ins().int_to_string(t_id);
-						shader->use();
-						shader->set_int(t_rt_name, 4 + t_id);
-						shader->set_float("u_far", 100.0f);
+				if (b_shadow) {
+					if (point_light_shadow_rts.size() > t_id) {
+						auto t_v = point_light_shadow_rts[t_id];
+						if (t_v && t_v->get_attach_texture_3ds().size() > 0) {
+							t_v->get_attach_texture_3ds()[0].texture->bind(4 + t_id);
+							std::string t_rt_name = "u_point_shadow_map_"
+								+ StringHelper_ins().int_to_string(t_id);
+							shader->use();
+							shader->set_int(t_rt_name, 4 + t_id);
+							shader->set_float("u_far", 100.0f);
+						}
 					}
+				}
+				else {
+					Texture3D::un_bind(4 + t_id);
 				}
 				++t_id;
 			}

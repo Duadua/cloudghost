@@ -141,6 +141,8 @@ QMenu::item:pressed {
     <addaction name="menu_bd_color"/>
     <addaction name="menu_skybox"/>
     <addaction name="separator"/>
+    <addaction name="action_sd_shadow"/>
+    <addaction name="separator"/>
     <addaction name="action_normal_visual"/>
     <addaction name="action_explode"/>
     <addaction name="separator"/>
@@ -205,6 +207,10 @@ QMenu::item:pressed {
     <addaction name="menu_eye_delta"/>
     <addaction name="separator"/>
     <addaction name="action_view_depth"/>
+    <addaction name="separator"/>
+    <addaction name="action_view_phong"/>
+    <addaction name="action_view_tex_only"/>
+    <addaction name="action_view_light_only"/>
    </widget>
    <addaction name="menu_start"/>
    <addaction name="menu_view"/>
@@ -289,6 +295,9 @@ QMenu::item:pressed {
   <action name="action_exit">
    <property name="text">
     <string>退出</string>
+   </property>
+   <property name="shortcut">
+    <string>Alt+C</string>
    </property>
   </action>
   <action name="action_sd_buffer_a">
@@ -481,6 +490,56 @@ QMenu::item:pressed {
    </property>
    <property name="shortcut">
     <string>Ctrl+4</string>
+   </property>
+  </action>
+  <action name="action_view_phong">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>基础光照</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+5</string>
+   </property>
+  </action>
+  <action name="action_view_tex_only">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>纯贴图</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+6</string>
+   </property>
+  </action>
+  <action name="action_view_light_only">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>纯光照</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+7</string>
+   </property>
+  </action>
+  <action name="action_sd_shadow">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>显示阴影</string>
+   </property>
+   <property name="shortcut">
+    <string>Alt+S</string>
    </property>
   </action>
  </widget>

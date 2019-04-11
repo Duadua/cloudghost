@@ -62,6 +62,8 @@ public slots:
 	void trigger_skybox_init();
 	void trigger_skybox(QAction* act);
 
+	void trigger_shadow();
+
 	void trigger_normal_visual();
 	void trigger_explode();
 

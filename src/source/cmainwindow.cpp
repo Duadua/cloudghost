@@ -116,6 +116,11 @@ void CMainWindow::init_ui() {
 
 		}
 
+		// shadow 
+		{
+			connect(ui.action_sd_shadow, SIGNAL(triggered()), this, SLOT(trigger_shadow()));
+		}
+
 		// normal visual
 		{
 			connect(ui.action_normal_visual, SIGNAL(triggered()), this, SLOT(trigger_normal_visual()));
@@ -349,6 +354,8 @@ void CMainWindow::trigger_skybox(QAction* act) {
 		if (t_tex) { GameManager_ins().set_b_skybox(true); GameManager_ins().set_skybox(t_tex); }
 	}
 }
+
+void CMainWindow::trigger_shadow() { GameManager_ins().set_b_shadow(!GameManager_ins().get_b_shadow()); }
 
 void CMainWindow::trigger_normal_visual() { GameManager_ins().set_b_normal_visual(!GameManager_ins().get_b_normal_visual()); }
 void CMainWindow::trigger_explode() { GameManager_ins().set_b_explode(!GameManager_ins().get_b_explode()); }

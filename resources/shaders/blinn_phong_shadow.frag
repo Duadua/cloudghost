@@ -103,6 +103,7 @@ uniform samplerCube u_point_shadow_map_0;	// 4 点光源阴影贴图 -- temp -- 
 uniform samplerCube u_point_shadow_map_1;	// 5
 uniform samplerCube u_point_shadow_map_2;	// 6 
 uniform samplerCube u_point_shadow_map_3;	// 7 
+uniform bool u_b_shadow;
 
 uniform vec3	    u_view_pos;
 uniform material    u_material;
@@ -281,6 +282,8 @@ void cac_shadows() {
     for(int i = 0; i < u_direct_light_num; ++i) direct_shadows[i] = 0.0;
     for(int i = 0; i < u_point_light_num; ++i) point_shadows[i] = 0.0;
 
+    if(!u_b_shadow) return;
+
     if(u_direct_light_num > 0) cac_direct_shadow();
     if(u_point_light_num > 0) cac_point_shadow_one();
     if(u_point_light_num > 1) cac_point_shadow_two();
@@ -420,6 +423,7 @@ void main(void) {
 
     r_color = vec4(t_color, 1.0);
     //r_color = vec4(vec3(1.0 - point_shadows[0]), 1.0);
+    //r_color = vec4(vec3(1.0 - direct_shadows[0]), 1.0);
 }
 
 /**
