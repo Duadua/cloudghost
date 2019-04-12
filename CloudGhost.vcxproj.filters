@@ -645,6 +645,9 @@
     <None Include="resources\shaders\blinn_phong_light_only.frag">
       <Filter>resources\shaders\frags</Filter>
     </None>
+    <None Include="resources\shaders\pbr.frag">
+      <Filter>resources\shaders\frags</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Text Include="resources\models\txt\cube.txt">
