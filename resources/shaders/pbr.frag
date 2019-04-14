@@ -127,6 +127,30 @@ void main() {
 *	- 上面这个方程, 便是传说中的反射率方程
 *	- θ 为 平面法线 与 入射光线 之间的夹角
 *		- 所以 cos(θ) = dot(n, ω)
-*		- Lo(p, v)  = ∫_(Ω) (f(p, ωi, v) * L(p, ωi) * d(ωi) * dot(n, ω))
+*		- Lo(p, v)  = ∫_(Ω) (f(p, ωi, v) * L(p, ωi) * d(ωi) * dot(n, ωi))
+*	- 在实际 shader 里一般用离散化的方式求积分 -- 黎曼和 (Riemann sum)
+*	- 此方程里
+*		- f(p, ωi, v) 由我们自己确定模型之后参与计算
+*		- L(p, ωi) 可以从光源处获得 -- 环境贴图 -- IBL 等有关
 */
+
+/**
+*	Cook-Torrance BRDF	
+*	- f(p, ω, v) = k_d * f_lambert(p, ω, v) + k_s * f_cook_torrance(p, ω, v) 
+*		- 其中 k_d 为漫反射系数(前面有提到), k_s 为镜面反射系数
+*		- f_lambert(p, ω, v) = c / π 
+*			- c 为物体的表面颜色 (surface color)
+*			- 本来应该是 f_lambert(p, ω, v) = c*dot(n, ω) / π, 但是反射率方程里有了 dot(n, ω) 相当于提取到了外面
+*				- 至于这个 π, 暂时没法理解
+*		- f_cook_torrance(p, ω, v) = D * F * G / (4 * dot(v, n) * dot(ω, n))
+*			- 后面详细解释这个方程
+*/
+
+
+
+
+
+
+
+
 
