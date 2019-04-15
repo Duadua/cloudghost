@@ -1,5 +1,7 @@
 #version 330 core
 
+const float pi = acos(-1.0);
+
 out vec4 r_color;
 
 in O_VS {
@@ -8,9 +10,92 @@ in O_VS {
 	vec2 tex_coord;
 } i_fs;
 
+float brdf_d_tr_ggx(vec3 n, vec3 h, float a);
+float brdf_g_k_direct(float a);
+float brdf_g_k_ibl(float a);
+float brdf_g_schlick_ggx(vec3 n, vec3 v, float k);
+float brdf_g_smith(vec3 n, vec3 v, vec3 l, float k);
+vec3  brdf_f_f0(vec3 f0, vec3 c_specular, float metallic);
+vec3  brdf_f_fresnel_schlick(vec3 h, vec3 v, vec3 f0);
+
+vec3 brdf_diffuse_lambert(vec3 n, vec3 v, vec3 l, vec3 c_diffuse);
+vec3 brdf_specular_cook_torrance(vec3 n, vec3 v, vec3 l, vec3 c_specular, vec3 f0, float a, float metallic);
+vec3 brdf_cook_torrance(vec3 k_d, vec3 k_s, 
+						vec3 n, vec3 v, vec3 l, 
+						vec3 c_diffuse, vec3 c_specular, 
+						vec3 f0, float a, float metallic);
+
+vec3 pbr_lo(vec3 );
 
 void main() {
 	r_color = vec4(1.0);
+}
+
+float brdf_d_tr_ggx(vec3 n, vec3 h, float a) {
+	float a2 = a * a;
+	float n_o_h = max(dot(n, h), 0.0);
+	float n_o_h2 = n_o_h * n_o_h;
+
+	float x = a2;
+	float y = (n_o_h2 * (a2-1.0) + 1.0);
+	return x / (pi * y * y);
+}
+float brdf_g_k_direct(float a) {
+	float a_add_1_2 = (a + 1.0) * (a + 1.0);	
+	return a_add_1_2 / 8.0;
+}
+float brdf_g_k_ibl(float a) {
+	float a2 = a*a;
+	return a2 / 2.0;
+}
+float brdf_g_schlick_ggx(vec3 n, vec3 v, float k) {
+	float n_o_v = max(dot(n, v), 0.0);
+
+	float x = n_o_v;
+	float y = n_o_v * (1.0 - k) + k;
+	return x / y;
+}
+float brdf_g_smith(vec3 n, vec3 v, vec3 l, float k) {
+	float g_v = brdf_g_schlick_ggx(n, v, k);
+	float g_l = brdf_g_schlick_ggx(n, l, k);
+
+	return g_v * g_l;
+}
+vec3  brdf_f_f0(vec3 f0, vec3 c_specular, float metallic) {
+	return mix(f0, c_specular, metallic);
+	// return metallic * c_specular + (1.0 - metallic) * f0;
+}
+vec3 brdf_f_fresnel_schlick(vec3 h, vec3 v, vec3 f0) {
+	float h_o_v = max(dot(h, v), 0.0);
+	return f0 + (1.0 - f0) * pow(1.0 - h_o_v, 5);
+}
+
+vec3 brdf_diffuse_lambert(vec3 n, vec3 v, vec3 l, vec3 c_diffuse) {
+	return c_diffuse / pi;
+}
+vec3 brdf_specular_cook_torrance(vec3 n, vec3 v, vec3 l, vec3 c_specular, vec3 f0, float a, float metallic) {
+	vec3 h = normalize(v + l);
+	float n_o_v = max(dot(n, v), 0.0);
+	float n_o_l = max(dot(n, l), 0.0);
+
+	float k = brdf_g_k_direct(a);
+	vec3 _f0 = brdf_f_f0(f0, c_specular, metallic);
+
+	float d = brdf_d_tr_ggx(n, h, a);
+	float g = brdf_g_smith(n, v, l, k);
+	vec3  f = brdf_f_fresnel_schlick(h, v, _f0);
+
+	vec3  x = d * g * f;
+	float y = 4 * n_o_v * n_o_l;
+	return x / y;
+}
+vec3 brdf_cook_torrance(vec3 n, vec3 v, vec3 l, vec3 c_diffuse, vec3 c_specular, vec3 f0, float a, float metallic) {
+	return 	k_d * brdf_diffuse_lambert(n, v, l, c_diffuse) + 
+			k_s * brdf_specular_cook_torrance(n, v, l, c_specular, f0, a, metallic);
+}
+
+void pbr_lo() {
+
 }
 
 /**
@@ -135,16 +220,28 @@ void main() {
 */
 
 /**
-*	Cook-Torrance BRDF	
+*	Cook-Torrance BRDF	方程使用
 *	- f(p, ω, v) = k_d * f_lambert(p, ω, v) + k_s * f_cook_torrance(p, ω, v) 
 *		- 其中 k_d 为漫反射系数(前面有提到), k_s 为镜面反射系数
-*		- f_lambert(p, ω, v) = c / π 
-*			- c 为物体的表面颜色 (surface color)
+*		- f_lambert(p, ω, v) = c_diffuse / π 
+*			- c_diffuse 为物体的表面颜色 (surface color)
 *			- 本来应该是 f_lambert(p, ω, v) = c*dot(n, ω) / π, 但是反射率方程里有了 dot(n, ω) 相当于提取到了外面
 *				- 至于这个 π, 暂时没法理解
 *		- f_cook_torrance(p, ω, v) = D * F * G / (4 * dot(v, n) * dot(ω, n))
 *			- 后面详细解释这个方程
 */
+
+/**
+*	Cook-Torrance BRDF	方程推导
+*	- 
+*/
+
+
+
+
+
+
+
 
 
 
