@@ -111,6 +111,8 @@ void GameManager::init() {
 		AssetManager_ins().load_shader("shadow", "resources/shaders/shadow.vert", "resources/shaders/shadow.frag");
 		AssetManager_ins().load_shader("shadow_point", "resources/shaders/shadow_point.vert", "resources/shaders/shadow_point.frag", "resources/shaders/shadow_point.geom");
 
+		AssetManager_ins().load_shader("pbr", "resources/shaders/mvp_anim.vert", "resources/shaders/pbr.frag");
+
 		AssetManager_ins().load_shader("shader_toy_img", "resources/shaders/scene_2d.vert", "resources/shaders/shadertoy_img_pbr.frag");
 		AssetManager_ins().load_shader("shader_toy_buffer_a", "resources/shaders/scene_2d.vert", "resources/shaders/shadertoy_buffer_a.frag");
 		AssetManager_ins().load_shader("shader_toy_buffer_b", "resources/shaders/scene_2d.vert", "resources/shaders/shadertoy_buffer_b.frag");

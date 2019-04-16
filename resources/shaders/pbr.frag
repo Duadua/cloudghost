@@ -2,6 +2,8 @@
 
 const float pi = acos(-1.0);
 
+// ================================================================================
+
 out vec4 r_color;
 
 in O_VS {
@@ -10,93 +12,128 @@ in O_VS {
 	vec2 tex_coord;
 } i_fs;
 
-float brdf_d_tr_ggx(vec3 n, vec3 h, float a);
+// ================================================================================
+
+struct DirectLight {
+    vec3 color;
+    vec3 dirction;
+
+    float intensity;
+};
+
+// ================================================================================
+
+// uniform material
+uniform vec3 	u_albedo;
+uniform vec3 	u_c_diffuse;
+uniform float 	u_metallic;
+uniform float 	u_roughness;
+uniform float 	u_ao;
+
+uniform vec3 	u_view_pos;
+
+// ================================================================================
+
+// d g f
+float brdf_d_tr_ggx(float n_o_h, float a);
+
 float brdf_g_k_direct(float a);
 float brdf_g_k_ibl(float a);
-float brdf_g_schlick_ggx(vec3 n, vec3 v, float k);
-float brdf_g_smith(vec3 n, vec3 v, vec3 l, float k);
-vec3  brdf_f_f0(vec3 f0, vec3 c_specular, float metallic);
-vec3  brdf_f_fresnel_schlick(vec3 h, vec3 v, vec3 f0);
+float brdf_g_schlick_ggx(float n_o_v, float k);
+float brdf_g_smith(float n_o_v, float n_o_l, float k);
 
-vec3 brdf_diffuse_lambert(vec3 n, vec3 v, vec3 l, vec3 c_diffuse);
-vec3 brdf_specular_cook_torrance(vec3 n, vec3 v, vec3 l, vec3 c_specular, vec3 f0, float a, float metallic);
-vec3 brdf_cook_torrance(vec3 k_d, vec3 k_s, 
-						vec3 n, vec3 v, vec3 l, 
+vec3  brdf_f_f0(vec3 f0, vec3 albedo, float metallic);		// albedo -- 反射率 -- 可能来自贴图 -- f0 为基础反射率
+vec3  brdf_f_fresnel_schlick(float h_o_v, vec3 f0);			// h 为中间向量 -- 可作为微平面的法线 -- 有效的微平面
+
+// brdf
+vec3 brdf_cook_torrance(vec3 n, vec3 v, vec3 l, 
 						vec3 c_diffuse, vec3 c_specular, 
 						vec3 f0, float a, float metallic);
 
-vec3 pbr_lo(vec3 );
+// 反射率方程
+vec3 pbr_Lo(vec3 n, vec3 v, vec3 l,
+			vec3 c_diffuse, vec3 c_specular, 
+			vec3 f0, float a, float metallic,
+			vec3 radiance);									// radiance -- 辐射度(入射)
+
+// ================================================================================
 
 void main() {
 	r_color = vec4(1.0);
 }
 
-float brdf_d_tr_ggx(vec3 n, vec3 h, float a) {
+// ================================================================================
+
+// d g f
+float brdf_d_tr_ggx(float n_o_h, float a) {
 	float a2 = a * a;
-	float n_o_h = max(dot(n, h), 0.0);
-	float n_o_h2 = n_o_h * n_o_h;
 
 	float x = a2;
-	float y = (n_o_h2 * (a2-1.0) + 1.0);
+	float y = (n_o_h*n_o_h * (a2-1.0) + 1.0);
 	return x / (pi * y * y);
 }
-float brdf_g_k_direct(float a) {
-	float a_add_1_2 = (a + 1.0) * (a + 1.0);	
-	return a_add_1_2 / 8.0;
-}
-float brdf_g_k_ibl(float a) {
-	float a2 = a*a;
-	return a2 / 2.0;
-}
-float brdf_g_schlick_ggx(vec3 n, vec3 v, float k) {
-	float n_o_v = max(dot(n, v), 0.0);
 
+float brdf_g_k_direct(float a) { return (a + 1.0)*(a + 1.0) / 8.0; }
+float brdf_g_k_ibl(float a) { return a*a / 2.0; }
+float brdf_g_schlick_ggx(float n_o_v, float k) {
 	float x = n_o_v;
 	float y = n_o_v * (1.0 - k) + k;
 	return x / y;
 }
-float brdf_g_smith(vec3 n, vec3 v, vec3 l, float k) {
-	float g_v = brdf_g_schlick_ggx(n, v, k);
-	float g_l = brdf_g_schlick_ggx(n, l, k);
+float brdf_g_smith(float n_o_v, float n_o_l, float k) {
+	float g_v = brdf_g_schlick_ggx(n_o_v, k);
+	float g_l = brdf_g_schlick_ggx(n_o_l, k);
 
 	return g_v * g_l;
 }
-vec3  brdf_f_f0(vec3 f0, vec3 c_specular, float metallic) {
-	return mix(f0, c_specular, metallic);
-	// return metallic * c_specular + (1.0 - metallic) * f0;
+
+vec3  brdf_f_f0(vec3 f0, vec3 albedo, float metallic) {
+	return mix(f0, albedo, metallic);
+	// return metallic * albedo + (1.0 - metallic) * f0;
 }
-vec3 brdf_f_fresnel_schlick(vec3 h, vec3 v, vec3 f0) {
-	float h_o_v = max(dot(h, v), 0.0);
+vec3 brdf_f_fresnel_schlick(float h_o_v, vec3 f0) {
 	return f0 + (1.0 - f0) * pow(1.0 - h_o_v, 5);
 }
 
-vec3 brdf_diffuse_lambert(vec3 n, vec3 v, vec3 l, vec3 c_diffuse) {
-	return c_diffuse / pi;
-}
-vec3 brdf_specular_cook_torrance(vec3 n, vec3 v, vec3 l, vec3 c_specular, vec3 f0, float a, float metallic) {
-	vec3 h = normalize(v + l);
+// brdf
+vec3 brdf_cook_torrance(vec3 n, vec3 v, vec3 l, vec3 c_diffuse, vec3 c_specular, vec3 f0, float a, float metallic) {
+	// pre cac
+	vec3 h = normalize(v + l);							// 中间向量
 	float n_o_v = max(dot(n, v), 0.0);
 	float n_o_l = max(dot(n, l), 0.0);
+	float n_o_h = max(dot(n, h), 0.0);
+	float h_o_v = max(dot(h, v), 0.0);
 
-	float k = brdf_g_k_direct(a);
-	vec3 _f0 = brdf_f_f0(f0, c_specular, metallic);
+	float k = brdf_g_k_direct(a);						// 根据直接光源/IBL 选择相应方程
+	vec3 f90 = brdf_f_f0(f0, c_specular, metallic);		// 获取真正的 f0 -- 有金属性影响
 
-	float d = brdf_d_tr_ggx(n, h, a);
-	float g = brdf_g_smith(n, v, l, k);
-	vec3  f = brdf_f_fresnel_schlick(h, v, _f0);
+	// get d g f
+	float d = brdf_d_tr_ggx(n_o_h, a);					// 法线分布函数
+	float g = brdf_g_smith(n_o_v, n_o_l, k);			// 几何函数
+	vec3  f = brdf_f_fresnel_schlick(h_o_v, f90);		// 菲涅尔方程
 
-	vec3  x = d * g * f;
-	float y = 4 * n_o_v * n_o_l;
-	return x / y;
+	// get k_s and k_d
+	vec3  k_s = f;										// 镜面反射系数 -- 等于菲涅尔方程的值
+	vec3  k_d = (vec3(1.0) - k_s) * (1.0 - metallic);	// 漫反射系数 -- 考虑金属度
+
+	// get diffuse and specular
+	vec3 diffuse = c_diffuse / pi;						
+	vec3 x = d * g * f;
+	float y = max(4.0 * n_o_v * n_o_l, 0.001);
+	vec3 speculr = x / y;
+
+	return 	k_d * diffuse + /*k_s */ speculr;			// 不需要 k_s -- 已经有菲涅尔系数了
 }
-vec3 brdf_cook_torrance(vec3 n, vec3 v, vec3 l, vec3 c_diffuse, vec3 c_specular, vec3 f0, float a, float metallic) {
-	return 	k_d * brdf_diffuse_lambert(n, v, l, c_diffuse) + 
-			k_s * brdf_specular_cook_torrance(n, v, l, c_specular, f0, a, metallic);
+
+// 反射率方程 -- 最终结果
+vec3 pbr_Lo(vec3 n, vec3 v, vec3 l, vec3 c_diffuse, vec3 c_specular, vec3 f0, float a, float metallic, vec3 radiance) {
+	vec3 n_o_l = max(dot(n, l), 0.0);
+	vec3 brdf = brdf_cook_torrance(n, v, l, c_diffuse, c_specular, f0, a, metallic);
+
+	return brdf * radiance * n_o_l;
 }
 
-void pbr_lo() {
-
-}
+// ================================================================================
 
 /**
 *	变量含义
