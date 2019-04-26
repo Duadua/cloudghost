@@ -1,32 +1,21 @@
 # =========================
-[21:04:50][dua][c_debuger] start at [2019.04.16]
+[17:29:07][dua][c_debuger] start at [2019.04.26]
 # =========================
-[21:04:50][error][shader][compile]pbr
-0(108) : error C7011: implicit cast from "float" to "vec3"
-
-# =========================
-[21:04:50][error][shader][link]pbr
-Fragment info
--------------
-0(108) : error C7011: implicit cast from "float" to "vec3"
-(0) : error C2003: incompatible options for link
-
-# =========================
-[21:04:52][yep][mesh]load mesh success
+[17:29:07][yep][mesh]load mesh success
 resources/models/static/Elf_Mansion/Elf_Mansion.fbx
 # =========================
-[21:04:54][yep][mesh]load mesh success
+[17:29:09][yep][mesh]load mesh success
 resources/models/static/Street/Street_environment_V01.obj
 # =========================
-[21:04:54][yep][skeletal_mesh]load skeletal_mesh success
+[17:29:09][yep][skeletal_mesh]load skeletal_mesh success
 resources/models/animation/Riven18/riven18.FBX
 # =========================
-[21:04:54][yep][animation]load animation success
+[17:29:09][yep][animation]load animation success
 resources/models/animation/Riven18/riven18_idle1.FBX
 # =========================
-[21:04:54][yep][asset][anim] load animation sequence success call riven18_idle1
+[17:29:09][yep][asset][anim] load animation sequence success call riven18_idle1
 # =========================
-[21:04:54][yep][animation]load animation success
+[17:29:09][yep][animation]load animation success
 resources/models/animation/Riven18/riven18_dance.FBX
 # =========================
-[21:04:54][yep][asset][anim] load animation sequence success call riven18_dance
+[17:29:09][yep][asset][anim] load animation sequence success call riven18_dance

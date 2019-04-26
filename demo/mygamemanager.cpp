@@ -116,12 +116,19 @@ void MyGameManager::begin_play() {
 		}
 	}
 	
+	// 生成 sphere -- test pbr
+	{
+		auto pbr_sphere = CREATE_CLASS(SphereObject);
+		pbr_sphere->get_root_component()->set_location(5.0f, 2.0f, -3.0f);
+		//add_game_object("pbr_sphere", pbr_sphere);
+		add_game_object_pbr("pbr_sphere", pbr_sphere);
+	}
 
 	// use direct light
 	{
 		auto d_light = CREATE_CLASS(DirectLightObject);
 		d_light->get_root_component()->set_rotation(-45.0f, -30.0f, 0.0f);
-		d_light->get_light_component()->set_intensity(1.0f);
+		d_light->get_light_component()->set_intensity(300.0f);
 		d_light->get_light_component()->set_k(CVector3D(1.0f, 1.0f, 1.0f));
 		//d_light->get_light_component()->set_k(CVector3D(0.2f, 0.7f, 0.1f));
 		add_direct_light("d_light", d_light);

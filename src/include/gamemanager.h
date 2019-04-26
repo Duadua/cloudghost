@@ -112,6 +112,8 @@ public:
 	static GameManager* get_instance();
 
 	void add_game_object(const std::string& key, SPTR_GameObject value);
+	void add_game_object_pbr(const std::string& key, SPTR_GameObject value);
+
 	void add_direct_light(const std::string& key, SPTR_DirectLightObject value);
 	void add_point_light(const std::string& key, SPTR_PointLightObject value);
 	void add_spots_light(const std::string& key, SPTR_SpotLightObject value);
@@ -275,6 +277,7 @@ private:
 
 	void draw_scene(SPTR_Shader shader);
 	void draw_all_objs(SPTR_Shader shader);
+	void draw_pbr_objs(SPTR_Shader shader);
 	void draw_border(SPTR_Shader shader);
 	void draw_lights(SPTR_Shader shader);
 	void draw_init();
@@ -285,6 +288,8 @@ private:
 	ViewportInfo viewport_info;
 
 	std::map<std::string, SPTR_GameObject> game_objects;
+
+	std::map<std::string, SPTR_GameObject> game_objects_pbr;		// 临时 -- 存放用 pbr 渲染的 objs
 
 private:
 	// 鼠标事件 --拾取用

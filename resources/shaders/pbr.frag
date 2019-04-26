@@ -47,7 +47,7 @@ uniform vec3 	u_albedo;
 uniform vec3 	u_c_diffuse;
 uniform float 	u_metallic;
 uniform float 	u_roughness;
-uniform float 	u_ao;
+uniform float 	u_ao;				// 遮蔽
 
 // uniform for cac
 uniform vec3 	u_view_pos;
@@ -83,6 +83,8 @@ float light_direct_att(LightDirect light_d);
 vec3  light_direct_one(LightDirect light_d);
 vec3  light_direct();
 
+vec3  light_ambient(vec3 coe); // coe -- 系数
+
 // ================================================================================
 // pre cac
 
@@ -93,31 +95,33 @@ void pre_main();
 void main() {
 	pre_main();
 
-/*
-	vec3 t_color = pbr_Lo(	t_normal, t_view_dir, t_light_dir,
-							t_c_diffuse, t_c_specular,
-							t_f0, u_a, u_metallic,
-							t_radiance);
-							
-							*/
+	vec3 t_color = vec3(0.0, 0.0, 0.0);
+	
+	t_color += light_direct();
+
+	t_color += light_ambient(vec3(0.1));
+
 	r_color = vec4(t_color, 1.0);
 }
 
 // ================================================================================
 // pre cac
 
-vec3 t_normal;
-vec3 t_view_dir;
-vec3 t_c_diffuse;
-vec3 t_c_specular;
+vec3  t_normal;
+vec3  t_view_dir;
+vec3  t_c_diffuse;
+vec3  t_c_specular;
+float t_ao;
 
 void pre_main() { 
 	// 预计算需要的数据
 	t_normal = normalize(i_fs.normal);
 	t_view_dir = normalize(u_view_pos - i_fs.world_pos);
 
-	t_c_diffuse =  u_albedo;			// 片段本身基础颜色
+	t_c_diffuse =  u_c_diffuse;			// 片段本身基础颜色
 	t_c_specular = u_albedo;
+
+	t_ao = u_ao;
 
 }
 
@@ -187,7 +191,7 @@ vec3 brdf_cook_torrance(vec3 n, vec3 v, vec3 l, vec3 c_diffuse, vec3 c_specular,
 
 // 反射率方程 -- 最终结果
 vec3 pbr_Lo(vec3 n, vec3 v, vec3 l, vec3 c_diffuse, vec3 c_specular, vec3 f0, float a, float metallic, vec3 radiance) {
-	vec3 n_o_l = max(dot(n, l), 0.0);
+	float n_o_l = max(dot(n, l), 0.0);
 	vec3 brdf = brdf_cook_torrance(n, v, l, c_diffuse, c_specular, f0, a, metallic);
 
 	return brdf * radiance * n_o_l;
@@ -198,7 +202,7 @@ vec3 pbr_Lo(vec3 n, vec3 v, vec3 l, vec3 c_diffuse, vec3 c_specular, vec3 f0, fl
 
 float light_direct_att(LightDirect light_d) { return 1.0; }
 vec3 light_direct_one(LightDirect light_d) {
-	vec3 t_light_dir = normalize(light_d.direction);
+	vec3 t_light_dir = normalize(-light_d.direction);
 	vec3 t_f0 = vec3(0.04);			// 基础反射率 -- temp
 	vec3 t_radiance = light_d.color * light_d.intensity * light_direct_att(light_d);
 
@@ -213,6 +217,8 @@ vec3 light_direct() {
 	for(int i = 0; i < u_light_direct_num; ++i) { res += light_direct_one(u_light_direct[i]); }
 	return res;
 }
+
+vec3  light_ambient(vec3 coe) { return t_c_diffuse * coe * t_ao; }
 
 // ================================================================================
 

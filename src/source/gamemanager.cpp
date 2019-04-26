@@ -480,6 +480,26 @@ void GameManager::base_pass() {
 			draw_all_objs(stack_shaders->top());
 		} if (b_explode) { stack_shaders->pop(); }
 
+		stack_shaders->push(AssetManager_ins().get_shader("pbr")); {
+			stack_shaders->top()->use();
+			stack_shaders->top()->set_vec3("u_albedo", CVector3D(0.5f, 0.0f, 0.0f));
+			stack_shaders->top()->set_vec3("u_c_diffuse", CVector3D(0.5f, 0.0f, 0.0f));
+			stack_shaders->top()->set_float("u_metallic", 1.0f);
+			stack_shaders->top()->set_float("u_roughness", 0.05f);
+			stack_shaders->top()->set_float("u_ao", 1.0f);
+			stack_shaders->top()->set_int("u_light_direct_num", 1);
+
+			stack_shaders->top()->set_vec3("u_light_direct[0].color", map_direct_lights["d_light"]->get_light_component()->get_color());
+			stack_shaders->top()->set_vec3("u_light_direct[0].direction", map_direct_lights["d_light"]->get_light_component()->get_dirction());
+			stack_shaders->top()->set_float("u_light_direct[0].intensity", map_direct_lights["d_light"]->get_light_component()->get_intensity());
+
+			stack_shaders->top()->set_vec3("u_view_pos", main_camera->get_root_component()->get_location());
+
+			// set uniform for pbr
+			draw_lights(stack_shaders->top());			// set light uniform for shader
+			draw_pbr_objs(stack_shaders->top());
+		} stack_shaders->pop();
+
 		// draw border
 		/*stack_shaders->push(AssetManager_ins().get_shader("solid_color")); {
 			if (stack_shaders->top()) {
@@ -1153,6 +1173,12 @@ void GameManager::draw_all_objs(SPTR_Shader shader) {
 		*/
 	} set_polygon_mode();
 }
+void GameManager::draw_pbr_objs(SPTR_Shader shader) {
+	set_depth_test();
+	set_polygon_mode(front_polygon_mode, back_polygon_mode); {
+		for (auto go : game_objects_pbr) { go.second->_draw(shader); }
+	} set_polygon_mode();
+}
 void GameManager::draw_border(SPTR_Shader shader) {
 	set_polygon_mode(front_polygon_mode, back_polygon_mode);
 	for (auto go : game_objects) {
@@ -1624,6 +1650,11 @@ void GameManager::add_game_object(const std::string& key, SPTR_GameObject value)
 	if (game_objects.count(key)) return;
 	game_objects.insert(std::make_pair(key, value));
 }
+void GameManager::add_game_object_pbr(const std::string& key, SPTR_GameObject value) {
+	if (game_objects_pbr.count(key)) return;
+	game_objects_pbr.insert(std::make_pair(key, value));
+}
+
 void GameManager::add_direct_light(const std::string& key, SPTR_DirectLightObject value) {
 	if (map_direct_lights.count(key)) return;
 	if (map_direct_lights.size() >= direct_light_num_max) return;
