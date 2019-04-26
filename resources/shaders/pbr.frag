@@ -1,8 +1,12 @@
 #version 330 core
 
+// ================================================================================
+// const 
+
 const float pi = acos(-1.0);
 
 // ================================================================================
+// in and out
 
 out vec4 r_color;
 
@@ -13,15 +17,30 @@ in O_VS {
 } i_fs;
 
 // ================================================================================
+// light 
 
-struct DirectLight {
+// light const -- number
+const int max_light_direct_num	= 1;
+const int max_light_point_num	= 4;
+const int max_light_spot_num	= 4;
+const int max_light_sky_num	    = 1;
+
+struct LightDirect {
     vec3 color;
-    vec3 dirction;
+    vec3 direction;
 
     float intensity;
 };
 
 // ================================================================================
+// material
+
+// ================================================================================
+// uniform
+
+// uniform light
+uniform LightDirect u_light_direct[max_light_direct_num];
+uniform int			u_light_direct_num;
 
 // uniform material
 uniform vec3 	u_albedo;
@@ -30,6 +49,7 @@ uniform float 	u_metallic;
 uniform float 	u_roughness;
 uniform float 	u_ao;
 
+// uniform for cac
 uniform vec3 	u_view_pos;
 
 // ================================================================================
@@ -57,12 +77,52 @@ vec3 pbr_Lo(vec3 n, vec3 v, vec3 l,
 			vec3 radiance);									// radiance -- 辐射度(入射)
 
 // ================================================================================
+// light cac
+
+float light_direct_att(LightDirect light_d);
+vec3  light_direct_one(LightDirect light_d);
+vec3  light_direct();
+
+// ================================================================================
+// pre cac
+
+void pre_main(); 
+
+// ================================================================================
 
 void main() {
-	r_color = vec4(1.0);
+	pre_main();
+
+/*
+	vec3 t_color = pbr_Lo(	t_normal, t_view_dir, t_light_dir,
+							t_c_diffuse, t_c_specular,
+							t_f0, u_a, u_metallic,
+							t_radiance);
+							
+							*/
+	r_color = vec4(t_color, 1.0);
 }
 
 // ================================================================================
+// pre cac
+
+vec3 t_normal;
+vec3 t_view_dir;
+vec3 t_c_diffuse;
+vec3 t_c_specular;
+
+void pre_main() { 
+	// 预计算需要的数据
+	t_normal = normalize(i_fs.normal);
+	t_view_dir = normalize(u_view_pos - i_fs.world_pos);
+
+	t_c_diffuse =  u_albedo;			// 片段本身基础颜色
+	t_c_specular = u_albedo;
+
+}
+
+// ================================================================================
+// pbr
 
 // d g f
 float brdf_d_tr_ggx(float n_o_h, float a) {
@@ -131,6 +191,27 @@ vec3 pbr_Lo(vec3 n, vec3 v, vec3 l, vec3 c_diffuse, vec3 c_specular, vec3 f0, fl
 	vec3 brdf = brdf_cook_torrance(n, v, l, c_diffuse, c_specular, f0, a, metallic);
 
 	return brdf * radiance * n_o_l;
+}
+
+// ================================================================================
+// light cac
+
+float light_direct_att(LightDirect light_d) { return 1.0; }
+vec3 light_direct_one(LightDirect light_d) {
+	vec3 t_light_dir = normalize(light_d.direction);
+	vec3 t_f0 = vec3(0.04);			// 基础反射率 -- temp
+	vec3 t_radiance = light_d.color * light_d.intensity * light_direct_att(light_d);
+
+	vec3 res = pbr_Lo(	t_normal, t_view_dir, t_light_dir,
+						t_c_diffuse, t_c_specular,
+						t_f0, u_roughness, u_metallic,
+						t_radiance);
+	return res;
+}
+vec3 light_direct() {
+	vec3 res = vec3(0.0, 0.0, 0.0);
+	for(int i = 0; i < u_light_direct_num; ++i) { res += light_direct_one(u_light_direct[i]); }
+	return res;
 }
 
 // ================================================================================
