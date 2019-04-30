@@ -148,6 +148,8 @@ float light_spot_att(LightSpot light_s);
 vec3  light_spot_one(LightSpot light_s,float shadow);
 vec3  light_spot();
 
+vec3  light_ambient(vec3 coe);
+
 // ================================================================================
 
 void main(void) {
@@ -160,6 +162,8 @@ void main(void) {
     t_color += light_direct();
     t_color += light_point();
     t_color += light_spot();
+
+    t_color += light_ambient(vec3(1.0));
 
     r_color = vec4(t_color, 1.0);
 
@@ -213,7 +217,8 @@ vec3 phong( vec3 n, vec3 v, vec3 l, vec3 c_ambient, vec3 c_diffuse, vec3 c_specu
     vec3 t_d = phong_diffuse(n_o_l) * c_diffuse;
     vec3 t_s = phong_specular(n_o_h, shininess) * c_specular;
 
-    return t_a + (1.0 - shadow) * (t_d + t_s);
+    return (1.0 - shadow) * (t_d + t_s);
+    //return t_a + (1.0 - shadow) * (t_d + t_s);
 
 }
 
@@ -294,6 +299,8 @@ vec3 light_spot() {
     }
     return res;   
 }
+
+vec3 light_ambient(vec3 coe) { return t_c_ambient * coe; }
 
 // ================================================================================
 

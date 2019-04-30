@@ -131,7 +131,8 @@ void MyGameManager::begin_play() {
 	// use direct light
 	{
 		auto d_light = CREATE_CLASS(DirectLightObject);
-		d_light->get_root_component()->set_rotation(-60.0f, -135.0f, 0.0f);
+		d_light->get_root_component()->set_rotation(-60.0f, -45.0f, 0.0f);
+		//d_light->get_root_component()->set_rotation(-60.0f, -135.0f, 0.0f);
 		d_light->get_light_component()->set_intensity(300.0f);
 		d_light->get_light_component()->set_k(CVector3D(1.0f, 1.0f, 1.0f));
 		//d_light->get_light_component()->set_k(CVector3D(0.2f, 0.7f, 0.1f));
