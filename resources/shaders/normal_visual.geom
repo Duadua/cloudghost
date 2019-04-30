@@ -1,6 +1,12 @@
 #version 330 core
 
-const float magnitude = 1.0;
+// ================================================================================
+// const 
+
+const float magnitude = 0.4;
+
+// ================================================================================
+// in & out
 
 layout (triangles) in;
 layout (line_strip, max_vertices = 6) out;
@@ -8,6 +14,20 @@ layout (line_strip, max_vertices = 6) out;
 in O_NormalProj {
     vec3 normal;
 } i_np[];
+
+// ================================================================================
+
+void generate_line(int index);
+
+// ================================================================================
+
+void main() {
+    generate_line(0); 
+    generate_line(1);
+    generate_line(2);
+}
+
+// ================================================================================
 
 void generate_line(int index) {
     gl_Position = gl_in[index].gl_Position;
@@ -17,13 +37,11 @@ void generate_line(int index) {
     EndPrimitive();
 }
 
-void main() {
-    generate_line(0); 
-    generate_line(1);
-    generate_line(2);
-}
+// ================================================================================
 
 /**
 *	几何着色器
 *	
 */
+
+// ================================================================================
