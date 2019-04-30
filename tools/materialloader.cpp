@@ -111,6 +111,10 @@ bool MaterialLoader::load_material_txt(const std::string& src, std::vector<Mater
 			std::string t_str; t_iss >> t_str;
 			md[md.size() - 1].map_ks = t_str;
 		}
+		else if (head.compare("map_normal") == 0) {
+			std::string t_str; t_iss >> t_str;
+			md[md.size() - 1].map_normal = t_str;
+		}
 	}
 
 	return true;

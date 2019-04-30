@@ -12,6 +12,7 @@ in O_VS {
 	vec3 world_pos;
 	vec3 normal;
 	vec2 tex_coord;
+	mat3 tbn;
 	vec4 direct_light_pv_pos[max_direct_light_num];
 } i_fs;
 

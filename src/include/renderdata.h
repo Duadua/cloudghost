@@ -10,8 +10,11 @@ struct CVertex {
 	CVector3D position;
 	CVector3D normal;
 	CVector2D tex_coord;
-	CVertex(CVector3D pos = CVector3D(), CVector3D norm = CVector3D(), CVector2D coord = CVector2D())
-		: position(pos), normal(norm), tex_coord(coord) {}
+	CVector3D tangent;
+	CVector3D bitangent;
+	CVertex(CVector3D pos = CVector3D(), CVector3D norm = CVector3D(), CVector2D coord = CVector2D(), 
+			CVector3D tan = CVector3D(), CVector3D bitan = CVector3D())
+		: position(pos), normal(norm), tex_coord(coord), tangent(tan), bitangent(bitan) {}
 
 };
 

@@ -133,6 +133,11 @@ void CMainWindow::init_ui() {
 			connect(ui.action_sd_shadow, SIGNAL(triggered()), this, SLOT(trigger_shadow()));
 		}
 
+		// normal map
+		{
+			connect(ui.action_sd_normalmap, SIGNAL(triggered()), this, SLOT(trigger_normalmap()));
+		}
+
 		// normal visual
 		{
 			connect(ui.action_normal_visual, SIGNAL(triggered()), this, SLOT(trigger_normal_visual()));
@@ -380,6 +385,9 @@ void CMainWindow::trigger_shadow() {
 	else { GameManager_ins().set_default_shader(AssetManager_ins().get_shader("default")); }
 	*/
 	GameManager_ins().set_b_shadow(!GameManager_ins().get_b_shadow()); 
+}
+void CMainWindow::trigger_normalmap() {
+	GameManager_ins().set_b_normal_map(!GameManager_ins().get_b_normal_map());
 }
 
 void CMainWindow::trigger_normal_visual() { GameManager_ins().set_b_normal_visual(!GameManager_ins().get_b_normal_visual()); }

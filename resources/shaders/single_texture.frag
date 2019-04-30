@@ -6,6 +6,7 @@ in O_VS {
 	vec3 world_pos;
 	vec3 normal;
 	vec2 tex_coord;
+	mat3 tbn;
 } i_fs;
 
 uniform sampler2D u_texture;

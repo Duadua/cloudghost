@@ -23,8 +23,11 @@ struct MVertex {
 	CVector3D position;
 	CVector3D normal;
 	CVector2D tex_coord;
-	MVertex(CVector3D pos = CVector3D(), CVector3D norm = CVector3D(), CVector2D coord = CVector2D()) 
-	: position(pos), normal(norm), tex_coord(coord) {}
+	CVector3D tangent;
+	CVector3D bitangent;
+	MVertex(CVector3D pos = CVector3D(), CVector3D norm = CVector3D(), CVector2D coord = CVector2D(), 
+			CVector3D tan = CVector3D(), CVector3D bitan = CVector3D()) 
+	: position(pos), normal(norm), tex_coord(coord), tangent(tan), bitangent(bitan){}
 
 };
 
@@ -225,5 +228,8 @@ public:
 
 private:
 	MeshLoader(){}
+
+	static void gen_tangent(MeshData& md);		// 生成切线
+
 };
 

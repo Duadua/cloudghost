@@ -6,11 +6,6 @@
 PRE_DECLARE_CLASS(Shader)
 USING_SPTR(Shader)
 
-const int direct_light_num_max = 1;
-const int point_light_num_max = 4;
-const int spot_light_num_max = 4;
-const int sky_light_num_max = 1;
-
 // base light
 class LightComponent : public SceneComponent {
 	DECLARE_CLASS(LightComponent)
@@ -56,7 +51,6 @@ private:
 DECLARE_AUTO_PTR(DirectLightComponent)
 
 // =======================================================
-
 
 // 6 个方向的轴 -- shadowmap 用
 const CVector3D point_front[6] = {

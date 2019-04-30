@@ -135,6 +135,7 @@ SPTR_uchar TextureLoader::load_texture_png(const std::string& path, uint& data_s
 	return t_data;
 }
 SPTR_uchar TextureLoader::load_texture_x(const std::string& path, int& width, int& heigh, int& channel) {
+	//stbi_set_flip_vertically_on_load(true);
 	auto data = stbi_load(path.c_str(), &width, &heigh, &channel, 0);
 	auto data_size = width * heigh * channel;
 	if (data == nullptr || data_size == 0) { return nullptr; }
@@ -144,6 +145,7 @@ SPTR_uchar TextureLoader::load_texture_x(const std::string& path, int& width, in
 	return t_data;
 }
 SPTR_uchar TextureLoader::load_texture_dds(const std::string& path, int& width, int& heigh, int& channel) {
+	//stbi_set_flip_vertically_on_load(true);
 	auto data = stbi_dds_load(path.c_str(), &width, &heigh, &channel, 0);
 	auto data_size = width * heigh * channel;
 	if (data == nullptr || data_size == 0) { return nullptr; }

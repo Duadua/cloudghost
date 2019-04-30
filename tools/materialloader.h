@@ -15,9 +15,11 @@ struct MaterialData {
 	std::string map_kd;
 	std::string map_ks;
 
+	std::string map_normal;	// 法线贴图
+
 	MaterialData(std::string n = "", CVector3D a = CVector3D(1.0f), CVector3D d = CVector3D(1.0f), CVector3D s = CVector3D(1.0f),
-		float sn = 32.0f, std::string ma = "", std::string md = "", std::string ms = "") 
-		: name(n), ka(a), kd(d), ks(s), shininess(sn), map_ka(ma), map_kd(md), map_ks(ms) {}
+		float sn = 32.0f, std::string ma = "", std::string md = "", std::string ms = "", std::string mn = "") 
+		: name(n), ka(a), kd(d), ks(s), shininess(sn), map_ka(ma), map_kd(md), map_ks(ms) , map_normal(mn) {}
 
 };
 

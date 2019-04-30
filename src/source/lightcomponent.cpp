@@ -45,14 +45,14 @@ bool DirectLightComponent::use(SPTR_Shader shader) {
 	if (shader == nullptr) return false;
 
 	// get uniform name in shader 
-	std::string t_name = "u_direct_light[" + StringHelper_ins().int_to_string(id) + "]";
+	std::string t_name = "u_light_directs[" + StringHelper_ins().int_to_string(id) + "]";
 
 	// bind uniform value for t_shader
 	shader->use();
 	shader->set_vec3(t_name + ".color", color);
 	shader->set_float(t_name + ".intensity", intensity);
 	shader->set_vec3(t_name + ".k", k);
-	shader->set_vec3(t_name + ".dirction", get_dirction());
+	shader->set_vec3(t_name + ".direction", get_dirction());
 
 	return true;
 
@@ -74,7 +74,7 @@ bool PointLightComponent::use(SPTR_Shader shader) {
 	if (shader == nullptr) return false;
 
 	// get uniform name in shader 
-	std::string t_name = "u_point_light[" + StringHelper_ins().int_to_string(id) + "]";
+	std::string t_name = "u_light_points[" + StringHelper_ins().int_to_string(id) + "]";
 
 	// bind uniform value for t_shader
 	shader->use();
@@ -121,7 +121,7 @@ bool SpotLightComponent::use(SPTR_Shader shader) {
 	if (shader == nullptr) return false;
 
 	// get uniform name in shader 
-	std::string t_name = "u_spot_light[" + StringHelper_ins().int_to_string(id) + "]";
+	std::string t_name = "u_light_spots[" + StringHelper_ins().int_to_string(id) + "]";
 
 	// bind uniform value for t_shader
 	shader->use();
@@ -129,7 +129,7 @@ bool SpotLightComponent::use(SPTR_Shader shader) {
 	shader->set_float(t_name + ".intensity", intensity);
 	shader->set_vec3(t_name + ".k", k);
 	shader->set_vec3(t_name + ".position", location);
-	shader->set_vec3(t_name + ".dirction", get_dirction());
+	shader->set_vec3(t_name + ".direction", get_dirction());
 	shader->set_float(t_name + ".att_ka", att_ka);
 	shader->set_float(t_name + ".att_kb", att_kb);
 	shader->set_float(t_name + ".att_kc", att_kc);

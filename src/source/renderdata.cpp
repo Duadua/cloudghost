@@ -58,6 +58,10 @@ void RenderData::init(const std::vector<CVertex>& v, const std::vector<uint>& i)
 	glEnableVertexAttribArray(1);
     glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(CVertex), reinterpret_cast<void*>(offsetof(CVertex, tex_coord)));
 	glEnableVertexAttribArray(2);
+    glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, sizeof(CVertex), reinterpret_cast<void*>(offsetof(CVertex, tangent)));
+	glEnableVertexAttribArray(3);
+    glVertexAttribPointer(4, 3, GL_FLOAT, GL_FALSE, sizeof(CVertex), reinterpret_cast<void*>(offsetof(CVertex, bitangent)));
+	glEnableVertexAttribArray(4);
 
 	glBindVertexArray(0);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
@@ -101,6 +105,10 @@ void RenderData::init_with_bone(const std::vector<CVertex>& v, const std::vector
 	glEnableVertexAttribArray(1);
     glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(CVertex), reinterpret_cast<void*>(offsetof(CVertex, tex_coord)));
 	glEnableVertexAttribArray(2);
+    glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, sizeof(CVertex), reinterpret_cast<void*>(offsetof(CVertex, tangent)));
+	glEnableVertexAttribArray(3);
+    glVertexAttribPointer(4, 3, GL_FLOAT, GL_FALSE, sizeof(CVertex), reinterpret_cast<void*>(offsetof(CVertex, bitangent)));
+	glEnableVertexAttribArray(4);
 
 	if (has_bone) {
 		glBindBuffer(GL_ARRAY_BUFFER, vbo_bone);

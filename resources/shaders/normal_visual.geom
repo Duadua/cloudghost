@@ -1,6 +1,6 @@
 #version 330 core
 
-const float magnitude = 0.1;
+const float magnitude = 1.0;
 
 layout (triangles) in;
 layout (line_strip, max_vertices = 6) out;

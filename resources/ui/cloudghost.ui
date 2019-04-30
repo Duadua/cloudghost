@@ -86,7 +86,7 @@ QMenu::item:pressed {
      <string notr="true"/>
     </property>
     <property name="title">
-     <string>文件&amp;F)</string>
+     <string>文件(&amp;F)</string>
     </property>
     <addaction name="action_exit"/>
    </widget>
@@ -149,6 +149,7 @@ QMenu::item:pressed {
     <addaction name="menu_skybox"/>
     <addaction name="separator"/>
     <addaction name="action_sd_shadow"/>
+    <addaction name="action_sd_normalmap"/>
     <addaction name="separator"/>
     <addaction name="action_normal_visual"/>
     <addaction name="action_explode"/>
@@ -550,6 +551,20 @@ QMenu::item:pressed {
    </property>
    <property name="shortcut">
     <string>Alt+S</string>
+   </property>
+  </action>
+  <action name="action_sd_normalmap">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>法线贴图</string>
+   </property>
+   <property name="shortcut">
+    <string>Alt+N</string>
    </property>
   </action>
  </widget>

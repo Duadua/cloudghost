@@ -64,6 +64,7 @@ void GameManager::_init() {
 
 		b_depth = false;
 		b_shadow = true;
+		b_normal_map = true;
 	}
 }
 
@@ -92,7 +93,7 @@ void GameManager::init() {
 		AssetManager_ins().load_shader("default", "resources/shaders/mvp_anim.vert", "resources/shaders/blinn_phong.frag");
 		AssetManager_ins().load_shader("default_shadow", "resources/shaders/mvp_anim_shadow.vert", "resources/shaders/blinn_phong_shadow.frag");
 		AssetManager_ins().load_shader("default_texture_only", "resources/shaders/mvp_anim.vert", "resources/shaders/texture_only.frag");
-		AssetManager_ins().load_shader("default_light_only", "resources/shaders/mvp_anim_shadow.vert", "resources/shaders/blinn_phong_light_only.frag");
+		//AssetManager_ins().load_shader("default_light_only", "resources/shaders/mvp_anim_shadow.vert", "resources/shaders/blinn_phong_light_only.frag");
 		//AssetManager_ins().load_shader("default", "resources/shaders/mvp_anim.vert", "resources/shaders/single_texture.frag");
 		AssetManager_ins().load_shader("depth", "resources/shaders/mvp_anim.vert", "resources/shaders/depth.frag");
 		AssetManager_ins().load_shader("border", "resources/shaders/scene_2d.vert", "resources/shaders/border.frag");
@@ -138,6 +139,7 @@ void GameManager::init() {
 		//AssetManager_ins().load_texture("resources/textures/txt/texture_default.txt");
 		AssetManager_ins().load_texture_x("resources/textures/texture_default.png");
 		AssetManager_ins().load_texture_x("resources/textures/brickwall_d.jpg");
+		AssetManager_ins().load_texture_x("resources/textures/brickwall_n.jpg", false);
 		
 		// textures 3d
 		AssetManager_ins().load_texture_3d("resources/textures/skyboxs/lake");
@@ -484,8 +486,8 @@ void GameManager::base_pass() {
 			stack_shaders->top()->use();
 			stack_shaders->top()->set_vec3("u_albedo", CVector3D(0.5f, 0.0f, 0.0f));
 			stack_shaders->top()->set_vec3("u_c_diffuse", CVector3D(0.5f, 0.0f, 0.0f));
-			stack_shaders->top()->set_float("u_metallic", 1.0f);
-			stack_shaders->top()->set_float("u_roughness", 0.05f);
+			stack_shaders->top()->set_float("u_metallic", 0.0f);
+			stack_shaders->top()->set_float("u_roughness", 1.0f);
 			stack_shaders->top()->set_float("u_ao", 1.0f);
 			stack_shaders->top()->set_int("u_light_direct_num", 1);
 
@@ -1192,7 +1194,8 @@ void GameManager::draw_border(SPTR_Shader shader) {
 }
 void GameManager::draw_lights(SPTR_Shader shader) {
 	if (!shader) { return; }
-	shader->set_bool("u_b_shadow", b_shadow);
+	shader->set_bool("u_shadow_b_use", b_shadow);
+	shader->set_bool("u_normal_map_b_use", b_normal_map);
 
 	// direct light
 	{
@@ -1205,26 +1208,26 @@ void GameManager::draw_lights(SPTR_Shader shader) {
 
 				// set shadow
 				if (b_shadow) {
-					std::string t_name = "u_direct_light_proj_view["
+					std::string t_name = "u_light_direct_proj_view["
 						+ StringHelper_ins().int_to_string(t_light->get_light_component()->get_id()) + "]";
 					shader->set_mat4(t_name, t_light->get_light_component()->get_mat_proj_view());
 
 					if (direct_light_shadow_rts.size() > t_id) {
 						auto t_v = direct_light_shadow_rts[t_id];
 						if (t_v && t_v->get_attach_textures().size() > 0) {
-							t_v->get_attach_textures()[0].texture->bind(3 + t_id);
-							std::string t_rt_name = "u_direct_shadow_map_"
+							t_v->get_attach_textures()[0].texture->bind(shadow_direct_0_id + t_id);
+							std::string t_rt_name = "u_shadow_direct_map_"
 								+ StringHelper_ins().int_to_string(t_id);
 							shader->use();
-							shader->set_int(t_rt_name, 3 + t_id);
+							shader->set_int(t_rt_name, shadow_direct_0_id + t_id);
 						}
 					}
 				}
-				else { Texture2D::un_bind(3 + t_id); }
+				else { Texture2D::un_bind(shadow_direct_0_id + t_id); }
 				++t_id;
 			}
 			
-		} shader->set_int("u_direct_light_num", t_id);
+		} shader->set_int("u_light_direct_num", t_id);
 	}
 	// point light
 	{
@@ -1234,9 +1237,9 @@ void GameManager::draw_lights(SPTR_Shader shader) {
 			std::vector<SPTR_uchar> ds(6);
 			t_t3d->init(datas, ds);
 			t_t3d->bind(4);
-			std::string t_rt_name = "u_point_shadow_map_0";
+			std::string t_rt_name = "u_shadow_point_map_0";
 			shader->use();
-			shader->set_int(t_rt_name, 4);
+			shader->set_int(t_rt_name, shadow_point_0_id);
 		}
 
 		int t_id = 0;
@@ -1251,21 +1254,21 @@ void GameManager::draw_lights(SPTR_Shader shader) {
 					if (point_light_shadow_rts.size() > t_id) {
 						auto t_v = point_light_shadow_rts[t_id];
 						if (t_v && t_v->get_attach_texture_3ds().size() > 0) {
-							t_v->get_attach_texture_3ds()[0].texture->bind(4 + t_id);
-							std::string t_rt_name = "u_point_shadow_map_"
+							t_v->get_attach_texture_3ds()[0].texture->bind(shadow_point_0_id + t_id);
+							std::string t_rt_name = "u_shadow_point_map_"
 								+ StringHelper_ins().int_to_string(t_id);
 							shader->use();
-							shader->set_int(t_rt_name, 4 + t_id);
+							shader->set_int(t_rt_name, shadow_point_0_id + t_id);
 							shader->set_float("u_far", 100.0f);
 						}
 					}
 				}
 				else {
-					Texture3D::un_bind(4 + t_id);
+					Texture3D::un_bind(shadow_point_0_id + t_id);
 				}
 				++t_id;
 			}
-		} shader->set_int("u_point_light_num", t_id);
+		} shader->set_int("u_light_point_num", t_id);
 	}
 
 	// spots light
@@ -1277,7 +1280,7 @@ void GameManager::draw_lights(SPTR_Shader shader) {
 				t_light->get_light_component()->set_id(t_id++);
 				t_light->use(shader);
 			}
-		} shader->set_int("u_spot_light_num", t_id);
+		} shader->set_int("u_light_spot_num", t_id);
 	}
 
 }
@@ -1344,7 +1347,7 @@ void GameManager::init_rt() {
 }
 void GameManager::init_shadow_rt() {
 	// direct light
-	direct_light_shadow_rts.resize(direct_light_num_max);
+	direct_light_shadow_rts.resize(light_direct_num_max);
 	for (auto& shadow_rt : direct_light_shadow_rts) {
 		if (shadow_rt) shadow_rt.reset();
 		shadow_rt = CREATE_CLASS(RenderTarget);
@@ -1366,7 +1369,7 @@ void GameManager::init_shadow_rt() {
 	}
 
 	// point light
-	point_light_shadow_rts.resize(point_light_num_max);
+	point_light_shadow_rts.resize(light_point_num_max);
 	for (auto& shadow_rt : point_light_shadow_rts) {
 		if (shadow_rt) shadow_rt.reset();
 		shadow_rt = CREATE_CLASS(RenderTarget);
@@ -1657,17 +1660,17 @@ void GameManager::add_game_object_pbr(const std::string& key, SPTR_GameObject va
 
 void GameManager::add_direct_light(const std::string& key, SPTR_DirectLightObject value) {
 	if (map_direct_lights.count(key)) return;
-	if (map_direct_lights.size() >= direct_light_num_max) return;
+	if (map_direct_lights.size() >= light_direct_num_max) return;
 	map_direct_lights.insert(std::make_pair(key, value));
 }
 void GameManager::add_point_light(const std::string& key, SPTR_PointLightObject value) {
 	if (map_point_lights.count(key)) return;
-	if (map_point_lights.size() >= point_light_num_max) return;
+	if (map_point_lights.size() >= light_point_num_max) return;
 	map_point_lights.insert(std::make_pair(key, value));
 }
 void GameManager::add_spots_light(const std::string& key, SPTR_SpotLightObject value) {
 	if (map_spots_lights.count(key)) return;
-	if (map_spots_lights.size() >= spot_light_num_max) return;
+	if (map_spots_lights.size() >= light_spot_num_max) return;
 	map_spots_lights.insert(std::make_pair(key, value));
 }
 

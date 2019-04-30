@@ -28,6 +28,7 @@ public:
     GET_SET(std::string, map_ka)
     GET_SET(std::string, map_kd)
     GET_SET(std::string, map_ks)
+    GET_SET(std::string, map_normal)
 
     GET_SET(float, shininess)
 
@@ -45,5 +46,7 @@ private:
 	std::string map_ka;
 	std::string map_kd;
 	std::string map_ks;
+
+	std::string map_normal;		// 法线贴图
 
 };

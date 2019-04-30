@@ -14,6 +14,7 @@ in O_VS {
 	vec3 world_pos;
 	vec3 normal;
 	vec2 tex_coord;
+	mat3 tbn;
 } i_fs;
 
 // ================================================================================
@@ -53,6 +54,7 @@ uniform float 	u_ao;				// 遮蔽
 uniform vec3 	u_view_pos;
 
 // ================================================================================
+// pbr 
 
 // d g f
 float brdf_d_tr_ggx(float n_o_h, float a);
@@ -87,6 +89,11 @@ vec3  light_ambient(vec3 coe); // coe -- 系数
 
 // ================================================================================
 // pre cac
+vec3  t_normal;
+vec3  t_view_dir;
+vec3  t_c_diffuse;
+vec3  t_c_specular;
+float t_ao;
 
 void pre_main(); 
 
@@ -106,12 +113,6 @@ void main() {
 
 // ================================================================================
 // pre cac
-
-vec3  t_normal;
-vec3  t_view_dir;
-vec3  t_c_diffuse;
-vec3  t_c_specular;
-float t_ao;
 
 void pre_main() { 
 	// 预计算需要的数据

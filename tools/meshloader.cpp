@@ -611,6 +611,9 @@ bool MeshLoader::load_mesh_txt(const std::string& src, std::vector<MeshData>& md
 
 	}
 
+	// 生成切线
+	for (auto& t_md : mds) { gen_tangent(t_md); }
+
 	if (source_type == SourceType::BY_FILE) { fs.close(); }
 	
 	return true;
@@ -1092,3 +1095,29 @@ bool MeshLoader::load_mesh_animation(const std::string& path, std::vector<AnimDa
 }
 
 
+void MeshLoader::gen_tangent(MeshData& md) {
+	for (auto& v : md.vertices) { v.tangent = CVector3D(); }
+
+	for (uint i = 0; i < md.indices.size(); i += 3) {
+		auto& a = md.vertices[md.indices[i + 0]];
+		auto& b = md.vertices[md.indices[i + 1]];
+		auto& c = md.vertices[md.indices[i + 2]];
+
+		CVector3D e1 = b.position - a.position;
+		CVector3D e2 = c.position - a.position;
+
+		CVector2D d1 = b.tex_coord - a.tex_coord;
+		CVector2D d2 = c.tex_coord - a.tex_coord;
+
+		float f = 1.0f / (d1.x() * d2.y() - d2.x() * d1.y());	// 行列式
+
+		CVector3D t_tangent = f * ( d2.y() * e1 - d1.y() * e2);
+		CVector3D t_bitange = f * (-d2.x() * e1 + d1.x() * e2);
+
+		a.tangent += t_tangent; b.tangent += t_tangent; c.tangent += t_tangent;
+		a.bitangent += t_bitange; b.bitangent += t_bitange; c.bitangent += t_bitange;
+	}
+
+	for (auto& v : md.vertices) { v.tangent.normalize(); v.bitangent.normalize(); }
+
+}

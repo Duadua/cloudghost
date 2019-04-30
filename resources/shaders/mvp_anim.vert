@@ -4,6 +4,8 @@
 layout (location = 0) in vec3 a_pos;
 layout (location = 1) in vec3 a_normal;
 layout (location = 2) in vec2 a_tex_coord;
+layout (location = 3) in vec3 a_tangent;			// 切线
+layout (location = 4) in vec3 a_bitangent;			// 副切线
 layout (location = 5) in ivec4 a_bone_id;
 layout (location = 6) in vec4 a_bone_weight;
  
@@ -11,6 +13,7 @@ out O_VS {
 	vec3 world_pos;
 	vec3 normal;
 	vec2 tex_coord;
+	mat3 tbn;
 } o_vs;
 
 out O_NormalProj {
@@ -39,9 +42,11 @@ void main() {
 
     o_vs.world_pos = vec3(t_model * vec4(a_pos, 1.0));
     o_vs.normal = mat3(transpose(inverse(t_model))) * a_normal;  // 法线矩阵 -- 变换法线到 world space 同步修正缩放影响
+    //o_vs.tangent = mat3(transpose(inverse(t_model))) * a_tangent;  
     o_vs.tex_coord = a_tex_coord;
 
-	o_np.normal = normalize(vec3(u_projection * vec4(o_vs.normal, 0.0)));		// 几何着色器在 裁剪空间计算
+	vec3 t_normal_proj = mat3(transpose(inverse(u_view * t_model))) * a_normal;
+	o_np.normal = normalize(vec3(u_projection * vec4(t_normal_proj, 0.0)));		// 几何着色器在 裁剪空间计算
 
     gl_Position = u_projection * u_view * t_model * vec4(a_pos, 1.0f);
 

@@ -87,7 +87,7 @@ SPTR_Mesh AssetManager::load_mesh(const std::string& key, const std::string& src
 			auto t_rd = CREATE_CLASS(RenderData);
 			std::vector<CVertex> t_v;
 			for (auto j = 0; j < i.vertices.size(); ++j) {
-				t_v.push_back(CVertex(i.vertices[j].position, i.vertices[j].normal, i.vertices[j].tex_coord));
+				t_v.push_back(CVertex(i.vertices[j].position, i.vertices[j].normal, i.vertices[j].tex_coord, i.vertices[j].tangent, i.vertices[j].bitangent));
 			}
 			t_rd->init(t_v, i.indices);
 			t_rd->set_material_name(i.material.name);
@@ -111,7 +111,7 @@ SPTR_Mesh AssetManager::load_mesh_x(const std::string& key, const std::string& p
 			auto t_rd = CREATE_CLASS(RenderData);
 			std::vector<CVertex> t_v;
 			for (auto j = 0; j < md.vertices.size(); ++j) {
-				t_v.push_back(CVertex(md.vertices[j].position, md.vertices[j].normal, md.vertices[j].tex_coord));
+				t_v.push_back(CVertex(md.vertices[j].position, md.vertices[j].normal, md.vertices[j].tex_coord, md.vertices[j].tangent, md.vertices[j].bitangent));
 			}
 			t_rd->init(t_v, md.indices);
 			if (md.material.name.compare("") != 0) {
@@ -203,7 +203,7 @@ SPTR_SkeletalMesh AssetManager::load_mesh_skeletal(const std::string& key, const
 		for (auto md : t_mds) {
 			std::vector<CVertex> t_vs;
 			for (auto j = 0; j < md.vertices.size(); ++j) {
-				t_vs.push_back(CVertex(md.vertices[j].position, md.vertices[j].normal, md.vertices[j].tex_coord));
+				t_vs.push_back(CVertex(md.vertices[j].position, md.vertices[j].normal, md.vertices[j].tex_coord, md.vertices[j].tangent, md.vertices[j].bitangent));
 			}
 			std::vector<CVertexBone> t_vbs;
 			for (auto j = 0; j < md.bones.size(); ++j) {
@@ -377,6 +377,7 @@ bool AssetManager::load_materials(const std::string& src, SourceType source_type
 		t_md->set_map_ka(i.map_ka);
 		t_md->set_map_kd(i.map_kd);
 		t_md->set_map_ks(i.map_ks);
+		t_md->set_map_normal(i.map_normal);
 		map_materials[t_md->get_name()] = t_md;
 	}
 
