@@ -311,6 +311,7 @@
     <None Include="resources\shaders\shadertoy_buffer_c.frag" />
     <None Include="resources\shaders\shadertoy_buffer_d.frag" />
     <None Include="resources\shaders\shadertoy_img.frag" />
+    <None Include="resources\shaders\shadertoy_img_pbr.frag" />
     <None Include="resources\shaders\shadow.frag" />
     <None Include="resources\shaders\shadow.vert" />
     <None Include="resources\shaders\shadow_point.frag" />

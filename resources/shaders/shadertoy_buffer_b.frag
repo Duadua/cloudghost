@@ -1,8 +1,17 @@
 #version 330 core
 
-out vec4 r_color;
+// ================================================================================
+// define
 
 #define samplerXX sampler2D
+
+// ================================================================================
+// in & out
+
+out vec4 r_color;
+
+// ================================================================================
+// uniform
 
 // shadertoy 着色器输入
 uniform vec3		iResolution;			// viewport resolution (in pixels)
@@ -19,17 +28,22 @@ uniform samplerXX iChannel3;				// input channel. XX = 2D/Cube
 uniform vec4      iDate;					// (year, month, day, time in seconds)
 uniform float     iSampleRate;				// sound sample rate (i.e., 44100)
 
+// ================================================================================
 // shader_toy_begin
-// ========================================
 
 void mainImage( out vec4 fragColor, in vec2 fragCoord )
 {
     fragColor = vec4(0.0,0.0,1.0,1.0);
 }
 
-// ========================================
 // shader_toy_end
+// ================================================================================
+
+// ================================================================================
+// template
 
 void main() {
 	mainImage(r_color, gl_FragCoord.xy);
 }
+
+// ================================================================================

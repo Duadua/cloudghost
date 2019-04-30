@@ -1,10 +1,16 @@
 #version 330 core
 
+// ================================================================================
+// const
+
 // light num 
-const int max_direct_light_num	= 1;
-const int max_point_light_num	= 16;
-const int max_spot_light_num	= 16;
-const int max_sky_light_num	    = 1;
+const int light_direct_num_max  = 1;
+const int light_point_num_max	= 4;
+const int light_spot_num_max	= 4;
+const int light_sky_num_max	    = 1;
+
+// ================================================================================
+// in & out
 
 out vec4 r_color;
 
@@ -15,45 +21,18 @@ in O_VS {
 	mat3 tbn;
 } i_fs;
 
-// base material
-struct material {
-    vec3 ka;
-    vec3 kd;
-    vec3 ks;
+// ================================================================================
+// light
 
-    sampler2D map_ka;                       
-    sampler2D map_kd;
-    sampler2D map_ks;
-
-	bool has_map_ka;
-	bool has_map_kd;
-	bool has_map_ks;
-
-    float shininess;
-};
-// material for cac
-struct material_helper {
-	vec3 ka;
-	vec3 kd;
-	vec3 ks;
-
-	vec4 map_ka_color;
-	vec4 map_kd_color;
-	vec4 map_ks_color;
-
-	float shininess;
-};
-
-// light struct 
-struct DirectLight {
+struct LightDirect {
     vec3 color;
-    vec3 dirction;
-    vec3 k;             // 各分量占比 -- ambient / diffuse / specular
+    vec3 direction;
+    vec3 k;					// 各分量占比 -- ambient / diffuse / specular
 
     float intensity;
 
 };
-struct PointLight {
+struct LightPoint {
     vec3 color;
     vec3 position;
     vec3 k;
@@ -64,10 +43,10 @@ struct PointLight {
     float att_ka, att_kb, att_kc;
 
 };
-struct SpotLight {
+struct LightSpot {
     vec3 color;
     vec3 position;
-    vec3 dirction;
+    vec3 direction;
     vec3 k;
 
     float intensity;
@@ -79,7 +58,7 @@ struct SpotLight {
     float inner, outer;
     
 };
-struct SkyLight {
+struct LightSky {
     vec3 color;
     vec3 k;
 
@@ -87,148 +66,236 @@ struct SkyLight {
     
 };
 
-// uniform variable
+// ================================================================================
+// material
 
-uniform DirectLight u_direct_light[max_direct_light_num];
-uniform PointLight  u_point_light[max_point_light_num];
-uniform SpotLight   u_spot_light[max_spot_light_num];
-uniform SkyLight    u_sky_light[max_sky_light_num];
-uniform int         u_direct_light_num;                         // default is 0
-uniform int         u_point_light_num;
-uniform int         u_spot_light_num;
-uniform int         u_sky_light_num;
+// base material
+struct Material {
+    vec3 ka;
+    vec3 kd;
+    vec3 ks;
 
-uniform vec3	    u_view_pos;
-uniform material    u_material;
+    sampler2D map_ka;       // 0                
+    sampler2D map_kd;       // 1
+    sampler2D map_ks;       // 2
+    sampler2D map_normal;   // 3
+                            // 4 -- 以后加视差贴图用
+	bool has_map_ka;
+	bool has_map_kd;
+	bool has_map_ks;
+    bool has_map_normal;
 
-// helper variable
-vec3 t_view_dir;
-vec3 t_normal;
-material_helper t_material_helper;
+    float shininess;
+};
 
-void pre_cac(vec3 view_pos) {
-    t_view_dir = normalize(view_pos - i_fs.world_pos);
-    t_normal = normalize(i_fs.normal);
+// ================================================================================
+// uniform
 
-    // init material_helper by uniform material
-    t_material_helper.ka = u_material.ka;
-    t_material_helper.kd = u_material.kd;
-    t_material_helper.ks = u_material.ks;
-    t_material_helper.shininess = clamp(u_material.shininess, 32.0, 128.0);
-    if(u_material.has_map_ka) t_material_helper.map_ka_color = texture(u_material.map_ka, i_fs.tex_coord);
-    else t_material_helper.map_ka_color = vec4(1.0);
-    if(u_material.has_map_kd) t_material_helper.map_kd_color = texture(u_material.map_kd, i_fs.tex_coord);
-    else t_material_helper.map_kd_color = vec4(1.0);
-    if(u_material.has_map_ks) t_material_helper.map_ks_color = texture(u_material.map_ks, i_fs.tex_coord);
-    else t_material_helper.map_ks_color = vec4(1.0);
-		
-}
- 
- // blinn_phong lighting
-float cac_ambient() { return 1.0; }
-float cac_diffuse(vec3 normal, vec3 light_dir) { return max(0.0, dot(light_dir, normal)); }
-float cac_spcular(vec3 normal, vec3 light_dir, vec3 view_dir, float shininess) {
-    vec3 t_halfway = normalize(light_dir + view_dir);
-    return pow(max(0.0, dot(normal, t_halfway)), shininess);
-}
-vec3 blinn_phong(vec3 normal, vec3 light_dir, vec3 view_dir, material_helper mh, vec3 k) {
-    vec3 i_ambient = mh.ka * mh.map_ka_color.rgb * cac_ambient();    
-    vec3 i_diffuse = mh.kd * mh.map_kd_color.rgb * cac_diffuse(normal, light_dir);
-    vec3 i_spcular = mh.ks * mh.map_ks_color.rgb * cac_spcular(normal, light_dir, view_dir, mh.shininess);
+// uniform light
+uniform LightDirect u_light_directs[light_direct_num_max];
+uniform LightPoint  u_light_points[light_point_num_max];
+uniform LightSpot   u_light_spots[light_spot_num_max];
+uniform LightSky    u_light_skys[light_sky_num_max];
+uniform int         u_light_direct_num;                         // default is 0
+uniform int         u_light_point_num;
+uniform int         u_light_spot_num;
+uniform int         u_light_sky_num;
 
-    return k.x * i_ambient + k.y * i_diffuse + k.z * i_spcular;
-}
+// uniform material
+uniform Material    u_material;
+uniform bool        u_normal_map_b_use;     // 是否使用法线贴图
 
-// cac light_attenuation
-float att_dirct_light(DirectLight light) { return 1.0; }
-float att_point_light(PointLight light) { 
-    float dis = length(light.position - i_fs.world_pos);
-    float att = 1.0 / (light.att_ka + light.att_kb*dis + light.att_kc*dis*dis);
-    return att; 
-}
-float att_spott_light(SpotLight light) { 
-    float dis = length(light.position - i_fs.world_pos);
-    float att = 1.0 / (light.att_ka + light.att_kb*dis + light.att_kc*dis*dis);
+// uniform for cac
+uniform vec3    u_view_pos;
 
-    vec3 t_light_dir = normalize(light.position - i_fs.world_pos);
-    float theta = dot(t_light_dir, normalize(-light.dirction));   // cos value
-    float epsilon = light.inner - light.outer;          // cos value -- inner > outer
-    float intensity = clamp((theta - light.outer) / epsilon, 0.0, 1.0);
+// ================================================================================
+// pre cac
 
-    return att * intensity;
-}
+vec3 t_view_dir = vec3(0.0);
+vec3 t_normal = vec3(0.0, 0.0, 1.0);
+vec3 t_c_ambient = vec3(1.0);
+vec3 t_c_diffuse = vec3(1.0);
+vec3 t_c_specular = vec3(1.0);
+float t_shininess = 32.0;
 
-// cac light
-vec3 cac_direct_light_one(DirectLight light) {
-    vec3 t_c = light.color * light.intensity * att_dirct_light(light);
+vec3 normal_from_texture();                     // 法线贴图
 
-    vec3 res = t_c * blinn_phong(t_normal, -light.dirction, t_view_dir, t_material_helper, light.k);
-    return res;
-}
-vec3 cac_point_light_one(PointLight light) {
-    vec3 t_light_dir = normalize(light.position - i_fs.world_pos);
-    vec3 t_c = light.color * light.intensity * att_point_light(light);
+void pre_main();
 
-    vec3 res = t_c * blinn_phong(t_normal, t_light_dir, t_view_dir, t_material_helper, light.k);
-    return res;
-}
-vec3 cac_spot_light_one(SpotLight light) {
-    vec3 t_light_dir = normalize(light.position - i_fs.world_pos);
-    vec3 t_c = light.color * light.intensity * att_spott_light(light);
+// ================================================================================
+// blinn_phong
 
-    vec3 res = t_c * blinn_phong(t_normal, t_light_dir, t_view_dir, t_material_helper, light.k);
-    return res;
-}
-vec3 cac_sky_light_one(SkyLight light) {
-    return vec3(0.0, 0.0, 0.0);
-}
-vec3 cac_direct_light() {
-    vec3 res = vec3(0.0, 0.0, 0.0);
+float phong_ambient();
+float phong_diffuse(float n_o_l);
+float phong_specular(float n_o_h, float shininess);
 
-    vec3 i_ambient = 0.1 * t_material_helper.ka * t_material_helper.map_ka_color.rgb * cac_ambient();    
-    res += i_ambient;
+vec3  phong( vec3 n, vec3 v, vec3 l,                            // n v l  法线 视线 光线 方向向量
+            vec3 c_ambient, vec3 c_diffuse, vec3 c_specular,    // 颜色
+            float shininess, float shadow);                     // 反光度 阴影
 
-    for(int i = 0; i < u_direct_light_num; ++i) { res += cac_direct_light_one(u_direct_light[i]); }
-    return res;
-}
-vec3 cac_point_light() {
-    vec3 res = vec3(0.0, 0.0, 0.0);
-    for(int i = 0; i < u_point_light_num; ++i) { res += cac_point_light_one(u_point_light[i]); }
-    return res;
-}
-vec3 cac_spot_light() {
-    vec3 res = vec3(0.0, 0.0, 0.0);
-    for(int i = 0; i < u_spot_light_num; ++i) { res += cac_spot_light_one(u_spot_light[i]); }
-    return res;
-}
-vec3 cac_sky_light() {
-    vec3 res = vec3(0.0, 0.0, 0.0);
-    for(int i = 0; i < u_sky_light_num; ++i) { res += cac_sky_light_one(u_sky_light[i]); }
-    return res;
-}
+// ================================================================================
+// light cac
 
+float light_direct_att(LightDirect light_d);
+vec3  light_direct_one(LightDirect light_d, float shadow);
+vec3  light_direct();
+
+float light_point_att(LightPoint light_p);
+vec3  light_point_one(LightPoint light_p, float shadow);
+vec3  light_point();
+
+float light_spot_att(LightSpot light_s);
+vec3  light_spot_one(LightSpot light_s,float shadow);
+vec3  light_spot();
+
+// ================================================================================
 
 void main(void) {
 
-    pre_cac(u_view_pos);
+    // pre cac
+    pre_main();
 
-    //vec3 t_color = u_light_color * blinn_phong(t_normal, t_light_dir, t_view_dir, t_material_helper);
-    // t_color = vec3(1.0, 0.0, 0.0);
-    //r_color = vec4(t_color, 1.0);
-
-	//vec4 t_c = texture(u_material.map_kd, i_fs.tex_coord);
-	//if(t_c.a < 0.01) discard;
-    //r_color = t_c;
-
+    // cac light
     vec3 t_color = vec3(0.0, 0.0, 0.0);
-    t_color += cac_direct_light();
-    t_color += cac_point_light();
-    t_color += cac_spot_light();
-    t_color += cac_sky_light();
+    t_color += light_direct();
+    t_color += light_point();
+    t_color += light_spot();
 
     r_color = vec4(t_color, 1.0);
-	
+
 }
+
+// ================================================================================
+// pre cac
+
+vec3 normal_from_texture() {
+    // 缩小镜面光范围
+    //t_shininess *= 64;
+
+    // 切线空间的法线 --- 从法线贴图中得 [-1.0 ,, 1.0]
+    vec3 tangent_normal = texture(u_material.map_normal, i_fs.tex_coord).rgb;
+    tangent_normal = normalize(tangent_normal * 2.0 - 1.0);
+
+    return normalize(i_fs.tbn * tangent_normal);
+}
+
+void pre_main() {
+
+    // init obj's color by uniform material
+    t_c_ambient = u_material.ka;
+    t_c_diffuse = u_material.kd;
+    t_c_specular = u_material.ks;
+    t_shininess = clamp(u_material.shininess, 8.0, 128.0);
+
+    if(u_material.has_map_ka) t_c_ambient  *= texture(u_material.map_ka, i_fs.tex_coord).rgb;
+    if(u_material.has_map_kd) t_c_diffuse  *= texture(u_material.map_kd, i_fs.tex_coord).rgb;
+    if(u_material.has_map_ks) t_c_specular *= texture(u_material.map_ks, i_fs.tex_coord).rgb;
+
+    t_view_dir = normalize(u_view_pos - i_fs.world_pos);
+
+    if(u_normal_map_b_use && u_material.has_map_normal) { t_normal = normal_from_texture(); }
+    else { t_normal = normalize(i_fs.normal); }
+}
+
+// ================================================================================
+// blinn_phong
+
+float phong_ambient() { return 1.0; }
+float phong_diffuse(float n_o_l) { return n_o_l; }
+float phong_specular(float n_o_h, float shininess) { return pow(n_o_h, shininess); }
+
+vec3 phong( vec3 n, vec3 v, vec3 l, vec3 c_ambient, vec3 c_diffuse, vec3 c_specular, float shininess, float shadow) {
+    vec3 h = normalize(v + l);
+    float n_o_l = max(dot(n, l), 0.0);
+    float n_o_h = max(dot(n, h), 0.0);
+
+    vec3 t_a = phong_ambient() * c_ambient;
+    vec3 t_d = phong_diffuse(n_o_l) * c_diffuse;
+    vec3 t_s = phong_specular(n_o_h, shininess) * c_specular;
+
+    return t_a + (1.0 - shadow) * (t_d + t_s);
+
+}
+
+// ================================================================================
+// light cac
+
+float light_direct_att(LightDirect light_d) { return 1.0; }
+vec3  light_direct_one(LightDirect light_d, float shadow) {
+    vec3 t_light_dir = normalize(-light_d.direction);
+    vec3 t_radiance = light_d.color * light_d.intensity * 0.01 * light_direct_att(light_d);
+
+    vec3 res = phong(   t_normal, t_view_dir, t_light_dir,
+                        t_c_ambient, t_c_diffuse, t_c_specular,
+                        t_shininess, shadow);
+
+    return t_radiance * res;
+}
+vec3 light_direct() {
+    vec3 res = vec3(0.0);
+    for(int i = 0; i < u_light_direct_num; ++i) {
+        res += light_direct_one(u_light_directs[i], 0.0);
+    }
+    return res;
+}
+
+float light_point_att(LightPoint light_p) {
+    float dis = length(light_p.position - i_fs.world_pos);
+    float att = 1.0 / (light_p.att_ka + light_p.att_kb*dis + light_p.att_kc*dis*dis);
+    return att; 
+}
+vec3 light_point_one(LightPoint light_p, float shadow) {
+    vec3 t_light_dir = normalize(light_p.position - i_fs.world_pos);
+    vec3 t_radiance = light_p.color * light_p.intensity * light_point_att(light_p);
+
+    vec3 res = phong(   t_normal, t_view_dir, t_light_dir,
+                        t_c_ambient, t_c_diffuse, t_c_specular,
+                        t_shininess, shadow);
+
+    return t_radiance * res;
+    
+}
+vec3 light_point() {
+    vec3 res = vec3(0.0);
+    for(int i = 0; i < u_light_point_num; ++i) {
+        res += light_point_one(u_light_points[i], 0.0);
+    }
+    return res;
+
+}
+
+float light_spot_att(LightSpot light_s) {
+    float dis = length(light_s.position - i_fs.world_pos);
+    float att = 1.0 / (light_s.att_ka + light_s.att_kb*dis + light_s.att_kc*dis*dis);
+
+    // 边缘平滑
+    vec3 t_light_dir = normalize(light_s.position - i_fs.world_pos);
+    float theta = dot(t_light_dir, normalize(-light_s.direction));          // cos value
+    float epsilon = light_s.inner - light_s.outer;                          // cos value -- inner > outer
+    float intensity = clamp((theta - light_s.outer) / epsilon, 0.0, 1.0);
+
+    return att * intensity;
+
+}
+vec3 light_spot_one(LightSpot light_s,float shadow) {
+    vec3 t_light_dir = normalize(light_s.position - i_fs.world_pos);
+    vec3 t_radiance = light_s.color * light_s.intensity * light_spot_att(light_s);
+
+    vec3 res = phong(   t_normal, t_view_dir, t_light_dir,
+                        t_c_ambient, t_c_diffuse, t_c_specular,
+                        t_shininess, shadow);
+
+    return t_radiance * res;
+}
+vec3 light_spot() {
+    vec3 res = vec3(0.0);
+    for(int i = 0; i < u_light_spot_num; ++i) {
+        res += light_spot_one(u_light_spots[i], 0.0);
+    }
+    return res;   
+}
+
+// ================================================================================
 
 /**
 *	o_* -- in from vertex shader
@@ -236,3 +303,5 @@ void main(void) {
 *	r_* -- result to output
 *	t_* -- temp variable
 */
+
+// ================================================================================

@@ -1,5 +1,11 @@
 #version 330 core
 
+// ================================================================================
+// const
+
+// ================================================================================
+// in & out
+
 out vec4 r_color;
 
 in O_VS {
@@ -9,8 +15,11 @@ in O_VS {
 	mat3 tbn;
 } i_fs;
 
+// ================================================================================
+// material
+
 // base material
-struct material {
+struct Material {
     vec3 ka;
     vec3 kd;
     vec3 ks;
@@ -18,59 +27,52 @@ struct material {
     sampler2D map_ka;       // 0                
     sampler2D map_kd;       // 1
     sampler2D map_ks;       // 2
-
+    sampler2D map_normal;   // 3
+                            // 4 -- 以后加视差贴图用
 	bool has_map_ka;
 	bool has_map_kd;
 	bool has_map_ks;
+    bool has_map_normal;
 
     float shininess;
 };
-// material for cac
-struct material_helper {
-	vec3 ka;
-	vec3 kd;
-	vec3 ks;
 
-	vec4 map_ka_color;
-	vec4 map_kd_color;
-	vec4 map_ks_color;
+// ================================================================================
+// uniform
 
-	float shininess;
-};
+// uniform material
+uniform Material    u_material;
 
-// uniform variable
-uniform material    u_material;
+// ================================================================================
+// pre cac
 
-// helper variable
-material_helper t_material_helper;
+vec3 t_c_diffuse = vec3(1.0);
 
-void pre_cac() {
+void pre_main();
 
-    // init material_helper by uniform material
-    t_material_helper.ka = u_material.ka;
-    t_material_helper.kd = u_material.kd;
-    t_material_helper.ks = u_material.ks;
-    t_material_helper.shininess = clamp(u_material.shininess, 32.0, 128.0);
-    if(u_material.has_map_ka) t_material_helper.map_ka_color = texture(u_material.map_ka, i_fs.tex_coord);
-    else t_material_helper.map_ka_color = vec4(1.0);
-    if(u_material.has_map_kd) t_material_helper.map_kd_color = texture(u_material.map_kd, i_fs.tex_coord);
-    else t_material_helper.map_kd_color = vec4(1.0);
-    if(u_material.has_map_ks) t_material_helper.map_ks_color = texture(u_material.map_ks, i_fs.tex_coord);
-    else t_material_helper.map_ks_color = vec4(0.5);
-	
-}
+// ================================================================================
 
-vec4 get_texture_only() {
-	vec4 res = vec4(0.0, 0.0, 0.0, 1.0);
-	res = vec4(u_material.kd, 1.0);
-	if(u_material.has_map_kd) res = texture(u_material.map_kd, i_fs.tex_coord);
-	else if(u_material.has_map_ka) res = texture(u_material.map_ka, i_fs.tex_coord);	
-	return res;
-}
- 
 void main(void) {
-    r_color = get_texture_only();
+
+    // pre cac
+    pre_main();
+
+    r_color = vec4(t_c_diffuse, 1.0);
 }
+
+// ================================================================================
+// pre cac
+
+void pre_main() {
+
+    // init obj's color by uniform material
+    t_c_diffuse = u_material.kd;
+
+    if(u_material.has_map_kd) t_c_diffuse  = texture(u_material.map_kd, i_fs.tex_coord).rgb;
+    else if(u_material.has_map_ka) t_c_diffuse = texture(u_material.map_ka, i_fs.tex_coord).rgb;
+}
+
+// ================================================================================
 
 /**
 *	o_* -- in from vertex shader
@@ -78,3 +80,5 @@ void main(void) {
 *	r_* -- result to output
 *	t_* -- temp variable
 */
+
+// ================================================================================

@@ -223,8 +223,6 @@ vec3 normal_from_texture() {
 
 void pre_main() {
 
-    t_view_dir = normalize(u_view_pos - i_fs.world_pos);
-
     // init obj's color by uniform material
     t_c_ambient = u_material.ka;
     t_c_diffuse = u_material.kd;
@@ -234,6 +232,8 @@ void pre_main() {
     if(u_material.has_map_ka) t_c_ambient  *= texture(u_material.map_ka, i_fs.tex_coord).rgb;
     if(u_material.has_map_kd) t_c_diffuse  *= texture(u_material.map_kd, i_fs.tex_coord).rgb;
     if(u_material.has_map_ks) t_c_specular *= texture(u_material.map_ks, i_fs.tex_coord).rgb;
+
+    t_view_dir = normalize(u_view_pos - i_fs.world_pos);
 
     if(u_normal_map_b_use && u_material.has_map_normal) { t_normal = normal_from_texture(); }
     else { t_normal = normalize(i_fs.normal); }
@@ -548,3 +548,5 @@ vec3 light_spot() {
 *	r_* -- result to output
 *	t_* -- temp variable
 */
+
+// ================================================================================

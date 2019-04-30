@@ -1,11 +1,31 @@
 #version 330 core
 
+// ================================================================================
+// in & out 
+
 out vec4 r_color;
+
+// ================================================================================
+// uniform
 
 uniform float u_near;
 uniform float u_far;
 
+// ================================================================================
+
 float origin_depth() { return gl_FragCoord.z; }
+float linearize_depth(float o_depth);
+
+// ================================================================================
+
+void main() {
+
+	float depth = linearize_depth(gl_FragCoord.z);
+	r_color = vec4(vec3(depth), 1.0);
+}
+
+// ================================================================================
+
 float linearize_depth(float o_depth) {
 //	float t_far = u_far * 0.01;
 //	float t_near = u_near * 0.01;
@@ -25,11 +45,7 @@ float linearize_depth(float o_depth) {
 	return (res - t_near) / (min(100.0, t_far) - t_near);
 }
 
-void main() {
-
-	float depth = linearize_depth(gl_FragCoord.z);
-	r_color = vec4(vec3(depth), 1.0);
-}
+// ================================================================================
 
 /**
 *	depth test 
@@ -53,6 +69,7 @@ void main() {
 *	gl_FrontFacing -- 是否为正向面 -- bool值	
 */
 
+// ================================================================================
 
 
 
