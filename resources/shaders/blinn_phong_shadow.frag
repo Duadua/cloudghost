@@ -115,18 +115,19 @@ uniform Material    u_material;
 uniform bool        u_normal_map_b_use;     // 是否使用法线贴图
 
 // uniform for cac
-uniform vec3    u_view_pos;
-uniform float	u_far;
+uniform vec3        u_view_pos;
+uniform float	    u_far;
 
 // ================================================================================
 // pre cac
 
-vec3 t_view_dir = vec3(0.0);
-vec3 t_normal = vec3(0.0, 0.0, 1.0);
 vec3 t_c_ambient = vec3(1.0);
 vec3 t_c_diffuse = vec3(1.0);
 vec3 t_c_specular = vec3(1.0);
 float t_shininess = 32.0;
+
+vec3 t_view_dir = vec3(0.0);
+vec3 t_normal = vec3(0.0, 0.0, 1.0);
 
 vec3 normal_from_texture();                     // 法线贴图
 

@@ -36,6 +36,42 @@ struct LightDirect {
 // ================================================================================
 // material
 
+// pbr material
+struct Material {
+    vec3 ka;
+    vec3 kd;
+    vec3 ks;
+
+    sampler2D map_ka;       // 0                
+    sampler2D map_kd;       // 1
+    sampler2D map_ks;       // 2
+    sampler2D map_normal;   // 3
+                            // 4 -- 以后加视差贴图用
+	bool has_map_ka;
+	bool has_map_kd;
+	bool has_map_ks;
+    bool has_map_normal;
+
+    float shininess;
+
+	// pbr 部分
+	vec3 albedo;			// 返照率 -- 只包含表面颜色 -- 类似 diffuse
+	float metallic;			// 金属度
+	float roughness;		// 粗糙度
+	float ao;				// 环境遮蔽
+
+	sampler2D map_albedo;	// 5
+	sampler2D map_metallic;	// 6
+	sampler2D map_roughness;// 7
+	sampler2D map_ao;		// 8
+
+	bool has_map_albedo;
+	bool has_map_metallic;
+	bool has_map_roughness;
+	bool has_map_ao;
+
+};
+
 // ================================================================================
 // uniform
 
@@ -44,14 +80,11 @@ uniform LightDirect u_light_direct[max_light_direct_num];
 uniform int			u_light_direct_num;
 
 // uniform material
-uniform vec3 	u_albedo;
-uniform vec3 	u_c_diffuse;
-uniform float 	u_metallic;
-uniform float 	u_roughness;
-uniform float 	u_ao;				// 遮蔽
+uniform Material	u_material;
+uniform bool		u_normal_map_b_use;     // 是否使用法线贴图
 
 // uniform for cac
-uniform vec3 	u_view_pos;
+uniform vec3 		u_view_pos;
 
 // ================================================================================
 // pbr 
@@ -90,11 +123,18 @@ vec3  light_ambient(vec3 coe); // coe -- 系数
 // ================================================================================
 // pre cac
 
-vec3  t_normal;
-vec3  t_view_dir;
+vec3  t_c_ambient;
 vec3  t_c_diffuse;
 vec3  t_c_specular;
+
+float t_metallic;
+float t_roughnes;
 float t_ao;
+
+vec3  t_view_dir;
+vec3  t_normal;
+
+vec3 normal_from_texture();                     // 法线贴图
 
 void pre_main(); 
 
@@ -107,7 +147,7 @@ void main() {
 	
 	t_color += light_direct();
 
-	t_color += light_ambient(vec3(0.1));
+	t_color += light_ambient(vec3(1.0));
 
 	r_color = vec4(t_color, 1.0);
 }
@@ -115,16 +155,47 @@ void main() {
 // ================================================================================
 // pre cac
 
+vec3 normal_from_texture() {
+    // 缩小镜面光范围
+    //t_shininess *= 64;
+
+    // 切线空间的法线 --- 从法线贴图中得 [-1.0 ,, 1.0]
+    vec3 tangent_normal = texture(u_material.map_normal, i_fs.tex_coord).rgb;
+    tangent_normal = normalize(tangent_normal * 2.0 - 1.0);
+
+    return normalize(i_fs.tbn * tangent_normal);
+}
+
 void pre_main() { 
-	// 预计算需要的数据
-	t_normal = normalize(i_fs.normal);
+
+	t_c_ambient = u_material.ka;
+	t_c_diffuse =  u_material.kd;			// 片段本身基础颜色
+	t_c_specular = u_material.ks;
+	vec3 t_albedo = u_material.albedo;
+
+	t_metallic = u_material.metallic;
+	t_roughnes = u_material.roughness;
+	t_ao = u_material.ao;
+
+	if(u_material.has_map_ka) { t_c_ambient = texture(u_material.map_ka, i_fs.tex_coord).rgb; }
+	if(u_material.has_map_kd) { t_c_diffuse = texture(u_material.map_kd, i_fs.tex_coord).rgb; }
+	if(u_material.has_map_ks) { t_c_specular = texture(u_material.map_ks, i_fs.tex_coord).rgb; }
+	if(u_material.has_map_albedo) { t_albedo = texture(u_material.map_albedo, i_fs.tex_coord).rgb; }
+
+	if(u_material.has_map_metallic) { t_metallic = texture(u_material.map_metallic, i_fs.tex_coord).r; }
+	if(u_material.has_map_roughness) { t_roughnes = texture(u_material.map_roughness, i_fs.tex_coord).r; }
+	if(u_material.has_map_ao) { t_ao = texture(u_material.map_ao, i_fs.tex_coord).r; }
+
+	// pbr 里修正颜色
+	t_c_diffuse = t_albedo;			 
+	t_c_specular = t_albedo;			 
+	t_c_ambient = 0.5 * t_c_diffuse;
+	t_c_ambient *= t_ao;
+
 	t_view_dir = normalize(u_view_pos - i_fs.world_pos);
 
-	t_c_diffuse =  u_c_diffuse;			// 片段本身基础颜色
-	t_c_specular = u_albedo;
-
-	t_ao = u_ao;
-
+    if(u_normal_map_b_use && u_material.has_map_normal) { t_normal = normal_from_texture(); }
+    else { t_normal = normalize(i_fs.normal); }
 }
 
 // ================================================================================
@@ -210,7 +281,7 @@ vec3 light_direct_one(LightDirect light_d) {
 
 	vec3 res = pbr_Lo(	t_normal, t_view_dir, t_light_dir,
 						t_c_diffuse, t_c_specular,
-						t_f0, u_roughness, u_metallic,
+						t_f0, t_roughnes, t_metallic,
 						t_radiance);
 	return res;
 }
@@ -220,7 +291,7 @@ vec3 light_direct() {
 	return res;
 }
 
-vec3  light_ambient(vec3 coe) { return t_c_diffuse * coe * t_ao; }
+vec3  light_ambient(vec3 coe) { return t_c_ambient * coe; }
 
 // ================================================================================
 
@@ -239,9 +310,9 @@ vec3  light_ambient(vec3 coe) { return t_c_diffuse * coe * t_ao; }
 *	粗糙度 (Roughness)
 *		- 一个平面越粗糙，则这个平面上的微平面的排列就越混乱 
 *		- 从而入射光更会向不同的方向发散开 
-*			- 产生分布范围更广的镜面反射
-*			- 反之产生更锐利的镜面反射
-*		- 但由于无法从像素来区分微平面的方向 -- 也就不好确认此平面的粗糙度
+*			- 产生分布范围更广的镜面反射 
+ *			- 反之产生更锐利的镜面反射 
+   *		- 但由于无法从像素来区分微平面的方向 -- 也就不好确认此平面的粗糙度
 *		- 所以使用 粗糙度(Roughness) 作为参数，用统计学的方法概略估算平面的粗糙程度
 *		- 粗糙度 -> h向量 与 此平面的微平面平均取向方向 一致的概率
 *			- h向量 与微平面平均取向方向 越一致, 镜面反射的效果越锐利

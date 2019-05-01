@@ -484,11 +484,10 @@ void GameManager::base_pass() {
 
 		stack_shaders->push(AssetManager_ins().get_shader("pbr")); {
 			stack_shaders->top()->use();
-			stack_shaders->top()->set_vec3("u_albedo", CVector3D(0.5f, 0.0f, 0.0f));
-			stack_shaders->top()->set_vec3("u_c_diffuse", CVector3D(0.5f, 0.0f, 0.0f));
-			stack_shaders->top()->set_float("u_metallic", 0.0f);
-			stack_shaders->top()->set_float("u_roughness", 1.0f);
-			stack_shaders->top()->set_float("u_ao", 1.0f);
+			stack_shaders->top()->set_vec3("u_material.albedo", CVector3D(0.5f, 0.0f, 0.0f));
+			stack_shaders->top()->set_float("u_material.metallic", 1.0f);
+			stack_shaders->top()->set_float("u_material.roughness", 0.2f);
+			stack_shaders->top()->set_float("u_material.ao", 1.0f);
 			stack_shaders->top()->set_int("u_light_direct_num", 1);
 
 			stack_shaders->top()->set_vec3("u_light_direct[0].color", map_direct_lights["d_light"]->get_light_component()->get_color());

@@ -121,9 +121,9 @@ void MyGameManager::begin_play() {
 	// 生成 sphere -- test pbr
 	{
 		auto pbr_sphere = CREATE_CLASS(SphereObject);
-		pbr_sphere->get_root_component()->set_location(5.0f, 2.0f, -3.0f);
-		//add_game_object("pbr_sphere", pbr_sphere);
-		add_game_object_pbr("pbr_sphere", pbr_sphere);
+		pbr_sphere->get_root_component()->set_location(8.0f, 1.0f, 7.0f);
+		add_game_object("pbr_sphere", pbr_sphere);
+		//add_game_object_pbr("pbr_sphere", pbr_sphere);
 	}
 	
 	
