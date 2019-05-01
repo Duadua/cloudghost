@@ -92,25 +92,41 @@ void MyGameManager::begin_play() {
 		for (int j = 0; j < 2; ++j) {
 			for (int i = 0; i < 6; ++i) {
 				{
-					auto t_mo = CREATE_CLASS(RotateCylinder);
+					SPTR_GameObject t_mo;
+					if (i & 1) { t_mo = CREATE_CLASS(RotateCylinder); }
+					else { t_mo = CREATE_CLASS(SphereObject); }
+					//auto t_mo = CREATE_CLASS(RotateCylinder);
 					std::string t_name = "cylinder" + StringHelper_ins().int_to_string(j) + "_" + StringHelper_ins().int_to_string(i);
 					add_game_object(t_name, t_mo);
-					t_mo->get_root_component()->set_location(1.0f*(j - 0.5f), 0.651f, 2.0f * (i - 2));
-					t_mo->get_root_component()->set_scale(0.35f, 1.3f, 0.35f);
-					t_mo->update_origin_rotation();
-					if ((i+j)&1) t_mo->set_material(AssetManager_ins().get_material("emerald"));
-					else t_mo->set_material(AssetManager_ins().get_material("jade"));
-					t_mo->set_material(AssetManager_ins().get_material("default"), 2);
+					t_mo->get_root_component()->set_location(1.5f*(j - 0.5f), 0.5f, 2.0f * (i - 2));
+					t_mo->get_root_component()->set_scale(0.5);
+					if (i & 1) {
+						t_mo->get_root_component()->set_location(1.5f*(j - 0.5f), 0.651f, 2.0f * (i - 2));
+						t_mo->get_root_component()->set_scale(0.35f, 1.3f, 0.35f);
+						auto t_rc = std::dynamic_pointer_cast<RotateCylinder>(t_mo);
+						t_rc->update_origin_rotation();
+						if ((i+j)&1) t_rc->set_material(AssetManager_ins().get_material("emerald"));
+						else t_rc->set_material(AssetManager_ins().get_material("jade"));
+						t_rc->set_material(AssetManager_ins().get_material("default"), 2);
+					}
 				}
 				{
-					auto t_mo = CREATE_CLASS(FlowSphere);
+					SPTR_GameObject t_mo;
+					if (i & 1) { t_mo = CREATE_CLASS(FlowSphere); }
+					else { continue; t_mo = CREATE_CLASS(SphereObject); }
+					//auto t_mo = CREATE_CLASS(FlowSphere);
 					std::string t_name = "sphere" + StringHelper_ins().int_to_string(j) + "_" + StringHelper_ins().int_to_string(i);
 					add_game_object(t_name, t_mo);
-					t_mo->get_root_component()->set_location(1.0f*(j - 0.5f), 1.70f, 2.0f * (i - 2));
-					t_mo->get_root_component()->set_scale(0.18f);
-					t_mo->update_origin_location();
-					if ((i+j)&1) t_mo->set_material(AssetManager_ins().get_material("jade"));
-					else t_mo->set_material(AssetManager_ins().get_material("emerald"));
+					t_mo->get_root_component()->set_location(1.5f*(j - 0.5f), 1.30f, 2.0f * (i - 2));
+					t_mo->get_root_component()->set_scale(0.2f);
+					if (i & 1) {
+						t_mo->get_root_component()->set_location(1.5f*(j - 0.5f), 1.70f, 2.0f * (i - 2));
+						t_mo->get_root_component()->set_scale(0.18f);
+						auto t_fs = std::dynamic_pointer_cast<FlowSphere>(t_mo);
+						t_fs->update_origin_location();
+						if ((i+j)&1) t_fs->set_material(AssetManager_ins().get_material("jade"));
+						else t_fs->set_material(AssetManager_ins().get_material("emerald"));
+					}
 				
 				}
 	
