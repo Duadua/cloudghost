@@ -229,7 +229,8 @@ public:
 private:
 	MeshLoader(){}
 
-	static void gen_tangent(MeshData& md);		// 生成切线
+	static void gen_tangent(MeshData& md);				// 生成切线
+	static void gen_tangent(SkeletalMeshData& md);		// 生成切线
 
 };
 

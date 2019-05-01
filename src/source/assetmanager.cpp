@@ -118,6 +118,7 @@ SPTR_Mesh AssetManager::load_mesh_x(const std::string& key, const std::string& p
 				if (md.material.map_ka.compare("") != 0) { load_texture_x(md.material.map_ka); }
 				if (md.material.map_kd.compare("") != 0) { load_texture_x(md.material.map_kd); }
 				if (md.material.map_ks.compare("") != 0) { load_texture_x(md.material.map_ks, false); }
+				if (md.material.map_normal.compare("") != 0) { load_texture_x(md.material.map_normal, false); }
 
 				auto t_mt = CREATE_CLASS(Material);
 				t_mt->set_name(md.material.name);
@@ -128,6 +129,7 @@ SPTR_Mesh AssetManager::load_mesh_x(const std::string& key, const std::string& p
 				t_mt->set_map_ka(FileHelper_ins().get_name_of_file(md.material.map_ka));
 				t_mt->set_map_kd(FileHelper_ins().get_name_of_file(md.material.map_kd));
 				t_mt->set_map_ks(FileHelper_ins().get_name_of_file(md.material.map_ks));
+				t_mt->set_map_normal(FileHelper_ins().get_name_of_file(md.material.map_normal));
 				map_materials[t_mt->get_name()] = t_mt;
 				t_rd->set_material_name(t_mt->get_name());
 			}
@@ -219,6 +221,7 @@ SPTR_SkeletalMesh AssetManager::load_mesh_skeletal(const std::string& key, const
 				if (md.material.map_ka.compare("") != 0) { load_texture_x(md.material.map_ka); }
 				if (md.material.map_kd.compare("") != 0) { load_texture_x(md.material.map_kd); }
 				if (md.material.map_ks.compare("") != 0) { load_texture_x(md.material.map_ks, false); }
+				if (md.material.map_normal.compare("") != 0) { load_texture_x(md.material.map_normal, false); }
 
 				auto t_mt = CREATE_CLASS(Material);
 				t_mt->set_name(md.material.name);
@@ -229,6 +232,7 @@ SPTR_SkeletalMesh AssetManager::load_mesh_skeletal(const std::string& key, const
 				t_mt->set_map_ka(FileHelper_ins().get_name_of_file(md.material.map_ka));
 				t_mt->set_map_kd(FileHelper_ins().get_name_of_file(md.material.map_kd));
 				t_mt->set_map_ks(FileHelper_ins().get_name_of_file(md.material.map_ks));
+				t_mt->set_map_normal(FileHelper_ins().get_name_of_file(md.material.map_normal));
 				map_materials[t_mt->get_name()] = t_mt;
 				t_rd->set_material_name(t_mt->get_name());
 			}

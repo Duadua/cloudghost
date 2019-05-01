@@ -209,6 +209,8 @@ void main(void) {
     //r_color = vec4(vec3(1.0 - point_shadows[0]), 1.0);
     //r_color = vec4(vec3(1.0 - direct_shadows[0]), 1.0);
 
+    //r_color = vec4(t_normal * 0.5 + 0.5, 1.0);
+
 }
 
 // ================================================================================
@@ -231,7 +233,7 @@ void pre_main() {
     t_c_ambient = u_material.ka;
     t_c_diffuse = u_material.kd;
     t_c_specular = u_material.ks;
-    t_shininess = clamp(u_material.shininess, 8.0, 128.0);
+    t_shininess = clamp(u_material.shininess, 8.0, 256.0);
 
     if(u_material.has_map_ka) t_c_ambient  *= texture(u_material.map_ka, i_fs.tex_coord).rgb;
     if(u_material.has_map_kd) t_c_diffuse  *= texture(u_material.map_kd, i_fs.tex_coord).rgb;

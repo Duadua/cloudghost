@@ -702,6 +702,8 @@ bool MeshLoader::load_mesh_obj(const std::string& src, std::vector<MeshData>& md
 	if (mds.size() == 0) { mds.push_back(MeshData()); }
 	for(auto& md : mds) { md.vertices.assign(vertices.begin(), vertices.end()); }
 
+	for (auto& md : mds) { gen_tangent(md); }
+
 	if (source_type == SourceType::BY_FILE) { fs.close(); }
 
 	return true;
@@ -748,6 +750,16 @@ bool MeshLoader::load_mesh_x(const std::string& path, std::vector<MeshData>& mds
 						auto t_mn = t_mesh->mNormals[j];
 						t_v.normal = CVector3D(t_mn.x, t_mn.y, t_mn.z);
 					}
+
+					if (t_mesh->mTangents != nullptr) {
+						auto t_mt = t_mesh->mTangents[j];
+						t_v.tangent = CVector3D(t_mt.x, t_mt.y, t_mt.z);
+					} // tangent
+
+					if (t_mesh->mBitangents != nullptr) {
+						auto t_mt = t_mesh->mBitangents[j];
+						t_v.bitangent = CVector3D(t_mt.x, t_mt.y, t_mt.z);
+					} // bitangent
 
 					md.vertices.push_back(t_v);
 				}
@@ -814,6 +826,29 @@ bool MeshLoader::load_mesh_x(const std::string& path, std::vector<MeshData>& mds
 							md.material.map_ks = s_path + "/" + FileHelper_ins().get_name_of_file(t_txname.C_Str());
 						}
 					}
+					{
+						int len = t_mt->GetTextureCount(aiTextureType_NORMALS);
+						if (len >= 1) {
+							len = 1;				// 临时
+							for (int j = 0; j < len; ++j) {
+								aiString t_txname;
+								t_mt->GetTexture(aiTextureType_NORMALS, j, &t_txname);
+								md.material.map_normal = s_path + "/" + FileHelper_ins().get_name_of_file(t_txname.C_Str());
+							}
+						}
+						else {
+							len = t_mt->GetTextureCount(aiTextureType_HEIGHT);	// for obj
+							if (len >= 1) {
+								len = 1;				// 临时
+								for (int j = 0; j < len; ++j) {
+									aiString t_txname;
+									t_mt->GetTexture(aiTextureType_HEIGHT, j, &t_txname);
+									md.material.map_normal = s_path + "/" + FileHelper_ins().get_name_of_file(t_txname.C_Str());
+								}
+							}
+						}
+					} // normal map
+
 					
 				}
 
@@ -826,6 +861,7 @@ bool MeshLoader::load_mesh_x(const std::string& path, std::vector<MeshData>& mds
 
 	}
 
+	for (auto& md : mds) { gen_tangent(md); }
 	return true;
 }
 
@@ -900,6 +936,16 @@ bool MeshLoader::load_mesh_skeletal(const std::string& path, std::vector<Skeleta
 						auto t_mn = t_mesh->mNormals[j];
 						t_v.normal = CVector3D(t_mn.x, t_mn.y, t_mn.z);
 					}
+					
+					if (t_mesh->mTangents != nullptr) {
+						auto t_mt = t_mesh->mTangents[j];
+						t_v.tangent = CVector3D(t_mt.x, t_mt.y, t_mt.z);
+					} // tangent
+
+					if (t_mesh->mBitangents != nullptr) {
+						auto t_mt = t_mesh->mBitangents[j];
+						t_v.bitangent = CVector3D(t_mt.x, t_mt.y, t_mt.z);
+					} // bitangent
 
 					md.vertices.push_back(t_v);
 				}
@@ -966,6 +1012,28 @@ bool MeshLoader::load_mesh_skeletal(const std::string& path, std::vector<Skeleta
 							md.material.map_ks = s_path + "/" + FileHelper_ins().get_name_of_file(t_txname.C_Str());
 						}
 					}
+					{
+						int len = t_mt->GetTextureCount(aiTextureType_NORMALS);
+						if (len >= 1) {
+							len = 1;				// 临时
+							for (int j = 0; j < len; ++j) {
+								aiString t_txname;
+								t_mt->GetTexture(aiTextureType_NORMALS, j, &t_txname);
+								md.material.map_normal = s_path + "/" + FileHelper_ins().get_name_of_file(t_txname.C_Str());
+							}
+						}
+						else {
+							len = t_mt->GetTextureCount(aiTextureType_HEIGHT);	// for obj
+							if (len >= 1) {
+								len = 1;				// 临时
+								for (int j = 0; j < len; ++j) {
+									aiString t_txname;
+									t_mt->GetTexture(aiTextureType_HEIGHT, j, &t_txname);
+									md.material.map_normal = s_path + "/" + FileHelper_ins().get_name_of_file(t_txname.C_Str());
+								}
+							}
+						}
+					} // normal map
 
 				}
 
@@ -998,6 +1066,9 @@ bool MeshLoader::load_mesh_skeletal(const std::string& path, std::vector<Skeleta
 		for (uint i = 0; i < t_node->mNumChildren; ++i) { nodes.push(t_node->mChildren[i]); }
 
 	}
+
+	// 生成切线
+	for (auto& md : mds) { gen_tangent(md); }
 
 	// load animation
 	for (uint i = 0; i < scene->mNumAnimations; ++i) {
@@ -1096,6 +1167,32 @@ bool MeshLoader::load_mesh_animation(const std::string& path, std::vector<AnimDa
 
 
 void MeshLoader::gen_tangent(MeshData& md) {
+	for (auto& v : md.vertices) { v.tangent = CVector3D(); }
+
+	for (uint i = 0; i < md.indices.size(); i += 3) {
+		auto& a = md.vertices[md.indices[i + 0]];
+		auto& b = md.vertices[md.indices[i + 1]];
+		auto& c = md.vertices[md.indices[i + 2]];
+
+		CVector3D e1 = b.position - a.position;
+		CVector3D e2 = c.position - a.position;
+
+		CVector2D d1 = b.tex_coord - a.tex_coord;
+		CVector2D d2 = c.tex_coord - a.tex_coord;
+
+		float f = 1.0f / (d1.x() * d2.y() - d2.x() * d1.y());	// 行列式
+
+		CVector3D t_tangent = f * ( d2.y() * e1 - d1.y() * e2);
+		CVector3D t_bitange = f * (-d2.x() * e1 + d1.x() * e2);
+
+		a.tangent += t_tangent; b.tangent += t_tangent; c.tangent += t_tangent;
+		a.bitangent += t_bitange; b.bitangent += t_bitange; c.bitangent += t_bitange;
+	}
+
+	for (auto& v : md.vertices) { v.tangent.normalize(); v.bitangent.normalize(); }
+
+}
+void MeshLoader::gen_tangent(SkeletalMeshData& md) {
 	for (auto& v : md.vertices) { v.tangent = CVector3D(); }
 
 	for (uint i = 0; i < md.indices.size(); i += 3) {
