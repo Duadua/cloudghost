@@ -328,6 +328,7 @@
   <ItemGroup>
     <Text Include="resources\materials\txt\cube_material.txt" />
     <Text Include="resources\materials\txt\default_material.txt" />
+    <Text Include="resources\materials\txt\pbr_material.txt" />
     <Text Include="resources\materials\txt\single_material.txt" />
     <Text Include="resources\models\txt\circle.txt" />
     <Text Include="resources\models\txt\cone.txt" />

@@ -9,17 +9,41 @@ std::string Material::default_material_name = "default";
 
 Material::Material() {
 	ka = CVector3D(1.0f); kd = CVector3D(1.0f); ks = CVector3D(1.0f); 
-	shininess = 1.0f;
+	shininess = 32.0f;
 	map_ka = ""; map_kd = ""; map_ks = "";
 	map_normal = "";
+
+	// pbr pass
+	albedo = CVector3D(1.0f);
+	metallic = 0.0f;
+	roughness = 0.5f;
+	ao = 1.0f;
+
+	map_albedo = "";
+	map_metallic = "";
+	map_roughness = "";
+	map_ao = "";
 }
 Material::Material(const Material& b) : ka(b.ka), kd(b.kd), ks(b.ks), shininess(b.shininess), 
-	map_ka(b.map_ka), map_kd(b.map_kd), map_ks(b.map_ks), map_normal(b.map_normal) { }
+	map_ka(b.map_ka), map_kd(b.map_kd), map_ks(b.map_ks), map_normal(b.map_normal),
+	albedo(b.albedo), metallic(b.metallic), roughness(b.roughness), ao(b.ao),
+	map_albedo(b.map_albedo), map_metallic(b.map_metallic), map_roughness(b.map_roughness), map_ao(b.map_ao) { }
 void Material::copy_from(const SPTR_Material b) {
 	ka = b->ka; kd = b->kd; ks = b->ks; 
 	shininess = b->shininess;
 	map_ka = b->map_ka; map_kd = b->map_kd; map_ks = b->map_ks;
 	map_normal = b->map_normal;
+
+	// pbr pass
+	albedo = b->albedo;
+	metallic = b->metallic;
+	roughness = b->roughness;
+	ao = b->ao;
+
+	map_albedo = b->map_albedo;
+	map_metallic = b->map_metallic;
+	map_roughness = b->map_roughness;
+	map_ao = b->map_ao;
 }
 
 void Material::use(SPTR_Shader shader) {
@@ -93,6 +117,60 @@ void Material::use(SPTR_Shader shader) {
 	}
 	else { shader->set_int("u_material.has_map_normal", false); }
 	
+	// pbr pass
+	shader->set_vec3("u_material.albedo", albedo);
+	shader->set_float("u_material.metallic", metallic);
+	shader->set_float("u_material.roughness", roughness);
+	shader->set_float("u_material.ao", ao);
+
+	if (map_albedo.compare("") != 0) {
+		shader->set_int("u_material.map_albedo", material_map_albedo_id);
+		shader->set_int("u_material.has_map_albedo", true);
+		auto t_tex = AssetManager_ins().get_texture(map_albedo);
+		if (t_tex == nullptr) { t_tex = AssetManager_ins().get_texture("texture_default.png"); }
+		if(t_tex != nullptr) { t_tex->bind(material_map_albedo_id); }
+	}
+	else {
+		if (map_kd.compare("") != 0) {
+			shader->set_int("u_material.map_albedo", material_map_albedo_id);
+			shader->set_int("u_material.has_map_albedo", true);
+			auto t_tex = AssetManager_ins().get_texture(map_kd);
+			if (t_tex == nullptr) { t_tex = AssetManager_ins().get_texture("texture_default.png"); }
+			if(t_tex != nullptr) { t_tex->bind(material_map_albedo_id); }
+		}
+		else { shader->set_int("u_material.has_map_albedo", false); }
+	}
+	
+	if (map_metallic.compare("") != 0) {
+		shader->set_int("u_material.map_metallic", material_map_metallic_id);
+		shader->set_int("u_material.has_map_metallic", true);
+		auto t_tex = AssetManager_ins().get_texture(map_metallic);
+		if (t_tex == nullptr) { t_tex = AssetManager_ins().get_texture("texture_default.png"); }
+		if(t_tex != nullptr) { t_tex->bind(material_map_metallic_id); }
+	}
+	else { shader->set_int("u_material.has_map_metallic", false); }
+
+	if (map_roughness.compare("") != 0) {
+		shader->set_int("u_material.map_roughness", material_map_roughness_id);
+		shader->set_int("u_material.has_map_roughness", true);
+		auto t_tex = AssetManager_ins().get_texture(map_roughness);
+		if (t_tex == nullptr) { t_tex = AssetManager_ins().get_texture("texture_default.png"); }
+		if(t_tex != nullptr) { t_tex->bind(material_map_roughness_id); }
+	}
+	else { shader->set_int("u_material.has_map_roughness", false); }
+
+	if (map_ao.compare("") != 0) {
+		shader->set_int("u_material.map_ao", material_map_ao_id);
+		shader->set_int("u_material.has_map_ao", true);
+		auto t_tex = AssetManager_ins().get_texture(map_ao);
+		if (t_tex == nullptr) { t_tex = AssetManager_ins().get_texture("texture_default.png"); }
+		if(t_tex != nullptr) { t_tex->bind(material_map_ao_id); }
+	}
+	else { shader->set_int("u_material.has_map_ao", false); }
+
+
+
+
 }
 
 void Material::un_use(SPTR_Shader shader) {
@@ -114,4 +192,5 @@ void Material::un_use(SPTR_Shader shader) {
 	Texture2D::un_bind(material_map_ks_id);
 	Texture2D::un_bind(material_map_normal_id);
 
+	// pbr pass
 }

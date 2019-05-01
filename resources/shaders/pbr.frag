@@ -76,7 +76,7 @@ struct Material {
 // uniform
 
 // uniform light
-uniform LightDirect u_light_direct[max_light_direct_num];
+uniform LightDirect u_light_directs[max_light_direct_num];
 uniform int			u_light_direct_num;
 
 // uniform material
@@ -90,10 +90,10 @@ uniform vec3 		u_view_pos;
 // pbr 
 
 // d g f
-float brdf_d_tr_ggx(float n_o_h, float a);
+float brdf_d_tr_ggx(float n_o_h, float roughness);
 
-float brdf_g_k_direct(float a);
-float brdf_g_k_ibl(float a);
+float brdf_g_k_direct(float roughness);
+float brdf_g_k_ibl(float roughness);
 float brdf_g_schlick_ggx(float n_o_v, float k);
 float brdf_g_smith(float n_o_v, float n_o_l, float k);
 
@@ -103,12 +103,12 @@ vec3  brdf_f_fresnel_schlick(float h_o_v, vec3 f0);			// h 为中间向量 -- �
 // brdf
 vec3 brdf_cook_torrance(vec3 n, vec3 v, vec3 l, 
 						vec3 c_diffuse, vec3 c_specular, 
-						vec3 f0, float a, float metallic);
+						vec3 f0, float roughness, float metallic);
 
 // 反射率方程
 vec3 pbr_Lo(vec3 n, vec3 v, vec3 l,
 			vec3 c_diffuse, vec3 c_specular, 
-			vec3 f0, float a, float metallic,
+			vec3 f0, float roughness, float metallic,
 			vec3 radiance);									// radiance -- 辐射度(入射)
 
 // ================================================================================
@@ -147,7 +147,7 @@ void main() {
 	
 	t_color += light_direct();
 
-	t_color += light_ambient(vec3(1.0));
+	t_color += light_ambient(vec3(0.3));
 
 	r_color = vec4(t_color, 1.0);
 }
@@ -187,9 +187,9 @@ void pre_main() {
 	if(u_material.has_map_ao) { t_ao = texture(u_material.map_ao, i_fs.tex_coord).r; }
 
 	// pbr 里修正颜色
-	t_c_diffuse = t_albedo;			 
+	t_c_diffuse = t_albedo;
 	t_c_specular = t_albedo;			 
-	t_c_ambient = 0.5 * t_c_diffuse;
+	t_c_ambient = 1.0 * t_c_diffuse;
 	t_c_ambient *= t_ao;
 
 	t_view_dir = normalize(u_view_pos - i_fs.world_pos);
@@ -202,16 +202,17 @@ void pre_main() {
 // pbr
 
 // d g f
-float brdf_d_tr_ggx(float n_o_h, float a) {
+float brdf_d_tr_ggx(float n_o_h, float roughness) {
+	float a = roughness * roughness;
 	float a2 = a * a;
 
 	float x = a2;
 	float y = (n_o_h*n_o_h * (a2-1.0) + 1.0);
-	return x / (pi * y * y);
+	return x / max(pi * y * y, 0.001);
 }
 
-float brdf_g_k_direct(float a) { return (a + 1.0)*(a + 1.0) / 8.0; }
-float brdf_g_k_ibl(float a) { return a*a / 2.0; }
+float brdf_g_k_direct(float roughness) { return (roughness + 1.0)*(roughness + 1.0) / 8.0; }
+float brdf_g_k_ibl(float roughness) { return roughness*roughness / 2.0; }
 float brdf_g_schlick_ggx(float n_o_v, float k) {
 	float x = n_o_v;
 	float y = n_o_v * (1.0 - k) + k;
@@ -229,11 +230,11 @@ vec3  brdf_f_f0(vec3 f0, vec3 albedo, float metallic) {
 	// return metallic * albedo + (1.0 - metallic) * f0;
 }
 vec3 brdf_f_fresnel_schlick(float h_o_v, vec3 f0) {
-	return f0 + (1.0 - f0) * pow(1.0 - h_o_v, 5);
+	return f0 + (1.0 - f0) * pow(1.0 - h_o_v, 5.0);
 }
 
 // brdf
-vec3 brdf_cook_torrance(vec3 n, vec3 v, vec3 l, vec3 c_diffuse, vec3 c_specular, vec3 f0, float a, float metallic) {
+vec3 brdf_cook_torrance(vec3 n, vec3 v, vec3 l, vec3 c_diffuse, vec3 c_specular, vec3 f0, float roughness, float metallic) {
 	// pre cac
 	vec3 h = normalize(v + l);							// 中间向量
 	float n_o_v = max(dot(n, v), 0.0);
@@ -241,11 +242,11 @@ vec3 brdf_cook_torrance(vec3 n, vec3 v, vec3 l, vec3 c_diffuse, vec3 c_specular,
 	float n_o_h = max(dot(n, h), 0.0);
 	float h_o_v = max(dot(h, v), 0.0);
 
-	float k = brdf_g_k_direct(a);						// 根据直接光源/IBL 选择相应方程
+	float k = brdf_g_k_direct(roughness);				// 根据直接光源/IBL 选择相应方程
 	vec3 f90 = brdf_f_f0(f0, c_specular, metallic);		// 获取真正的 f0 -- 有金属性影响
 
 	// get d g f
-	float d = brdf_d_tr_ggx(n_o_h, a);					// 法线分布函数
+	float d = brdf_d_tr_ggx(n_o_h, roughness);			// 法线分布函数
 	float g = brdf_g_smith(n_o_v, n_o_l, k);			// 几何函数
 	vec3  f = brdf_f_fresnel_schlick(h_o_v, f90);		// 菲涅尔方程
 
@@ -263,9 +264,9 @@ vec3 brdf_cook_torrance(vec3 n, vec3 v, vec3 l, vec3 c_diffuse, vec3 c_specular,
 }
 
 // 反射率方程 -- 最终结果
-vec3 pbr_Lo(vec3 n, vec3 v, vec3 l, vec3 c_diffuse, vec3 c_specular, vec3 f0, float a, float metallic, vec3 radiance) {
+vec3 pbr_Lo(vec3 n, vec3 v, vec3 l, vec3 c_diffuse, vec3 c_specular, vec3 f0, float roughness, float metallic, vec3 radiance) {
 	float n_o_l = max(dot(n, l), 0.0);
-	vec3 brdf = brdf_cook_torrance(n, v, l, c_diffuse, c_specular, f0, a, metallic);
+	vec3 brdf = brdf_cook_torrance(n, v, l, c_diffuse, c_specular, f0, roughness, metallic);
 
 	return brdf * radiance * n_o_l;
 }
@@ -287,7 +288,7 @@ vec3 light_direct_one(LightDirect light_d) {
 }
 vec3 light_direct() {
 	vec3 res = vec3(0.0, 0.0, 0.0);
-	for(int i = 0; i < u_light_direct_num; ++i) { res += light_direct_one(u_light_direct[i]); }
+	for(int i = 0; i < u_light_direct_num; ++i) { res += light_direct_one(u_light_directs[i]); }
 	return res;
 }
 

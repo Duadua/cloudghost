@@ -707,6 +707,9 @@
     <Text Include="resources\texts\about.txt">
       <Filter>resources\texts</Filter>
     </Text>
+    <Text Include="resources\materials\txt\pbr_material.txt">
+      <Filter>resources\materials\txt</Filter>
+    </Text>
   </ItemGroup>
   <ItemGroup>
     <Image Include="resources\textures\wood.png">

@@ -32,6 +32,16 @@ public:
 
     GET_SET(float, shininess)
 
+	GET_SET(CVector3D, albedo)
+	GET_SET(float, metallic)
+	GET_SET(float, roughness)
+	GET_SET(float, ao)
+
+	GET_SET(std::string, map_albedo)
+	GET_SET(std::string, map_metallic)
+	GET_SET(std::string, map_roughness)
+	GET_SET(std::string, map_ao)
+
 	static std::string default_material_name;
 
 private:
@@ -42,11 +52,24 @@ private:
 	CVector3D ks;
 
 	float shininess;
-
+	
 	std::string map_ka;
 	std::string map_kd;
 	std::string map_ks;
 
 	std::string map_normal;		// 法线贴图
 
+	// pbr 部分
+	CVector3D albedo;
+	float metallic;
+	float roughness;
+	float ao;
+
+	std::string map_albedo;
+	std::string map_metallic;
+	std::string map_roughness;
+	std::string map_ao;
+
 };
+
+

@@ -87,9 +87,14 @@ const int material_map_kd_id = material_map_ka_id + 1;								// 1
 const int material_map_ks_id = material_map_kd_id + 1;								// 2
 const int material_map_normal_id = material_map_ks_id + 1;							// 3
 
-const int shadow_direct_0_id = 5;													// 5 -- 阴影贴图用
-const int shadow_point_0_id = shadow_direct_0_id + light_direct_num_max;			// 6
-const int shadow_spot_0_id = shadow_point_0_id + light_point_num_max;				// 10
+const int material_map_albedo_id = material_map_normal_id + 1 + 1;					// 5
+const int material_map_metallic_id = material_map_albedo_id + 1;					// 6
+const int material_map_roughness_id = material_map_metallic_id + 1;					// 7
+const int material_map_ao_id = material_map_roughness_id + 1;						// 8
+
+const int shadow_direct_0_id = 9;													// 9 -- 阴影贴图用
+const int shadow_point_0_id = shadow_direct_0_id + light_direct_num_max;			// 10
+const int shadow_spot_0_id = shadow_point_0_id + light_point_num_max;				// 14
 
 
 
