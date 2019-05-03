@@ -3,6 +3,8 @@
 #include <QtWidgets/QApplication>
 #include <QSplashScreen>
 
+#include "tools/materialloader.h"
+
 /*#include "tools/meshloader.h"
 #include "tools/materialloader.h"
 #include "tools/textureloader.h"
@@ -34,12 +36,17 @@ int main(int argc, char *argv[]) {
 	}*/
 	
 	// gen material txt
-	/*QString path = "default_material.txt";
-	MaterialData md("default", CVector3D(0.1f), CVector3D(0.7f), CVector3D(0.2f), 32.0f, "texture_default.txt", "texture_default.txt");
+	/*QString path = "pbr_material.txt";
+	MaterialData md("pbr_rusted_iron", CVector3D(0.1f), CVector3D(0.7f), CVector3D(0.2f), 32.0f, 
+					"texture_default.png", "texture_default.png", "", "rusted_iron_normal.png",
+					CVector3D(0.5f, 0.0f, 0.0f), 0.0f, 0.5f, 1.0f,
+					"rusted_iron_albedo.png", "rusted_iron_metallic.png", "rusted_iron_roughness.png",
+					"rusted_iron_ao.png");
 	if (!MaterialGen::gen_material_txt(path.toStdString(), md)) {
 		c_debuger() << "cannot gen material txt";
 	}
 	*/
+	
 
 	// repair png
 	//std::string str = "resources";

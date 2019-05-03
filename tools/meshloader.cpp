@@ -711,7 +711,7 @@ bool MeshLoader::load_mesh_obj(const std::string& src, std::vector<MeshData>& md
 
 bool MeshLoader::load_mesh_x(const std::string& path, std::vector<MeshData>& mds) {
 	Assimp::Importer import;
-	auto scene = import.ReadFile(path, aiProcess_ForceGenNormals | aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_CalcTangentSpace);
+	auto scene = import.ReadFile(path, aiProcess_ForceGenNormals | aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_CalcTangentSpace | aiProcess_FlipWindingOrder);
 
 	if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode) {
 		c_debuger() << "[error][mesh]load mesh fail\n" + std::string(import.GetErrorString());
@@ -867,7 +867,7 @@ bool MeshLoader::load_mesh_x(const std::string& path, std::vector<MeshData>& mds
 
 bool MeshLoader::load_mesh_skeletal(const std::string& path, std::vector<SkeletalMeshData>& mds, MSkeleton& skeleton, std::vector<MBone>& bones, CMatrix4x4& mat_global, std::vector<AnimData>& ads) {
 	Assimp::Importer import;
-	auto scene = import.ReadFile(path, aiProcess_ForceGenNormals | aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_CalcTangentSpace);
+	auto scene = import.ReadFile(path, aiProcess_ForceGenNormals | aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_CalcTangentSpace | aiProcess_FlipWindingOrder);
 
 	if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode) {
 		c_debuger() << "[error][skeletal_mesh]load skeletal_mesh fail\n" + path + " " + std::string(import.GetErrorString());
@@ -1113,7 +1113,7 @@ bool MeshLoader::load_mesh_skeletal(const std::string& path, std::vector<Skeleta
 
 bool MeshLoader::load_mesh_animation(const std::string& path, std::vector<AnimData>& ads) {
 	Assimp::Importer import;
-	auto scene = import.ReadFile(path, aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_CalcTangentSpace);
+	auto scene = import.ReadFile(path, aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_CalcTangentSpace | aiProcess_FlipWindingOrder);
 
 	if (!scene || !scene->mRootNode) {
 		c_debuger() << "[error][animation]load animation fail\n" + path + " " + std::string(import.GetErrorString());

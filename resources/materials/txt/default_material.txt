@@ -8,6 +8,10 @@ name default
 	map_ka texture_default.png
 	map_kd texture_default.png
 
+	albedo 1.000000 1.000000 1.000000
+	metallic 0.000000
+	roughness 0.500000
+	ao 1.000000
 
 name brickwall
 	ka 0.100000 0.100000 0.100000

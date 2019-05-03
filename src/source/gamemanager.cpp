@@ -113,6 +113,7 @@ void GameManager::init() {
 		AssetManager_ins().load_shader("shadow_point", "resources/shaders/shadow_point.vert", "resources/shaders/shadow_point.frag", "resources/shaders/shadow_point.geom");
 
 		AssetManager_ins().load_shader("pbr", "resources/shaders/mvp_anim.vert", "resources/shaders/pbr.frag");
+		AssetManager_ins().load_shader("pbr_ibl", "resources/shaders/mvp_anim.vert", "resources/shaders/pbr_ibl.frag");
 
 		AssetManager_ins().load_shader("shader_toy_img", "resources/shaders/scene_2d.vert", "resources/shaders/shadertoy_img_pbr.frag");
 		AssetManager_ins().load_shader("shader_toy_buffer_a", "resources/shaders/scene_2d.vert", "resources/shaders/shadertoy_buffer_a.frag");
@@ -134,17 +135,32 @@ void GameManager::init() {
 		// material
 		AssetManager_ins().load_materials("resources/materials/txt/default_material.txt");
 		AssetManager_ins().load_materials("resources/materials/txt/single_material.txt");
+		AssetManager_ins().load_materials("resources/materials/txt/pbr_material.txt");
 
 		// textures
 		//AssetManager_ins().load_texture("resources/textures/txt/texture_default.txt");
 		AssetManager_ins().load_texture_x("resources/textures/texture_default.png");
 		AssetManager_ins().load_texture_x("resources/textures/brickwall_d.jpg");
 		AssetManager_ins().load_texture_x("resources/textures/brickwall_n.jpg", false);
-		
+
+		// pbr		
+		AssetManager_ins().load_texture_x("resources/textures/rusted_iron/rusted_iron_albedo.png");
+		AssetManager_ins().load_texture_x("resources/textures/rusted_iron/rusted_iron_metallic.png", false);
+		AssetManager_ins().load_texture_x("resources/textures/rusted_iron/rusted_iron_roughness.png", false);
+		AssetManager_ins().load_texture_x("resources/textures/rusted_iron/rusted_iron_normal.png", false);
+		AssetManager_ins().load_texture_x("resources/textures/rusted_iron/rusted_iron_ao.png");
+
+		AssetManager_ins().load_texture_x("resources/textures/titanium_scuffed/titanium_scuffed_albedo.png");
+		AssetManager_ins().load_texture_x("resources/textures/titanium_scuffed/titanium_scuffed_metallic.png", false);
+		AssetManager_ins().load_texture_x("resources/textures/titanium_scuffed/titanium_scuffed_roughness.png", false);
+		AssetManager_ins().load_texture_x("resources/textures/titanium_scuffed/titanium_scuffed_normal.png", false);
+		AssetManager_ins().load_texture_x("resources/textures/titanium_scuffed/titanium_scuffed_ao.png");
+
 		// textures 3d
 		AssetManager_ins().load_texture_3d("resources/textures/skyboxs/lake");
 		AssetManager_ins().load_texture_3d("resources/textures/skyboxs/nice");
 		AssetManager_ins().load_texture_3d("resources/textures/skyboxs/stormyday");
+
 
 		load_asset();						// 加载资源
 		
@@ -201,7 +217,7 @@ void GameManager::init() {
 		// set_stencil_test(true, GL_NOTEQUAL, 1, 0xff, GL_KEEP, GL_REPLACE, GL_REPLACE);
 		set_blend(true, GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 		set_polygon_mode(front_polygon_mode, back_polygon_mode);
-		set_cull_face();
+		set_cull_face(true);
 
 		glEnable(GL_PROGRAM_POINT_SIZE);
 
@@ -482,10 +498,12 @@ void GameManager::base_pass() {
 			draw_all_objs(stack_shaders->top());
 		} if (b_explode) { stack_shaders->pop(); }
 
-		stack_shaders->push(AssetManager_ins().get_shader("pbr")); {
+		stack_shaders->push(AssetManager_ins().get_shader("pbr_ibl")); {
 			stack_shaders->top()->use();
-
+			
 			stack_shaders->top()->set_vec3("u_view_pos", main_camera->get_root_component()->get_location());
+			stack_shaders->top()->set_int("u_irrandiance_diffuse_map", 9);
+			if (sky_box) sky_box->get_texture()->bind(9);
 
 			// set uniform for pbr
 			draw_lights(stack_shaders->top());			// set light uniform for shader

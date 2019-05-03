@@ -228,7 +228,7 @@ vec3 phong( vec3 n, vec3 v, vec3 l, vec3 c_ambient, vec3 c_diffuse, vec3 c_specu
 float light_direct_att(LightDirect light_d) { return 1.0; }
 vec3  light_direct_one(LightDirect light_d, float shadow) {
     vec3 t_light_dir = normalize(-light_d.direction);
-    vec3 t_radiance = light_d.color * light_d.intensity * 0.01 * light_direct_att(light_d);
+    vec3 t_radiance = light_d.color * light_d.intensity * 0.1 * light_direct_att(light_d);
 
     vec3 res = phong(   t_normal, t_view_dir, t_light_dir,
                         t_c_ambient, t_c_diffuse, t_c_specular,

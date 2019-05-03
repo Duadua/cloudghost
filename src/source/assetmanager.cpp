@@ -130,6 +130,7 @@ SPTR_Mesh AssetManager::load_mesh_x(const std::string& key, const std::string& p
 				t_mt->set_map_kd(FileHelper_ins().get_name_of_file(md.material.map_kd));
 				t_mt->set_map_ks(FileHelper_ins().get_name_of_file(md.material.map_ks));
 				t_mt->set_map_normal(FileHelper_ins().get_name_of_file(md.material.map_normal));
+				t_mt->set_map_albedo(FileHelper_ins().get_name_of_file(md.material.map_kd));
 				map_materials[t_mt->get_name()] = t_mt;
 				t_rd->set_material_name(t_mt->get_name());
 			}
@@ -233,6 +234,7 @@ SPTR_SkeletalMesh AssetManager::load_mesh_skeletal(const std::string& key, const
 				t_mt->set_map_kd(FileHelper_ins().get_name_of_file(md.material.map_kd));
 				t_mt->set_map_ks(FileHelper_ins().get_name_of_file(md.material.map_ks));
 				t_mt->set_map_normal(FileHelper_ins().get_name_of_file(md.material.map_normal));
+				t_mt->set_map_albedo(FileHelper_ins().get_name_of_file(md.material.map_kd));
 				map_materials[t_mt->get_name()] = t_mt;
 				t_rd->set_material_name(t_mt->get_name());
 			}
@@ -382,6 +384,15 @@ bool AssetManager::load_materials(const std::string& src, SourceType source_type
 		t_md->set_map_kd(i.map_kd);
 		t_md->set_map_ks(i.map_ks);
 		t_md->set_map_normal(i.map_normal);
+		// pbr
+		t_md->set_albedo(i.albedo);
+		t_md->set_metallic(i.metallic);
+		t_md->set_roughness(i.roughness);
+		t_md->set_ao(i.ao);
+		t_md->set_map_albedo(i.map_albedo);
+		t_md->set_map_metallic(i.map_metallic);
+		t_md->set_map_roughness(i.map_roughness);
+		t_md->set_map_ao(i.map_ao);
 		map_materials[t_md->get_name()] = t_md;
 	}
 

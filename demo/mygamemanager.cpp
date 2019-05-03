@@ -51,7 +51,7 @@ void MyGameManager::begin_play() {
 		auto plane = CREATE_CLASS(PlaneObject);
 		add_game_object("plane", plane);
 		plane->get_root_component()->add_scale(10.0f);
-		plane->get_root_component()->add_rotation(-90.0f, 0.0f, 0.0f);
+		plane->get_root_component()->add_rotation(90.0f, 0.0f, 0.0f);
 		plane->set_material(AssetManager_ins().get_material("brickwall"));
 	}
 	
@@ -140,6 +140,10 @@ void MyGameManager::begin_play() {
 		pbr_sphere->get_root_component()->set_location(8.0f, 1.0f, 7.0f);
 		//add_game_object("pbr_sphere", pbr_sphere);
 		add_game_object_pbr("pbr_sphere", pbr_sphere);
+		//pbr_sphere->set_material(AssetManager_ins().get_material("pbr_default"));
+		//pbr_sphere->set_material(AssetManager_ins().get_material("pbr_red"));
+		//pbr_sphere->set_material(AssetManager_ins().get_material("pbr_rusted_iron"));
+		pbr_sphere->set_material(AssetManager_ins().get_material("pbr_titanium_scuffed"));
 	}
 
 	// use direct light
@@ -147,7 +151,7 @@ void MyGameManager::begin_play() {
 		auto d_light = CREATE_CLASS(DirectLightObject);
 		d_light->get_root_component()->set_rotation(-60.0f, -45.0f, 0.0f);
 		//d_light->get_root_component()->set_rotation(-60.0f, -135.0f, 0.0f);
-		d_light->get_light_component()->set_intensity(300.0f);
+		d_light->get_light_component()->set_intensity(10.0f);
 		d_light->get_light_component()->set_k(CVector3D(1.0f, 1.0f, 1.0f));
 		//d_light->get_light_component()->set_k(CVector3D(0.2f, 0.7f, 0.1f));
 		add_direct_light("d_light", d_light);
