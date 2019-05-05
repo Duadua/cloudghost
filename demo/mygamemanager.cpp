@@ -51,17 +51,16 @@ void MyGameManager::begin_play() {
 		auto plane = CREATE_CLASS(PlaneObject);
 		add_game_object("plane", plane);
 		plane->get_root_component()->add_scale(10.0f);
-		plane->get_root_component()->add_rotation(90.0f, 0.0f, 0.0f);
+		plane->get_root_component()->add_rotation(-90.0f, 0.0f, 0.0f);
 		plane->set_material(AssetManager_ins().get_material("brickwall"));
 	}
-	
 	
 	// add Riven
 	{
 		{
 			auto riven = CREATE_CLASS(Riven);
 			add_game_object("riven", riven);
-			riven->get_root_component()->set_location(-3.0f, 0.0f, 2.0f);
+			riven->get_root_component()->set_location(-3.0f, 0.0f, -2.0f);
 			riven->get_root_component()->set_rotation(0.0f, 90.0f, 0.0f);
 		}
 		{
@@ -78,13 +77,13 @@ void MyGameManager::begin_play() {
 	{
 		auto mansion = CREATE_CLASS(Mansion);
 		add_game_object("mansion", mansion);
-		mansion->get_root_component()->set_location(3.0f, 5.0f, 15.0f);
-		mansion->get_root_component()->set_rotation(0.0f, 180.0f, 0.0f);
+		mansion->get_root_component()->set_location(-3.0f, 5.0f, -15.0f);
+		//mansion->get_root_component()->set_rotation(0.0f, 180.0f, 0.0f);
 	}
 	{
 		auto street = CREATE_CLASS(Street);
 		add_game_object("street", street);
-		street->get_root_component()->set_location(0.0f, 0.1f, -60.0f);
+		street->get_root_component()->set_location(0.0f, 0.1f, 60.0f);
 	}
 
 	// 生成 cylinder -- test rb3d
@@ -98,10 +97,10 @@ void MyGameManager::begin_play() {
 					//auto t_mo = CREATE_CLASS(RotateCylinder);
 					std::string t_name = "cylinder" + StringHelper_ins().int_to_string(j) + "_" + StringHelper_ins().int_to_string(i);
 					add_game_object(t_name, t_mo);
-					t_mo->get_root_component()->set_location(1.5f*(j - 0.5f), 0.5f, 2.0f * (i - 2));
+					t_mo->get_root_component()->set_location(1.5f*(j - 0.5f), 0.5f, -2.0f * (i - 2));
 					t_mo->get_root_component()->set_scale(0.5);
 					if (i & 1) {
-						t_mo->get_root_component()->set_location(1.5f*(j - 0.5f), 0.651f, 2.0f * (i - 2));
+						t_mo->get_root_component()->set_location(1.5f*(j - 0.5f), 0.651f, -2.0f * (i - 2));
 						t_mo->get_root_component()->set_scale(0.35f, 1.3f, 0.35f);
 						auto t_rc = std::dynamic_pointer_cast<RotateCylinder>(t_mo);
 						t_rc->update_origin_rotation();
@@ -109,18 +108,22 @@ void MyGameManager::begin_play() {
 						else t_rc->set_material(AssetManager_ins().get_material("jade"));
 						t_rc->set_material(AssetManager_ins().get_material("default"), 2);
 					}
+					else {
+						//auto t_rc = std::dynamic_pointer_cast<SphereObject>(t_mo);
+						//t_rc->set_material(AssetManager_ins().get_material("brickwall"));
+					}
 				}
 				{
 					SPTR_GameObject t_mo;
 					if (i & 1) { t_mo = CREATE_CLASS(FlowSphere); }
-					else { continue; t_mo = CREATE_CLASS(SphereObject); }
+					else { continue; /*t_mo = CREATE_CLASS(SphereObject);*/ }
 					//auto t_mo = CREATE_CLASS(FlowSphere);
 					std::string t_name = "sphere" + StringHelper_ins().int_to_string(j) + "_" + StringHelper_ins().int_to_string(i);
 					add_game_object(t_name, t_mo);
-					t_mo->get_root_component()->set_location(1.5f*(j - 0.5f), 1.30f, 2.0f * (i - 2));
+					t_mo->get_root_component()->set_location(1.5f*(j - 0.5f), 1.30f, -2.0f * (i - 2));
 					t_mo->get_root_component()->set_scale(0.2f);
 					if (i & 1) {
-						t_mo->get_root_component()->set_location(1.5f*(j - 0.5f), 1.70f, 2.0f * (i - 2));
+						t_mo->get_root_component()->set_location(1.5f*(j - 0.5f), 1.70f, -2.0f * (i - 2));
 						t_mo->get_root_component()->set_scale(0.18f);
 						auto t_fs = std::dynamic_pointer_cast<FlowSphere>(t_mo);
 						t_fs->update_origin_location();
@@ -137,19 +140,19 @@ void MyGameManager::begin_play() {
 	// 生成 sphere -- test pbr
 	{
 		auto pbr_sphere = CREATE_CLASS(SphereObject);
-		pbr_sphere->get_root_component()->set_location(8.0f, 1.0f, 7.0f);
+		pbr_sphere->get_root_component()->set_location(8.0f, 1.0f, -7.0f);
 		//add_game_object("pbr_sphere", pbr_sphere);
 		add_game_object_pbr("pbr_sphere", pbr_sphere);
-		//pbr_sphere->set_material(AssetManager_ins().get_material("pbr_default"));
+		pbr_sphere->set_material(AssetManager_ins().get_material("pbr_default"));
 		//pbr_sphere->set_material(AssetManager_ins().get_material("pbr_red"));
 		//pbr_sphere->set_material(AssetManager_ins().get_material("pbr_rusted_iron"));
-		pbr_sphere->set_material(AssetManager_ins().get_material("pbr_titanium_scuffed"));
+		//pbr_sphere->set_material(AssetManager_ins().get_material("pbr_titanium_scuffed"));
 	}
 
 	// use direct light
 	{
 		auto d_light = CREATE_CLASS(DirectLightObject);
-		d_light->get_root_component()->set_rotation(-60.0f, -45.0f, 0.0f);
+		d_light->get_root_component()->set_rotation(-60.0f, -135.0f, 0.0f);
 		//d_light->get_root_component()->set_rotation(-60.0f, -135.0f, 0.0f);
 		d_light->get_light_component()->set_intensity(10.0f);
 		d_light->get_light_component()->set_k(CVector3D(1.0f, 1.0f, 1.0f));
@@ -161,18 +164,18 @@ void MyGameManager::begin_play() {
 	// use point light
 	{
 		auto p_light = CREATE_CLASS(PointLightObject);
-		p_light->get_root_component()->set_location(-5.0f, 2.0f, 5.0f);
+		p_light->get_root_component()->set_location(-4.0f, 2.0f, -4.0f);
 		p_light->get_light_component()->set_color(CVector3D(0.0f, 0.5f, 1.0f));
-		p_light->get_light_component()->set_att_radius(5.0f);
-		p_light->get_light_component()->set_intensity(100.0f);
+		p_light->get_light_component()->set_att_radius(20.0f);
+		p_light->get_light_component()->set_intensity(10.0f);
 		add_point_light("p_light0", p_light);
 	}
 	{
 		auto p_light = CREATE_CLASS(PointLightObject);
 		//p_light->get_root_component()->set_location(0.0f, 3.0f, 3.0f);
-		p_light->get_root_component()->set_location(4.0f, 6.0f, 15.0f);
+		p_light->get_root_component()->set_location(-4.0f, 6.0f, -15.0f);
 		p_light->get_light_component()->set_att_radius(50.0f);
-		p_light->get_light_component()->set_intensity(50.0f);
+		p_light->get_light_component()->set_intensity(20.0f);
 		p_light->get_light_component()->set_color(CVector3D(0.7f, 0.3f, 0.0f));
 		add_point_light("p_light1", p_light);
 	}
@@ -181,10 +184,10 @@ void MyGameManager::begin_play() {
 	// use spot light
 	{
 		auto s_light = CREATE_CLASS(SpotLightObject);
-		s_light->get_root_component()->set_location(-1.0f, 7.0f, 15.0f);
+		s_light->get_root_component()->set_location(1.0f, 7.0f, -15.0f);
 		s_light->get_root_component()->set_rotation(-90.0f, -0.0f, 0.0f);
 		//s_light->get_light_component()->set_color(CVector3D(0.0f, 0.0f, 1.0f));
-		s_light->get_light_component()->set_intensity(300.0f);
+		s_light->get_light_component()->set_intensity(50.0f);
 		s_light->get_light_component()->set_att_radius(10.0f);
 		s_light->get_light_component()->set_inner(30.0f);
 		s_light->get_light_component()->set_outer(32.0f);

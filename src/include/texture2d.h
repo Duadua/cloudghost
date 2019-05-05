@@ -2,6 +2,7 @@
 
 #include "cmath.h"
 #include "reflex.h"
+#include "typehelper.h"
 
 #define GL_TEXTURE_2D 0x0DE1
 
@@ -13,6 +14,7 @@ public:
 	~Texture2D() {}
 
 	void init(uint w, uint h, SPTR_uchar data, uint t = GL_TEXTURE_2D, uint msaa_num = 4);
+	void init_hdr(uint w, uint h, SPTR_float data, uint t = GL_TEXTURE_2D, uint msaa_num = 4);
 	void gen(uint w, uint h, uint in_fmt, uint fmt, uint d_type, uint t = GL_TEXTURE_2D, uint msaa_num = 4);
 
 	void use();

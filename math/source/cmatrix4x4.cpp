@@ -276,9 +276,9 @@ CQuaternion CMatrix4x4::get_rotate_quaternion() const {
 }
 
 CMatrix4x4& CMatrix4x4::lookAt(const CVector3D& eye, const CVector3D& center, const CVector3D& world_up) {
-	CVector3D front = (center - eye).normalize();
-	CVector3D right = front.cross(world_up).normalize();
-	CVector3D up	= right.cross(front).normalize();
+	CVector3D front = (eye - center).normalize();
+	CVector3D right = world_up.cross(front).normalize();
+	CVector3D up	= front.cross(right).normalize();
 
 	CMatrix4x4 translate, rotate;
 
@@ -288,12 +288,34 @@ CMatrix4x4& CMatrix4x4::lookAt(const CVector3D& eye, const CVector3D& center, co
 	translate(2, 3) = -eye.z();
 
 	// 初始化 rotate
-	rotate(0, 0) = -right.x();	rotate(0, 1) = -right.y();	rotate(0, 2) = -right.z();
+	rotate(0, 0) = right.x();	rotate(0, 1) = right.y();	rotate(0, 2) = right.z();
 	rotate(1, 0) = up.x();		rotate(1, 1) = up.y();		rotate(1, 2) = up.z();
-	rotate(2, 0) = -front.x();	rotate(2, 1) = -front.y();	rotate(2, 2) = -front.z();
+	rotate(2, 0) = front.x();	rotate(2, 1) = front.y();	rotate(2, 2) = front.z();
 
 	(*this) = rotate * translate;
 	return (*this);
+}
+
+CMatrix4x4& CMatrix4x4::lookAt_left(const CVector3D& eye, const CVector3D& center, const CVector3D& world_up) {
+	CVector3D front = (center - eye).normalize();
+	CVector3D right = world_up.cross(front).normalize();
+	CVector3D up	= front.cross(right).normalize();
+
+	CMatrix4x4 translate, rotate;
+
+	// 初始化 translate
+	translate(0, 3) = -eye.x();
+	translate(1, 3) = -eye.y();
+	translate(2, 3) = -eye.z();
+
+	// 初始化 rotate
+	rotate(0, 0) = right.x();	rotate(0, 1) = right.y();	rotate(0, 2) = right.z();
+	rotate(1, 0) = up.x();		rotate(1, 1) = up.y();		rotate(1, 2) = up.z();
+	rotate(2, 0) = front.x();	rotate(2, 1) = front.y();	rotate(2, 2) = front.z();
+
+	(*this) = rotate * translate;
+	return (*this);
+
 }
 
 CMatrix4x4& CMatrix4x4::ortho(float width, float aspect_ratio, float near, float far) {

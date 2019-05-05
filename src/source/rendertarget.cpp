@@ -58,7 +58,7 @@ bool RenderTarget::init(uint tg) {
 			glFramebufferTexture2D(target, tbo.attach_type, tbo.texture->get_type(), tbo.texture->get_id(), 0);
 		} // bind texture attachment
 		for (auto tbo : attach_texture_3ds) {
-			glFramebufferTexture(target, tbo.attach_type, tbo.texture->get_id(), 0);
+			//glFramebufferTexture(target, tbo.attach_type, tbo.texture->get_id(), 0);
 		} // bind texture_3d attachment
 		for (auto rbo : attach_renderbuffers) {
 			glFramebufferRenderbuffer(target, rbo->get_attach_type(), GL_RENDERBUFFER, rbo->get_id());
@@ -154,6 +154,20 @@ SPTR_RenderTarget RenderTarget::use_w(uint cid) {
 }
 SPTR_RenderTarget RenderTarget::un_use_w() {
 	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
+	return shared_from_this();
+}
+
+SPTR_RenderTarget RenderTarget::use_texture_3d(uint tid, uint texture_id) {
+	if (attach_texture_3ds.size() > tid) {
+		auto t_2d = attach_texture_3ds[tid].texture->get_datas()[texture_id];
+		glFramebufferTexture2D(GL_FRAMEBUFFER, attach_texture_3ds[tid].attach_type, t_2d.type, attach_texture_3ds[tid].texture->get_id(), 0);
+	}
+	return shared_from_this();
+}
+SPTR_RenderTarget RenderTarget::use_texture_3d_all(uint tid) {
+	if (attach_texture_3ds.size() > tid) {
+		glFramebufferTexture(target, attach_texture_3ds[tid].attach_type, attach_texture_3ds[tid].texture->get_id(), 0);
+	}
 	return shared_from_this();
 }
 

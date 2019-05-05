@@ -28,7 +28,7 @@ void CameraData::update(CVector3D l, CVector3D r) {
 	world_up.set_y(std::cos(roll));
 	world_up.normalize();
 
-	// 计算 front -- 初始方向 (0.0, 0.0, 0.0)
+	// 计算 front -- 初始方向 (0.0, 0.0, 1.0)
 	front.set_x(std::sin(yaw) * std::cos(pitch));
 	front.set_z(std::cos(yaw) * std::cos(pitch));
 	front.set_y(std::sin(pitch));

@@ -251,12 +251,15 @@ private:
 	std::vector<SPTR_RenderTarget> direct_light_shadow_rts;	// 阴影专用
 	std::vector<SPTR_RenderTarget> point_light_shadow_rts;	// 点光源阴影
 
+	SPTR_RenderTarget dynamic_environment_map_rt;			// 动态环境立方体贴图
+
 	SPTR_Texture2D scene_texture;
 	SPTR_Texture2D depth_texture;							// 当前相机视图下的深度图
 
 	void scene_pass(SPTR_Texture2D tex);					// 根据传入的贴图绘制屏幕四边形
 	void depth_pass();										// 获得当前相机视图下的深度图
 	void shadow_pass();
+	void dynamic_env_pass();								// 动态环境贴图 -- 反射用
 	void pick_pass();										// 拾取阶段
 	void base_pass();
 	void border_pass();										// 加轮廓
@@ -277,6 +280,7 @@ private:
 	void init_msaa_rt();
 	void init_hdr_rt();
 	void init_shadow_rt();
+	void init_skybox_rt();
 
 	void draw_scene(SPTR_Shader shader);
 	void draw_all_objs(SPTR_Shader shader);

@@ -142,6 +142,7 @@ void GameManager::init() {
 		AssetManager_ins().load_texture_x("resources/textures/texture_default.png");
 		AssetManager_ins().load_texture_x("resources/textures/brickwall_d.jpg");
 		AssetManager_ins().load_texture_x("resources/textures/brickwall_n.jpg", false);
+		AssetManager_ins().load_texture_x_hdr("resources/textures/skyboxs/basketball_court/basketball_court.hdr");
 
 		// pbr		
 		AssetManager_ins().load_texture_x("resources/textures/rusted_iron/rusted_iron_albedo.png");
@@ -160,7 +161,6 @@ void GameManager::init() {
 		AssetManager_ins().load_texture_3d("resources/textures/skyboxs/lake");
 		AssetManager_ins().load_texture_3d("resources/textures/skyboxs/nice");
 		AssetManager_ins().load_texture_3d("resources/textures/skyboxs/stormyday");
-
 
 		load_asset();						// 加载资源
 		
@@ -262,7 +262,12 @@ void GameManager::draw() {
 
 		// pass 0 -- 渲染到默认缓冲 -- 必须第一个执行
 		scene_pass(t_final_tex); 						// 显示正常渲染图 
-		
+
+		// pre bake -- 预烘焙 -- 只绘制一次
+		{
+
+		}
+
 		if(!b_use_shader_toy) {
 			if (!b_use_vr) {						
 
@@ -270,6 +275,8 @@ void GameManager::draw() {
 
 				// pass 1
 				if (b_shadow) { shadow_pass(); }	// 生成(各个光源的)阴影贴图  -- 得到 shadow_texture
+
+				dynamic_env_pass();					// 生成动态环境贴图 -- 反射用
 
 				// pass 2
 				pick_pass();						// 得到拾取贴图 -- 用来判断哪个物体被拾取 -- 得到拾取物体的 id
@@ -409,6 +416,7 @@ void GameManager::shadow_pass() {
 			if (t_light) {
 				glViewport(0, 0, 1024, 1024); {
 					point_light_shadow_rts[i]->use(); {
+						point_light_shadow_rts[i]->use_texture_3d_all(0);
 						glDrawBuffer(GL_NONE);
 						glReadBuffer(GL_NONE);
 						draw_init();
@@ -440,6 +448,64 @@ void GameManager::shadow_pass() {
 			}
 		} // 每一个点光源生成一个 cube map -- 作为 point shadow map
 	}
+}
+void GameManager::dynamic_env_pass() {
+	glViewport(0, 0, 512, 512); {
+		dynamic_environment_map_rt->use(); {
+
+			/*stack_shaders->push(AssetManager_ins().get_shader("dynamic_env"));*/ {
+				if (stack_shaders->top()) {
+					stack_shaders->top()->use();
+					// 设置为此光源的 view and proj 矩阵
+					CMatrix4x4 t_proj;
+					t_proj.perspective(90.0f, 1.0f, 0.1f, 100.0f);
+					ub_matrices->fill_data(CMatrix4x4::data_size(), CMatrix4x4::data_size(), t_proj.data());
+					//auto t_loc = t_light->get_root_component()->get_location();
+					auto t_loc = CVector3D(0.0f, 1.0f, 0.0f);
+					stack_shaders->top()->set_vec3("u_view_pos", t_loc);
+					// 6个方向
+					for (int j = 0; j < 6; ++j) {
+						dynamic_environment_map_rt->use_texture_3d(0, j);
+						dynamic_environment_map_rt->use_texture_3d(1, j);
+						
+						draw_init();
+
+						CMatrix4x4 t_view;
+						t_view.lookAt(t_loc, t_loc + point_front[j], point_world_up[j]);
+						ub_matrices->fill_data(0, CMatrix4x4::data_size(), t_view.data());
+
+						// draw obj
+						draw_lights(stack_shaders->top());			// set light uniform for shader
+						draw_all_objs(stack_shaders->top());
+
+						// draw sky box
+						if (b_skybox && sky_box) {
+							stack_shaders->push(AssetManager_ins().get_shader("skybox")); {
+								if (stack_shaders->top()) {
+									stack_shaders->top()->use();
+									// 要移除矩阵的移动部分
+									auto t_view_s = CMatrix4x4(CMatrix3x3(t_view.data(), 4, 4).data(), 3, 3);
+									stack_shaders->top()->set_mat4("u_view_sky_box", t_view_s);
+									stack_shaders->top()->set_int("u_texture", 0);
+								}
+								auto t_texture = sky_box->get_texture();
+								if (t_texture) t_texture->bind(0);
+								//point_light_shadow_rts[0]->get_attach_texture_3ds()[0].texture->bind(0);
+								//dynamic_environment_map_rt->get_attach_texture_3ds()[0].texture->bind(0);
+								draw_skybox(stack_shaders->top());
+							} stack_shaders->pop();
+						}
+					}
+				}
+
+				
+
+				ub_matrices->fill_data(CMatrix4x4::data_size(), CMatrix4x4::data_size(), main_camera->get_camera_component()->get_proj_mat().data());
+				ub_matrices->fill_data(0, CMatrix4x4::data_size(), main_camera->get_camera_component()->get_view_mat().data());
+
+			} /*stack_shaders->pop();*/
+		} dynamic_environment_map_rt->un_use();
+	} glViewport(0, 0, viewport_info.width, viewport_info.heigh);
 }
 void GameManager::pick_pass() {
 
@@ -503,7 +569,12 @@ void GameManager::base_pass() {
 			
 			stack_shaders->top()->set_vec3("u_view_pos", main_camera->get_root_component()->get_location());
 			stack_shaders->top()->set_int("u_irrandiance_diffuse_map", 9);
-			if (sky_box) sky_box->get_texture()->bind(9);
+			//if (sky_box) sky_box->get_texture()->bind(9);
+			if (dynamic_environment_map_rt && dynamic_environment_map_rt->get_attach_texture_3ds().size() > 0) {
+				if (dynamic_environment_map_rt->get_attach_texture_3ds()[0].texture) {
+					dynamic_environment_map_rt->get_attach_texture_3ds()[0].texture->bind(9);
+				}
+			}	// 使用动态环境贴图
 
 			// set uniform for pbr
 			draw_lights(stack_shaders->top());			// set light uniform for shader
@@ -532,6 +603,7 @@ void GameManager::base_pass() {
 
 		// draw sky box -- if have -- 最后画
 		if (b_skybox && sky_box) {
+			//set_cull_face(true, GL_FRONT);
 			stack_shaders->push(AssetManager_ins().get_shader("skybox")); {
 				if (stack_shaders->top()) {
 					stack_shaders->top()->use();
@@ -543,6 +615,7 @@ void GameManager::base_pass() {
 				auto t_texture = sky_box->get_texture();
 				if (t_texture) t_texture->bind(0);
 				//point_light_shadow_rts[0]->get_attach_texture_3ds()[0].texture->bind(0);
+				//dynamic_environment_map_rt->get_attach_texture_3ds()[0].texture->bind(0);
 				draw_skybox(stack_shaders->top());
 			} stack_shaders->pop();
 		}
@@ -914,6 +987,7 @@ void GameManager::vr_base_pass() {
 
 			// draw sky box -- if have -- 最后画
 			if (b_skybox && sky_box) {
+				//set_cull_face(true, GL_FRONT);
 				stack_shaders->push(AssetManager_ins().get_shader("skybox")); {
 					if (stack_shaders->top()) {
 						stack_shaders->top()->use();
@@ -961,6 +1035,7 @@ void GameManager::vr_base_pass() {
 
 			// draw sky box -- if have -- 最后画
 			if (b_skybox && sky_box) {
+				//set_cull_face(true, GL_FRONT);
 				stack_shaders->push(AssetManager_ins().get_shader("skybox")); {
 					if (stack_shaders->top()) {
 						stack_shaders->top()->use();
@@ -974,6 +1049,7 @@ void GameManager::vr_base_pass() {
 					if (t_texture) t_texture->bind(0);
 					draw_skybox(stack_shaders->top());
 				} stack_shaders->pop();
+				//set_cull_face(true);
 			}
 
 
@@ -1352,6 +1428,7 @@ void GameManager::init_rt() {
 	init_msaa_rt();
 	init_hdr_rt();
 	init_shadow_rt();
+	init_skybox_rt();
 }
 void GameManager::init_shadow_rt() {
 	// direct light
@@ -1459,6 +1536,30 @@ void GameManager::init_hdr_rt() {
 	hdr_msaa_rt = CREATE_CLASS(RenderTarget);
 	if (hdr_msaa_rt) { hdr_msaa_rt->init_normal_multisample_f(viewport_info.width, viewport_info.heigh); }
 
+}
+
+void GameManager::init_skybox_rt() {
+	if (dynamic_environment_map_rt) dynamic_environment_map_rt.reset();
+	dynamic_environment_map_rt = CREATE_CLASS(RenderTarget);
+	if (dynamic_environment_map_rt) {
+		dynamic_environment_map_rt
+			->add_attach_texture_3d(GL_COLOR_ATTACHMENT0, 512, 512,
+				GL_TEXTURE_CUBE_MAP, GL_RGB16F, GL_RGB, GL_FLOAT)
+			->add_attach_texture_3d(GL_DEPTH_ATTACHMENT, 512, 512,
+				GL_TEXTURE_CUBE_MAP, GL_DEPTH_COMPONENT, GL_DEPTH_COMPONENT, GL_FLOAT)
+			->init();
+		// set border -- cube map needn't
+		/*auto t_tex = shadow_rt->get_attach_texture_3ds()[0].texture;
+		if (t_tex) {
+		t_tex->use(); {
+		glTexParameteri(t_tex->get_type(), GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
+		glTexParameteri(t_tex->get_type(), GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
+		glTexParameteri(t_tex->get_type(), GL_TEXTURE_WRAP_R, GL_CLAMP_TO_BORDER);
+		GLfloat t_border_color[] = { 1.0, 1.0, 1.0, 1.0 };
+		glTexParameterfv(t_tex->get_type(), GL_TEXTURE_BORDER_COLOR, t_border_color);
+		} t_tex->un_use();
+		}*/
+	}
 }
 
 void GameManager::init_vr_rt() {
@@ -1599,8 +1700,8 @@ void GameManager::exit() {
 SPTR_CameraObject GameManager::set_main_camera() {
 	auto free_camera = CREATE_CLASS(FreeCamera);
 	add_game_object("free_camera", free_camera);
-	free_camera->get_root_component()->set_location(0.0f, 1.5f, -10.0f);
-	free_camera->get_root_component()->set_rotation(0.0f, 0.0f, 0.0f);
+	free_camera->get_root_component()->set_location(0.0f, 1.5f, 10.0f);
+	free_camera->get_root_component()->set_rotation(0.0f, 180.0f, 0.0f);
 
     return std::dynamic_pointer_cast<CameraObject>(free_camera);
 }

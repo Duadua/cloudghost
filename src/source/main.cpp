@@ -3,6 +3,7 @@
 #include <QtWidgets/QApplication>
 #include <QSplashScreen>
 
+#include "tools/meshloader.h"
 #include "tools/materialloader.h"
 
 /*#include "tools/meshloader.h"
@@ -30,8 +31,8 @@ int main(int argc, char *argv[]) {
 	*/
 
 	// gen mesh txt
-	/*QString path = "hhh.txt";
-	if (!MeshTxtGen::gen_mesh_txt(path.toStdString(), MeshTxtGenType::CONE)) {
+	/*QString path = "cylinder.txt";
+	if (!MeshTxtGen::gen_mesh_txt(path.toStdString(), MeshTxtGenType::CYLINDER)) {
 		c_debuger() << "cannot gen mesh txt";
 	}*/
 	

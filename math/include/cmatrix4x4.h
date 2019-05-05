@@ -54,7 +54,8 @@ public:
 	CVector4D	get_rotate_angle_axis() const;											// 由旋转矩阵得 轴角
 	CQuaternion get_rotate_quaternion() const;											// 由旋转矩阵得 四元数
 	// look at
-	CMatrix4x4& lookAt(const CVector3D& eye, const CVector3D& center, const CVector3D& worldup);
+	CMatrix4x4& lookAt(const CVector3D& eye, const CVector3D& center, const CVector3D& world_up);
+	CMatrix4x4& lookAt_left(const CVector3D& eye, const CVector3D& center, const CVector3D& world_up);
 
 	// projection -- 右手系 and z belong [-1 ,, 1] 
 	CMatrix4x4& ortho(float width, float aspect_ratio, float near, float far);						// aspect_ratio -- width / height

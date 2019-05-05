@@ -505,6 +505,41 @@ bool AssetManager::load_texture_x(const std::string& path, bool b_srgb) {
 
 	return true;
 }
+bool AssetManager::load_texture_x_hdr(const std::string& path, bool b_srgb) {
+	std::string t_name = FileHelper_ins().get_name_of_file(path);			// 获得文件名
+	// if (map_textures.count(t_name)) { c_debuger() << "[asset][texture][load] already loaded texture " + t_name; return false; }
+	if (map_textures.count(t_name)) { return false; }
+
+	std::string t_suf = FileHelper_ins().get_suff_of_file(path);				// 获得文件路径后缀
+    int width = 0, heigh = 0, channel = 0;
+	SPTR_float t_res = TextureLoader::load_texture_x_hdr(path, width, heigh, channel);
+	
+	if (t_res == nullptr) {
+		c_debuger() << "[warning][asset][texture]load texture failed called \"" + path + "\"";
+		return false;
+	}
+
+	// 传给 texture
+	auto t_texture = CREATE_CLASS(Texture2D);
+	t_texture->set_name(t_name);
+	if (channel == 1) { t_texture->set_internal_format(GL_RED); t_texture->set_image_format(GL_RED); }
+	else if (channel == 3) { 
+		if (b_srgb) { t_texture->set_internal_format(GL_RGB16F); }
+		else t_texture->set_internal_format(GL_RGB16F); 
+		t_texture->set_image_format(GL_RGB); 
+	}
+	else if (channel == 4) {
+		if (b_srgb) { t_texture->set_internal_format(GL_RGBA16F); }
+		else { t_texture->set_internal_format(GL_RGBA16F); }
+		t_texture->set_image_format(GL_RGBA);
+		t_texture->set_wrap_s(GL_CLAMP_TO_EDGE); t_texture->set_wrap_t(GL_CLAMP_TO_EDGE);
+	}
+	t_texture->init_hdr(width, heigh, t_res);
+	map_textures[t_name] = t_texture;
+
+	return true;
+
+}
 SPTR_Texture2D AssetManager::get_texture(const std::string& key) {
 	if (!map_textures.count(key)) {
 		c_debuger() << "[warning][asset][texture]no texture calls \"" + key + "\"";

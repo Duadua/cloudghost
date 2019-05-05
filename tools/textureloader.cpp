@@ -144,6 +144,16 @@ SPTR_uchar TextureLoader::load_texture_x(const std::string& path, int& width, in
 	stbi_image_free(data);
 	return t_data;
 }
+SPTR_float TextureLoader::load_texture_x_hdr(const std::string& path, int& width, int& heigh, int& channel) {
+	//stbi_set_flip_vertically_on_load(true);
+	auto data = stbi_loadf(path.c_str(), &width, &heigh, &channel, 0);
+	auto data_size = width * heigh * channel * sizeof(float);
+	if (data == nullptr || data_size == 0) { return nullptr; }
+	auto t_data = StringHelper_ins().make_shared_array<float>(data_size + 1);
+	memcpy(t_data.get(), data, data_size);
+	stbi_image_free(data);
+	return t_data;
+}
 SPTR_uchar TextureLoader::load_texture_dds(const std::string& path, int& width, int& heigh, int& channel) {
 	//stbi_set_flip_vertically_on_load(true);
 	auto data = stbi_dds_load(path.c_str(), &width, &heigh, &channel, 0);

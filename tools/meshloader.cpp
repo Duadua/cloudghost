@@ -255,9 +255,9 @@ void MeshTxtGen::gen_sphere(uint depth) {
 
 		MVertex o(CVector3D(0.0f, 1.0f, 0.0f));		//  y
 		MVertex a(CVector3D(1.0f, 0.0f, 0.0f));		//  x
-		MVertex b(CVector3D(0.0f, 0.0f, 1.0f));		//  z
+		MVertex b(CVector3D(0.0f, 0.0f, -1.0f));	// -z
 		MVertex c(CVector3D(-1.0f, 0.0f, 0.0f));	// -x
-		MVertex d(CVector3D(0.0f, 0.0f, -1.0f));	// -z
+		MVertex d(CVector3D(0.0f, 0.0f, 1.0f));		//  z
 		MVertex e(CVector3D(1.0f, 0.0f, 0.0f));		//  x 
 		MVertex f(CVector3D(0.0f, -1.0f, 0.0f));	// -y
 
@@ -277,15 +277,18 @@ void MeshTxtGen::gen_sphere(uint depth) {
 		add_one_vertex(e);	// 5
 		add_one_vertex(f);	// 6
 	
-		add_one_face(0, 1, 2);	//  y  x  z
-		add_one_face(0, 2, 3);	//  y  z -x
-		add_one_face(0, 3, 4);	//  y -x -z
-		add_one_face(0, 4, 5);	//  y -z  x 
+		add_one_face(0, 1, 2);	//  y  x -z
+		add_one_face(0, 2, 3);	//  y -z -x
+		add_one_face(0, 3, 4);	//  y -x  z
+		add_one_face(0, 4, 5);	//  y  z  x 
+		
 
-		add_one_face(6, 2, 1);	// -y  z  x
-		add_one_face(6, 3, 2);	// -y -x  z
-		add_one_face(6, 4, 3);	// -y -z -x
-		add_one_face(6, 5, 4);	// -y  x -z   
+		add_one_face(6, 5, 4);	// -y  x  z   
+		add_one_face(6, 4, 3);	// -y  z -x
+		add_one_face(6, 3, 2);	// -y -x -z
+		add_one_face(6, 2, 1);	// -y -z  x
+		
+		
 
 	}
 
@@ -313,13 +316,13 @@ void MeshTxtGen::gen_sphere(uint depth) {
 
 					if (!v_mid.count(puu_ab)) {
 						MVertex d = MVertex((a.position + b.position).normalize());
+						d.tex_coord = (a.tex_coord + b.tex_coord) * 0.5f;
                         if (CMath_ins().fcmp(a.position.y(), 1.0f) == 0 || CMath_ins().fcmp(a.position.y(), -1.0f) == 0) {
-                            a.tex_coord.set_x(b.tex_coord.x());
+							d.tex_coord.set_x(b.tex_coord.x());
                         }
                         if (CMath_ins().fcmp(b.position.y(), 1.0f) == 0 || CMath_ins().fcmp(b.position.y(), -1.0f) == 0) {
-                            b.tex_coord.set_x(a.tex_coord.x());
+							d.tex_coord.set_x(a.tex_coord.x());
                         }
-						d.tex_coord = (a.tex_coord + b.tex_coord) * 0.5f;
 						add_one_vertex(d);
 						i_d = cur_id++; v_mid[puu_ab] = i_d;
 					}
@@ -327,13 +330,13 @@ void MeshTxtGen::gen_sphere(uint depth) {
 
 					if (!v_mid.count(puu_bc)) {
 						MVertex e = MVertex((b.position + c.position).normalize());
-                        if (CMath_ins().fcmp(b.position.y(), 1.0f) == 0 || CMath_ins().fcmp(b.position.y(), -1.0f)) {
-                            b.tex_coord.set_x(c.tex_coord.x());
-                        }
-                        if (CMath_ins().fcmp(c.position.y(), 1.0f) == 0 || CMath_ins().fcmp(c.position.y(), -1.0f)) {
-                            c.tex_coord.set_x(b.tex_coord.x());
-                        }
 						e.tex_coord = (b.tex_coord + c.tex_coord) * 0.5f;
+                        if (CMath_ins().fcmp(b.position.y(), 1.0f) == 0 || CMath_ins().fcmp(b.position.y(), -1.0f) == 0) {
+                            e.tex_coord.set_x(c.tex_coord.x());
+                        }
+                        if (CMath_ins().fcmp(c.position.y(), 1.0f) == 0 || CMath_ins().fcmp(c.position.y(), -1.0f) == 0) {
+                            e.tex_coord.set_x(b.tex_coord.x());
+                        }
 						add_one_vertex(e);
 						i_e = cur_id++; v_mid[puu_bc] = i_e;
 					}
@@ -341,13 +344,13 @@ void MeshTxtGen::gen_sphere(uint depth) {
 
 					if (!v_mid.count(puu_ca)) {
 						MVertex f = MVertex((c.position + a.position).normalize());
-                        if (CMath_ins().fcmp(c.position.y(), 1.0f) == 0 || CMath_ins().fcmp(c.position.y(), -1.0f)) {
-                            c.tex_coord.set_x(a.tex_coord.x());
-                        }
-                        if (CMath_ins().fcmp(a.position.y(), 1.0f) == 0 || CMath_ins().fcmp(a.position.y(), -1.0f)) {
-                            a.tex_coord.set_x(c.tex_coord.x());
-                        }
 						f.tex_coord = (c.tex_coord + a.tex_coord) * 0.5f;
+                        if (CMath_ins().fcmp(c.position.y(), 1.0f) == 0 || CMath_ins().fcmp(c.position.y(), -1.0f) == 0) {
+                            f.tex_coord.set_x(a.tex_coord.x());
+                        }
+                        if (CMath_ins().fcmp(a.position.y(), 1.0f) == 0 || CMath_ins().fcmp(a.position.y(), -1.0f) == 0) {
+                            f.tex_coord.set_x(c.tex_coord.x());
+                        }
 						add_one_vertex(f);
 						i_f = cur_id++; v_mid[puu_ca] = i_f;
 					}
@@ -382,7 +385,7 @@ void MeshTxtGen::gen_cylinder(uint depth) {
 		}
 
 		add_one_material("emerald");
-		for (uint i = 1; i <= depth; ++i) { add_one_face(0, i, i%depth + 1); }
+		for (uint i = 1; i <= depth; ++i) { add_one_face(0, i%depth + 1, i); }
 	}
 	
 	uint cnt = depth + 1;
@@ -398,7 +401,7 @@ void MeshTxtGen::gen_cylinder(uint depth) {
 		}
 
 		add_one_material("red_plastic");
-		for (uint i = 1; i <= depth; ++i) { add_one_face(cnt, cnt + i%depth + 1, cnt + i); }
+		for (uint i = 1; i <= depth; ++i) { add_one_face(cnt, cnt + i, cnt + i%depth + 1); }
 	}
 
 	cnt += depth + 1;
@@ -416,8 +419,8 @@ void MeshTxtGen::gen_cylinder(uint depth) {
 
 		add_one_material("cyan_plastic");
 		for (uint i = 0; i < depth; ++i) {
-			add_one_face(cnt + i*2, cnt + i*2 + 2, cnt + i*2 + 3);
-			add_one_face(cnt + i*2, cnt + i*2 + 3, cnt + i*2 + 1);
+			add_one_face(cnt + i*2, cnt + i*2 + 3, cnt + i*2 + 2);
+			add_one_face(cnt + i*2, cnt + i*2 + 1, cnt + i*2 + 3);
 		}
 	}
 }
@@ -470,8 +473,8 @@ void MeshTxtGen::write_one_mtfile(std::ostream& out, const std::string& path) {
 void MeshTxtGen::add_one_vertex(const MVertex& x) { vertices.push_back(x); }
 void MeshTxtGen::add_one_face(uint a, uint b, uint c) {
 	// 利用混合积保持三角面片的一致性顺序 -- 逆时针
-	float det = vertices[a].position.mix(vertices[b].position, vertices[c].position);
-    if (CMath_ins().fcmp(det, 0.0f) > 0) { std::swap(b, c); }
+	//float det = vertices[a].position.mix(vertices[b].position, vertices[c].position);
+    //if (CMath_ins().fcmp(det, 0.0f) < 0) { std::swap(b, c); }
 
 	if (mesh_datas.size() == 0) mesh_datas.push_back(MeshData());
 	mesh_datas[mesh_datas.size()-1].indices.push_back(a); 
@@ -496,7 +499,7 @@ void MeshTxtGen::cac_normal() {
 			auto& c = vertices[indices[i + 2]];
 
 			// cac face normal
-			CVector3D t_normal = (c.position - a.position).cross(b.position - a.position);	// 右手定则
+			CVector3D t_normal = (b.position - a.position).cross(c.position - a.position);	// 右手定则
 
 			// accumulate normal
 			a.normal += t_normal;
@@ -711,7 +714,7 @@ bool MeshLoader::load_mesh_obj(const std::string& src, std::vector<MeshData>& md
 
 bool MeshLoader::load_mesh_x(const std::string& path, std::vector<MeshData>& mds) {
 	Assimp::Importer import;
-	auto scene = import.ReadFile(path, aiProcess_ForceGenNormals | aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_CalcTangentSpace | aiProcess_FlipWindingOrder);
+	auto scene = import.ReadFile(path, aiProcess_ForceGenNormals | aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_CalcTangentSpace /*| aiProcess_FlipWindingOrder*/);
 
 	if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode) {
 		c_debuger() << "[error][mesh]load mesh fail\n" + std::string(import.GetErrorString());
@@ -867,7 +870,7 @@ bool MeshLoader::load_mesh_x(const std::string& path, std::vector<MeshData>& mds
 
 bool MeshLoader::load_mesh_skeletal(const std::string& path, std::vector<SkeletalMeshData>& mds, MSkeleton& skeleton, std::vector<MBone>& bones, CMatrix4x4& mat_global, std::vector<AnimData>& ads) {
 	Assimp::Importer import;
-	auto scene = import.ReadFile(path, aiProcess_ForceGenNormals | aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_CalcTangentSpace | aiProcess_FlipWindingOrder);
+	auto scene = import.ReadFile(path, aiProcess_ForceGenNormals | aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_CalcTangentSpace /*| aiProcess_FlipWindingOrder*/);
 
 	if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode) {
 		c_debuger() << "[error][skeletal_mesh]load skeletal_mesh fail\n" + path + " " + std::string(import.GetErrorString());

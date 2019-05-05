@@ -154,7 +154,7 @@ void main() {
 
 	vec3 t_color = vec3(0.0, 0.0, 0.0);
 	
-	//t_color += light_direct();
+	t_color += light_direct();
 
 	t_color += light_ambient(vec3(1.0));
 
@@ -296,8 +296,8 @@ vec3 pbr_ibl_diffuse(vec3 n, vec3 v, vec3 albedo, vec3 f0, float roughness, floa
 
 	// get k_s and k_d
 	vec3  k_s = f;										// 镜面反射系数 -- 等于菲涅尔方程的值
-	//vec3  k_d = (vec3(1.0) - k_s) * (1.0 - metallic);	// 漫反射系数 -- 考虑金属度
-	vec3  k_d = (vec3(1.0) - k_s);						// 漫反射系数 -- 考虑金属度
+	vec3  k_d = (vec3(1.0) - k_s) * (1.0 - metallic);	// 漫反射系数 -- 考虑金属度
+	//vec3  k_d = (vec3(1.0) - k_s);					// 漫反射系数 -- 考虑金属度
 
 	return k_d * irradiance * albedo * t_ao;
 

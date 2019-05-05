@@ -49,6 +49,35 @@ void Texture2D::init(uint w, uint h, SPTR_uchar data, uint t, uint msaa_num) {
 
 	} glBindTexture(type, 0);
 }
+void Texture2D::init_hdr(uint w, uint h, SPTR_float data, uint t, uint msaa_num) {
+	width = w; heigh = h; type = t;
+	glGenTextures(1, &id);
+	
+	glBindTexture(type, id); {
+		if (type == GL_TEXTURE_2D) {
+			// 创建纹理
+			glTexImage2D(type, 0, static_cast<GLint>(internal_format), static_cast<GLsizei>(width), static_cast<GLsizei>(heigh),
+						 0, image_format, GL_FLOAT, data.get());
+			// 设置纹理属性
+			if (filter_min == GL_LINEAR_MIPMAP_LINEAR) { glGenerateMipmap(type); }
+			if (internal_format == GL_RGBA || internal_format == GL_BGRA) { wrap_s = GL_CLAMP_TO_EDGE; wrap_t = GL_CLAMP_TO_EDGE; }
+
+			glTexParameteri(type, GL_TEXTURE_WRAP_S, static_cast<GLint>(wrap_s));
+			glTexParameteri(type, GL_TEXTURE_WRAP_T, static_cast<GLint>(wrap_t));
+			glTexParameteri(type, GL_TEXTURE_MIN_FILTER, static_cast<GLint>(filter_min));
+			glTexParameteri(type, GL_TEXTURE_MAG_FILTER, static_cast<GLint>(filter_max));
+
+			/*texture = new QOpenGLTexture(QOpenGLTexture::Target2D);
+			texture->setData(t_img, QOpenGLTexture::GenerateMipMaps);
+			*/
+		} 
+		else if(type == GL_TEXTURE_2D_MULTISAMPLE) {
+			glTexImage2DMultisample(type, msaa_num, static_cast<GLint>(internal_format), static_cast<GLsizei>(width), static_cast<GLsizei>(heigh), GL_TRUE);
+		}
+
+	} glBindTexture(type, 0);
+
+}
 
 void Texture2D::gen(uint w, uint h, uint in_fmt, uint fmt, uint d_type, uint t, uint msaa_num) {
 	width = w; heigh = h;
