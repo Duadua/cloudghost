@@ -173,8 +173,6 @@ void GameManager::init() {
 	// init shader stack 
 	{
 		stack_shaders = CREATE_CLASS(ShaderStack);
-		// stack_shaders->push(AssetManager_ins().get_shader("default"));		// default shader
-		//stack_shaders->push(AssetManager_ins().get_shader("default_shadow"));	// default shader with shadow
 
 		//stack_shaders->set_shader_default(AssetManager_ins().get_shader("default"));
 		stack_shaders->set_shader_default(AssetManager_ins().get_shader("default_shadow"));

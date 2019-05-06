@@ -138,7 +138,6 @@ float t_shininess = 32.0;
 vec3 t_view_dir = vec3(0.0);
 vec3 t_normal = vec3(0.0, 0.0, 1.0);
 
-
 vec3 normal_from_texture();                     // 法线贴图
 
 vec2 cac_sphere_tex_coord(vec3 v);              // 球形uv
@@ -253,18 +252,6 @@ vec2 cac_sphere_tex_coord(vec3 v) {
 
 }
 
-vec2 tex_equirectangular(vec3 tex) {
-	vec2 res = vec2(atan(tex.z, tex.x), asin(tex.y)); // ([-pi ,, pi], [-pi/2.0 ,, pi/2.0])
-
-	// 映射到 [0 ,, 1]
-	//res.x = res.x / (2.0 * pi) + 0.5;
-	//res.y = res.y / pi + 0.5;
-
-	res = res / vec2(2.0 * pi, pi) + 0.5;
-
-	return res;
-
-}
 void pre_main() {
 
     t_tex_coord = i_fs.tex_coord;
