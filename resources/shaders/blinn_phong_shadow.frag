@@ -3,6 +3,8 @@
 // ================================================================================
 // const
 
+const float pi = acos(-1.0);
+
 // light num 
 const int light_direct_num_max  = 1;
 const int light_point_num_max	= 4;
@@ -21,6 +23,10 @@ in O_VS {
 	mat3 tbn;
 	vec4 light_direct_pv_pos[light_direct_num_max];
 } i_fs;
+
+in O_APos {
+    vec3 world_pos;             // 没有任何变换的坐标
+} i_apos;
 
 // ================================================================================
 // light
@@ -113,6 +119,7 @@ uniform bool        u_shadow_b_use;
 // uniform material
 uniform Material    u_material;
 uniform bool        u_normal_map_b_use;     // 是否使用法线贴图
+uniform bool		u_b_sphere_tex_coord;	// 是否使用球形的纹理坐标 -- 重新计算
 
 // uniform for cac
 uniform vec3        u_view_pos;
@@ -120,6 +127,8 @@ uniform float	    u_far;
 
 // ================================================================================
 // pre cac
+
+vec2 t_tex_coord;
 
 vec3 t_c_ambient = vec3(1.0);
 vec3 t_c_diffuse = vec3(1.0);
@@ -129,7 +138,10 @@ float t_shininess = 32.0;
 vec3 t_view_dir = vec3(0.0);
 vec3 t_normal = vec3(0.0, 0.0, 1.0);
 
+
 vec3 normal_from_texture();                     // 法线贴图
+
+vec2 cac_sphere_tex_coord(vec3 v);              // 球形uv
 
 void pre_main();
 
@@ -222,13 +234,41 @@ vec3 normal_from_texture() {
     //t_shininess *= 64;
 
     // 切线空间的法线 --- 从法线贴图中得 [-1.0 ,, 1.0]
-    vec3 tangent_normal = texture(u_material.map_normal, i_fs.tex_coord).rgb;
+    vec3 tangent_normal = texture(u_material.map_normal, t_tex_coord).rgb;
     tangent_normal = normalize(tangent_normal * 2.0 - 1.0);
 
     return normalize(i_fs.tbn * tangent_normal);
 }
 
+vec2 cac_sphere_tex_coord(vec3 v) {
+	vec2 res = vec2(atan(v.z, v.x), asin(v.y)); // ([-pi ,, pi], [-pi/2.0 ,, pi/2.0])
+
+	// 映射到 [0 ,, 1]
+	//res.x = res.x / (2.0 * pi) + 0.5;
+	//res.y = res.y / pi + 0.5;
+
+	res = res / vec2(2.0 * pi, pi) + 0.5;
+
+	return res;
+
+}
+
+vec2 tex_equirectangular(vec3 tex) {
+	vec2 res = vec2(atan(tex.z, tex.x), asin(tex.y)); // ([-pi ,, pi], [-pi/2.0 ,, pi/2.0])
+
+	// 映射到 [0 ,, 1]
+	//res.x = res.x / (2.0 * pi) + 0.5;
+	//res.y = res.y / pi + 0.5;
+
+	res = res / vec2(2.0 * pi, pi) + 0.5;
+
+	return res;
+
+}
 void pre_main() {
+
+    t_tex_coord = i_fs.tex_coord;
+    if(u_b_sphere_tex_coord) { t_tex_coord = cac_sphere_tex_coord(normalize(i_apos.world_pos)); }
 
     // init obj's color by uniform material
     t_c_ambient = u_material.ka;
@@ -236,9 +276,9 @@ void pre_main() {
     t_c_specular = u_material.ks;
     t_shininess = clamp(u_material.shininess, 8.0, 256.0);
 
-    if(u_material.has_map_ka) t_c_ambient  *= texture(u_material.map_ka, i_fs.tex_coord).rgb;
-    if(u_material.has_map_kd) t_c_diffuse  *= texture(u_material.map_kd, i_fs.tex_coord).rgb;
-    if(u_material.has_map_ks) t_c_specular *= texture(u_material.map_ks, i_fs.tex_coord).rgb;
+    if(u_material.has_map_ka) t_c_ambient  *= texture(u_material.map_ka, t_tex_coord).rgb;
+    if(u_material.has_map_kd) t_c_diffuse  *= texture(u_material.map_kd, t_tex_coord).rgb;
+    if(u_material.has_map_ks) t_c_specular *= texture(u_material.map_ks, t_tex_coord).rgb;
 
     t_view_dir = normalize(u_view_pos - i_fs.world_pos);
 

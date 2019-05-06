@@ -109,8 +109,10 @@ void MyGameManager::begin_play() {
 						t_rc->set_material(AssetManager_ins().get_material("default"), 2);
 					}
 					else {
-						//auto t_rc = std::dynamic_pointer_cast<SphereObject>(t_mo);
-						//t_rc->set_material(AssetManager_ins().get_material("brickwall"));
+						auto t_rc = std::dynamic_pointer_cast<SphereObject>(t_mo);
+						if (i % 4 == 0) {
+							t_rc->set_material(AssetManager_ins().get_material("brickwall"));
+						}
 					}
 				}
 				{

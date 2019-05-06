@@ -31,6 +31,10 @@ out O_VS {
 	vec4 light_direct_pv_pos[light_direct_num_max];			// 光源的裁剪空间坐标 -- shadow 用
 } o_vs;
 
+out O_APos {
+    vec3 world_pos;             // 没有任何变换的坐标
+} o_apos;
+
 out O_NormalProj {
 	vec3 normal;
 } o_np;
@@ -70,6 +74,7 @@ void main() {
 	pre_main();
 
 	// out o_vs
+	o_apos.world_pos = a_pos;
     o_vs.world_pos = vec3(t_model * vec4(a_pos, 1.0));
 
     o_vs.normal = normalize(t_normal_mat * a_normal);
@@ -99,7 +104,7 @@ mat3 tbn_cac() {
 	vec3 _n = normalize(t_normal_mat * a_normal);
 	vec3 _t = normalize(t_normal_mat * a_tangent); _t = normalize(_t - dot(_t, _n) * _n);	// gram_schmidt 正交化
     //vec3 _b = normalize(t_normal_mat * a_bitangent);
-    vec3 _b = normalize(cross(_n, _t));
+    vec3 _b = -normalize(cross(_n, _t));
 	return mat3(_t, _b, _n);
 }
 

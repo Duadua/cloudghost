@@ -258,7 +258,7 @@ void MeshTxtGen::gen_sphere(uint depth) {
 		MVertex b(CVector3D(0.0f, 0.0f, -1.0f));	// -z
 		MVertex c(CVector3D(-1.0f, 0.0f, 0.0f));	// -x
 		MVertex d(CVector3D(0.0f, 0.0f, 1.0f));		//  z
-		MVertex e(CVector3D(1.0f, 0.0f, 0.0f));		//  x 
+		//MVertex e(CVector3D(1.0f, 0.0f, 0.0f));		//  x 
 		MVertex f(CVector3D(0.0f, -1.0f, 0.0f));	// -y
 
 		o.tex_coord = CVector2D(0.00f, 1.0f);
@@ -266,7 +266,7 @@ void MeshTxtGen::gen_sphere(uint depth) {
 		b.tex_coord = CVector2D(0.25f, 0.5f);
 		c.tex_coord = CVector2D(0.50f, 0.5f);
 		d.tex_coord = CVector2D(0.75f, 0.5f);
-		e.tex_coord = CVector2D(1.00f, 0.5f);
+		//e.tex_coord = CVector2D(1.00f, 0.5f);
 		f.tex_coord = CVector2D(0.00f, 0.0f);
 
 		add_one_vertex(o);	// 0
@@ -274,28 +274,26 @@ void MeshTxtGen::gen_sphere(uint depth) {
 		add_one_vertex(b);	// 2
 		add_one_vertex(c);	// 3
 		add_one_vertex(d);	// 4
-		add_one_vertex(e);	// 5
+		//add_one_vertex(e);	// 5
 		add_one_vertex(f);	// 6
 	
 		add_one_face(0, 1, 2);	//  y  x -z
 		add_one_face(0, 2, 3);	//  y -z -x
 		add_one_face(0, 3, 4);	//  y -x  z
-		add_one_face(0, 4, 5);	//  y  z  x 
+		add_one_face(0, 4, 1);	//  y  z  x 
 		
 
-		add_one_face(6, 5, 4);	// -y  x  z   
-		add_one_face(6, 4, 3);	// -y  z -x
-		add_one_face(6, 3, 2);	// -y -x -z
-		add_one_face(6, 2, 1);	// -y -z  x
-		
-		
+		add_one_face(5, 1, 4);	// -y  x  z   
+		add_one_face(5, 4, 3);	// -y  z -x
+		add_one_face(5, 3, 2);	// -y -x -z
+		add_one_face(5, 2, 1);	// -y -z  x
 
 	}
 
 	// loop depth
 	{
 		std::map<std::pair<uint, uint>, uint> v_mid;
-		uint cur_id = 7;
+		uint cur_id = 6;
 		while (depth--) {
 			for (auto& md : mesh_datas) {
 				auto& indices = md.indices;
@@ -368,7 +366,9 @@ void MeshTxtGen::gen_sphere(uint depth) {
 
 	}
 
-	for (auto& i : vertices) { i.normal = i.position.normalize(); }
+	for (auto& i : vertices) { i.tex_coord = cac_sphere_tex_coord(i.position.get_normalize()); }
+
+	for (auto& i : vertices) { i.normal = i.position.get_normalize(); }
 }
 void MeshTxtGen::gen_cylinder(uint depth) {
 	add_one_mtfile("resources/materials/txt/single_material.txt");
@@ -510,6 +510,13 @@ void MeshTxtGen::cac_normal() {
 	
 	// normalize normal
 	for (auto& i : vertices) { i.normal.normalize(); }
+}
+CVector2D MeshTxtGen::cac_sphere_tex_coord(CVector3D v) {
+	CVector2D res = CVector2D(std::atan2f(v.z(), v.x()), std::asinf(v.y()));
+
+	res = res / CVector2D(2.0f * CMath_ins().pi, CMath_ins().pi) + 0.5;
+
+	return res;
 }
 
 // ===============================================================================================
@@ -714,7 +721,7 @@ bool MeshLoader::load_mesh_obj(const std::string& src, std::vector<MeshData>& md
 
 bool MeshLoader::load_mesh_x(const std::string& path, std::vector<MeshData>& mds) {
 	Assimp::Importer import;
-	auto scene = import.ReadFile(path, aiProcess_ForceGenNormals | aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_CalcTangentSpace /*| aiProcess_FlipWindingOrder*/);
+	auto scene = import.ReadFile(path, aiProcess_ForceGenNormals | aiProcess_Triangulate /*| aiProcess_FlipUVs*/ | aiProcess_CalcTangentSpace /*| aiProcess_FlipWindingOrder*/);
 
 	if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode) {
 		c_debuger() << "[error][mesh]load mesh fail\n" + std::string(import.GetErrorString());
@@ -1167,7 +1174,6 @@ bool MeshLoader::load_mesh_animation(const std::string& path, std::vector<AnimDa
 	return true;
 
 }
-
 
 void MeshLoader::gen_tangent(MeshData& md) {
 	for (auto& v : md.vertices) { v.tangent = CVector3D(); }

@@ -33,12 +33,14 @@ public:
 	void add_render_data(SPTR_RenderData rd);
 
 	GET_SET(bool, use_default_mt)
+	GET_SET(bool, b_sphere_tex_coord)
 
 	RenderDataInstance& render_data(uint id);
 
 protected:
 
 	bool use_default_mt;
+	bool b_sphere_tex_coord;						// 是否使用球形坐标采样
 
 	std::vector<RenderDataInstance> render_datas;
 

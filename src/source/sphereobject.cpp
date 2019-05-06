@@ -9,7 +9,9 @@ SphereObject::SphereObject() {
 
 	auto mc = CREATE_CLASS(MeshComponent);
 	set_root_component(mc);
-	mc->set_mesh(AssetManager_ins().get_mesh("sphere"));
+	auto t_m = AssetManager_ins().get_mesh("sphere");
+	t_m->set_b_sphere_tex_coord(true);
+	mc->set_mesh(t_m);
 }
 
 void SphereObject::begin_play() {

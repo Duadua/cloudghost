@@ -231,7 +231,7 @@ void pre_main() {
     t_c_ambient = 0.2 * vec3(0.5);
     t_c_diffuse = 0.7 * vec3(0.5);
     t_c_specular= 0.1 * vec3(0.5);
-    t_shininess = clamp(u_material.shininess, 8.0, 128.0);
+    t_shininess = clamp(u_material.shininess, 8.0, 256.0);
 
     t_view_dir = normalize(u_view_pos - i_fs.world_pos);
 

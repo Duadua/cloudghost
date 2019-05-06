@@ -204,6 +204,7 @@ private:
 	static void add_one_mtfile(const std::string& path);
 
 	static void cac_normal();
+	static CVector2D cac_sphere_tex_coord(CVector3D v);
 
 	static std::vector<MVertex> vertices;
 	static std::vector<MeshData> mesh_datas;

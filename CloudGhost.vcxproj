@@ -295,7 +295,6 @@
     <None Include="resources\shaders\border.frag" />
     <None Include="resources\shaders\depth.frag" />
     <None Include="resources\shaders\equirectangular_to_cubemap.frag" />
-    <None Include="resources\shaders\equirectangular_to_cubemap.vert" />
     <None Include="resources\shaders\explode.geom" />
     <None Include="resources\shaders\gamma.frag" />
     <None Include="resources\shaders\hdr.frag" />
