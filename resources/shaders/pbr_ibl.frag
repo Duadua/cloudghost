@@ -88,7 +88,7 @@ uniform Material	u_material;
 uniform bool		u_normal_map_b_use;     // 是否使用法线贴图
 uniform bool		u_b_sphere_tex_coord;	// 是否使用球形的纹理坐标 -- 重新计算
 
-uniform samplerCube u_irrandiance_diffuse_map; // 9
+uniform samplerCube u_irradiance_diffuse_map; // 9
 
 // uniform for cac
 uniform vec3 		u_view_pos;
@@ -235,7 +235,7 @@ void pre_main() {
     else { t_normal = normalize(i_fs.normal); }
 
 	vec3 R = reflect(-t_view_dir, t_normal);
-	t_irradiance_diffuse = texture(u_irrandiance_diffuse_map, R).rgb;
+	t_irradiance_diffuse = texture(u_irradiance_diffuse_map, R).rgb;
 
 }
 

@@ -583,7 +583,7 @@ void GameManager::base_pass() {
 			stack_shaders->top()->use();
 			
 			stack_shaders->top()->set_vec3("u_view_pos", main_camera->get_root_component()->get_location());
-			stack_shaders->top()->set_int("u_irrandiance_diffuse_map", 9);
+			stack_shaders->top()->set_int("u_irradiance_diffuse_map", 9);
 			if (sky_box) sky_box->get_texture()->bind(9);
 			if (b_dynamic_env && dynamic_environment_map_rt && dynamic_environment_map_rt->get_attach_texture_3ds().size() > 0) {
 				if (dynamic_environment_map_rt->get_attach_texture_3ds()[0].texture) {
