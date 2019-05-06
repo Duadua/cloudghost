@@ -61,6 +61,7 @@ void GameManager::_init() {
 		hdr_exposure = 1.0f;
 
 		b_skybox = true;
+		b_dynamic_env = false;
 
 		b_depth = false;
 		b_shadow = true;
@@ -109,6 +110,7 @@ void GameManager::init() {
 		AssetManager_ins().load_shader("msaa", "resources/shaders/scene_2d.vert", "resources/shaders/msaa.frag");
 		AssetManager_ins().load_shader("hdr", "resources/shaders/scene_2d.vert", "resources/shaders/hdr.frag");
 		AssetManager_ins().load_shader("skybox", "resources/shaders/skybox.vert", "resources/shaders/skybox.frag");
+		AssetManager_ins().load_shader("hdr_to_skybox", "resources/shaders/skybox.vert", "resources/shaders/equirectangular_to_cubemap.frag");
 		AssetManager_ins().load_shader("shadow", "resources/shaders/shadow.vert", "resources/shaders/shadow.frag");
 		AssetManager_ins().load_shader("shadow_point", "resources/shaders/shadow_point.vert", "resources/shaders/shadow_point.frag", "resources/shaders/shadow_point.geom");
 
@@ -200,6 +202,7 @@ void GameManager::init() {
 	{
 		sky_box = CREATE_CLASS(SkyBox);
 		sky_box->set_texture(AssetManager_ins().get_texture3D("stormyday"));
+		sky_box->set_texture_hdr(AssetManager_ins().get_texture("basketball_court.hdr"));
 	}
 
 	// init input map
@@ -275,37 +278,37 @@ void GameManager::draw() {
 		if(!b_use_shader_toy) {
 			if (!b_use_vr) {						
 
-				if (b_depth) { depth_pass(); }		// 生成当前相机视图下的深度图 -- 得到 depth_texture
+				if (b_depth) { depth_pass(); }					// 生成当前相机视图下的深度图 -- 得到 depth_texture
 
 				// pass 1
-				if (b_shadow) { shadow_pass(); }	// 生成(各个光源的)阴影贴图  -- 得到 shadow_texture
+				if (b_shadow) { shadow_pass(); }				// 生成(各个光源的)阴影贴图  -- 得到 shadow_texture
 
-				dynamic_env_pass();					// 生成动态环境贴图 -- 反射用
+				if (b_dynamic_env) { dynamic_env_pass(); }		// 生成动态环境贴图 -- 反射用
 
 				// pass 2
-				pick_pass();						// 得到拾取贴图 -- 用来判断哪个物体被拾取 -- 得到拾取物体的 id
+				pick_pass();									// 得到拾取贴图 -- 用来判断哪个物体被拾取 -- 得到拾取物体的 id
 
 				// pass 3
-				base_pass();						// 得到 scene_texture
+				base_pass();									// 得到 scene_texture
 
 				// pass 4
-				border_pass();						// 得到 border_texture -- 然后 输入 scene_texture -- 添加边框 -- 最后得到 scene_texture
+				border_pass();									// 得到 border_texture -- 然后 输入 scene_texture -- 添加边框 -- 最后得到 scene_texture
 
 				// pass 4
 				if (pp_type != PostProcessType::NOPE) { post_process_pass(); } // 后处理 -- 输入 scene_texture 得到 scene_texture
 
 				// pass 5
-				if (b_hdr) hdr_pass();				// hdr -- 输入 scene_texture 得到 scene_texture
+				if (b_hdr) hdr_pass();							// hdr -- 输入 scene_texture 得到 scene_texture
 
 				// pass 6
-				if (b_gamma) gamma_pass();			// gamma 校正 -- 输入 scene_texture 得到 scene_texture
+				if (b_gamma) gamma_pass();						// gamma 校正 -- 输入 scene_texture 得到 scene_texture
 			}
 			else {
-				if (b_depth) { vr_depth_pass(); }	// 得到 depth_texture
+				if (b_depth) { vr_depth_pass(); }				// 得到 depth_texture
 				if (b_shadow) { shadow_pass(); }
 				pick_pass();
-				vr_base_pass();						// 得到 scene_texture
-				vr_border_pass();					// 得到 border_texture -- 然后输入 scene_texture -- 得到scene_texture
+				vr_base_pass();									// 得到 scene_texture
+				vr_border_pass();								// 得到 border_texture -- 然后输入 scene_texture -- 得到scene_texture
 				if (pp_type != PostProcessType::NOPE) { post_process_pass(); }
 				if (b_hdr) hdr_pass();
 				if (b_gamma) gamma_pass();
@@ -324,6 +327,15 @@ void GameManager::draw() {
 // render pass
 void GameManager::pre_bake() {
 	c_debuger() << "begin baking";
+	// hdr skybox -> skybox
+	if (sky_box->get_b_use_hdr()) {
+		hdr_to_cubemap_pass();
+		if (hdr_environment_map_rt && hdr_environment_map_rt->get_attach_texture_3ds().size() > 0) {
+			auto t_tex = hdr_environment_map_rt->get_attach_texture_3ds()[0].texture;
+			if (t_tex) sky_box->set_texture(t_tex);
+		}
+	}
+
 	c_debuger() << "baking over";
 
 }
@@ -574,8 +586,8 @@ void GameManager::base_pass() {
 			
 			stack_shaders->top()->set_vec3("u_view_pos", main_camera->get_root_component()->get_location());
 			stack_shaders->top()->set_int("u_irrandiance_diffuse_map", 9);
-			//if (sky_box) sky_box->get_texture()->bind(9);
-			if (dynamic_environment_map_rt && dynamic_environment_map_rt->get_attach_texture_3ds().size() > 0) {
+			if (sky_box) sky_box->get_texture()->bind(9);
+			if (b_dynamic_env && dynamic_environment_map_rt && dynamic_environment_map_rt->get_attach_texture_3ds().size() > 0) {
 				if (dynamic_environment_map_rt->get_attach_texture_3ds()[0].texture) {
 					dynamic_environment_map_rt->get_attach_texture_3ds()[0].texture->bind(9);
 				}
@@ -621,6 +633,7 @@ void GameManager::base_pass() {
 				if (t_texture) t_texture->bind(0);
 				//point_light_shadow_rts[0]->get_attach_texture_3ds()[0].texture->bind(0);
 				//dynamic_environment_map_rt->get_attach_texture_3ds()[0].texture->bind(0);
+				hdr_environment_map_rt->get_attach_texture_3ds()[0].texture->bind(0);
 				draw_skybox(stack_shaders->top());
 				Texture3D::un_bind(0);
 			} stack_shaders->pop();
@@ -1234,6 +1247,57 @@ void GameManager::vr_border_pass() {
 	
 }
 
+void GameManager::hdr_to_cubemap_pass() {
+	glViewport(0, 0, 1024, 1024); {
+		hdr_environment_map_rt->use(); {
+
+			/*stack_shaders->push(AssetManager_ins().get_shader("dynamic_env"));*/ {
+				if (stack_shaders->top()) {
+					stack_shaders->top()->use();
+					// 设置为此光源的 view and proj 矩阵
+					CMatrix4x4 t_proj;
+					t_proj.perspective(90.0f, 1.0f, 0.1f, 100.0f);
+					ub_matrices->fill_data(CMatrix4x4::data_size(), CMatrix4x4::data_size(), t_proj.data());
+					//auto t_loc = t_light->get_root_component()->get_location();
+					auto t_loc = CVector3D(0.0f, 1.0f, 0.0f);
+					// 6个方向
+					for (int j = 0; j < 6; ++j) {
+						hdr_environment_map_rt->use_texture_3d(0, j);
+						hdr_environment_map_rt->use_texture_3d(1, j);
+
+						draw_init();
+
+						CMatrix4x4 t_view;
+						t_view.lookAt(t_loc, t_loc + point_front[j], point_world_up[j]);
+						ub_matrices->fill_data(0, CMatrix4x4::data_size(), t_view.data());
+
+						// draw sky box
+						if (b_skybox && sky_box) {
+							stack_shaders->push(AssetManager_ins().get_shader("hdr_to_skybox")); {
+								if (stack_shaders->top()) {
+									stack_shaders->top()->use();
+									// 要移除矩阵的移动部分
+									auto t_view_s = CMatrix4x4(CMatrix3x3(t_view.data(), 4, 4).data(), 3, 3);
+									stack_shaders->top()->set_mat4("u_view_sky_box", t_view_s);
+									stack_shaders->top()->set_int("u_texture_hdr", 0);
+								}
+								auto t_texture = sky_box->get_texture_hdr();
+								if (t_texture) t_texture->bind(0);
+								draw_skybox(stack_shaders->top());
+							} stack_shaders->pop();
+						}
+					}
+				}
+
+				ub_matrices->fill_data(CMatrix4x4::data_size(), CMatrix4x4::data_size(), main_camera->get_camera_component()->get_proj_mat().data());
+				ub_matrices->fill_data(0, CMatrix4x4::data_size(), main_camera->get_camera_component()->get_view_mat().data());
+
+			} /*stack_shaders->pop();*/
+		} hdr_environment_map_rt->un_use();
+
+	} glViewport(0, 0, viewport_info.width, viewport_info.heigh);
+}
+
 void GameManager::draw_scene(SPTR_Shader shader) {
 	glDisable(GL_DEPTH_TEST);
 	static auto s_mesh = AssetManager_ins().get_mesh("rect");
@@ -1390,6 +1454,19 @@ void GameManager::draw_skybox(SPTR_Shader shader) {
 
 void GameManager::init_rt_static() {
 	b_pre_bake = true;
+
+	// hdr_environment_map_rt 
+	
+	if (hdr_environment_map_rt) hdr_environment_map_rt.reset();
+	hdr_environment_map_rt = CREATE_CLASS(RenderTarget);
+	if (hdr_environment_map_rt) {
+		hdr_environment_map_rt
+			->add_attach_texture_3d(GL_COLOR_ATTACHMENT0, 1024, 1024,
+				GL_TEXTURE_CUBE_MAP, GL_RGB16F, GL_RGB, GL_FLOAT)
+			->add_attach_texture_3d(GL_DEPTH_ATTACHMENT, 1024, 1024,
+				GL_TEXTURE_CUBE_MAP, GL_DEPTH_COMPONENT, GL_DEPTH_COMPONENT, GL_FLOAT)
+			->init();
+	}
 
 }
 void GameManager::init_rt() {
@@ -1558,17 +1635,6 @@ void GameManager::init_skybox_rt() {
 			->add_attach_texture_3d(GL_DEPTH_ATTACHMENT, 512, 512,
 				GL_TEXTURE_CUBE_MAP, GL_DEPTH_COMPONENT, GL_DEPTH_COMPONENT, GL_FLOAT)
 			->init();
-		// set border -- cube map needn't
-		/*auto t_tex = shadow_rt->get_attach_texture_3ds()[0].texture;
-		if (t_tex) {
-		t_tex->use(); {
-		glTexParameteri(t_tex->get_type(), GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
-		glTexParameteri(t_tex->get_type(), GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
-		glTexParameteri(t_tex->get_type(), GL_TEXTURE_WRAP_R, GL_CLAMP_TO_BORDER);
-		GLfloat t_border_color[] = { 1.0, 1.0, 1.0, 1.0 };
-		glTexParameterfv(t_tex->get_type(), GL_TEXTURE_BORDER_COLOR, t_border_color);
-		} t_tex->un_use();
-		}*/
 	}
 }
 

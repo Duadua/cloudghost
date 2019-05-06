@@ -192,11 +192,13 @@ protected:
 	float hdr_exposure;				// 曝光参数 -- 仅在 EXPOSURE 算法下有效
 
 	bool b_skybox;					// 是否渲染天空盒
+	bool b_dynamic_env;				// 是否渲染动态环境贴图
 
 	bool b_depth;					// 是否渲染当前相机视图下的深度图
 	bool b_shadow;					// 是否显示阴影
 
 	bool b_normal_map;				// 是否使用法线贴图
+
 
 	// gl state
 	void set_depth_test(bool enable = true, uint depth_func = GL_LESS, uint depth_mask = GL_TRUE);
@@ -252,6 +254,7 @@ private:
 	std::vector<SPTR_RenderTarget> point_light_shadow_rts;	// 点光源阴影
 
 	SPTR_RenderTarget dynamic_environment_map_rt;			// 动态环境立方体贴图
+	SPTR_RenderTarget hdr_environment_map_rt;				// hdr环境立方体贴图
 
 	SPTR_Texture2D scene_texture;
 	SPTR_Texture2D depth_texture;							// 当前相机视图下的深度图
@@ -274,6 +277,9 @@ private:
 	void vr_depth_pass();
 	void vr_base_pass();
 	void vr_border_pass();
+
+	// pbr pass
+	void hdr_to_cubemap_pass();								// hdr 贴图 -> cubemap
 
 	void init_rt_static();									// 静态 rt
 	void init_rt();

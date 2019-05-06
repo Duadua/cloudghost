@@ -654,6 +654,12 @@
     <None Include="resources\shaders\pbr_ibl.frag">
       <Filter>resources\shaders\frags</Filter>
     </None>
+    <None Include="resources\shaders\equirectangular_to_cubemap.vert">
+      <Filter>resources\shaders\verts</Filter>
+    </None>
+    <None Include="resources\shaders\equirectangular_to_cubemap.frag">
+      <Filter>resources\shaders\frags</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Text Include="resources\models\txt\cube.txt">
