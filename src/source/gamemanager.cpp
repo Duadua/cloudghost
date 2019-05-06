@@ -116,6 +116,7 @@ void GameManager::init() {
 
 		AssetManager_ins().load_shader("pbr", "resources/shaders/mvp_anim.vert", "resources/shaders/pbr.frag");
 		AssetManager_ins().load_shader("pbr_ibl", "resources/shaders/mvp_anim.vert", "resources/shaders/pbr_ibl.frag");
+		AssetManager_ins().load_shader("pbr_irradiance_d_bake", "resources/shaders/skybox.vert", "resources/shaders/pbr_irradiance_d_bake.frag");
 
 		AssetManager_ins().load_shader("shader_toy_img", "resources/shaders/scene_2d.vert", "resources/shaders/shadertoy_img_pbr.frag");
 		AssetManager_ins().load_shader("shader_toy_buffer_a", "resources/shaders/scene_2d.vert", "resources/shaders/shadertoy_buffer_a.frag");
@@ -332,6 +333,20 @@ void GameManager::pre_bake() {
 			auto t_tex = hdr_environment_map_rt->get_attach_texture_3ds()[0].texture;
 			if (t_tex) sky_box->set_texture(t_tex);
 		}
+	}
+
+	// dynamic env pass -- 得到第一张包含场景中物体的天空盒 -- 备用 
+	{
+		dynamic_env_pass();
+	}
+
+	// skybox or skybox_static -> ibl_irradiance_diffuse cubemap
+	{
+		pbr_irradiance_diffuse_pass();
+		/*if (pbr_irradiance_diffuse_rt && pbr_irradiance_diffuse_rt->get_attach_texture_3ds().size() > 0) {
+			auto t_tex = pbr_irradiance_diffuse_rt->get_attach_texture_3ds()[0].texture;
+			if (t_tex) sky_box->set_texture(t_tex);
+		}*/
 	}
 
 	c_debuger() << "baking over";
@@ -584,12 +599,19 @@ void GameManager::base_pass() {
 			
 			stack_shaders->top()->set_vec3("u_view_pos", main_camera->get_root_component()->get_location());
 			stack_shaders->top()->set_int("u_irradiance_diffuse_map", 9);
-			if (sky_box) sky_box->get_texture()->bind(9);
-			if (b_dynamic_env && dynamic_environment_map_rt && dynamic_environment_map_rt->get_attach_texture_3ds().size() > 0) {
+			// 使用预烘焙的积分 ibl_diffuse 贴图
+			if (pbr_irradiance_diffuse_rt && pbr_irradiance_diffuse_rt->get_attach_texture_3ds().size() > 0) {
+				auto t_tex = pbr_irradiance_diffuse_rt->get_attach_texture_3ds()[0].texture;
+				if (t_tex) t_tex->bind(9);
+			}
+
+			//if (sky_box) sky_box->get_texture()->bind(9);
+			/*if (dynamic_environment_map_rt && dynamic_environment_map_rt->get_attach_texture_3ds().size() > 0) {
 				if (dynamic_environment_map_rt->get_attach_texture_3ds()[0].texture) {
 					dynamic_environment_map_rt->get_attach_texture_3ds()[0].texture->bind(9);
 				}
 			}	// 使用动态环境贴图
+			*/
 
 			// set uniform for pbr
 			draw_lights(stack_shaders->top());			// set light uniform for shader
@@ -631,7 +653,7 @@ void GameManager::base_pass() {
 				if (t_texture) t_texture->bind(0);
 				//point_light_shadow_rts[0]->get_attach_texture_3ds()[0].texture->bind(0);
 				//dynamic_environment_map_rt->get_attach_texture_3ds()[0].texture->bind(0);
-				hdr_environment_map_rt->get_attach_texture_3ds()[0].texture->bind(0);
+				//hdr_environment_map_rt->get_attach_texture_3ds()[0].texture->bind(0);
 				draw_skybox(stack_shaders->top());
 				Texture3D::un_bind(0);
 			} stack_shaders->pop();
@@ -1295,6 +1317,63 @@ void GameManager::hdr_to_cubemap_pass() {
 
 	} glViewport(0, 0, viewport_info.width, viewport_info.heigh);
 }
+void GameManager::pbr_irradiance_diffuse_pass() {
+	glViewport(0, 0, 32, 32); {
+		pbr_irradiance_diffuse_rt->use(); {
+
+			/*stack_shaders->push(AssetManager_ins().get_shader("dynamic_env"));*/ {
+				if (stack_shaders->top()) {
+					stack_shaders->top()->use();
+					// 设置为此光源的 view and proj 矩阵
+					CMatrix4x4 t_proj;
+					t_proj.perspective(90.0f, 1.0f, 0.1f, 100.0f);
+					ub_matrices->fill_data(CMatrix4x4::data_size(), CMatrix4x4::data_size(), t_proj.data());
+					//auto t_loc = t_light->get_root_component()->get_location();
+					auto t_loc = CVector3D(0.0f, 1.0f, 0.0f);
+					// 6个方向
+					for (int j = 0; j < 6; ++j) {
+						pbr_irradiance_diffuse_rt->use_texture_3d(0, j);
+						pbr_irradiance_diffuse_rt->use_texture_3d(1, j);
+
+						draw_init();
+
+						CMatrix4x4 t_view;
+						t_view.lookAt(t_loc, t_loc + point_front[j], point_world_up[j]);
+						ub_matrices->fill_data(0, CMatrix4x4::data_size(), t_view.data());
+
+						// draw sky box
+						if (b_skybox && sky_box) {
+							stack_shaders->push(AssetManager_ins().get_shader("pbr_irradiance_d_bake")); {
+								if (stack_shaders->top()) {
+									stack_shaders->top()->use();
+									// 要移除矩阵的移动部分
+									auto t_view_s = CMatrix4x4(CMatrix3x3(t_view.data(), 4, 4).data(), 3, 3);
+									stack_shaders->top()->set_mat4("u_view_sky_box", t_view_s);
+									stack_shaders->top()->set_int("u_texture", 0);
+								}
+								auto t_texture = sky_box->get_texture();
+								if (t_texture) t_texture->bind(0);
+								/*if (dynamic_environment_map_rt && dynamic_environment_map_rt->get_attach_texture_3ds().size() > 0) {
+									if (dynamic_environment_map_rt->get_attach_texture_3ds()[0].texture) {
+										dynamic_environment_map_rt->get_attach_texture_3ds()[0].texture->bind(0);
+									}
+								} // 动态环境贴图
+								*/
+								draw_skybox(stack_shaders->top());
+							} stack_shaders->pop();
+						}
+					}
+				}
+
+				ub_matrices->fill_data(CMatrix4x4::data_size(), CMatrix4x4::data_size(), main_camera->get_camera_component()->get_proj_mat().data());
+				ub_matrices->fill_data(0, CMatrix4x4::data_size(), main_camera->get_camera_component()->get_view_mat().data());
+
+			} /*stack_shaders->pop();*/
+		} pbr_irradiance_diffuse_rt->un_use();
+
+	} glViewport(0, 0, viewport_info.width, viewport_info.heigh);
+
+}
 
 void GameManager::draw_scene(SPTR_Shader shader) {
 	glDisable(GL_DEPTH_TEST);
@@ -1453,8 +1532,9 @@ void GameManager::draw_skybox(SPTR_Shader shader) {
 void GameManager::init_rt_static() {
 	b_pre_bake = true;
 
+	init_skybox_rt();
+
 	// hdr_environment_map_rt 
-	
 	if (hdr_environment_map_rt) hdr_environment_map_rt.reset();
 	hdr_environment_map_rt = CREATE_CLASS(RenderTarget);
 	if (hdr_environment_map_rt) {
@@ -1465,6 +1545,20 @@ void GameManager::init_rt_static() {
 				GL_TEXTURE_CUBE_MAP, GL_DEPTH_COMPONENT, GL_DEPTH_COMPONENT, GL_FLOAT)
 			->init();
 	}
+	
+	// pbr_irradiance_diffuse_rt 
+	if (pbr_irradiance_diffuse_rt) pbr_irradiance_diffuse_rt.reset();
+	pbr_irradiance_diffuse_rt = CREATE_CLASS(RenderTarget);
+	if (pbr_irradiance_diffuse_rt) {
+		pbr_irradiance_diffuse_rt
+			->add_attach_texture_3d(GL_COLOR_ATTACHMENT0, 32, 32,
+				GL_TEXTURE_CUBE_MAP, GL_RGB16F, GL_RGB, GL_FLOAT)
+			->add_attach_texture_3d(GL_DEPTH_ATTACHMENT, 32, 32,
+				GL_TEXTURE_CUBE_MAP, GL_DEPTH_COMPONENT, GL_DEPTH_COMPONENT, GL_FLOAT)
+			->init();
+	}
+
+
 
 }
 void GameManager::init_rt() {
@@ -1513,7 +1607,6 @@ void GameManager::init_rt() {
 	init_msaa_rt();
 	init_hdr_rt();
 	init_shadow_rt();
-	init_skybox_rt();
 }
 void GameManager::init_shadow_rt() {
 	// direct light

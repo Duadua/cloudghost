@@ -259,6 +259,9 @@ private:
 	SPTR_Texture2D scene_texture;
 	SPTR_Texture2D depth_texture;							// 当前相机视图下的深度图
 
+	// pbr used
+	SPTR_RenderTarget pbr_irradiance_diffuse_rt;			// ibl diffuse反射贴图 -- cubemap -> cubemap
+
 	void pre_bake();										// 预烘焙
 	bool b_pre_bake;										// 是否需要烘焙
 	void scene_pass(SPTR_Texture2D tex);					// 根据传入的贴图绘制屏幕四边形
@@ -280,6 +283,7 @@ private:
 
 	// pbr pass
 	void hdr_to_cubemap_pass();								// hdr 贴图 -> cubemap
+	void pbr_irradiance_diffuse_pass();						// 从 skybox 得 积分图 (反射贴图)
 
 	void init_rt_static();									// 静态 rt
 	void init_rt();

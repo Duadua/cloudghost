@@ -104,8 +104,9 @@ float brdf_g_k_ibl(float roughness);
 float brdf_g_schlick_ggx(float n_o_v, float k);
 float brdf_g_smith(float n_o_v, float n_o_l, float k);
 
-vec3  brdf_f_f0(vec3 f0, vec3 albedo, float metallic);		// albedo -- 反射率 -- 可能来自贴图 -- f0 为基础反射率
-vec3  brdf_f_fresnel_schlick(float h_o_v, vec3 f0);			// h 为中间向量 -- 可作为微平面的法线 -- 有效的微平面
+vec3  brdf_f_f0(vec3 f0, vec3 albedo, float metallic);							// albedo -- 反射率 -- 可能来自贴图 -- f0 为基础反射率
+vec3  brdf_f_fresnel_schlick(float h_o_v, vec3 f0);								// h 为中间向量 -- 可作为微平面的法线 -- 有效的微平面
+vec3  brdf_f_fresnel_schlick_roughness(float n_o_v, vec3 f0, float roughness);	// 考虑 粗糙度的 fresnel
 
 // brdf
 vec3 brdf_cook_torrance(vec3 n, vec3 v, vec3 l, 
@@ -273,6 +274,10 @@ vec3  brdf_f_f0(vec3 f0, vec3 albedo, float metallic) {
 vec3 brdf_f_fresnel_schlick(float h_o_v, vec3 f0) {
 	return f0 + (1.0 - f0) * pow(1.0 - h_o_v, 5.0);
 }
+vec3 brdf_f_fresnel_schlick_roughness(float n_o_v, vec3 f0, float roughness) {
+	vec3 t_s = max(vec3(1.0 - roughness), f0); 
+	return f0 + (t_s - f0) * pow(1.0 - n_o_v, 5.0);
+}
 
 // brdf
 vec3 brdf_cook_torrance(vec3 n, vec3 v, vec3 l, vec3 c_diffuse, vec3 c_specular, vec3 f0, float roughness, float metallic) {
@@ -316,8 +321,8 @@ vec3 pbr_Lo(vec3 n, vec3 v, vec3 l, vec3 c_diffuse, vec3 c_specular, vec3 f0, fl
 vec3 pbr_ibl_diffuse(vec3 n, vec3 v, vec3 albedo, vec3 f0, float roughness, float metallic, vec3 irradiance) {
 	float n_o_v = max(dot(n, v), 0.0);
 
-	vec3 f90 = brdf_f_f0(f0, albedo, metallic);		// 获取真正的 f0 -- 有金属性影响
-	vec3  f = brdf_f_fresnel_schlick(n_o_v, f90);		// 菲涅尔方程
+	vec3 f90 = brdf_f_f0(f0, albedo, metallic);								// 获取真正的 f0 -- 有金属性影响
+	vec3  f = brdf_f_fresnel_schlick_roughness(n_o_v, f90, roughness);		// 菲涅尔方程
 
 	// get k_s and k_d
 	vec3  k_s = f;										// 镜面反射系数 -- 等于菲涅尔方程的值
