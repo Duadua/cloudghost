@@ -86,8 +86,8 @@ mat3 tbn_cac() {
 	// gen tbn
 	vec3 _n = normalize(t_normal_mat * a_normal);
 	vec3 _t = normalize(t_normal_mat * a_tangent); _t = normalize(_t - dot(_t, _n) * _n);	// gram_schmidt 正交化
-    //vec3 _b = normalize(t_normal_mat * a_bitangent);
-    vec3 _b = -normalize(cross(_n, _t));
+    vec3 _b = normalize(t_normal_mat * a_bitangent);
+    //vec3 _b = -normalize(cross(_n, _t));
 	return mat3(_t, _b, _n);
 }
 
