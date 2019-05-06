@@ -256,6 +256,8 @@ private:
 	SPTR_Texture2D scene_texture;
 	SPTR_Texture2D depth_texture;							// 当前相机视图下的深度图
 
+	void pre_bake();										// 预烘焙
+	bool b_pre_bake;										// 是否需要烘焙
 	void scene_pass(SPTR_Texture2D tex);					// 根据传入的贴图绘制屏幕四边形
 	void depth_pass();										// 获得当前相机视图下的深度图
 	void shadow_pass();
@@ -273,6 +275,7 @@ private:
 	void vr_base_pass();
 	void vr_border_pass();
 
+	void init_rt_static();									// 静态 rt
 	void init_rt();
 	void init_pick_rt();
 	void init_vr_rt();

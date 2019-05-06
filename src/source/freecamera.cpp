@@ -46,7 +46,9 @@ void FreeCamera::look_up(float offset) {
 
 	// rotate x_axis
 	new_rotation += CVector3D(offset, 0.0f, 0.0f);
-	get_root_component()->set_rotation(new_rotation);
+	if (new_rotation.x() > -90.0 && new_rotation.x() < 90.0) {
+		get_root_component()->set_rotation(new_rotation);
+	}
 	
 	// set cursor pos
 	InputManager_ins().cursor_clip();
@@ -56,11 +58,11 @@ void FreeCamera::look_up(float offset) {
 
 void FreeCamera::move_forward(float offset) {
 	CVector3D new_location = get_root_component()->get_location();
-	CVector3D new_rotation = get_root_component()->get_rotation();
+	//CVector3D new_rotation = get_root_component()->get_rotation();
 
 	// move z_axis
-	float yaw = CMath_ins().deg_to_rad(new_rotation.y());
-	float pitch = CMath_ins().deg_to_rad(new_rotation.x());
+	//float yaw = CMath_ins().deg_to_rad(new_rotation.y());
+	//float pitch = CMath_ins().deg_to_rad(new_rotation.x());
 	//new_location += offset * CVector3D(std::sin(yaw)*std::cos(pitch), std::sin(pitch), std::cos(yaw)*std::cos(pitch));
 	new_location += offset * get_camera_component()->get_camera_data()->get_front();
 
@@ -69,10 +71,10 @@ void FreeCamera::move_forward(float offset) {
 }
 void FreeCamera::move_forward_plane(float offset) {
 	CVector3D new_location = get_root_component()->get_location();
-	CVector3D new_rotation = get_root_component()->get_rotation();
+	//CVector3D new_rotation = get_root_component()->get_rotation();
 
 	// move z_axis
-	float yaw = CMath_ins().deg_to_rad(new_rotation.y());
+	//float yaw = CMath_ins().deg_to_rad(new_rotation.y());
 	//new_location += offset * CVector3D(std::sin(yaw), 0.0f, std::cos(yaw));
 	auto t_front = get_camera_component()->get_camera_data()->get_front();
 	new_location += offset * CVector3D(t_front.x(), 0.0f, t_front.z());
@@ -81,10 +83,10 @@ void FreeCamera::move_forward_plane(float offset) {
 }
 void FreeCamera::move_right(float offset) {
 	CVector3D new_location = get_root_component()->get_location();
-	CVector3D new_rotation = get_root_component()->get_rotation();
+	//CVector3D new_rotation = get_root_component()->get_rotation();
 
 	// move x_axis
-	float yaw = CMath_ins().deg_to_rad(new_rotation.y());
+	//float yaw = CMath_ins().deg_to_rad(new_rotation.y());
 	//new_location += offset * CVector3D(std::cos(yaw), 0.0f, -std::sin(yaw));
 	new_location += offset * get_camera_component()->get_camera_data()->get_right();
 

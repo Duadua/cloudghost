@@ -227,6 +227,7 @@ void GameManager::init() {
 	
 	// init rt
 	{
+		init_rt_static();
 		init_rt();
 	}
 
@@ -265,7 +266,10 @@ void GameManager::draw() {
 
 		// pre bake -- 预烘焙 -- 只绘制一次
 		{
-
+			if (b_pre_bake) {
+				b_pre_bake = false;
+				pre_bake();								// 预烘焙
+			}
 		}
 
 		if(!b_use_shader_toy) {
@@ -318,6 +322,11 @@ void GameManager::draw() {
 }
 
 // render pass
+void GameManager::pre_bake() {
+	c_debuger() << "begin baking";
+	c_debuger() << "baking over";
+
+}
 void GameManager::scene_pass(SPTR_Texture2D tex) {
 
 	draw_init();
@@ -490,15 +499,11 @@ void GameManager::dynamic_env_pass() {
 								}
 								auto t_texture = sky_box->get_texture();
 								if (t_texture) t_texture->bind(0);
-								//point_light_shadow_rts[0]->get_attach_texture_3ds()[0].texture->bind(0);
-								//dynamic_environment_map_rt->get_attach_texture_3ds()[0].texture->bind(0);
 								draw_skybox(stack_shaders->top());
 							} stack_shaders->pop();
 						}
 					}
 				}
-
-				
 
 				ub_matrices->fill_data(CMatrix4x4::data_size(), CMatrix4x4::data_size(), main_camera->get_camera_component()->get_proj_mat().data());
 				ub_matrices->fill_data(0, CMatrix4x4::data_size(), main_camera->get_camera_component()->get_view_mat().data());
@@ -617,6 +622,7 @@ void GameManager::base_pass() {
 				//point_light_shadow_rts[0]->get_attach_texture_3ds()[0].texture->bind(0);
 				//dynamic_environment_map_rt->get_attach_texture_3ds()[0].texture->bind(0);
 				draw_skybox(stack_shaders->top());
+				Texture3D::un_bind(0);
 			} stack_shaders->pop();
 		}
 
@@ -1382,6 +1388,10 @@ void GameManager::draw_skybox(SPTR_Shader shader) {
 	} set_depth_test(true);
 }
 
+void GameManager::init_rt_static() {
+	b_pre_bake = true;
+
+}
 void GameManager::init_rt() {
 	if (scene_rt) scene_rt.reset();
 	scene_rt = CREATE_CLASS(RenderTarget);
