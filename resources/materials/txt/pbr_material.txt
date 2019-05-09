@@ -9,8 +9,8 @@ name pbr_default
 	map_kd texture_default.png
 
 	albedo 1.000000 1.000000 1.000000
-	metallic 0.000000
-	roughness 0.500000
+	metallic 1.000000
+	roughness 0.20000
 	ao 1.000000
 
 name pbr_red
@@ -21,8 +21,8 @@ name pbr_red
 	shininess 32.000000
 
 	albedo 0.500000 0.000000 0.000000
-	metallic 0.500000
-	roughness 0.500000
+	metallic 0.800000
+	roughness 0.300000
 	ao 1.000000
 
 name pbr_rusted_iron
@@ -34,7 +34,7 @@ name pbr_rusted_iron
 
 	map_ka rusted_iron_albedo.png
 	map_kd rusted_iron_albedo.png
-	map_kd rusted_iron_normal.png
+	map_ks rusted_iron_normal.png
 
 	albedo 0.500000 0.000000 0.000000
 	metallic 0.000000
@@ -55,14 +55,36 @@ name pbr_titanium_scuffed
 
 	map_ka titanium_scuffed_albedo.png
 	map_kd titanium_scuffed_albedo.png
-	map_kd titanium_scuffed_albedo.png
+	map_ks titanium_scuffed_albedo.png
 
 	albedo 0.500000 0.000000 0.000000
-	metallic 0.000000
-	roughness 0.500000
+	metallic 1.000000
+	roughness 0.000000
 	ao 1.000000
 
 	map_albedo titanium_scuffed_albedo.png
 	map_metallic titanium_scuffed_metallic.png
 	map_roughness titanium_scuffed_roughness.png
 	map_ao titanium_scuffed_ao.png
+
+
+name pbr_marble_speckled
+	ka 0.100000 0.100000 0.100000
+	kd 0.700000 0.700000 0.700000
+	ks 0.200000 0.200000 0.200000
+
+	shininess 32.000000
+
+	map_ka marble_speckled_albedo.png
+	map_kd marble_speckled_albedo.png
+	map_ks marble_speckled_albedo.png
+
+	albedo 0.500000 0.000000 0.000000
+	metallic 1.000000
+	roughness 0.000000
+	ao 1.000000
+
+	map_albedo marble_speckled_albedo.png
+	map_metallic marble_speckled_metallic.png
+	map_roughness marble_speckled_roughness.png
+	map_ao marble_speckled_ao.png

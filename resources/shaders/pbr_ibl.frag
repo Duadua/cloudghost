@@ -88,7 +88,8 @@ uniform Material	u_material;
 uniform bool		u_normal_map_b_use;     // 是否使用法线贴图
 uniform bool		u_b_sphere_tex_coord;	// 是否使用球形的纹理坐标 -- 重新计算
 
-uniform samplerCube u_irradiance_diffuse_map; // 9
+uniform samplerCube u_irradiance_diffuse_map; 	// 9
+uniform samplerCube u_irradiance_specular_map; 	// 10 -- 就是立方体贴图 
 
 // uniform for cac
 uniform vec3 		u_view_pos;
@@ -121,9 +122,21 @@ vec3 pbr_Lo(vec3 n, vec3 v, vec3 l,
 
 // ibl
 vec3 pbr_ibl_diffuse(	vec3 n, vec3 v, 
-						vec3 c_diffuse,
+						vec3 albedo,
 						vec3 f0, float roughness, float metallic,
 						vec3 irradiance);
+
+// ibl_specular helper
+float hammersley_radical_inverse(uint bits);
+vec2  hammersley(uint i, uint sampler_num);								// hammersley 采样 -- 当前采样id 总采样数
+vec3  importance_sampling_ggx(vec2 uv, float roughness, vec3 n); 		// 重要性采样 -- 均匀2D坐标 粗糙度 法线 -- 获得中间向量 h
+float pbr_ibl_lod_get(float pdf, float w, float h, float sampler_num);	// 获得 lod -- pdf 宽 高 总采样数
+
+// ibl_specular 
+vec3 pbr_ibl_specular(	vec3 n, vec3 v,
+						vec3 albedo,
+						vec3 f0, float roughness, float metallic,
+						uint sampler_num);
 
 // ================================================================================
 // light cac
@@ -171,6 +184,8 @@ void main() {
 	r_color = vec4(t_color, 1.0);
 
 	//r_color = vec4(vec3(t_ao), 1.0);
+
+	//r_color = vec4(vec3(t_roughnes), 1.0);
 }
 
 // ================================================================================
@@ -267,7 +282,7 @@ float brdf_g_smith(float n_o_v, float n_o_l, float k) {
 	return g_v * g_l;
 }
 
-vec3  brdf_f_f0(vec3 f0, vec3 albedo, float metallic) {
+vec3 brdf_f_f0(vec3 f0, vec3 albedo, float metallic) {
 	return mix(f0, albedo, metallic);
 	// return metallic * albedo + (1.0 - metallic) * f0;
 }
@@ -333,6 +348,85 @@ vec3 pbr_ibl_diffuse(vec3 n, vec3 v, vec3 albedo, vec3 f0, float roughness, floa
 
 }
 
+// ibl_specular helper
+float hammersley_radical_inverse(uint bits) {
+	bits = ( bits << 16u ) | ( bits >> 16u );
+    bits = ( ( bits & 0x55555555u ) << 1u ) | ( ( bits & 0xAAAAAAAAu ) >> 1u );
+    bits = ( ( bits & 0x33333333u ) << 2u ) | ( ( bits & 0xCCCCCCCCu ) >> 2u );
+    bits = ( ( bits & 0x0F0F0F0Fu ) << 4u ) | ( ( bits & 0xF0F0F0F0u ) >> 4u );
+    bits = ( ( bits & 0x00FF00FFu ) << 8u ) | ( ( bits & 0xFF00FF00u ) >> 8u );
+    return float( bits ) * 2.3283064365386963e-10f;
+}
+vec2 hammersley(uint i, uint sampler_num) {
+	return vec2(float(i) / float(sampler_num), hammersley_radical_inverse(i));
+}
+vec3 importance_sampling_ggx(vec2 uv, float roughness, vec3 n) {
+	float a = roughness * roughness;
+
+	float phi = 2.0 * pi * uv.x;
+	float cos_theta = sqrt((1.0 - uv.y) / (1.0 + (a * a - 1.0) * uv.y));
+	float sin_theta = sqrt(1.0 - cos_theta * cos_theta);
+
+	vec3 h = vec3(
+		sin_theta * cos(phi),
+		sin_theta * sin(phi),
+		cos_theta
+	);	// 此时为切换空间的 h
+
+	// 获得 tbn 空间的 h
+	vec3 up = abs(n.z) < 0.999 ? vec3(0.0, 0.0, 1.0) : vec3(1.0, 0.0, 0.0);
+	vec3 right = normalize(cross(up, n));
+	up = normalize(cross(n, right));
+
+	return right * h.x + up * h.y + n * h.z;
+
+}
+float pbr_ibl_lod_get(float pdf, float w, float h, float sampler_num) {
+	float a = 0.5 * log2(w * h / sampler_num);
+	float b = 0.5 * log2(pdf);
+
+	if(pdf < 0.0001) b = a;
+	return max(a - b, 0.0);
+}
+
+vec3 pbr_ibl_specular(vec3 n, vec3 v, vec3 albedo, vec3 f0, float roughness, float metallic, uint sampler_num) {
+	vec3 res = vec3(0.0, 0.0, 0.0);
+
+	for(uint i = 0u; i < sampler_num; ++i) {
+		vec2 uv = hammersley(i, sampler_num);									// hammersley 采样
+		vec3 h = importance_sampling_ggx(uv, roughness, n); h = normalize(h);	// 重要性采样
+		vec3 l = normalize(2.0 * dot(v, h) * h - v);							// 从 v 和 h 逆算 l -- 光源方向
+
+		float n_o_v = max(dot(n, v), 0.0);
+		float n_o_l = max(dot(n, l), 0.0);
+		float n_o_h = max(dot(n, h), 0.0);
+		float h_o_v = max(dot(h, v), 0.0);
+
+		if(n_o_l > 0.0) {
+			float k = brdf_g_k_ibl(roughness);							// 根据直接光源/IBL 选择相应方程
+			vec3 f90 = brdf_f_f0(f0, albedo, metallic);					// 获取真正的 f0 -- 有金属性影响
+
+			float d = brdf_d_tr_ggx(n_o_h, roughness);					// 法线分布函数
+			float g = brdf_g_smith(n_o_v, n_o_l, k);					// 几何函数
+			vec3  f = brdf_f_fresnel_schlick(h_o_v, f90);				// 菲涅尔方程
+
+			float pdf = d * n_o_h / (4.0 * h_o_v);						// 计算  pdf
+			float lod = pbr_ibl_lod_get(pdf, 1024, 1024, sampler_num);	// 获得 lod
+
+			vec3 Li = textureLod(u_irradiance_specular_map, l, lod).xyz;
+			//vec3 Li = texture(u_irradiance_specular_map, l).xyz;
+
+			res += Li * f * g * h_o_v / (n_o_h * n_o_v);
+		}
+
+	}
+	res /= sampler_num;
+
+	return res;
+
+}
+
+
 // ================================================================================
 // light cac
 
@@ -356,12 +450,19 @@ vec3 light_direct() {
 
 vec3 light_ambient(vec3 coe) { 
 	vec3 t_f0 = vec3(0.04);			// 基础反射率 -- temp
-	vec3 res = pbr_ibl_diffuse(	t_normal, t_view_dir,
-								t_c_diffuse,
-								t_f0, t_roughnes, t_metallic,
-								t_irradiance_diffuse);
+	vec3 diffuse = pbr_ibl_diffuse(	
+						t_normal, t_view_dir,
+						t_c_diffuse,
+						t_f0, t_roughnes, t_metallic,
+						t_irradiance_diffuse);
 
-	return res * coe; 
+	vec3 specular = pbr_ibl_specular(
+						t_normal, t_view_dir,
+						t_c_specular,
+						t_f0, t_roughnes, t_metallic,
+						256u);
+
+	return (diffuse + specular) * coe; 
 }
 
 // ================================================================================

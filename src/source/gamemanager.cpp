@@ -61,7 +61,7 @@ void GameManager::_init() {
 		hdr_exposure = 1.0f;
 
 		b_skybox = true;
-		b_dynamic_env = false;
+		b_dynamic_env = true;
 
 		b_depth = false;
 		b_shadow = true;
@@ -160,6 +160,11 @@ void GameManager::init() {
 		AssetManager_ins().load_texture_x("resources/textures/titanium_scuffed/titanium_scuffed_normal.png", false);
 		AssetManager_ins().load_texture_x("resources/textures/titanium_scuffed/titanium_scuffed_ao.png");
 
+		AssetManager_ins().load_texture_x("resources/textures/marble_speckled/marble_speckled_albedo.png");
+		AssetManager_ins().load_texture_x("resources/textures/marble_speckled/marble_speckled_metallic.png", false);
+		AssetManager_ins().load_texture_x("resources/textures/marble_speckled/marble_speckled_roughness.png", false);
+		AssetManager_ins().load_texture_x("resources/textures/marble_speckled/marble_speckled_normal.png", false);
+		AssetManager_ins().load_texture_x("resources/textures/marble_speckled/marble_speckled_ao.png");
 		// textures 3d
 		AssetManager_ins().load_texture_3d("resources/textures/skyboxs/lake");
 		AssetManager_ins().load_texture_3d("resources/textures/skyboxs/nice");
@@ -599,19 +604,22 @@ void GameManager::base_pass() {
 			
 			stack_shaders->top()->set_vec3("u_view_pos", main_camera->get_root_component()->get_location());
 			stack_shaders->top()->set_int("u_irradiance_diffuse_map", 9);
+			stack_shaders->top()->set_int("u_irradiance_specular_map", 10);
+
 			// 使用预烘焙的积分 ibl_diffuse 贴图
 			if (pbr_irradiance_diffuse_rt && pbr_irradiance_diffuse_rt->get_attach_texture_3ds().size() > 0) {
 				auto t_tex = pbr_irradiance_diffuse_rt->get_attach_texture_3ds()[0].texture;
 				if (t_tex) t_tex->bind(9);
 			}
+			//if (sky_box) sky_box->get_texture()->bind(10);
 
 			//if (sky_box) sky_box->get_texture()->bind(9);
-			/*if (dynamic_environment_map_rt && dynamic_environment_map_rt->get_attach_texture_3ds().size() > 0) {
+			if (dynamic_environment_map_rt && dynamic_environment_map_rt->get_attach_texture_3ds().size() > 0) {
 				if (dynamic_environment_map_rt->get_attach_texture_3ds()[0].texture) {
-					dynamic_environment_map_rt->get_attach_texture_3ds()[0].texture->bind(9);
+					dynamic_environment_map_rt->get_attach_texture_3ds()[0].texture->bind(10);
 				}
 			}	// 使用动态环境贴图
-			*/
+			
 
 			// set uniform for pbr
 			draw_lights(stack_shaders->top());			// set light uniform for shader
