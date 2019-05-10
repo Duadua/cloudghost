@@ -88,7 +88,7 @@ bool RenderTarget::init_normal_multisample(uint w, uint h) {
 	return init();
 }
 bool RenderTarget::init_normal_f(uint w, uint h) {
-	add_attach_texture(GL_COLOR_ATTACHMENT0, w, h, GL_TEXTURE_2D, GL_RGBA16F);
+	add_attach_texture(GL_COLOR_ATTACHMENT0, w, h, GL_TEXTURE_2D, GL_RGBA16F, GL_RGBA, GL_FLOAT);
 	add_attach_renderbuffer(w, h);
 
 	return init();

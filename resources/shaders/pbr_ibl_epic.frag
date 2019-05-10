@@ -5,6 +5,8 @@
 
 const float pi = acos(-1.0);
 
+const float max_reflection_lod = 4.0;		// 反射贴图的最大lod -- ibl用
+
 // ================================================================================
 // in & out
 
@@ -89,7 +91,8 @@ uniform bool		u_normal_map_b_use;     // 是否使用法线贴图
 uniform bool		u_b_sphere_tex_coord;	// 是否使用球形的纹理坐标 -- 重新计算
 
 uniform samplerCube u_ibl_diffuse_map; 		// 9
-uniform samplerCube u_ibl_prefilter_map; 	// 10 -- 就是立方体贴图 
+uniform samplerCube u_ibl_ld_map; 			// 10 - LD 项
+uniform sampler2D	u_ibl_dgf_map; 			// 11 - DGF 项
 
 // uniform for cac
 uniform vec3 		u_view_pos;
@@ -126,17 +129,10 @@ vec3 pbr_ibl_diffuse(	vec3 n, vec3 v,
 						vec3 f0, float roughness, float metallic,
 						vec3 irradiance);
 
-// ibl_specular helper
-float hammersley_radical_inverse(uint bits);
-vec2  hammersley(uint i, uint sampler_num);								// hammersley 采样 -- 当前采样id 总采样数
-vec3  importance_sampling_ggx(vec2 uv, float roughness, vec3 n); 		// 重要性采样 -- 均匀2D坐标 粗糙度 法线 -- 获得中间向量 h
-float pbr_ibl_lod_get(float pdf, float w, float h, float sampler_num);	// 获得 lod -- pdf 宽 高 总采样数
-
 // ibl_specular 
-vec3 pbr_ibl_specular(	vec3 n, vec3 v,
-						vec3 albedo,
-						vec3 f0, float roughness, float metallic,
-						uint sampler_num);
+vec3 pbr_ibl_specular_epic(	vec3 n, vec3 v,
+							vec3 albedo,
+							vec3 f0, float roughness, float metallic);
 
 // ================================================================================
 // light cac
@@ -389,43 +385,22 @@ float pbr_ibl_lod_get(float pdf, float w, float h, float sampler_num) {
 	return max(a - b, 0.0);
 }
 
-vec3 pbr_ibl_specular(vec3 n, vec3 v, vec3 albedo, vec3 f0, float roughness, float metallic, uint sampler_num) {
+vec3 pbr_ibl_specular_epic(vec3 n, vec3 v, vec3 albedo, vec3 f0, float roughness, float metallic) {
 	vec3 res = vec3(0.0, 0.0, 0.0);
 
-	for(uint i = 0u; i < sampler_num; ++i) {
-		vec2 uv = hammersley(i, sampler_num);							// hammersley 采样
-		vec3 h = importance_sampling_ggx(uv, roughness, n); 			// 重要性采样
-		vec3 l = normalize(2.0 * dot(v, h) * h - v);					// 从 v 和 h 逆算 l -- 光源方向
+	float n_o_v = max(dot(n, v), 0.0);
 
-		float n_o_v = max(dot(n, v), 0.0);
-		float n_o_l = max(dot(n, l), 0.0);
-		float n_o_h = max(dot(n, h), 0.0);
-		float h_o_v = max(dot(h, v), 0.0);
+	vec3 f90 = 	brdf_f_f0(f0, albedo, metallic);							// 获取真正的 f0 -- 有金属性影响
+	vec3 f = 	brdf_f_fresnel_schlick_roughness(n_o_v, f90, roughness);	// 菲涅尔方程
 
-		if(n_o_l > 0.0) {
-			float k = brdf_g_k_ibl(roughness);							// 根据直接光源/IBL 选择相应方程
-			vec3 f90 = brdf_f_f0(f0, albedo, metallic);					// 获取真正的 f0 -- 有金属性影响
+	vec3 R = reflect(-v, n);
+	vec3 ld = textureLod(u_ibl_ld_map, R, roughness * max_reflection_lod).rgb;
+	vec2 dgf = texture(u_ibl_dgf_map, vec2(n_o_v, roughness)).rg;
 
-			float d = brdf_d_tr_ggx(n_o_h, roughness);					// 法线分布函数
-			float g = brdf_g_smith(n_o_v, n_o_l, k);					// 几何函数
-			vec3  f = brdf_f_fresnel_schlick(h_o_v, f90);				// 菲涅尔方程
-
-			float pdf = d * n_o_h / (4.0 * h_o_v);						// 计算  pdf
-			float lod = pbr_ibl_lod_get(pdf, 1024, 1024, sampler_num);	// 获得 lod
-
-			vec3 Li = textureLod(u_ibl_prefilter_map, l, lod).xyz;
-			//vec3 Li = texture(u_ibl_prefilter_map, l).xyz;
-
-			res += Li * f * g * h_o_v / (n_o_h * n_o_v);
-		}
-
-	}
-	res /= sampler_num;
+	res = ld *(f * dgf.x + dgf.y);
 
 	return res;
-
 }
-
 
 // ================================================================================
 // light cac

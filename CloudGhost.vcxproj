@@ -305,7 +305,11 @@
     <None Include="resources\shaders\normal_visual.geom" />
     <None Include="resources\shaders\pbr.frag" />
     <None Include="resources\shaders\pbr_ibl.frag" />
-    <None Include="resources\shaders\pbr_irradiance_d_bake.frag" />
+    <None Include="resources\shaders\pbr_ibl_dgf_bake.frag" />
+    <None Include="resources\shaders\single_3d.vert" />
+    <None Include="resources\shaders\pbr_ibl_epic.frag" />
+    <None Include="resources\shaders\pbr_ibl_ld_bake.frag" />
+    <None Include="resources\shaders\pbr_ibl_diffuse_bake.frag" />
     <None Include="resources\shaders\pick.frag" />
     <None Include="resources\shaders\post_process.frag" />
     <None Include="resources\shaders\scene_2d.vert" />

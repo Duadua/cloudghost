@@ -657,8 +657,20 @@
     <None Include="resources\shaders\equirectangular_to_cubemap.frag">
       <Filter>resources\shaders\frags</Filter>
     </None>
-    <None Include="resources\shaders\pbr_irradiance_d_bake.frag">
+    <None Include="resources\shaders\pbr_ibl_epic.frag">
       <Filter>resources\shaders\frags</Filter>
+    </None>
+    <None Include="resources\shaders\pbr_ibl_ld_bake.frag">
+      <Filter>resources\shaders\frags</Filter>
+    </None>
+    <None Include="resources\shaders\pbr_ibl_dgf_bake.frag">
+      <Filter>resources\shaders\frags</Filter>
+    </None>
+    <None Include="resources\shaders\pbr_ibl_diffuse_bake.frag">
+      <Filter>resources\shaders\frags</Filter>
+    </None>
+    <None Include="resources\shaders\single_3d.vert">
+      <Filter>resources\shaders\verts</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>
