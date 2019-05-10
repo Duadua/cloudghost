@@ -7,14 +7,15 @@
 
 IMPLEMENT_CLASS(RenderBuffer)
 
-RenderBuffer::RenderBuffer() :attach_type(GL_DEPTH_STENCIL_ATTACHMENT), b_multisample(false) { }
+RenderBuffer::RenderBuffer() :attach_type(GL_DEPTH_STENCIL_ATTACHMENT), b_multisample(false), msaa_num(4) { }
 
-void RenderBuffer::init(uint w, uint h, uint at_type, uint fmt, bool b_m, uint msaa_num) {
+void RenderBuffer::init(uint w, uint h, uint at_type, uint fmt, bool b_m, uint msaa_number) {
 	attach_type = at_type;
 	format = fmt;
 	width = w;
 	heigh = h;
 	b_multisample = b_m;
+	msaa_num = msaa_number;
 
 	glGenRenderbuffers(1, &id);
 
@@ -26,6 +27,24 @@ void RenderBuffer::init(uint w, uint h, uint at_type, uint fmt, bool b_m, uint m
 		}
 		else {
 			glRenderbufferStorageMultisample(GL_RENDERBUFFER, msaa_num, format, 
+				static_cast<GLsizei>(width), static_cast<GLsizei>(heigh));
+		}
+
+	} glBindRenderbuffer(GL_RENDERBUFFER, 0);
+}
+void RenderBuffer::resize(uint w, uint h) {
+	if (!id) return;
+	width = w;
+	heigh = h;
+
+	glBindRenderbuffer(GL_RENDERBUFFER, id); {
+
+		if (!b_multisample) {
+			glRenderbufferStorage(GL_RENDERBUFFER, format,
+				static_cast<GLsizei>(width), static_cast<GLsizei>(heigh));
+		}
+		else {
+			glRenderbufferStorageMultisample(GL_RENDERBUFFER, msaa_num, format,
 				static_cast<GLsizei>(width), static_cast<GLsizei>(heigh));
 		}
 
@@ -157,16 +176,16 @@ SPTR_RenderTarget RenderTarget::un_use_w() {
 	return shared_from_this();
 }
 
-SPTR_RenderTarget RenderTarget::use_texture_3d(uint tid, uint texture_id) {
+SPTR_RenderTarget RenderTarget::use_texture_3d(uint tid, uint texture_id, uint level) {
 	if (attach_texture_3ds.size() > tid) {
 		auto t_2d = attach_texture_3ds[tid].texture->get_datas()[texture_id];
-		glFramebufferTexture2D(GL_FRAMEBUFFER, attach_texture_3ds[tid].attach_type, t_2d.type, attach_texture_3ds[tid].texture->get_id(), 0);
+		glFramebufferTexture2D(GL_FRAMEBUFFER, attach_texture_3ds[tid].attach_type, t_2d.type, attach_texture_3ds[tid].texture->get_id(), level);
 	}
 	return shared_from_this();
 }
-SPTR_RenderTarget RenderTarget::use_texture_3d_all(uint tid) {
+SPTR_RenderTarget RenderTarget::use_texture_3d_all(uint tid, uint level) {
 	if (attach_texture_3ds.size() > tid) {
-		glFramebufferTexture(target, attach_texture_3ds[tid].attach_type, attach_texture_3ds[tid].texture->get_id(), 0);
+		glFramebufferTexture(target, attach_texture_3ds[tid].attach_type, attach_texture_3ds[tid].texture->get_id(), level);
 	}
 	return shared_from_this();
 }

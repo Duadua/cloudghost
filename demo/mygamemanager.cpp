@@ -148,7 +148,7 @@ void MyGameManager::begin_play() {
 		pbr_sphere->set_material(AssetManager_ins().get_material("pbr_default"));
 		//pbr_sphere->set_material(AssetManager_ins().get_material("pbr_red"));
 		//pbr_sphere->set_material(AssetManager_ins().get_material("pbr_rusted_iron"));
-		pbr_sphere->set_material(AssetManager_ins().get_material("pbr_titanium_scuffed"));
+		//pbr_sphere->set_material(AssetManager_ins().get_material("pbr_titanium_scuffed"));
 		//pbr_sphere->set_material(AssetManager_ins().get_material("pbr_marble_speckled"));
 	}
 

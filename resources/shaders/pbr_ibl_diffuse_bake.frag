@@ -30,11 +30,9 @@ vec3 spherical_to_cartesian(float phi, float theta);	// 极坐标 -> 轴坐标
 
 void pre_main();
 
-
 // ================================================================================
 // 积分
 vec3 ibl_diffuse_integral(float delta);				// 按极坐标步进(pitch 和 yaw 都有)
-
 
 // ================================================================================
 
@@ -46,7 +44,6 @@ void main() {
 	vec3 t_color = ibl_diffuse_integral(0.05);
 
 	r_color = vec4(t_color, 1.0);
-
 
 }
 

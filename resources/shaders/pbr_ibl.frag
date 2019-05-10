@@ -382,11 +382,12 @@ vec3 importance_sampling_ggx(vec2 uv, float roughness, vec3 n) {
 
 }
 float pbr_ibl_lod_get(float pdf, float w, float h, float sampler_num) {
-	float a = 0.5 * log2(w * h / sampler_num);
-	float b = 0.5 * log2(pdf);
+	float a = 4.0 * pi / (6.0 * w * h);
+	float b = 1.0 / (pdf * sampler_num);
 
-	if(pdf < 0.0001) b = a;
-	return max(a - b, 0.0);
+	if(pdf < 0.0001) return 0.0;
+
+	return max(0.5 * log2(b / a), 0.0);
 }
 
 vec3 pbr_ibl_specular(vec3 n, vec3 v, vec3 albedo, vec3 f0, float roughness, float metallic, uint sampler_num) {

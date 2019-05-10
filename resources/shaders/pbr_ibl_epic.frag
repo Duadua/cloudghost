@@ -5,8 +5,6 @@
 
 const float pi = acos(-1.0);
 
-const float max_reflection_lod = 4.0;		// 反射贴图的最大lod -- ibl用
-
 // ================================================================================
 // in & out
 
@@ -96,6 +94,8 @@ uniform sampler2D	u_ibl_dgf_map; 			// 11 - DGF 项
 
 // uniform for cac
 uniform vec3 		u_view_pos;
+
+uniform int 		u_max_reflection_lod;	// ld项 cubemap 的最大  lod 数
 
 // ================================================================================
 // pbr 
@@ -340,61 +340,22 @@ vec3 pbr_ibl_diffuse(vec3 n, vec3 v, vec3 albedo, vec3 f0, float roughness, floa
 	vec3  k_d = (vec3(1.0) - k_s) * (1.0 - metallic);	// 漫反射系数 -- 考虑金属度
 	//vec3  k_d = (vec3(1.0) - k_s);					// 漫反射系数 -- 考虑金属度
 
-	return k_d * irradiance * albedo * t_ao;
+	return k_d * irradiance * albedo;
 
-}
-
-// ibl_specular helper
-float hammersley_radical_inverse(uint bits) {
-	bits = ( bits << 16u ) | ( bits >> 16u );
-    bits = ( ( bits & 0x55555555u ) << 1u ) | ( ( bits & 0xAAAAAAAAu ) >> 1u );
-    bits = ( ( bits & 0x33333333u ) << 2u ) | ( ( bits & 0xCCCCCCCCu ) >> 2u );
-    bits = ( ( bits & 0x0F0F0F0Fu ) << 4u ) | ( ( bits & 0xF0F0F0F0u ) >> 4u );
-    bits = ( ( bits & 0x00FF00FFu ) << 8u ) | ( ( bits & 0xFF00FF00u ) >> 8u );
-    return float( bits ) * 2.3283064365386963e-10f;
-}
-vec2 hammersley(uint i, uint sampler_num) {
-	return vec2(float(i) / float(sampler_num), hammersley_radical_inverse(i));
-}
-vec3 importance_sampling_ggx(vec2 uv, float roughness, vec3 n) {
-	float a = roughness * roughness;
-
-	float phi = 2.0 * pi * uv.x;
-	float cos_theta = sqrt((1.0 - uv.y) / (1.0 + (a * a - 1.0) * uv.y));
-	float sin_theta = sqrt(1.0 - cos_theta * cos_theta);
-
-	vec3 h = vec3(
-		sin_theta * cos(phi),
-		sin_theta * sin(phi),
-		cos_theta
-	);	// 此时为切换空间的 h
-
-	// 获得 tbn 空间的 h
-	vec3 up = abs(n.z) < 0.999 ? vec3(0.0, 0.0, 1.0) : vec3(1.0, 0.0, 0.0);
-	vec3 right = normalize(cross(up, n));
-	up = normalize(cross(n, right));
-
-	return normalize(right * h.x + up * h.y + n * h.z);
-
-}
-float pbr_ibl_lod_get(float pdf, float w, float h, float sampler_num) {
-	float a = 0.5 * log2(w * h / sampler_num);
-	float b = 0.5 * log2(pdf);
-
-	if(pdf < 0.0001) b = a;
-	return max(a - b, 0.0);
 }
 
 vec3 pbr_ibl_specular_epic(vec3 n, vec3 v, vec3 albedo, vec3 f0, float roughness, float metallic) {
 	vec3 res = vec3(0.0, 0.0, 0.0);
 
 	float n_o_v = max(dot(n, v), 0.0);
+	n_o_v = min(n_o_v, 0.999);												// bug 修正 -- 圆心白点
 
 	vec3 f90 = 	brdf_f_f0(f0, albedo, metallic);							// 获取真正的 f0 -- 有金属性影响
 	vec3 f = 	brdf_f_fresnel_schlick_roughness(n_o_v, f90, roughness);	// 菲涅尔方程
 
 	vec3 R = reflect(-v, n);
-	vec3 ld = textureLod(u_ibl_ld_map, R, roughness * max_reflection_lod).rgb;
+	vec3 ld = textureLod(u_ibl_ld_map, R, roughness * u_max_reflection_lod).rgb;
+	//vec3 ld = texture(u_ibl_ld_map, R, 0).rgb;
 	vec2 dgf = texture(u_ibl_dgf_map, vec2(n_o_v, roughness)).rg;
 
 	res = ld *(f * dgf.x + dgf.y);
@@ -431,13 +392,12 @@ vec3 light_ambient(vec3 coe) {
 						t_f0, t_roughnes, t_metallic,
 						t_irradiance_diffuse);
 
-	vec3 specular = pbr_ibl_specular(
+	vec3 specular = pbr_ibl_specular_epic(
 						t_normal, t_view_dir,
 						t_c_specular,
-						t_f0, t_roughnes, t_metallic,
-						256u);
+						t_f0, t_roughnes, t_metallic);
 
-	return (diffuse + specular) * coe; 
+	return (diffuse + specular) * coe * t_ao; 
 }
 
 // ================================================================================

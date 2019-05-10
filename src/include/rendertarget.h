@@ -35,7 +35,8 @@ public:
 	RenderBuffer();
 	~RenderBuffer() {}
 	
-	void init(uint w, uint h, uint at_type = GL_DEPTH_STENCIL_ATTACHMENT, uint fmt = GL_DEPTH24_STENCIL8, bool b_m = false, uint msaa_num = 4);
+	void init(uint w, uint h, uint at_type = GL_DEPTH_STENCIL_ATTACHMENT, uint fmt = GL_DEPTH24_STENCIL8, bool b_m = false, uint msaa_number = 4);
+	void resize(uint w, uint h);
 
 	SPTR_RenderBuffer use();
 	SPTR_RenderBuffer un_use();
@@ -50,6 +51,7 @@ private:
 	uint format;
 	uint width;
 	uint heigh;
+	uint msaa_num;
 
 	bool b_multisample;				// 是否为多重采样缓冲附件
 
@@ -85,8 +87,8 @@ public:
 	SPTR_RenderTarget use_w(uint cid = 0);
 	SPTR_RenderTarget un_use_w();
 
-	SPTR_RenderTarget use_texture_3d(uint tid, uint texture_id);
-	SPTR_RenderTarget use_texture_3d_all(uint tid);
+	SPTR_RenderTarget use_texture_3d(uint tid, uint texture_id, uint level = 0);
+	SPTR_RenderTarget use_texture_3d_all(uint tid, uint level = 0);
 
 	// rt 的块传送 -- 可以把 msaa 转为正常纹理
 	friend void blit(SPTR_RenderTarget a, SPTR_RenderTarget b, uint w, uint h, uint a_cid = 0, uint b_cid = 0);

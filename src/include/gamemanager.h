@@ -261,7 +261,8 @@ private:
 
 	// pbr used
 	SPTR_RenderTarget pbr_ibl_diffuse_bake_rt;				// ibl diffuse 反射贴图 -- cubemap -> cubemap
-	SPTR_RenderTarget pbr_ibl_dgf_bake_rt;					// ibl_specular lut 图
+	SPTR_RenderTarget pbr_ibl_dgf_bake_rt;					// ibl_specular lut 图 -- DGF项
+	SPTR_RenderTarget pbr_ibl_ld_bake_rt;					// ibl_specular ld 图 -- LD项
 
 	void pre_bake();										// 预烘焙
 	bool b_pre_bake;										// 是否需要烘焙
@@ -286,6 +287,7 @@ private:
 	void hdr_to_cubemap_pass();								// hdr 贴图 -> cubemap
 	void pbr_ibl_diffuse_bake_pass();						// 从 skybox 得 积分图 (反射贴图)
 	void pbr_ibl_dgf_bake_pass();							// 得 DGF积分图(LUT图) -- 2D 贴图
+	void pbr_ibl_ld_bake_pass();							// 得 LD积分图 -- cubemap 贴图
 
 	void init_rt_static();									// 静态 rt
 	void init_rt();

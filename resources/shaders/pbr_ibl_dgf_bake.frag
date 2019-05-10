@@ -38,7 +38,7 @@ void main() {
 
 	vec2 t_color = vec2(0.0, 0.0);
 	
-	t_color = ibl_dgf_integral(i_fs.tex_coord.x, i_fs.tex_coord.y);
+	t_color = ibl_dgf_integral(i_fs.tex_coord.x-0.001, i_fs.tex_coord.y);
 	r_color = vec4(t_color, 0.0, 1.0);
 
 }
