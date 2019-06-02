@@ -66,6 +66,8 @@ void GameManager::_init() {
 		b_depth = false;
 		b_shadow = true;
 		b_normal_map = true;
+
+		b_pbr_epic = false;				
 	}
 }
 
@@ -607,40 +609,61 @@ void GameManager::base_pass() {
 			draw_all_objs(stack_shaders->top());
 		} if (b_explode) { stack_shaders->pop(); }
 
-		//stack_shaders->push(AssetManager_ins().get_shader("pbr_ibl_epic")); {
-		stack_shaders->push(AssetManager_ins().get_shader("pbr_ibl")); {
-		//stack_shaders->push(AssetManager_ins().get_shader("pbr")); {
-			stack_shaders->top()->use();
+		// draw pbr
+		if (b_pbr_epic) { 
+			stack_shaders->push(AssetManager_ins().get_shader("pbr_ibl_epic")); {
+				stack_shaders->top()->use();
 			
-			stack_shaders->top()->set_vec3("u_view_pos", main_camera->get_root_component()->get_location());
-			stack_shaders->top()->set_int("u_ibl_diffuse_map", 9);
-			stack_shaders->top()->set_int("u_ibl_prefilter_map", 10);
-			//stack_shaders->top()->set_int("u_ibl_ld_map", 10);
-			//stack_shaders->top()->set_int("u_ibl_dgf_map", 11);
-			//stack_shaders->top()->set_int("u_max_reflection_lod", log(512)/log(2) + 1);
+				stack_shaders->top()->set_vec3("u_view_pos", main_camera->get_root_component()->get_location());
+				stack_shaders->top()->set_int("u_ibl_diffuse_map", 9);
+				stack_shaders->top()->set_int("u_ibl_ld_map", 10);
+				stack_shaders->top()->set_int("u_ibl_dgf_map", 11);
+				stack_shaders->top()->set_int("u_max_reflection_lod", log(512)/log(2) + 1);
 
-			// 使用预烘焙的积分 ibl_diffuse 贴图
-			if (pbr_ibl_diffuse_bake_rt && pbr_ibl_diffuse_bake_rt->get_attach_texture_3ds().size() > 0) {
-				auto t_tex = pbr_ibl_diffuse_bake_rt->get_attach_texture_3ds()[0].texture;
-				if (t_tex) t_tex->bind(9);
-			}
-			//if (sky_box) sky_box->get_texture()->bind(10);
-
-			//if (sky_box) sky_box->get_texture()->bind(9);
-			if (dynamic_environment_map_rt && dynamic_environment_map_rt->get_attach_texture_3ds().size() > 0) {
-				if (dynamic_environment_map_rt->get_attach_texture_3ds()[0].texture) {
-					dynamic_environment_map_rt->get_attach_texture_3ds()[0].texture->bind(10);
+				// 使用预烘焙的积分 ibl_diffuse 贴图
+				if (pbr_ibl_diffuse_bake_rt && pbr_ibl_diffuse_bake_rt->get_attach_texture_3ds().size() > 0) {
+					auto t_tex = pbr_ibl_diffuse_bake_rt->get_attach_texture_3ds()[0].texture;
+					if (t_tex) t_tex->bind(9);
 				}
-			}	// 使用动态环境贴图
+
+				if (dynamic_environment_map_rt && dynamic_environment_map_rt->get_attach_texture_3ds().size() > 0) {
+					if (dynamic_environment_map_rt->get_attach_texture_3ds()[0].texture) {
+						dynamic_environment_map_rt->get_attach_texture_3ds()[0].texture->bind(10);
+					}
+				}	// 使用动态环境贴图
 			
+				pbr_ibl_ld_bake_rt->get_attach_texture_3ds()[0].texture->bind(10);
+				pbr_ibl_dgf_bake_rt->get_attach_textures()[0].texture->bind(11);
 
-			//pbr_ibl_ld_bake_rt->get_attach_texture_3ds()[0].texture->bind(10);
-			//pbr_ibl_dgf_bake_rt->get_attach_textures()[0].texture->bind(11);
+				// set uniform for pbr
+				draw_lights(stack_shaders->top());			// set light uniform for shader
+				draw_pbr_objs(stack_shaders->top());
+			} stack_shaders->pop();
+		}
+		else { 
+			stack_shaders->push(AssetManager_ins().get_shader("pbr_ibl")); {
+				stack_shaders->top()->use();
 
-			// set uniform for pbr
-			draw_lights(stack_shaders->top());			// set light uniform for shader
-			draw_pbr_objs(stack_shaders->top());
-		} stack_shaders->pop();
+				stack_shaders->top()->set_vec3("u_view_pos", main_camera->get_root_component()->get_location());
+				stack_shaders->top()->set_int("u_ibl_diffuse_map", 9);
+				stack_shaders->top()->set_int("u_ibl_prefilter_map", 10);
+
+				// 使用预烘焙的积分 ibl_diffuse 贴图
+				if (pbr_ibl_diffuse_bake_rt && pbr_ibl_diffuse_bake_rt->get_attach_texture_3ds().size() > 0) {
+					auto t_tex = pbr_ibl_diffuse_bake_rt->get_attach_texture_3ds()[0].texture;
+					if (t_tex) t_tex->bind(9);
+				}
+
+				if (dynamic_environment_map_rt && dynamic_environment_map_rt->get_attach_texture_3ds().size() > 0) {
+					if (dynamic_environment_map_rt->get_attach_texture_3ds()[0].texture) {
+						dynamic_environment_map_rt->get_attach_texture_3ds()[0].texture->bind(10);
+					}
+				}	// 使用动态环境贴图
+
+				draw_lights(stack_shaders->top());			// set light uniform for shader
+				draw_pbr_objs(stack_shaders->top());
+			} stack_shaders->pop();
+		}
 
 		// draw border
 		/*stack_shaders->push(AssetManager_ins().get_shader("solid_color")); {
@@ -1045,6 +1068,41 @@ void GameManager::vr_base_pass() {
 			draw_lights(stack_shaders->top());			// set light uniform for shader
 			draw_all_objs(stack_shaders->top());
 
+			stack_shaders->push(AssetManager_ins().get_shader("pbr_ibl_epic")); {
+			//stack_shaders->push(AssetManager_ins().get_shader("pbr_ibl")); {
+				//stack_shaders->push(AssetManager_ins().get_shader("pbr")); {
+				stack_shaders->top()->use();
+
+				stack_shaders->top()->set_vec3("u_view_pos", main_camera->get_root_component()->get_location());
+				stack_shaders->top()->set_int("u_ibl_diffuse_map", 9);
+				//stack_shaders->top()->set_int("u_ibl_prefilter_map", 10);
+				stack_shaders->top()->set_int("u_ibl_ld_map", 10);
+				stack_shaders->top()->set_int("u_ibl_dgf_map", 11);
+				stack_shaders->top()->set_int("u_max_reflection_lod", log(512)/log(2) + 1);
+
+				// 使用预烘焙的积分 ibl_diffuse 贴图
+				if (pbr_ibl_diffuse_bake_rt && pbr_ibl_diffuse_bake_rt->get_attach_texture_3ds().size() > 0) {
+					auto t_tex = pbr_ibl_diffuse_bake_rt->get_attach_texture_3ds()[0].texture;
+					if (t_tex) t_tex->bind(9);
+				}
+				//if (sky_box) sky_box->get_texture()->bind(10);
+
+				//if (sky_box) sky_box->get_texture()->bind(9);
+				if (dynamic_environment_map_rt && dynamic_environment_map_rt->get_attach_texture_3ds().size() > 0) {
+					if (dynamic_environment_map_rt->get_attach_texture_3ds()[0].texture) {
+						dynamic_environment_map_rt->get_attach_texture_3ds()[0].texture->bind(10);
+					}
+				}	// 使用动态环境贴图
+
+
+					pbr_ibl_ld_bake_rt->get_attach_texture_3ds()[0].texture->bind(10);
+					pbr_ibl_dgf_bake_rt->get_attach_textures()[0].texture->bind(11);
+
+					// set uniform for pbr
+				draw_lights(stack_shaders->top());			// set light uniform for shader
+				draw_pbr_objs(stack_shaders->top());
+			} stack_shaders->pop();
+
 			// normal visual
 			if (b_normal_visual) { normal_visual_pass(); }
 
@@ -1092,6 +1150,40 @@ void GameManager::vr_base_pass() {
 			}
 			draw_lights(stack_shaders->top());			// set light uniform for shader
 			draw_all_objs(stack_shaders->top());
+
+			stack_shaders->push(AssetManager_ins().get_shader("pbr_ibl_epic")); {
+			//stack_shaders->push(AssetManager_ins().get_shader("pbr_ibl")); {
+				//stack_shaders->push(AssetManager_ins().get_shader("pbr")); {
+				stack_shaders->top()->use();
+
+				stack_shaders->top()->set_vec3("u_view_pos", main_camera->get_root_component()->get_location());
+				stack_shaders->top()->set_int("u_ibl_diffuse_map", 9);
+				//stack_shaders->top()->set_int("u_ibl_prefilter_map", 10);
+				stack_shaders->top()->set_int("u_ibl_ld_map", 10);
+				stack_shaders->top()->set_int("u_ibl_dgf_map", 11);
+				stack_shaders->top()->set_int("u_max_reflection_lod", log(512)/log(2) + 1);
+
+				// 使用预烘焙的积分 ibl_diffuse 贴图
+				if (pbr_ibl_diffuse_bake_rt && pbr_ibl_diffuse_bake_rt->get_attach_texture_3ds().size() > 0) {
+					auto t_tex = pbr_ibl_diffuse_bake_rt->get_attach_texture_3ds()[0].texture;
+					if (t_tex) t_tex->bind(9);
+				}
+				//if (sky_box) sky_box->get_texture()->bind(10);
+
+				//if (sky_box) sky_box->get_texture()->bind(9);
+				if (dynamic_environment_map_rt && dynamic_environment_map_rt->get_attach_texture_3ds().size() > 0) {
+					if (dynamic_environment_map_rt->get_attach_texture_3ds()[0].texture) {
+						dynamic_environment_map_rt->get_attach_texture_3ds()[0].texture->bind(10);
+					}
+				}	// 使用动态环境贴图
+
+					pbr_ibl_ld_bake_rt->get_attach_texture_3ds()[0].texture->bind(10);
+					pbr_ibl_dgf_bake_rt->get_attach_textures()[0].texture->bind(11);
+
+					// set uniform for pbr
+				draw_lights(stack_shaders->top());			// set light uniform for shader
+				draw_pbr_objs(stack_shaders->top());
+			} stack_shaders->pop();
 
 			// normal visual
 			if (b_normal_visual) { normal_visual_pass(); }

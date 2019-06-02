@@ -203,6 +203,11 @@ void CMainWindow::init_ui() {
 			
 		}
 
+		// pbr
+		{
+			connect(ui.action_rt_pbr, SIGNAL(triggered()), this, SLOT(trigger_rt_pbr()));
+		}
+
 		
 	}
 
@@ -455,6 +460,9 @@ void CMainWindow::trigger_select_hdr(QAction* act) {
 void CMainWindow::trigger_hdr_exposure_init() { ui_hdr_exposure->set_value(GameManager_ins().get_hdr_exposure()); }
 void CMainWindow::trigger_hdr_exposure_value(float v) { GameManager_ins().set_hdr_exposure(v); }
 
+void CMainWindow::trigger_rt_pbr() {
+	GameManager_ins().set_b_pbr_epic(!GameManager_ins().get_b_pbr_epic());
+}
 
 
 

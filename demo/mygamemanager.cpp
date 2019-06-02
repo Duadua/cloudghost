@@ -196,7 +196,7 @@ void MyGameManager::begin_play() {
 	// init pbr test sphere groups
 	{
 		auto pbr_test = CREATE_CLASS(PBRTest);
-		pbr_test->init(5, 5, 0.3, 0.5);
+		pbr_test->init(5, 5, 0.3f, 0.5f);
 		pbr_test->get_root_component()->set_location(-6.0f, 0.0f, 6.0f);
 		add_game_object_pbr("pbr_groups", pbr_test);
 	}

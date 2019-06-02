@@ -144,6 +144,7 @@ public:									// used for qt ui
 	GET_SET(bool, b_depth)
 	GET_SET(bool, b_shadow)
 	GET_SET(bool, b_normal_map)
+	GET_SET(bool, b_pbr_epic)
 
 protected:
 	static GameManager* instance;
@@ -199,6 +200,7 @@ protected:
 
 	bool b_normal_map;				// 是否使用法线贴图
 
+	bool b_pbr_epic;				// 是否使用epic的pbr
 
 	// gl state
 	void set_depth_test(bool enable = true, uint depth_func = GL_LESS, uint depth_mask = GL_TRUE);

@@ -85,4 +85,6 @@ public slots:
 	void trigger_select_hdr(QAction* act);
 	void trigger_hdr_exposure_init();
 	void trigger_hdr_exposure_value(float v);
+
+	void trigger_rt_pbr();
 };

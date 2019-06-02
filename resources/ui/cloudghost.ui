@@ -162,6 +162,8 @@ QMenu::item:pressed {
     <addaction name="menu_gamma_value"/>
     <addaction name="separator"/>
     <addaction name="menu_hdr"/>
+    <addaction name="separator"/>
+    <addaction name="action_rt_pbr"/>
    </widget>
    <widget class="QMenu" name="menu_shadertoy">
     <property name="title">
@@ -565,6 +567,20 @@ QMenu::item:pressed {
    </property>
    <property name="shortcut">
     <string>Alt+N</string>
+   </property>
+  </action>
+  <action name="action_rt_pbr">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>RealTimePBR</string>
+   </property>
+   <property name="shortcut">
+    <string>Alt+P</string>
    </property>
   </action>
  </widget>
