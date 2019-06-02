@@ -21,6 +21,7 @@
 #include "mansion.h"
 #include "flowsphere.h"
 #include "rotatecylinder.h"
+#include "pbrtest.h"
 
 void MyGameManager::load_asset() {
 	// shader
@@ -148,8 +149,36 @@ void MyGameManager::begin_play() {
 		pbr_sphere->set_material(AssetManager_ins().get_material("pbr_default"));
 		//pbr_sphere->set_material(AssetManager_ins().get_material("pbr_red"));
 		//pbr_sphere->set_material(AssetManager_ins().get_material("pbr_rusted_iron"));
-		pbr_sphere->set_material(AssetManager_ins().get_material("pbr_titanium_scuffed"));
+		//pbr_sphere->set_material(AssetManager_ins().get_material("pbr_titanium_scuffed"));
 		//pbr_sphere->set_material(AssetManager_ins().get_material("pbr_marble_speckled"));
+	}
+	{
+		auto pbr_sphere = CREATE_CLASS(SphereObject);
+		pbr_sphere->get_root_component()->set_location(8.0f, 1.0f, -4.0f);
+		//add_game_object("pbr_sphere", pbr_sphere);
+		add_game_object_pbr("pbr_sphere_1", pbr_sphere);
+		pbr_sphere->set_material(AssetManager_ins().get_material("pbr_red"));
+	}
+	{
+		auto pbr_sphere = CREATE_CLASS(SphereObject);
+		pbr_sphere->get_root_component()->set_location(8.0f, 1.0f, -1.0f);
+		//add_game_object("pbr_sphere", pbr_sphere);
+		add_game_object_pbr("pbr_sphere_2", pbr_sphere);
+		pbr_sphere->set_material(AssetManager_ins().get_material("pbr_rusted_iron"));
+	}
+	{
+		auto pbr_sphere = CREATE_CLASS(SphereObject);
+		pbr_sphere->get_root_component()->set_location(8.0f, 1.0f, 2.0f);
+		//add_game_object("pbr_sphere", pbr_sphere);
+		add_game_object_pbr("pbr_sphere_3", pbr_sphere);
+		pbr_sphere->set_material(AssetManager_ins().get_material("pbr_titanium_scuffed"));
+	}
+	{
+		auto pbr_sphere = CREATE_CLASS(SphereObject);
+		pbr_sphere->get_root_component()->set_location(8.0f, 1.0f, 5.0f);
+		//add_game_object("pbr_sphere", pbr_sphere);
+		add_game_object_pbr("pbr_sphere_4", pbr_sphere);
+		pbr_sphere->set_material(AssetManager_ins().get_material("pbr_marble_speckled"));
 	}
 
 	// use direct light
@@ -162,6 +191,14 @@ void MyGameManager::begin_play() {
 		//d_light->get_light_component()->set_k(CVector3D(0.2f, 0.7f, 0.1f));
 		add_direct_light("d_light", d_light);
 		
+	}
+
+	// init pbr test sphere groups
+	{
+		auto pbr_test = CREATE_CLASS(PBRTest);
+		pbr_test->init(5, 5, 0.3, 0.5);
+		pbr_test->get_root_component()->set_location(-6.0f, 0.0f, 6.0f);
+		add_game_object_pbr("pbr_groups", pbr_test);
 	}
 
 	// use point light

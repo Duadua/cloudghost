@@ -238,7 +238,6 @@ void pre_main() {
 	if(u_material.has_map_roughness) { t_roughnes = texture(u_material.map_roughness, t_tex_coord).r; }
 	if(u_material.has_map_ao) { t_ao = texture(u_material.map_ao, t_tex_coord).r; }
 
-
 	// pbr 里修正颜色
 	t_c_diffuse = t_albedo;
 	t_c_specular = t_albedo;			 
@@ -355,7 +354,7 @@ float hammersley_radical_inverse(uint bits) {
     bits = ( ( bits & 0x33333333u ) << 2u ) | ( ( bits & 0xCCCCCCCCu ) >> 2u );
     bits = ( ( bits & 0x0F0F0F0Fu ) << 4u ) | ( ( bits & 0xF0F0F0F0u ) >> 4u );
     bits = ( ( bits & 0x00FF00FFu ) << 8u ) | ( ( bits & 0xFF00FF00u ) >> 8u );
-    return float( bits ) * 2.3283064365386963e-10f;
+    return float( bits ) * 2.3283064365386963e-10f;		// 2^(-32)
 }
 vec2 hammersley(uint i, uint sampler_num) {
 	return vec2(float(i) / float(sampler_num), hammersley_radical_inverse(i));

@@ -234,7 +234,6 @@ void pre_main() {
 	if(u_material.has_map_roughness) { t_roughnes = texture(u_material.map_roughness, t_tex_coord).r; }
 	if(u_material.has_map_ao) { t_ao = texture(u_material.map_ao, t_tex_coord).r; }
 
-
 	// pbr 里修正颜色
 	t_c_diffuse = t_albedo;
 	t_c_specular = t_albedo;			 

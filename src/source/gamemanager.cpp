@@ -609,6 +609,7 @@ void GameManager::base_pass() {
 
 		//stack_shaders->push(AssetManager_ins().get_shader("pbr_ibl_epic")); {
 		stack_shaders->push(AssetManager_ins().get_shader("pbr_ibl")); {
+		//stack_shaders->push(AssetManager_ins().get_shader("pbr")); {
 			stack_shaders->top()->use();
 			
 			stack_shaders->top()->set_vec3("u_view_pos", main_camera->get_root_component()->get_location());
@@ -1027,7 +1028,7 @@ void GameManager::vr_base_pass() {
 			// cac left view mat
 			CMatrix4x4 t_mat_view;
 			auto t_eye = main_camera->get_root_component()->get_location() 
-				+ main_camera->get_camera_component()->get_right_axis() * vr_delta*0.01f;
+				- main_camera->get_camera_component()->get_right_axis() * vr_delta*0.01f;
 			auto t_center = main_camera->get_root_component()->get_location()
 				+ main_camera->get_camera_component()->get_front_axis() * vr_delta*0.65f;
 			if (CMath_ins().fcmp(vr_delta, 0.0f) == 0) { t_center = t_eye + main_camera->get_camera_component()->get_front_axis(); }
@@ -1074,7 +1075,7 @@ void GameManager::vr_base_pass() {
 
 			CMatrix4x4 t_mat_view;
 			auto t_eye = main_camera->get_root_component()->get_location()
-				- main_camera->get_camera_component()->get_right_axis() * vr_delta * 0.01f;
+				+ main_camera->get_camera_component()->get_right_axis() * vr_delta * 0.01f;
 			auto t_center = main_camera->get_root_component()->get_location()
 				+ main_camera->get_camera_component()->get_front_axis() * vr_delta*0.65f;
 			if (CMath_ins().fcmp(vr_delta, 0.0f) == 0) { t_center = t_eye + main_camera->get_camera_component()->get_front_axis(); }
@@ -2135,4 +2136,3 @@ void GameManager::set_skybox(SPTR_Texture3D tex) { if (sky_box && tex) { sky_box
 
 void GameManager::set_default_shader(SPTR_Shader shader) { stack_shaders->set_shader_default(shader); }
 SPTR_Shader GameManager::get_default_shader() { return stack_shaders->get_shader_default(); }
-

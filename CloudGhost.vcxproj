@@ -137,6 +137,7 @@
     <ClCompile Include="demo\flowsphere.cpp" />
     <ClCompile Include="demo\mansion.cpp" />
     <ClCompile Include="demo\mygamemanager.cpp" />
+    <ClCompile Include="demo\pbrtest.cpp" />
     <ClCompile Include="demo\plane.cpp" />
     <ClCompile Include="demo\riven.cpp" />
     <ClCompile Include="demo\rotatecylinder.cpp" />
@@ -214,6 +215,7 @@
     <ClInclude Include="demo\flowsphere.h" />
     <ClInclude Include="demo\mansion.h" />
     <ClInclude Include="demo\mygamemanager.h" />
+    <ClInclude Include="demo\pbrtest.h" />
     <ClInclude Include="demo\plane.h" />
     <ClInclude Include="demo\riven.h" />
     <ClInclude Include="demo\rotatecylinder.h" />

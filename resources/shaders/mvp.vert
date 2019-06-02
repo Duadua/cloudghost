@@ -62,7 +62,7 @@ void main() {
 	o_vs.tbn = tbn_cac();
 
 	// out o_np
-	vec3 t_normal_proj = mat3(transpose(inverse(u_view * t_model))) * a_normal;
+	vec3 t_normal_proj = mat3(transpose(inverse(u_view * u_model))) * a_normal;
 	o_np.normal = normalize(vec3(u_projection * vec4(t_normal_proj, 0.0)));		// 几何着色器在 裁剪空间计算
 
     gl_Position = u_projection * u_view * u_model * vec4(a_pos, 1.0f);
@@ -83,7 +83,7 @@ mat3 tbn_cac() {
 
 void pre_main() {
 
-	t_normal_mat = transpose(inverse(mat3(t_model)));			// 法线矩阵 -- 变换法线到 world space 同步修正缩放影响
+	t_normal_mat = transpose(inverse(mat3(u_model)));			// 法线矩阵 -- 变换法线到 world space 同步修正缩放影响
 
 }
 

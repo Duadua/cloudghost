@@ -331,6 +331,9 @@
     <ClCompile Include="src\source\main.cpp">
       <Filter>src\source\core</Filter>
     </ClCompile>
+    <ClCompile Include="demo\pbrtest.cpp">
+      <Filter>demo</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <QtUic Include="resources\ui\cloudghost.ui">
@@ -523,6 +526,9 @@
     </ClInclude>
     <ClInclude Include="src\include\skybox.h">
       <Filter>src\include\preset</Filter>
+    </ClInclude>
+    <ClInclude Include="demo\pbrtest.h">
+      <Filter>demo</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

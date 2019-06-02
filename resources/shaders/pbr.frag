@@ -156,7 +156,7 @@ void main() {
 	
 	t_color += light_direct();
 
-	t_color += light_ambient(vec3(0.1));
+	t_color += light_ambient(vec3(0.03));
 
 	r_color = vec4(t_color, 1.0);
 

@@ -1,25 +1,25 @@
 # =========================
-[18:01:07][dua][c_debuger] start at [2019.05.13]
+[22:34:45][dua][c_debuger] start at [2019.06.02]
 # =========================
-[18:01:07][yep][mesh]load mesh success
+[22:34:45][yep][mesh]load mesh success
 resources/models/static/Elf_Mansion/Elf_Mansion.fbx
 # =========================
-[18:01:11][yep][mesh]load mesh success
+[22:34:49][yep][mesh]load mesh success
 resources/models/static/Street/Street_environment_V01.obj
 # =========================
-[18:01:12][yep][skeletal_mesh]load skeletal_mesh success
+[22:34:49][yep][skeletal_mesh]load skeletal_mesh success
 resources/models/animation/Riven18/riven18.FBX
 # =========================
-[18:01:12][yep][animation]load animation success
+[22:34:49][yep][animation]load animation success
 resources/models/animation/Riven18/riven18_idle1.FBX
 # =========================
-[18:01:12][yep][asset][anim] load animation sequence success call riven18_idle1
+[22:34:49][yep][asset][anim] load animation sequence success call riven18_idle1
 # =========================
-[18:01:12][yep][animation]load animation success
+[22:34:49][yep][animation]load animation success
 resources/models/animation/Riven18/riven18_dance.FBX
 # =========================
-[18:01:12][yep][asset][anim] load animation sequence success call riven18_dance
+[22:34:50][yep][asset][anim] load animation sequence success call riven18_dance
 # =========================
-[18:01:12]begin baking
+[22:34:50]begin baking
 # =========================
-[18:01:12]baking over
+[22:34:50]baking over
