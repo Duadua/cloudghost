@@ -125,7 +125,7 @@ int main(int argc, char *argv[]) {
 	QSplashScreen* splash = new QSplashScreen();
 	splash->setPixmap(QPixmap("resources/textures/cover.png"));
 	splash->setFont(QFont("Consolas", 18, 100));
-	splash->showMessage(QObject::tr("CloudGhost V1.3...\t"),  Qt::AlignBottom | Qt::AlignRight, Qt::white);
+	splash->showMessage(QObject::tr("CloudGhost V2.0...\t"),  Qt::AlignBottom | Qt::AlignRight, Qt::white);
 	splash->show();
   
 //	MyGameManager gm;
