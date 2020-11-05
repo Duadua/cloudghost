@@ -69,6 +69,8 @@ void GameManager::_init() {
 		b_normal_map = true;
 
 		b_pbr_epic = false;				
+
+        b_has_last_camera_data = false;
 	}
 }
 
@@ -123,6 +125,7 @@ void GameManager::init() {
 		// shaft
 		AssetManager_ins().load_shader("shaft", "resources/shaders/shaft.vert", "resources/shaders/shaft.frag");
 		AssetManager_ins().load_shader("radial_blur", "resources/shaders/scene_2d.vert", "resources/shaders/radial_blur.frag");
+		AssetManager_ins().load_shader("motion_blur", "resources/shaders/shaft.vert", "resources/shaders/motion_blur.frag");
 
 		AssetManager_ins().load_shader("pbr", "resources/shaders/mvp_anim.vert", "resources/shaders/pbr.frag");
 		AssetManager_ins().load_shader("pbr_ibl", "resources/shaders/mvp_anim.vert", "resources/shaders/pbr_ibl.frag");
@@ -316,6 +319,9 @@ void GameManager::draw() {
 
 				// pass 3_2
                 shaft_pass();									// scene_texture + depth_texture -> shaft_texture
+
+				// pass 3_3
+                motion_pass();									// scene_texture + depth_texture -> scene_texture with motion blur
 
 				// pass 4
 				border_pass();									// 得到 border_texture -- 然后 输入 scene_texture -- 添加边框 -- 最后得到 scene_texture
@@ -903,6 +909,7 @@ void GameManager::shaft_pass_one(SPTR_LightObject light_obj)
                     stack_shaders->top()->use();
                     shaft_texture->bind(0);
                     //scene_texture->bind(0);
+                    stack_shaders->top()->set_int("u_texture", 0);
                     stack_shaders->top()->set_float("u_strength", t_strength);
                     stack_shaders->top()->set_float("u_sample_num", 50);
 					auto t_origin_vec = t_proj * t_view * t_trans * CVector4D(0.0, 0.0, 0.0, 1.0);
@@ -947,6 +954,68 @@ void GameManager::shaft_pass_one(SPTR_LightObject light_obj)
         }
     }
 
+
+}
+void GameManager::motion_pass()
+{
+    auto t_proj = main_camera->get_camera_component()->get_camera_data()->get_proj_mat();
+    auto t_proj_inv = t_proj.inverse();
+    auto t_view = main_camera->get_camera_component()->get_camera_data()->get_view_mat();
+    auto t_view_inv = t_view.inverse();
+	if(!b_has_last_camera_data) {
+		last_view = t_view;
+		last_proj = t_proj;
+    }
+
+    // motion_blur
+    bool b_x = true;
+    GLuint t_times = 3;
+    auto t_rt = shaft_x_rt;
+    for (GLuint i = 0; i < t_times; ++i) {
+        if (b_x) { t_rt = shaft_x_rt; }
+        else { t_rt = shaft_y_rt; }
+        t_rt->use(); {
+            draw_init();
+            stack_shaders->push(AssetManager_ins().get_shader("motion_blur")); {
+                if (stack_shaders->top()) {
+                    stack_shaders->top()->use();
+                    if(scene_texture) { scene_texture->bind(0); }
+                    if(depth_texture) { depth_texture->bind(1); }
+                    stack_shaders->top()->set_int("u_texture", 0);
+                    stack_shaders->top()->set_int("u_texture_depth", 1);
+                    stack_shaders->top()->set_float("u_sample_num", 50);
+                    stack_shaders->top()->set_mat4("u_inv_proj", t_proj_inv);
+                    stack_shaders->top()->set_mat4("u_inv_view", t_view_inv);
+                    stack_shaders->top()->set_mat4("u_last_proj_view", last_proj * last_view);
+                    stack_shaders->top()->set_float("u_far", main_camera->get_camera_component()->get_camera_data()->get_frustum().far);
+                }
+                draw_scene(stack_shaders->top());
+            } stack_shaders->pop();
+        } t_rt->un_use();
+
+        if (t_rt->get_attach_textures().size() > 0) {
+            shaft_texture = t_rt->get_attach_textures()[0].texture;
+        }
+        b_x = !b_x;
+    }
+
+    // set shaft_texture to scene_texture 
+    if (shaft_texture) {
+        if (t_rt->get_attach_textures().size() > 0) {
+            auto t_scene_rt = scene_rt;
+            if (b_hdr) { t_scene_rt = hdr_scene_rt; }
+            else {
+                blit(t_rt, t_scene_rt, viewport_info.width, viewport_info.heigh, GL_COLOR_BUFFER_BIT);
+            }
+            blit(t_rt, t_scene_rt, viewport_info.width, viewport_info.heigh, GL_COLOR_BUFFER_BIT);
+            scene_texture = t_scene_rt->get_attach_textures()[0].texture;
+        }
+    }
+
+	// update camera
+	last_view = t_view;
+	last_proj = t_proj;
+	if (!b_has_last_camera_data) b_has_last_camera_data = true;
 
 }
 void GameManager::border_pass() {

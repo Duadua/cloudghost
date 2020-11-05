@@ -291,6 +291,7 @@
     <None Include="resources\shaders\gamma.frag" />
     <None Include="resources\shaders\gauss_blur.frag" />
     <None Include="resources\shaders\hdr.frag" />
+    <None Include="resources\shaders\motion_blur.frag" />
     <None Include="resources\shaders\msaa.frag" />
     <None Include="resources\shaders\msaa_depth.frag" />
     <None Include="resources\shaders\mvp.vert" />

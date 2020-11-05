@@ -285,6 +285,11 @@ private:
 	SPTR_RenderTarget shaft_y_rt;
 	SPTR_RenderTarget shaft_mix_rt;
 
+	// data use for motion blur
+	CMatrix4x4 last_view;
+	CMatrix4x4 last_proj;
+	bool b_has_last_camera_data;
+
 	void pre_bake();										// 预烘焙
 	bool b_pre_bake;										// 是否需要烘焙
 	void scene_pass(SPTR_Texture2D tex);					// 根据传入的贴图绘制屏幕四边形
@@ -296,6 +301,7 @@ private:
 	void bloom_pass();
 	void shaft_pass();
 	void shaft_pass_one(SPTR_LightObject light_obj);
+	void motion_pass();										
 	void border_pass();										// 加轮廓
 	void post_process_pass();
 	void hdr_pass();										// hdr
