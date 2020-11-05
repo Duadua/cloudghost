@@ -678,6 +678,24 @@
     <None Include="resources\shaders\single_3d.vert">
       <Filter>resources\shaders\verts</Filter>
     </None>
+    <None Include="resources\shaders\gauss_blur.frag">
+      <Filter>resources\shaders\frags</Filter>
+    </None>
+    <None Include="resources\shaders\add_mix.frag">
+      <Filter>resources\shaders\frags</Filter>
+    </None>
+    <None Include="resources\shaders\shaft.frag">
+      <Filter>resources\shaders\frags</Filter>
+    </None>
+    <None Include="resources\shaders\radial_blur.frag">
+      <Filter>resources\shaders\frags</Filter>
+    </None>
+    <None Include="resources\shaders\shaft.vert">
+      <Filter>resources\shaders\verts</Filter>
+    </None>
+    <None Include="resources\shaders\msaa_depth.frag">
+      <Filter>resources\shaders\frags</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Text Include="resources\models\txt\cube.txt">

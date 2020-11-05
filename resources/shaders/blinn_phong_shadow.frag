@@ -14,7 +14,8 @@ const int light_sky_num_max	    = 1;
 // ================================================================================
 // in & out
 
-out vec4 r_color;
+layout(location = 0) out vec4 r_color;
+layout(location = 1) out vec4 r_high_color;
 
 in O_VS {
 	vec3 world_pos;
@@ -223,6 +224,10 @@ void main(void) {
 
     //r_color = vec4(t_normal * 0.5 + 0.5, 1.0);
 
+    float t_filter = dot(r_color.rgb, vec3(0.2126, 0.7152, 0.0722));
+    if (t_filter > 5.0) {
+        r_high_color = vec4(r_color.rgb, 1.0);
+    }
 }
 
 // ================================================================================

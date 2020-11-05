@@ -291,7 +291,7 @@ void CMainWindow::trigger_polygon_mode(QAction* act) {
 	}
 }
 
-void CMainWindow::trigger_view_depth() { GameManager_ins().set_b_depth(!GameManager_ins().get_b_depth()); }
+void CMainWindow::trigger_view_depth() { GameManager_ins().set_b_showdepth(!GameManager_ins().get_b_showdepth()); }
 
 void CMainWindow::trigger_view_light_mode(QAction* act) {
 	if (act->objectName().compare("action_view_phong") == 0) { 

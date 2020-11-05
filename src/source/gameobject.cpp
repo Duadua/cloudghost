@@ -27,9 +27,9 @@ void GameObject::_draw(SPTR_Shader shader) {
 	if (shader != nullptr) {
 		shader->use();
 		shader->set_uint("u_object_id", id);
+        draw(shader);
 		root_component->_draw(shader);
 	}
 
-	draw(shader);
 
 }

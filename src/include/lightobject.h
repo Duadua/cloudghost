@@ -41,6 +41,9 @@ DECLARE_AUTO_PTR(LightObject)
 
 // ===========================================================================
 
+PRE_DECLARE_CLASS(MeshComponent)
+USING_SPTR(MeshComponent)
+
 class DirectLightObject : public LightObject {
 	DECLARE_CLASS(DirectLightObject)
 	
@@ -51,8 +54,9 @@ public:
 
 	SPTR_DirectLightComponent get_light_component() { return std::dynamic_pointer_cast<DirectLightComponent>(root_component); }
 
+	virtual void draw(SPTR_Shader shader) override;
 private:
-
+	SPTR_MeshComponent m_mesh_component;
 };
 DECLARE_AUTO_PTR(DirectLightObject)
 
@@ -68,7 +72,9 @@ public:
 
 	SPTR_PointLightComponent get_light_component() { return std::dynamic_pointer_cast<PointLightComponent>(root_component); }
 	
+	virtual void draw(SPTR_Shader shader) override;
 private:
+	SPTR_MeshComponent m_mesh_component;
 
 };
 DECLARE_AUTO_PTR(PointLightObject)

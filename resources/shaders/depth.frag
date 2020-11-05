@@ -20,8 +20,11 @@ float linearize_depth(float o_depth);
 
 void main() {
 
+	//float depth = origin_depth();
 	float depth = linearize_depth(gl_FragCoord.z);
+
 	r_color = vec4(vec3(depth), 1.0);
+	gl_FragDepth = depth;
 }
 
 // ================================================================================
@@ -41,8 +44,9 @@ float linearize_depth(float o_depth) {
 																	// b = (-2.0*n*f) / (f - n)
 																	// 投影矩阵的推导逆过程
 																	// 求得的 zp 为 [near, far] 上的线性深度
-	//return (res - t_near) / (t_far - t_near);
-	return (res - t_near) / (min(100.0, t_far) - t_near);
+	return res / t_far;
+	// return (res - t_near) / (t_far - t_near);
+	//return (res - t_near) / (min(100.0, t_far) - t_near);
 }
 
 // ================================================================================

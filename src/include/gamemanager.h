@@ -16,6 +16,8 @@ PRE_DECLARE_CLASS(GameObject)
 USING_SPTR(GameObject)
 PRE_DECLARE_CLASS(CameraObject)
 USING_SPTR(CameraObject)
+PRE_DECLARE_CLASS(LightObject)
+USING_SPTR(LightObject)
 PRE_DECLARE_CLASS(DirectLightObject)
 USING_SPTR(DirectLightObject)
 PRE_DECLARE_CLASS(PointLightObject)
@@ -142,6 +144,7 @@ public:									// used for qt ui
 	GET_SET(float, hdr_exposure)
 	GET_SET(bool, b_skybox)
 	GET_SET(bool, b_depth)
+	GET_SET(bool, b_showdepth)
 	GET_SET(bool, b_shadow)
 	GET_SET(bool, b_normal_map)
 	GET_SET(bool, b_pbr_epic)
@@ -195,6 +198,7 @@ protected:
 	bool b_skybox;					// 是否渲染天空盒
 	bool b_dynamic_env;				// 是否渲染动态环境贴图
 
+	bool b_showdepth;				// 是否显示渲染当前相机视图下的深度图
 	bool b_depth;					// 是否渲染当前相机视图下的深度图
 	bool b_shadow;					// 是否显示阴影
 
@@ -261,10 +265,25 @@ private:
 	SPTR_Texture2D scene_texture;
 	SPTR_Texture2D depth_texture;							// 当前相机视图下的深度图
 
+	SPTR_Texture2D hdr_high_texture;						// 高于阈值部分
+
+	SPTR_Texture2D shaft_texture;							// shaft_texture
+
 	// pbr used
 	SPTR_RenderTarget pbr_ibl_diffuse_bake_rt;				// ibl diffuse 反射贴图 -- cubemap -> cubemap
 	SPTR_RenderTarget pbr_ibl_dgf_bake_rt;					// ibl_specular lut 图 -- DGF项
 	SPTR_RenderTarget pbr_ibl_ld_bake_rt;					// ibl_specular ld 图 -- LD项
+
+	// rt for ping pang gaussian blur
+	SPTR_RenderTarget bloom_x_rt;
+	SPTR_RenderTarget bloom_y_rt;
+	SPTR_RenderTarget bloom_mix_rt;
+
+	// rt for ping pang shaft blur
+	SPTR_RenderTarget shaft_rt;
+	SPTR_RenderTarget shaft_x_rt;
+	SPTR_RenderTarget shaft_y_rt;
+	SPTR_RenderTarget shaft_mix_rt;
 
 	void pre_bake();										// 预烘焙
 	bool b_pre_bake;										// 是否需要烘焙
@@ -274,6 +293,9 @@ private:
 	void dynamic_env_pass();								// 动态环境贴图 -- 反射用
 	void pick_pass();										// 拾取阶段
 	void base_pass();
+	void bloom_pass();
+	void shaft_pass();
+	void shaft_pass_one(SPTR_LightObject light_obj);
 	void border_pass();										// 加轮廓
 	void post_process_pass();
 	void hdr_pass();										// hdr
@@ -300,13 +322,17 @@ private:
 	void init_hdr_rt();
 	void init_shadow_rt();
 	void init_skybox_rt();
+	void init_bloom_rt();
+	void init_shaft_rt();
 
 	void draw_scene(SPTR_Shader shader);
 	void draw_all_objs(SPTR_Shader shader);
 	void draw_pbr_objs(SPTR_Shader shader);
 	void draw_border(SPTR_Shader shader);
 	void draw_lights(SPTR_Shader shader);
+    void draw_light_objs(SPTR_Shader shader);
 	void draw_init();
+	void draw_init(const CColor& color);
 
 	void draw_skybox(SPTR_Shader shader);
 

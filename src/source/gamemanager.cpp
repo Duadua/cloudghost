@@ -63,7 +63,8 @@ void GameManager::_init() {
 		b_skybox = true;
 		b_dynamic_env = true;
 
-		b_depth = false;
+        b_showdepth = false;
+		b_depth = true;
 		b_shadow = true;
 		b_normal_map = true;
 
@@ -105,16 +106,23 @@ void GameManager::init() {
 		AssetManager_ins().load_shader("scene2d", "resources/shaders/scene_2d.vert", "resources/shaders/single_texture_2d.frag");
 		AssetManager_ins().load_shader("pp", "resources/shaders/scene_2d.vert", "resources/shaders/post_process.frag");
 		AssetManager_ins().load_shader("gamma", "resources/shaders/scene_2d.vert", "resources/shaders/gamma.frag");
+		AssetManager_ins().load_shader("gauss_blur", "resources/shaders/scene_2d.vert", "resources/shaders/gauss_blur.frag");
 		AssetManager_ins().load_shader("pick", "resources/shaders/mvp_anim.vert", "resources/shaders/pick.frag");
 		AssetManager_ins().load_shader("vr_mix", "resources/shaders/scene_2d.vert", "resources/shaders/vr_mix.frag");
+		AssetManager_ins().load_shader("add_mix", "resources/shaders/scene_2d.vert", "resources/shaders/add_mix.frag");
 		AssetManager_ins().load_shader("normal_visual", "resources/shaders/mvp_anim.vert", "resources/shaders/solid_color.frag", "resources/shaders/normal_visual.geom");
 		AssetManager_ins().load_shader("explode", "resources/shaders/mvp_anim.vert", "resources/shaders/blinn_phong.frag", "resources/shaders/explode.geom");
 		AssetManager_ins().load_shader("msaa", "resources/shaders/scene_2d.vert", "resources/shaders/msaa.frag");
+		AssetManager_ins().load_shader("msaa_depth", "resources/shaders/scene_2d.vert", "resources/shaders/msaa_depth.frag");
 		AssetManager_ins().load_shader("hdr", "resources/shaders/scene_2d.vert", "resources/shaders/hdr.frag");
 		AssetManager_ins().load_shader("skybox", "resources/shaders/skybox.vert", "resources/shaders/skybox.frag");
 		AssetManager_ins().load_shader("hdr_to_skybox", "resources/shaders/skybox.vert", "resources/shaders/equirectangular_to_cubemap.frag");
 		AssetManager_ins().load_shader("shadow", "resources/shaders/shadow.vert", "resources/shaders/shadow.frag");
 		AssetManager_ins().load_shader("shadow_point", "resources/shaders/shadow_point.vert", "resources/shaders/shadow_point.frag", "resources/shaders/shadow_point.geom");
+
+		// shaft
+		AssetManager_ins().load_shader("shaft", "resources/shaders/shaft.vert", "resources/shaders/shaft.frag");
+		AssetManager_ins().load_shader("radial_blur", "resources/shaders/scene_2d.vert", "resources/shaders/radial_blur.frag");
 
 		AssetManager_ins().load_shader("pbr", "resources/shaders/mvp_anim.vert", "resources/shaders/pbr.frag");
 		AssetManager_ins().load_shader("pbr_ibl", "resources/shaders/mvp_anim.vert", "resources/shaders/pbr_ibl.frag");
@@ -270,9 +278,11 @@ void GameManager::draw() {
 	// draw
 	{
 		auto t_final_tex = scene_texture;
-		if (b_depth && !b_use_shader_toy) t_final_tex = depth_texture;
-		//t_final_tex = direct_light_shadow_rts[0]->get_attach_textures()[0].texture;
-		//t_final_tex = pbr_ibl_dgf_bake_rt->get_attach_textures()[0].texture;
+		// t_final_tex = direct_light_shadow_rts[0]->get_attach_textures()[0].texture;
+		// t_final_tex = pbr_ibl_dgf_bake_rt->get_attach_textures()[0].texture;
+		// if(b_hdr) t_final_tex = hdr_high_texture;
+		if (b_showdepth) if (b_depth && !b_use_shader_toy) t_final_tex = depth_texture;
+		//if (b_showdepth) if(b_hdr) {t_final_tex = shaft_texture; }
 
 		// pass 0 -- 渲染到默认缓冲 -- 必须第一个执行
 		scene_pass(t_final_tex); 						// 显示正常渲染图 
@@ -300,6 +310,12 @@ void GameManager::draw() {
 
 				// pass 3
 				base_pass();									// 得到 scene_texture
+
+				// pass 3_1
+				bloom_pass();									// hdr_high_texture -> hdr_high_texture -> scene_texture 
+
+				// pass 3_2
+                shaft_pass();									// scene_texture + depth_texture -> shaft_texture
 
 				// pass 4
 				border_pass();									// 得到 border_texture -- 然后 输入 scene_texture -- 添加边框 -- 最后得到 scene_texture
@@ -369,7 +385,7 @@ void GameManager::pre_bake() {
 }
 void GameManager::scene_pass(SPTR_Texture2D tex) {
 
-	draw_init();
+	draw_init(background_color);
 
 	stack_shaders->push(AssetManager_ins().get_shader("scene2d")); {
 		if (stack_shaders->top()) {
@@ -396,15 +412,18 @@ void GameManager::depth_pass() {
 				stack_shaders->top()->set_float("u_far", main_camera->get_camera_component()->get_camera_data()->get_frustum().far);
 			}
 			draw_all_objs(stack_shaders->top());
+            draw_pbr_objs(stack_shaders->top());
+			draw_light_objs(stack_shaders->top());
 		} stack_shaders->pop();
 	} t_depth_rt->un_use();
 
 	if (b_msaa) {
-		if (!b_msaa_custom) { blit(t_depth_rt, depth_rt, viewport_info.width, viewport_info.heigh); } // opengl 自带抗锯齿
+		/*if (!b_msaa_custom)*/ { blit(t_depth_rt, depth_rt, viewport_info.width, viewport_info.heigh, GL_DEPTH_BUFFER_BIT); } // opengl 自带抗锯齿
+		/*
 		else {
 			depth_rt->use(); {
 				draw_init();
-				stack_shaders->push(AssetManager_ins().get_shader("msaa")); {
+				stack_shaders->push(AssetManager_ins().get_shader("msaa_depth")); {
 					if (stack_shaders->top() && t_depth_rt->get_attach_textures().size() > 0) {
 						auto t_texture = t_depth_rt->get_attach_textures()[0].texture;
 						if (t_texture) { t_texture->bind(0); }
@@ -417,7 +436,7 @@ void GameManager::depth_pass() {
 			} depth_rt->un_use();
 
 		} // 自定义抗锯齿
-
+        */
 	}
 
 	if (depth_rt->get_attach_textures().size() > 0) {
@@ -596,7 +615,11 @@ void GameManager::base_pass() {
 	if (b_hdr) { t_scene_rt = hdr_scene_rt; t_msaa_rt = hdr_msaa_rt; }
 
 	if (b_msaa) { t_msaa_rt->use(); } else { t_scene_rt->use(); } {
-		draw_init();
+		if (b_hdr) {
+			GLuint t_buffer_ids[2] = {GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1};
+			glDrawBuffers(2, t_buffer_ids);
+        }
+        draw_init();
 
 		// draw all objects
 		if (b_explode) { stack_shaders->push(AssetManager_ins().get_shader("explode")); } {
@@ -609,6 +632,18 @@ void GameManager::base_pass() {
 			draw_all_objs(stack_shaders->top());
 		} if (b_explode) { stack_shaders->pop(); }
 
+		// draw light objects
+		stack_shaders->push(AssetManager_ins().get_shader("solid_color")); {
+			if (stack_shaders->top())
+			{
+				stack_shaders->top()->use();
+			}
+			draw_light_objs(stack_shaders->top());
+
+        } stack_shaders->pop();
+
+        glDrawBuffer(GL_COLOR_ATTACHMENT0);
+		
 		// draw pbr
 		if (b_pbr_epic) { 
 			stack_shaders->push(AssetManager_ins().get_shader("pbr_ibl_epic")); {
@@ -710,20 +745,34 @@ void GameManager::base_pass() {
 
 	// blit msaa_rt to scene_rt -- color buffer is stored in scene_texture -- use inner msaa alogrithm
 	if (b_msaa) { 
-		if (!b_msaa_custom) { blit(t_msaa_rt, t_scene_rt, viewport_info.width, viewport_info.heigh); } // opengl 自带抗锯齿
+		if (!b_msaa_custom) { 
+            blit(t_msaa_rt, t_scene_rt, viewport_info.width, viewport_info.heigh);
+			if(b_hdr) {
+                blit(t_msaa_rt, t_scene_rt, viewport_info.width, viewport_info.heigh, GL_COLOR_BUFFER_BIT, 1, 1);
+            }
+        } // opengl 自带抗锯齿
 		else {
 			t_scene_rt->use(); {
+                if (b_hdr) {
+                    GLuint t_buffer_ids[2] = {GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1};
+                    glDrawBuffers(2, t_buffer_ids);
+                }
 				draw_init();
 				stack_shaders->push(AssetManager_ins().get_shader("msaa")); {
 					if (stack_shaders->top() && t_msaa_rt->get_attach_textures().size() > 0) {
 						auto t_texture = t_msaa_rt->get_attach_textures()[0].texture;
 						if (t_texture) { t_texture->bind(0); }
+                        if (b_hdr){
+                            auto t_texture2 = t_msaa_rt->get_attach_textures()[1].texture;
+                            if (t_texture2) { t_texture2->bind(1); }
+                        }
 						stack_shaders->top()->use();
 						stack_shaders->top()->set_int("u_texture_msaa", 0);
 						stack_shaders->top()->set_int("u_msaa_num", t_msaa_rt->get_msaa_num());
 					}
 					draw_scene(stack_shaders->top());
 				} stack_shaders->pop();
+                glDrawBuffer(GL_COLOR_ATTACHMENT0);
 			} t_scene_rt->un_use();
 
 		} // 自定义抗锯齿
@@ -734,6 +783,171 @@ void GameManager::base_pass() {
 	if (t_scene_rt->get_attach_textures().size() > 0) {
 		scene_texture = t_scene_rt->get_attach_textures()[0].texture;
 	}
+
+	// update hdr heigh texture
+	hdr_high_texture.reset();
+    if (t_scene_rt->get_attach_textures().size() > 1) {
+        hdr_high_texture = t_scene_rt->get_attach_textures()[1].texture;
+	}
+}
+void GameManager::bloom_pass() {
+	if (nullptr == hdr_high_texture) return;
+
+	// ping pang gaussian blur
+	bool b_horiz = true;
+	GLuint t_times = 10;
+	auto t_rt = bloom_x_rt;
+	for(GLuint i = 0; i < t_times; ++i) {
+		if (b_horiz) { t_rt = bloom_x_rt; }
+		else { t_rt = bloom_y_rt; }
+		t_rt->use(); {
+			draw_init();
+            stack_shaders->push(AssetManager_ins().get_shader("gauss_blur")); {
+                if (stack_shaders->top()) {
+                    stack_shaders->top()->use();
+                    hdr_high_texture->bind(0);
+                    stack_shaders->top()->set_bool("ub_horizontal", b_horiz);
+                }
+                draw_scene(stack_shaders->top());
+            } stack_shaders->pop();
+        } t_rt->un_use();
+
+		if (t_rt->get_attach_textures().size() > 0) {
+			hdr_high_texture = t_rt->get_attach_textures()[0].texture;
+		}
+		b_horiz = !b_horiz;
+	}
+
+	// mix blur to scene
+	if (hdr_high_texture) {
+		bloom_mix_rt->use(); {
+			draw_init();
+            stack_shaders->push(AssetManager_ins().get_shader("add_mix")); {
+                if (stack_shaders->top()) {
+                    stack_shaders->top()->use();
+					if (scene_texture) scene_texture->bind(0);
+                    if (hdr_high_texture) hdr_high_texture->bind(1);
+                    stack_shaders->top()->set_int("u_texture_a", 0);
+                    stack_shaders->top()->set_int("u_texture_b", 1);
+                }
+                draw_scene(stack_shaders->top());
+            } stack_shaders->pop();
+        } bloom_mix_rt->un_use();
+
+		if (bloom_mix_rt->get_attach_textures().size() > 0) {
+			scene_texture = bloom_mix_rt->get_attach_textures()[0].texture;
+		}
+    }
+}
+void GameManager::shaft_pass()
+{
+    for (auto go : map_direct_lights) { shaft_pass_one(go.second); }
+    for (auto go : map_point_lights) { shaft_pass_one(go.second); }
+    for (auto go : map_spots_lights) { shaft_pass_one(go.second); }
+}
+void GameManager::shaft_pass_one(SPTR_LightObject light_obj)
+{
+	if(nullptr == light_obj) { return; }
+
+	// down sample
+	CVector3D t_pos;
+	CMatrix4x4 t_trans;
+    t_trans = light_obj->get_root_component()->get_transform();
+    CVector4D t_world_pos = t_trans * CVector4D(0.0, 0.0, 0.0, 1.0);
+    t_pos = t_world_pos.xyz() / t_world_pos.w();
+
+    auto t_proj = main_camera->get_camera_component()->get_camera_data()->get_proj_mat();
+    auto t_proj_inv = t_proj.inverse();
+    auto t_view = main_camera->get_camera_component()->get_camera_data()->get_view_mat();
+    auto t_view_inv = t_view.inverse();
+
+	shaft_rt->use(); {
+		draw_init();
+        stack_shaders->push(AssetManager_ins().get_shader("shaft")); {
+            if (stack_shaders->top()) {
+                stack_shaders->top()->use();
+                if (scene_texture) scene_texture->bind(0);
+                if (depth_texture) depth_texture->bind(1);
+                stack_shaders->top()->set_int("u_texture", 0);
+                stack_shaders->top()->set_int("u_texture_depth", 1);
+                stack_shaders->top()->set_mat4("u_inv_proj", t_proj_inv);
+                stack_shaders->top()->set_mat4("u_inv_view", t_view_inv);
+                stack_shaders->top()->set_vec3("u_camera_pos", main_camera->get_root_component()->get_location());
+				
+                stack_shaders->top()->set_vec3("u_center_pos", t_pos);
+				stack_shaders->top()->set_float("u_near", main_camera->get_camera_component()->get_camera_data()->get_frustum().near);
+				stack_shaders->top()->set_float("u_far", main_camera->get_camera_component()->get_camera_data()->get_frustum().far);
+                stack_shaders->top()->set_float("u_distance", 5);
+            }
+            draw_scene(stack_shaders->top());
+        } stack_shaders->pop();
+	} shaft_rt->un_use();
+
+	if(shaft_rt->get_attach_textures().size() > 0) {
+		shaft_texture = shaft_rt->get_attach_textures()[0].texture;
+    }
+
+	// radial_blur
+	if (nullptr == shaft_texture) { return; }
+	bool b_x = true;
+	float t_strength = 0.5f;
+	GLuint t_times = 3;
+	auto t_rt = shaft_x_rt;
+	for(GLuint i = 0; i < t_times; ++i) {
+		if (b_x) { t_rt = shaft_x_rt; }
+		else { t_rt = shaft_y_rt; }
+		t_rt->use(); {
+			draw_init();
+            stack_shaders->push(AssetManager_ins().get_shader("radial_blur")); {
+                if (stack_shaders->top()) {
+                    stack_shaders->top()->use();
+                    shaft_texture->bind(0);
+                    //scene_texture->bind(0);
+                    stack_shaders->top()->set_float("u_strength", t_strength);
+                    stack_shaders->top()->set_float("u_sample_num", 50);
+					auto t_origin_vec = t_proj * t_view * t_trans * CVector4D(0.0, 0.0, 0.0, 1.0);
+					CVector3D t_origin_pos = t_origin_vec.xyz() / t_origin_vec.w();
+                    stack_shaders->top()->set_vec2("u_origin_scene_pos", t_origin_pos.xy());
+                }
+                draw_scene(stack_shaders->top());
+            } stack_shaders->pop();
+			t_strength -= 0.2f;
+        } t_rt->un_use();
+
+		if (t_rt->get_attach_textures().size() > 0) {
+			shaft_texture = t_rt->get_attach_textures()[0].texture;
+		}
+		b_x = !b_x;
+	}
+
+	// mix scene_texture and shaft_texture
+    if (shaft_texture) {
+        shaft_mix_rt->use(); {
+            draw_init();
+            stack_shaders->push(AssetManager_ins().get_shader("add_mix")); {
+                if (stack_shaders->top()) {
+                    stack_shaders->top()->use();
+                    if (scene_texture) scene_texture->bind(0);
+                    if (shaft_texture) shaft_texture->bind(1);
+                    stack_shaders->top()->set_int("u_texture_a", 0);
+                    stack_shaders->top()->set_int("u_texture_b", 1);
+                }
+                draw_scene(stack_shaders->top());
+            } stack_shaders->pop();
+        } shaft_mix_rt->un_use();
+
+        if (shaft_mix_rt->get_attach_textures().size() > 0) {
+			auto t_scene_rt = scene_rt;
+			if (b_hdr) { t_scene_rt = hdr_scene_rt; }
+			else {
+                blit(shaft_mix_rt, t_scene_rt, viewport_info.width, viewport_info.heigh, GL_COLOR_BUFFER_BIT);
+            }
+            blit(shaft_mix_rt, t_scene_rt, viewport_info.width, viewport_info.heigh, GL_COLOR_BUFFER_BIT);
+            scene_texture = t_scene_rt->get_attach_textures()[0].texture;
+        }
+    }
+
+
 }
 void GameManager::border_pass() {
 	// 先得到需要加 border 物体的深度图
@@ -762,7 +976,7 @@ void GameManager::border_pass() {
 				stack_shaders->top()->set_vec4("u_border_color", border_color.rgba_f());
 			}
 			if (scene_texture) { scene_texture->bind(0); }
-			if (b_depth) { if (depth_texture) { depth_texture->bind(0); } }
+			//if (b_depth) { if (depth_texture) { depth_texture->bind(0); } }
 			if (border_depth_rt->get_attach_textures().size() > 0) { 
 				border_depth_rt->get_attach_textures()[0].texture->bind(1); 
 			}
@@ -772,7 +986,7 @@ void GameManager::border_pass() {
 
 	if (border_rt->get_attach_textures().size() > 0) {
 		scene_texture = border_rt->get_attach_textures()[0].texture;
-		if (b_depth) { depth_texture = border_rt->get_attach_textures()[0].texture; }
+		// if (b_depth) { depth_texture = border_rt->get_attach_textures()[0].texture; }
 	}
 	
 }
@@ -787,7 +1001,7 @@ void GameManager::post_process_pass() {
 			if (stack_shaders->top()) {
 				stack_shaders->top()->use();
 				if (scene_texture) { scene_texture->bind(0); }
-				if (b_depth) { if (depth_texture) { depth_texture->bind(0); } } 
+				//if (b_depth) { if (depth_texture) { depth_texture->bind(0); } } 
 				stack_shaders->top()->set_int("u_texture", 0);
 				stack_shaders->top()->set_int("u_pp_type", static_cast<int>(pp_type));
 			}
@@ -801,7 +1015,7 @@ void GameManager::post_process_pass() {
 	// update scene texture
 	if (t_pp_rt->get_attach_textures().size() > 0) {
 		scene_texture = t_pp_rt->get_attach_textures()[0].texture;
-		if (b_depth) { depth_texture = t_pp_rt->get_attach_textures()[0].texture; }
+		// if (b_depth) { depth_texture = t_pp_rt->get_attach_textures()[0].texture; }
 	}
 }
 void GameManager::hdr_pass() {
@@ -1368,7 +1582,7 @@ void GameManager::vr_border_pass() {
 				stack_shaders->top()->set_vec4("u_border_color", border_color.rgba_f());
 			}
 			if (scene_texture) { scene_texture->bind(0); }
-			if (b_depth) { if (depth_texture) { depth_texture->bind(0); } }
+			//if (b_depth) { if (depth_texture) { depth_texture->bind(0); } }
 			if (vr_border_mix_rt->get_attach_textures().size() > 0) {
 				vr_border_mix_rt->get_attach_textures()[0].texture->bind(1);
 			}
@@ -1378,7 +1592,7 @@ void GameManager::vr_border_pass() {
 
 	if (vr_border_rt->get_attach_textures().size() > 0) {
 		scene_texture = vr_border_rt->get_attach_textures()[0].texture;
-		if (b_depth) { depth_texture = vr_border_rt->get_attach_textures()[0].texture; }
+		// if (b_depth) { depth_texture = vr_border_rt->get_attach_textures()[0].texture; }
 	}
 	
 }
@@ -1710,8 +1924,21 @@ void GameManager::draw_lights(SPTR_Shader shader) {
 	}
 
 }
-void GameManager::draw_init() {
-	glClearColor(background_color.r_f(), background_color.g_f(), background_color.b_f(), background_color.a_f());
+void GameManager::draw_light_objs(SPTR_Shader shader) {
+	set_depth_test();
+	set_polygon_mode(front_polygon_mode, back_polygon_mode); {
+		for (auto go : map_direct_lights) { go.second->_draw(shader); }
+		for (auto go : map_point_lights) { go.second->_draw(shader); }
+		for (auto go : map_spots_lights) { go.second->_draw(shader); }
+	} set_polygon_mode();
+}
+
+void GameManager::draw_init()
+{
+	draw_init(CColor(0, 0, 0));
+}
+void GameManager::draw_init(const CColor& color) {
+	glClearColor(color.r_f(), color.g_f(), color.b_f(), color.a_f());
 	glClear(GL_COLOR_BUFFER_BIT);
 	if (glIsEnabled(GL_DEPTH_TEST)) { glClear(GL_DEPTH_BUFFER_BIT); }
 	if (glIsEnabled(GL_STENCIL_TEST)) { glClear(GL_STENCIL_BUFFER_BIT); }
@@ -1802,16 +2029,39 @@ void GameManager::init_rt() {
 	if (depth_rt) depth_rt.reset();
 	depth_rt = CREATE_CLASS(RenderTarget);
 	if (depth_rt) {
-		if (!depth_rt->init_normal(viewport_info.width, viewport_info.heigh)) {
-			c_debuger() << "create rt fail";
-		}
+		depth_rt->add_attach_texture(GL_DEPTH_ATTACHMENT, viewport_info.width, viewport_info.heigh,
+            GL_TEXTURE_2D, GL_DEPTH_COMPONENT, GL_DEPTH_COMPONENT, GL_FLOAT)
+            ->init();
+        // set border
+        auto t_tex = depth_rt->get_attach_textures()[0].texture;
+        if (t_tex) {
+            t_tex->use(); {
+                glTexParameteri(t_tex->get_type(), GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
+                glTexParameteri(t_tex->get_type(), GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
+                GLfloat t_border_color[] = { 1.0, 1.0, 1.0, 1.0 };
+                glTexParameterfv(t_tex->get_type(), GL_TEXTURE_BORDER_COLOR, t_border_color);
+            } t_tex->un_use();
+        }
 	}
 	if (depth_msaa_rt) depth_msaa_rt.reset();
 	depth_msaa_rt = CREATE_CLASS(RenderTarget);
 	if (depth_msaa_rt) {
-		if (!depth_msaa_rt->init_normal_multisample(viewport_info.width, viewport_info.heigh)) {
-			c_debuger() << "create rt fail";
-		}
+		depth_msaa_rt->add_attach_texture(GL_DEPTH_ATTACHMENT, viewport_info.width, viewport_info.heigh,
+			GL_TEXTURE_2D_MULTISAMPLE, GL_DEPTH_COMPONENT, GL_DEPTH_COMPONENT, GL_FLOAT)
+            ->init();
+        // set border
+        auto t_tex = depth_msaa_rt->get_attach_textures()[0].texture;
+        if (t_tex) {
+            t_tex->use(); {
+                glTexParameteri(t_tex->get_type(), GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
+                glTexParameteri(t_tex->get_type(), GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
+                GLfloat t_border_color[] = { 1.0, 1.0, 1.0, 1.0 };
+                glTexParameterfv(t_tex->get_type(), GL_TEXTURE_BORDER_COLOR, t_border_color);
+            } t_tex->un_use();
+        }
+		//if (!depth_msaa_rt->init_normal_multisample(viewport_info.width, viewport_info.heigh)) {
+		//	c_debuger() << "create rt fail";
+		//}
 	}
 
 	if (pp_rt) pp_rt.reset();
@@ -1836,6 +2086,8 @@ void GameManager::init_rt() {
 	init_msaa_rt();
 	init_hdr_rt();
 	init_shadow_rt();
+	init_bloom_rt();
+	init_shaft_rt();
 }
 void GameManager::init_shadow_rt() {
 	// direct light
@@ -1926,7 +2178,10 @@ void GameManager::init_hdr_rt() {
 	if (hdr_scene_rt) hdr_scene_rt.reset();
 	hdr_scene_rt = CREATE_CLASS(RenderTarget);
 	if (hdr_scene_rt) {
-		if (!hdr_scene_rt->init_normal_f(viewport_info.width, viewport_info.heigh)) {
+		if (!hdr_scene_rt->add_attach_texture(GL_COLOR_ATTACHMENT0, viewport_info.width, viewport_info.heigh, GL_TEXTURE_2D, GL_RGBA16F, GL_RGBA, GL_FLOAT)
+			->add_attach_texture(GL_COLOR_ATTACHMENT1, viewport_info.width, viewport_info.heigh, GL_TEXTURE_2D, GL_RGBA16F, GL_RGBA, GL_FLOAT)
+			->add_attach_renderbuffer(viewport_info.width, viewport_info.heigh)
+            ->init()) {
 			c_debuger() << "create rt fail";
 		}
 	}
@@ -1941,7 +2196,12 @@ void GameManager::init_hdr_rt() {
 
 	if (hdr_msaa_rt) hdr_msaa_rt.reset();
 	hdr_msaa_rt = CREATE_CLASS(RenderTarget);
-	if (hdr_msaa_rt) { hdr_msaa_rt->init_normal_multisample_f(viewport_info.width, viewport_info.heigh); }
+	if (hdr_msaa_rt) { 
+        hdr_msaa_rt->add_attach_texture(GL_COLOR_ATTACHMENT0, viewport_info.width, viewport_info.heigh, GL_TEXTURE_2D_MULTISAMPLE, GL_RGBA16F)
+            ->add_attach_texture(GL_COLOR_ATTACHMENT1, viewport_info.width, viewport_info.heigh, GL_TEXTURE_2D_MULTISAMPLE, GL_RGBA16F)
+            ->add_attach_renderbuffer(viewport_info.width, viewport_info.heigh, true)
+			->init();
+    }
 
 }
 
@@ -1955,6 +2215,53 @@ void GameManager::init_skybox_rt() {
 			->add_attach_texture_3d(GL_DEPTH_ATTACHMENT, 512, 512,
 				GL_TEXTURE_CUBE_MAP, GL_DEPTH_COMPONENT, GL_DEPTH_COMPONENT, GL_FLOAT)
 			->init();
+	}
+}
+void GameManager::init_bloom_rt()
+{
+	if(bloom_x_rt) bloom_x_rt.reset();
+	bloom_x_rt = CREATE_CLASS(RenderTarget);
+	if(bloom_x_rt) {
+		bloom_x_rt->init_normal_f(viewport_info.width, viewport_info.heigh);
+	}
+
+	if(bloom_y_rt) bloom_y_rt.reset();
+	bloom_y_rt = CREATE_CLASS(RenderTarget);
+	if(bloom_y_rt) {
+		bloom_y_rt->init_normal_f(viewport_info.width, viewport_info.heigh);
+	}
+
+	if(bloom_mix_rt) bloom_mix_rt.reset();
+	bloom_mix_rt = CREATE_CLASS(RenderTarget);
+	if(bloom_mix_rt) {
+		bloom_mix_rt->init_normal_f(viewport_info.width, viewport_info.heigh);
+	}
+
+}
+void GameManager::init_shaft_rt()
+{
+	if(shaft_rt) shaft_rt.reset();
+	shaft_rt = CREATE_CLASS(RenderTarget);
+	if(shaft_rt) {
+		shaft_rt->init_normal_f(viewport_info.width, viewport_info.heigh);
+	}
+
+	if(shaft_x_rt) shaft_x_rt.reset();
+	shaft_x_rt = CREATE_CLASS(RenderTarget);
+	if(shaft_x_rt) {
+		shaft_x_rt->init_normal_f(viewport_info.width, viewport_info.heigh);
+	}
+
+	if(shaft_y_rt) shaft_y_rt.reset();
+	shaft_y_rt = CREATE_CLASS(RenderTarget);
+	if(shaft_y_rt) {
+		shaft_y_rt->init_normal_f(viewport_info.width, viewport_info.heigh);
+	}
+
+	if(shaft_mix_rt) shaft_mix_rt.reset();
+	shaft_mix_rt = CREATE_CLASS(RenderTarget);
+	if(shaft_mix_rt) {
+		shaft_mix_rt->init_normal_f(viewport_info.width, viewport_info.heigh);
 	}
 }
 

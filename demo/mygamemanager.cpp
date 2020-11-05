@@ -184,10 +184,14 @@ void MyGameManager::begin_play() {
 	// use direct light
 	{
 		auto d_light = CREATE_CLASS(DirectLightObject);
+		d_light->get_root_component()->set_location(-6.0f, 10.0f, 40.0f);
+		d_light->get_root_component()->set_location(-6.0f, 10.0f, 20.0f);
 		d_light->get_root_component()->set_rotation(-60.0f, -135.0f, 0.0f);
 		//d_light->get_root_component()->set_rotation(-60.0f, -135.0f, 0.0f);
 		d_light->get_light_component()->set_intensity(10.0f);
 		d_light->get_light_component()->set_k(CVector3D(1.0f, 1.0f, 1.0f));
+		d_light->get_light_component()->set_color(CVector3D(1.0f, 1.0f, 1.0f));
+		d_light->get_light_component()->set_scale(2.0);
 		//d_light->get_light_component()->set_k(CVector3D(0.2f, 0.7f, 0.1f));
 		add_direct_light("d_light", d_light);
 		
@@ -208,8 +212,19 @@ void MyGameManager::begin_play() {
 		p_light->get_light_component()->set_color(CVector3D(0.0f, 0.5f, 1.0f));
 		p_light->get_light_component()->set_att_radius(20.0f);
 		p_light->get_light_component()->set_intensity(10.0f);
+		p_light->get_root_component()->set_scale(0.5f);
 		add_point_light("p_light0", p_light);
 	}
+	/*
+    {
+        auto p_light = CREATE_CLASS(PointLightObject);
+        p_light->get_root_component()->set_location(-8.0f, 4.0f, -4.0f);
+        p_light->get_light_component()->set_color(CVector3D(0.5f, 0.7f, 0.2f));
+        p_light->get_light_component()->set_att_radius(20.0f);
+        p_light->get_light_component()->set_intensity(10.0f);
+        p_light->get_root_component()->set_scale(1.0f);
+        add_point_light("p_light2", p_light);
+    }
 	{
 		auto p_light = CREATE_CLASS(PointLightObject);
 		//p_light->get_root_component()->set_location(0.0f, 3.0f, 3.0f);
@@ -219,6 +234,7 @@ void MyGameManager::begin_play() {
 		p_light->get_light_component()->set_color(CVector3D(0.7f, 0.3f, 0.0f));
 		add_point_light("p_light1", p_light);
 	}
+*/
 	
 	
 	// use spot light

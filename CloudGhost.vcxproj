@@ -280,6 +280,7 @@
     <QtMoc Include="src\include\cglwidget.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="resources\shaders\add_mix.frag" />
     <None Include="resources\shaders\blinn_phong.frag" />
     <None Include="resources\shaders\blinn_phong_light_only.frag" />
     <None Include="resources\shaders\blinn_phong_shadow.frag" />
@@ -288,8 +289,10 @@
     <None Include="resources\shaders\equirectangular_to_cubemap.frag" />
     <None Include="resources\shaders\explode.geom" />
     <None Include="resources\shaders\gamma.frag" />
+    <None Include="resources\shaders\gauss_blur.frag" />
     <None Include="resources\shaders\hdr.frag" />
     <None Include="resources\shaders\msaa.frag" />
+    <None Include="resources\shaders\msaa_depth.frag" />
     <None Include="resources\shaders\mvp.vert" />
     <None Include="resources\shaders\mvp_anim.vert" />
     <None Include="resources\shaders\mvp_anim_shadow.vert" />
@@ -297,6 +300,9 @@
     <None Include="resources\shaders\pbr.frag" />
     <None Include="resources\shaders\pbr_ibl.frag" />
     <None Include="resources\shaders\pbr_ibl_dgf_bake.frag" />
+    <None Include="resources\shaders\radial_blur.frag" />
+    <None Include="resources\shaders\shaft.frag" />
+    <None Include="resources\shaders\shaft.vert" />
     <None Include="resources\shaders\single_3d.vert" />
     <None Include="resources\shaders\pbr_ibl_epic.frag" />
     <None Include="resources\shaders\pbr_ibl_ld_bake.frag" />
