@@ -44,13 +44,13 @@ void main() {
 	
 	vec2 t_cur_pos = i_fs.tex_coord * vec2(2.0) - vec2(1.0); 
 	vec2 t_delta = (t_cur_pos - t_last_pos.xy) / 5.0;
-	if (t_cur_depth * u_far < 50) {
+	if (t_cur_depth * u_far < 10) {
         r_color = vec4(texture(u_texture, i_fs.tex_coord).rgb, 1.0);
     }
 	else {
         r_color = vec4(motion_blur(t_delta), 1.0);
     }
-	//r_color = vec4(i_fs.pos_from_cam, 1.0);
+	//r_color = vec4(1.0, 0.0, 0.0, 1.0);
 }
 
 // ================================================================================
@@ -62,7 +62,7 @@ vec3 motion_blur(vec2 delta)
 	vec2 t_cur_uv = i_fs.tex_coord;
 	for(int i = 0; i < u_sample_num; ++i) {
 		vec3 t_cur_val = texture(u_texture, t_cur_uv).rgb;
-		t_cur_uv = t_cur_uv + delta * 0.01;
+		t_cur_uv = t_cur_uv + delta * 0.08;
 		t_cur_uv.x = clampf(t_cur_uv.x, 0.0, 1.0);
 		t_cur_uv.y = clampf(t_cur_uv.y, 0.0, 1.0);
 		result += t_cur_val;

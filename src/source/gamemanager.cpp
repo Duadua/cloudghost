@@ -281,10 +281,11 @@ void GameManager::draw() {
 	// draw
 	{
 		auto t_final_tex = scene_texture;
+		// if (b_showdepth) t_final_tex = pick_rt->get_attach_textures()[0].texture;
 		// t_final_tex = direct_light_shadow_rts[0]->get_attach_textures()[0].texture;
 		// t_final_tex = pbr_ibl_dgf_bake_rt->get_attach_textures()[0].texture;
 		// if(b_hdr) t_final_tex = hdr_high_texture;
-		if (b_showdepth) if (b_depth && !b_use_shader_toy) t_final_tex = depth_texture;
+		//if (b_showdepth) if (b_depth && !b_use_shader_toy) t_final_tex = depth_texture;
 		//if (b_showdepth) if(b_hdr) {t_final_tex = shaft_texture; }
 
 		// pass 0 -- 渲染到默认缓冲 -- 必须第一个执行

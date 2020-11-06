@@ -7,6 +7,8 @@
 #include <QMouseEvent>
 #include <QWheelEvent>
 
+#include "cdebuger.h"
+
 IMPLEMENT_CLASS(FreeCamera)
 
 FreeCamera::FreeCamera() {}
@@ -27,8 +29,10 @@ void FreeCamera::bind_input() {
 
 void FreeCamera::turn(float offset) {
 	CVector3D new_rotation = get_root_component()->get_rotation();
-
+	offset = CMath_ins().clamp(offset, -3.0f, 3.0f);
 	new_rotation += CVector3D(0.0f, -offset, 0.0f);
+	//c_debuger() << "[camera][turn] offset " + std::to_string(offset);
+	//c_debuger() << "[camera][turn] rotation y " + std::to_string(new_rotation.y());
 	get_root_component()->set_rotation(new_rotation);
 
 	// set cursor pos

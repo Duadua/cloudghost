@@ -1,5 +1,7 @@
 #include "cameradata.h"
 
+#include "cdebuger.h"
+
 IMPLEMENT_CLASS(CameraData)
 
 CameraData::CameraData() {}
@@ -21,7 +23,6 @@ void CameraData::update(CVector3D l, CVector3D r) {
 	float yaw = CMath_ins().deg_to_rad(rotation.y());
 	float pitch = CMath_ins().deg_to_rad(rotation.x());
 	float roll = CMath_ins().deg_to_rad(rotation.z());
-
 	// 计算 world_up
 	world_up.set_z(0.0f);
 	world_up.set_x(std::sin(roll));
